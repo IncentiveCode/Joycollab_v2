@@ -2,7 +2,7 @@
 
 
 ## 주요 변경 사항
-1. Unity version upgrade (2020.3.32f1 -> 2021.3.19f1)
+1. Unity version upgrade (2020.3.32f1 -> 2021.3.13f1)
 2. 압축 방식 변경 (Disabled -> Brotli)
 3. Singleton (DontDestroyOnLoad) 형태로 사용되는 object 축소.
    static class 또는 static function 사용으로 변경.
