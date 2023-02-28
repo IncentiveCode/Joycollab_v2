@@ -1,17 +1,17 @@
 # PitchSolution JavaScript Library
+
 for Unity WebGL 
 
+### description :
 
-description :
-@author : 이효재
-@last update : 2023. 02. 28
-@version : 1.1
-@update history
-    - [2023. 02. 22] v1.0 - Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
-    - [2023. 02. 28] v1.1 - unity 2021.3.13f1 으로 업그레이드 후, windows 에서 build 안되는 문제 해결. (한글 주석이 원인으로 보임)
+- @author : 이효재
+- @last update : 2023. 02. 28
+- @version : 1.1
+- @update history
+    * [2023. 02. 22] v1.0 - Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
+    * [2023. 02. 28] v1.1 - unity 2021.3.13f1 으로 업그레이드 후, windows 에서 build 안되는 문제 해결. (한글 주석이 원인으로 보임)
 
-
-function list :
+### function list :
 
 ``` c#
 // Cookie 읽고 쓰기
@@ -35,4 +35,12 @@ public static extern void psCheckSystem(string gameObjectName, string methodName
 public static extern void psRunScheme(string gameObjectName, string url, string methodName);
 ```
 
-계속 추가 예정.
+### 추가 예정 항목들
+1. kakao 주소 검색
+2. Browser focus 처리
+3. clipboard 기능 (ctrl + c, ctrl + v)
+4. Xmpp 관련 기능
+5. Browser notification 처리
+6. Popup 관련 기능 (함수 추가)
+7. Janus 관련 기능
+8. etc...
