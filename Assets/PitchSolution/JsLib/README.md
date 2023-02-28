@@ -1,13 +1,15 @@
 # PitchSolution JavaScript Library
 ## for Unity WebGL 
 
+
 ### description
-#### @author : 이효재
-#### @last update : 2023. 02. 28
-#### @version : 1.1
-#### @update
-##### [2023. 02. 22] v1.0 - Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
-##### [2023. 02. 28] v1.1 - unity 2021.3.13f1 으로 업그레이드 후, windows 에서 build 안되는 문제 해결. (한글 주석이 원인으로 보임)
+##### @author : 이효재
+##### @last update : 2023. 02. 28
+##### @version : 1.1
+##### @update
+1. [2023. 02. 22] v1.0 - Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
+2. [2023. 02. 28] v1.1 - unity 2021.3.13f1 으로 업그레이드 후, windows 에서 build 안되는 문제 해결. (한글 주석이 원인으로 보임)
+
 
 ### 함수 정리
 #### Cookie 읽고 쓰기
