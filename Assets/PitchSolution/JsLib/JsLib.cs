@@ -69,8 +69,9 @@ namespace PitchSolution
     #region scheme
         public static void psRunScheme(string gameObjectName, string url, string methodName)
         {
-            Application.OpenURL(url);
+            // Application.OpenURL(url);
             GameObject.Find(gameObjectName).SendMessage(methodName, "true");
+            Debug.Log("잠시 막아둠.");
         }
     #endregion // scheme
 #endif

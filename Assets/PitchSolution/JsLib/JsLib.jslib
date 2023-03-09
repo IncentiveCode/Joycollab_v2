@@ -138,10 +138,10 @@ var JsLib = {
 			}
 
 			if (chk500 && chk1000) {
-				SendMessage(gameObjectName, methodName, "true");
+				SendMessage(gameObjectName, methodName, "false");
 			}
 			else {
-				SendMessage(gameObjectName, methodName, "false");
+				SendMessage(gameObjectName, methodName, "true");
 			}
 		}, 1000);
 	},
