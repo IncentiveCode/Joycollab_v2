@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace PitchSolution
 {
     public interface IModuleController 
@@ -14,6 +10,6 @@ namespace PitchSolution
 
     public interface IModuleObserver
     {
-        void UpdateFloatingMenu(FloatingMenu menu);
+        void UpdateModuleList<T>(T menu);
     }
 }

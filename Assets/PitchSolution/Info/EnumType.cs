@@ -4,9 +4,8 @@
 /// @last update    : 2023. 02. 25
 /// @version        : 0.1
 /// @update
-///     [2023. 02. 25] v0.1 - Joycollab 에서 사용하던 열거형 정리. (정리 중)
+///     v0.1 (2023. 02. 25) : Joycollab 에서 사용하던 열거형 정리. (정리 중)
 /// </summary>
-
 
 namespace PitchSolution
 {
