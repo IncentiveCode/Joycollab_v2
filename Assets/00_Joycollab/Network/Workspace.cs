@@ -1,10 +1,11 @@
 /// <summary>
 /// Network 통신 - 워크스페이스 관련 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 02. 22
-/// @version        : 1.0
+/// @last update    : 2023. 03. 22
+/// @version        : 0.2
 /// @update
-///     [2023. 02. 22] v1.0 - Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
+///     v0.1 (2023. 02. 22) : Joycollab 에서 사용하던 클래스 정리 및 통합 진행 (SimpleWorkspace, ResWorkspaceList, ResWorkspaceInfo)
+///     v0.2 (2023. 03. 22) : Joycollab 에서 사용하던 클래스 정리 및 통합 진행 (LobbyInfo)
 /// </summary>
 
 using System;
@@ -68,5 +69,20 @@ namespace Joycollab.v2
         public string nickNm;
         public string photo;
         public string jobGrade;
+    }
+
+    [Serializable]
+    public class LobbyInfo
+    {
+        public bool guest;
+        public int[] lobbyMembers;
+        public string monitType;
+        public string monitFile;
+        public string monitUrl;
+        public string monitImgUrl;
+        public string noticeImgUrl;
+        public bool jcShow;
+        public string jcMsg;
+        public bool showSeminarBtn;
     }
 }

@@ -1,4 +1,15 @@
-﻿#if UNITY_WEBGL && !UNITY_EDITOR
+﻿/// <summary>
+/// PitchSolution - javascript library 
+/// @author         : HJ Lee
+/// @last update    : 2023. 03. 17 
+/// @version        : 1.2
+/// @update
+///     - v1.0 (2023. 02. 22) : Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
+///     - v1.1 (2023. 02. 28) : unity 2021.3.13f1 으로 업그레이드 후, windows 에서 build 안되는 문제 해결. (한글 주석이 원인으로 보임)
+///     - v1.2 (2023. 03. 17) : Graphic UI 와 Text UI 전환시 unity-canvas 에 min-widht 값을 추가하는 함수 추가. 추후 고도화 예정.
+/// </summary>
+
+#if UNITY_WEBGL && !UNITY_EDITOR
 using System.Runtime.InteropServices;
 #endif
 using UnityEngine;
@@ -13,7 +24,7 @@ namespace Joycollab.v2
         public static extern string psGetCookie(string name);
         [DllImport("__Internal")]
         public static extern void psSetCookie(string name, string value);
-    #endregion // cookie
+    #endregion  // cookie
 
     #region simple functions
         [DllImport("__Internal")]
@@ -24,33 +35,37 @@ namespace Joycollab.v2
         public static extern void psRedirection(string url);
         [DllImport("__Internal")] 
         public static extern void psOpenWebview(string url, string id);
-    #endregion // simple function
+    #endregion  // simple function
 
     #region check 
         [DllImport("__Internal")]
         public static extern void psCheckBrowser(string gameObjectName, string methodName);
         [DllImport("__Internal")] 
         public static extern void psCheckSystem(string gameObjectName, string methodName);
-    #endregion // check 
+    #endregion  // check 
 
     #region scheme
         [DllImport("__Internal")] 
         public static extern void psRunScheme(string gameObjectName, string url, string methodName);
-    #endregion // scheme
+    #endregion  // scheme
 
+    #region change style
+        [DllImport("__Internal")] 
+        public static extern void psSetTextUI(bool isOn);
+    #endregion  // change style
 #else
 
     #region cookie
         public static string psGetCookie(string name) { return PlayerPrefs.GetString(name, string.Empty); }
         public static void psSetCookie(string name, string value) { PlayerPrefs.SetString(name, value); }
-    #endregion // cookie
+    #endregion  // cookie
 
     #region simple functions
         public static void psAlert(string message) { Debug.Log(message); }
         public static void psLog(string message) { Debug.Log(message); }
         public static void psRedirection(string url) { }
         public static void psOpenWebview(string url, string id) { Application.OpenURL(url); }
-    #endregion // simple function
+    #endregion  // simple function
 
     #region check 
         public static void psCheckBrowser(string gameObjectName, string methodName) 
@@ -64,16 +79,20 @@ namespace Joycollab.v2
         {
             GameObject.Find(gameObjectName).SendMessage(methodName, SystemInfo.operatingSystem);
         }
-    #endregion // check 
+    #endregion  // check 
 
     #region scheme
         public static void psRunScheme(string gameObjectName, string url, string methodName)
         {
-            // Application.OpenURL(url);
+            Application.OpenURL(url);
             GameObject.Find(gameObjectName).SendMessage(methodName, "true");
-            Debug.Log("잠시 막아둠.");
         }
-    #endregion // scheme
+    #endregion  // scheme
+
+    #region change style
+        public static void psSetTextUI(bool isOn) { }
+    #endregion  // change style
+
 #endif
     }
 
@@ -92,7 +111,7 @@ namespace Joycollab.v2
         {
             JsLibPlugin.psSetCookie(name, value);
         }
-    #endregion // cookie
+    #endregion  // cookie
 
     #region simple functions
         public static void Alert(string message) 
@@ -114,7 +133,7 @@ namespace Joycollab.v2
         {
             JsLibPlugin.psOpenWebview(url, id);
         }
-    #endregion // simple functions
+    #endregion  // simple functions
 
     #region check
         public static void CheckBrowser(string gameObjectName, string methodName)
@@ -126,13 +145,20 @@ namespace Joycollab.v2
         {
             JsLibPlugin.psCheckSystem(gameObjectName, methodName);
         }
-    #endregion // check
+    #endregion  // check
 
     #region scheme
         public static void RunScheme(string gameObjectName, string url, string methodName)
         {
             JsLibPlugin.psRunScheme(gameObjectName, url, methodName);
         }
-    #endregion // scheme
+    #endregion  // scheme
+
+    #region change style
+        public static void SetTextUI(bool isOn) 
+        { 
+            JsLibPlugin.psSetTextUI(isOn);
+        }
+    #endregion  // change style
     }
 }

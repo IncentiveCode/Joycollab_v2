@@ -65,8 +65,13 @@ namespace Joycollab.v2
         public const string MobileScene_ViewTag = "MobileView";
         public const string MobileScene_Login = "login_m";
         public const string MobileScene_Reset = "reset_m";
-        public const string MobileScene_PatchNote = "patchnote_m";
-        public const string MobileScene_First = "first_m";
+        public const string MobileScene_PatchNote = "patch note_m";
+        public const string MobileScene_LoadInfo = "load info_m";
+        public const string MobileScene_Office = "office_m";
+        public const string MobileScene_MySeat = "my seat_m";
+        public const string MobileScene_FileBox = "file box_m";
+        public const string MobileScene_Meeting = "meeting_m";
+        public const string MobileScene_Chat = "chat_m";
         public const string MobileScene_Dummy = "dummy_m";  // test 를 위한 임시 화면
     #endregion  // MobileScene FixedView Name 
     }

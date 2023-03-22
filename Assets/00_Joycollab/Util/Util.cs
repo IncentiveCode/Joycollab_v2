@@ -15,6 +15,8 @@ namespace Joycollab.v2
 {
 	public static class Util
 	{
+
+    #region Resize
 		/// <summary>
         /// Canvas scaler 의 비율을 구하는 함수.
         /// </summary>
@@ -78,6 +80,7 @@ namespace Joycollab.v2
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, w);
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, h);
         }
+    #endregion  // Resize
 
 
     #region Enum
@@ -102,5 +105,34 @@ namespace Joycollab.v2
             return (T)Enum.Parse(typeof(T), item);
         } 
     #endregion  // enum
+
+
+    #region gesture detect
+        /// <summary>
+        /// Quaternion 값을 Euler Angles 로 변경하는 함수.
+        /// </summary>
+        /// <param name="q">Quaternion</param>
+        /// <returns>Roll, Pitch, Yaw 값이 정리된 EulerAngles 변수</returns>
+        public static EulerAngles ToEulerAngle(Quaternion q) 
+        {
+            EulerAngles result = new EulerAngles();
+
+            // roll (x-axis rotation)
+            float sinr_cosp = 2 * (q.w * q.x + q.y * q.z);
+            float cosr_cosp = 1 - 2 * (q.x * q.x + q.y * q.y);
+            result.Roll = Mathf.Atan2(sinr_cosp, cosr_cosp);
+
+            // pitch (y-axis rotation)
+            float sinp = 2 * (q.w * q.y - q.z * q.x);
+            result.Pitch = Mathf.Asin(sinp);
+
+            // yaw (z-axis rotation)
+            float siny_cosp = 2 * (q.w * q.z + q.x * q.y);
+            float cosy_cosp = 1 - 2 * (q.y * q.y + q.z * q.z);
+            result.Yaw = Mathf.Atan2(siny_cosp, cosy_cosp);
+
+            return result;
+        }
+    #endregion // gesture detect
 	}
 }

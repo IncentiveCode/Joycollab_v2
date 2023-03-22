@@ -2,9 +2,9 @@
 /// Mobile Scene Manager class
 /// @author         : HJ Lee
 /// @last update    : 2023. 03. 21
-/// @version        : 1.0
+/// @version        : 0.1
 /// @update
-///     v1.0 (2023. 03. 21) : Joycollab 에서 사용하던 클래스 정리 및 통합
+///     v0.1 (2023. 03. 21) : Joycollab 에서 사용하던 클래스 정리 및 통합
 /// </summary>
 
 using System.Collections;
@@ -15,8 +15,14 @@ namespace Joycollab.v2
 {
     public class MobileManager : MonoBehaviour
     {
+        private const string TAG = "MobileManager";
+
         // singleton
         public static MobileManager singleton { get; private set; }
+
+        [Header("navigation")]
+        [SerializeField] private NaviTopM _naviTop;
+        [SerializeField] private NaviBottomM _naviBottom;
         
         // for UI stack
         private Dictionary<string, FixedView> dictViews;
@@ -39,10 +45,14 @@ namespace Joycollab.v2
         #if UNITY_ANDROID && !UNITY_EDITOR
             Rect safeArea = Screen.safeArea;
             bool hasNotch = safeArea.height != Screen.height;
+            /**
             if (hasNotch) 
             {
+             */
                 ApplicationChrome.statusBarColor = 0xfffeb336;
+            /**
             }
+             */
 
             // Android 의 경우 status bar 출력
             ApplicationChrome.statusBarState = ApplicationChrome.States.Visible;
@@ -51,6 +61,13 @@ namespace Joycollab.v2
 
 
             // init UI stack
+            dictViews = new Dictionary<string, FixedView>();
+            arrViews = GameObject.FindGameObjectsWithTag(S.MobileScene_ViewTag);
+            foreach (GameObject obj in arrViews) 
+            {
+                dictViews.Add(obj.name, obj.GetComponent<FixedView>());
+            }
+
             uiNavigation = new Stack();
             currentView = null;
 
@@ -60,7 +77,24 @@ namespace Joycollab.v2
     #endregion  // Unity functions
 
 
-    #region UI stack
+    #region UI stack, Navigation
+        public void ShowNavigation(bool on) 
+        {
+            _naviTop.ShowNavigation(on);
+            _naviBottom.ShowNavigation(on);
+        }
+
+        public void ShowBottomNavigation() 
+        {
+            _naviTop.ShowNavigation(false);
+            _naviBottom.ShowNavigation(true);
+        }
+
+        public void StartOnMySeat(bool on) 
+        {
+            _naviBottom.StartOnMySeat(on);
+        }
+
         public void Push(string viewName, string optionName="")
         {
             if (dictViews.ContainsKey(viewName)) 
@@ -80,7 +114,7 @@ namespace Joycollab.v2
             }
             else 
             {
-                Debug.Log("MobileViewManager | Push - 잘못된 UIView 이름 : "+ viewName);
+                Debug.Log($"{TAG} | Push - 잘못된 UIView 이름 : "+ viewName);
             }
         }
 
@@ -102,7 +136,7 @@ namespace Joycollab.v2
             }
             else 
             {
-                Debug.Log("MobileViewManager | Overlay - 잘못된 UIView 이름 : "+ viewName);
+                Debug.Log($"{TAG} | Overlay - 잘못된 UIView 이름 : "+ viewName);
             }
         }
 
@@ -184,6 +218,6 @@ namespace Joycollab.v2
         {
             return uiNavigation.Count;
         }
-    #endregion  // UI stack
+    #endregion  // UI stack, Navigation
     }
 }

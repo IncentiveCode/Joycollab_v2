@@ -145,6 +145,16 @@ var JsLib = {
 			}
 		}, 1000);
 	},
+
+	psSetTextUI : function(isOn) {
+		var instance = document.getElementById('unity-canvas');
+		if (isOn) {
+			instance.style.minWidth = '1800px';
+		}
+		else {
+			instance.style.minWidth = '';
+		}
+	},
 }
 
 mergeInto(LibraryManager.library, JsLib);

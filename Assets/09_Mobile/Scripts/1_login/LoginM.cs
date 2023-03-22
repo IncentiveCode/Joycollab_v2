@@ -14,7 +14,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
-using TMPro;
 
 namespace Joycollab.v2
 {
@@ -33,9 +32,7 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnJoin;
         [SerializeField] private Button _btnResetPw;
         [SerializeField] private Button _btnVersion;
-
-        // local variable
-        private bool oneTimeCheck;
+        [SerializeField] private Button _btnTest;
 
 
     #region Unity functions
@@ -43,11 +40,6 @@ namespace Joycollab.v2
         {
             Init();
             Reset();
-        }
-
-        private void Update() 
-        {
-
         }
 
         private void OnDestroy() 
@@ -69,10 +61,7 @@ namespace Joycollab.v2
             _inputId.onValueChanged.AddListener((value) => {
                 _btnClearId.gameObject.SetActive(! string.IsNullOrEmpty(value));
             });
-            _inputId.onKeyboardDone.AddListener(() => {
-                Debug.Log("hello 1");
-                _inputPw.Select();
-            });
+            _inputId.onKeyboardDone.AddListener(() => _inputPw.Select());
             _btnClearId.onClick.AddListener(() => {
                 _inputId.text = string.Empty;
                 _inputId.Select();
@@ -83,9 +72,7 @@ namespace Joycollab.v2
             _inputPw.onValueChanged.AddListener((value) => {
                 _btnClearPw.gameObject.SetActive(! string.IsNullOrEmpty(value));
             });
-            _inputPw.onKeyboardDone.AddListener(() => {
-                Debug.Log("hello 2?");
-            });
+            _inputPw.onKeyboardDone.AddListener(() => Debug.Log("pw submit"));
             _btnClearPw.onClick.AddListener(() => {
                 _inputPw.text = string.Empty;
                 _inputPw.Select();
@@ -94,11 +81,14 @@ namespace Joycollab.v2
 
             // set button listener
             _btnLogin.onClick.AddListener(() => Login());
-            _btnJoin.onClick.AddListener(() => {
-                Application.OpenURL(URL.PATH);
-            });
+            _btnJoin.onClick.AddListener(() => Application.OpenURL(URL.PATH));
             _btnResetPw.onClick.AddListener(() => MobileManager.singleton.Push(S.MobileScene_Reset));
             _btnVersion.onClick.AddListener(() => MobileManager.singleton.Push(S.MobileScene_PatchNote));
+
+            _btnTest.onClick.AddListener(() => {
+                LoginAsync("hjlee@pitchsolution.co.kr", "123123123").Forget();
+            });
+            _btnTest.gameObject.SetActive(URL.DEV);
 
 
             // add event handling
@@ -152,6 +142,22 @@ namespace Joycollab.v2
             if (string.IsNullOrEmpty(res.message)) 
             {
                 Debug.Log($"로그인 성공. token : {res.data.token_type} {res.data.access_token}");
+                Storage.accessToken = res.data.access_token;
+                Storage.tokenType = res.data.token_type;
+                Storage.refreshToken = res.data.refresh_token;
+                Storage.tokenExpire = res.data.expires_in;
+                Storage.tokenScope = res.data.scope;
+
+                // next
+                _inputId.interactable = _inputPw.interactable = false;
+
+                // TODO. 리스트 팝업 수정
+
+                // test
+                Storage.workspaceSeq = 7;
+                Storage.memberSeq = 20;
+                Storage.domainName = "3rd_test";
+                MobileManager.singleton.Push(S.MobileScene_LoadInfo);
             }
             else 
             {
@@ -164,6 +170,10 @@ namespace Joycollab.v2
     #region event handling
         private async UniTask<int> Refresh() 
         {
+            // view control
+            MobileManager.singleton.ShowNavigation(false);
+
+            // refresh
             _inputPw.text = string.Empty;
             _inputPw.interactable = true;
             _btnClearPw.gameObject.SetActive(false);
@@ -174,7 +184,6 @@ namespace Joycollab.v2
             _btnClearId.gameObject.SetActive(! string.IsNullOrEmpty(id));
 
             // MobileManager.singleton.StopLoading();
-            oneTimeCheck = true;
 
             await UniTask.Yield();
             return 0;

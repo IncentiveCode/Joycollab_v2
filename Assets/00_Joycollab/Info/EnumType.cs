@@ -55,9 +55,7 @@ namespace Joycollab.v2
     /// </summary>
     public enum PopupType 
     {
-        None = 0,
-        Alert, Confirm, Prompt, 
-        ConfirmWithOption
+        Alert, Confirm, Prompt, ConfirmWithOption
     }
 
     public enum PopupButtonType 
@@ -68,7 +66,7 @@ namespace Joycollab.v2
 
     public enum PopupStyle 
     {
-        Office, World
+        Office, World, Mobile
     }
     // -----
 
@@ -108,4 +106,21 @@ namespace Joycollab.v2
     {
         Static, Update
     }
+    
+    
+    /// <summary>
+    /// Gesture Detection 을 위한 항목 구분
+    /// </summary>
+    public enum eGestureAct 
+    {
+    	ScaleDown, ScaleUp, UpDown, LeftRight, TurnAround	
+    }
+    
+    public enum eGestureMotion
+    {
+    	LeftRight, UpDown,
+    	RotateCCW, RotateCW,
+    	Other, LENGTH	
+    }
+    // -----
 }

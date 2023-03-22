@@ -16,6 +16,7 @@ namespace Joycollab.v2
     public class URL
     {
     #region Constants
+    
         // ---------- ---------- ----------
         // Develop mode
         #if DEV 
@@ -48,25 +49,30 @@ namespace Joycollab.v2
         public const string CONTENT_TYPE = "Content-Type";
         public const string CONTENT_JSON = "application/json";
         public const string AUTHORIZATION = "Authorization";
+
     #endregion  // Constants
 
 
     #region Server address
+
         public const string PATH = DEV ? 
             "https://dev.jcollab.com" : 
             "https://jcollab.com";
 
         public const string SERVER_PATH = PATH +"/serv";
+
     #endregion  // Server address
 
 
     #region Tray App
+
         public const string JCINFO_OPEN = "jcinfo://open?id=onlytree&url={0}&seq={1}&token={2}&time={3}";
         public const string JCINFO_CLOSE = "jcinfo://close";
         public const string JCINFO_PATH_WIN = PATH + "/bundles/tray/jcinfoSetup.msi";
         public const string JCINFO_PATH_MAC = PATH + "/bundles/tray/jcinfo.pkg";
         public const string JCINFO_DOWNLOAD_PATH_WIN = "C:/Users/{0}/Downloads/jcinfoSetup.msi";
         public const string JCINFO_DOWNLOAD_PATH_MAC = "/Users/{0}/Downloads/jcinfo.pkg";
+
     #endregion  // Tray App
 
 
@@ -140,9 +146,23 @@ namespace Joycollab.v2
         /// <value>{0} : workspace seq</value>
         public const string WORKSPACE_INFO = SERVER_PATH +"/api/workspace/{0}";
 
+        /// <summary>
+        /// desc : 특정 workspace 의 설정 정보 확인
+        /// method : get, patch
+        /// </summary>
+        /// <value>{0} : workspace seq</value>
+        public const string WORKSPACE_LOBBY_INFO = SERVER_PATH +"/api/workspace/{0}/setting";
+
 
         // ---------- ---------- ----------
         // 03. Member API
+
+        /// <summary>
+        /// desc : 특정 사용자 정보 확인
+        /// method : get, put, delete
+        /// </summary>
+        /// <value>{0} : member seq</value>
+        public const string MEMBER_INFO = SERVER_PATH +"/api/member/{0}";
 
         /// <summary>
         /// desc : 특정 workspace 에 가입
@@ -150,6 +170,17 @@ namespace Joycollab.v2
         /// </summary>
         /// <value>{0} : workspace seq</value>
         public const string JOIN_MEMBER = SERVER_PATH +"/api/member/{0}"; 
+
+
+        // ---------- ---------- ----------
+        // 06. Alarm API
+
+        /// <summary>
+        /// desc : 알림 갯수 정보 확인
+        /// method : get
+        /// </summary>
+        /// <value></value>
+        public const string ALARM_COUNT = SERVER_PATH +"/api/alarm/cnt/{0}";
 
     #endregion
     }

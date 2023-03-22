@@ -5,11 +5,12 @@ for Unity WebGL
 ### description :
 
 - @author : 이효재
-- @last update : 2023. 02. 28
-- @version : 1.1
+- @last update : 2023. 03. 17
+- @version : 1.2
 - @update history
-    * [2023. 02. 22] v1.0 - Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
-    * [2023. 02. 28] v1.1 - unity 2021.3.13f1 으로 업그레이드 후, windows 에서 build 안되는 문제 해결. (한글 주석이 원인으로 보임)
+    * v1.0 (2023. 02. 22) : Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
+    * v1.1 (2023. 02. 28) : unity 2021.3.13f1 으로 업그레이드 후, windows 에서 build 안되는 문제 해결. (한글 주석이 원인으로 보임)
+    * v1.2 (2023. 03. 17) : Graphic UI 와 Text UI 전환시 unity-canvas 에 min-widht 값을 추가하는 함수 추가. 추후 고도화 예정.
 
 ### function list :
 
@@ -33,6 +34,10 @@ public static extern void psCheckSystem(string gameObjectName, string methodName
 
 // Tray app 같은 OS 에 설치된 프로그램을 실행하기 위한 함수 - 프로그램 설치 유무 판단 후 method 를 callback
 public static extern void psRunScheme(string gameObjectName, string url, string methodName);
+
+
+// unity-canvas 에 임시로 style 부여
+public static extern void psSetTextUI(bool isOn);
 ```
 
 ### 추가 예정 항목들
