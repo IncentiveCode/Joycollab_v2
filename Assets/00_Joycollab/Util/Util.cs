@@ -113,6 +113,8 @@ namespace Joycollab.v2
         /// </summary>
         /// <param name="q">Quaternion</param>
         /// <returns>Roll, Pitch, Yaw 값이 정리된 EulerAngles 변수</returns>
+
+        /**
         public static EulerAngles ToEulerAngle(Quaternion q) 
         {
             EulerAngles result = new EulerAngles();
@@ -133,6 +135,7 @@ namespace Joycollab.v2
 
             return result;
         }
+         */
     #endregion // gesture detect
 	}
 }

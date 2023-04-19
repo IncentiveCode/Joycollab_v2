@@ -1,10 +1,12 @@
 /// <summary>
 /// Network 통신 라이브러리  
 /// @author         : HJ Lee
-/// @last update    : 2023. 02. 20
-/// @version        : 1.0
+/// @last update    : 2023. 04. 03
+/// @version        : 0.3
 /// @update
-///     v1.0 (2023. 02. 20) : UniTask 사용해서 최초 생성.
+///     v0.1 (2023. 02. 20) : UniTask 사용해서 최초 생성.
+///     v0.2 (2023. 03. 31) : int 형태로 리턴되는 결과를 처리하기 위해, PsResponse 안에 int 형 data 추가.
+///     v0.3 (2023. 04. 03) : Token refresh logic 추가. API 호출시 항상 체크 > 만료시에만 체크.
 /// </summary>
 
 using System;
@@ -21,14 +23,16 @@ namespace Joycollab.v2
         public long code { get; }
         public string message { get; }
         public T data { get; }
-        public string optionData { get; }
+        public string stringData { get; }
+        public int intData { get; }
 
         public PsResponse(long code, T data) 
         {
             this.code = code; 
             this.message = string.Empty;
             this.data = data;
-            this.optionData = string.Empty;
+            this.stringData = string.Empty;
+            this.intData = -1;
         }
 
         public PsResponse(long code, string message) 
@@ -36,15 +40,26 @@ namespace Joycollab.v2
             this.code = code;
             this.message = message;
             this.data = default(T);
-            this.optionData = string.Empty;
+            this.stringData = string.Empty;
+            this.intData = -1;
         }
 
-        public PsResponse(long code, string message, string optionData) 
+        public PsResponse(long code, string message, string strData) 
         {
             this.code = code;
             this.message = message;
             this.data = default(T);
-            this.optionData = optionData;
+            this.stringData = strData;
+            this.intData = -1;
+        }
+
+        public PsResponse(long code, string message, int intData) 
+        {
+            this.code = code;
+            this.message = message;
+            this.data = default(T);
+            this.stringData = string.Empty;
+            this.intData = intData;
         }
     }
 
@@ -72,8 +87,8 @@ namespace Joycollab.v2
         // common strings in header
         protected const string ACCEPT_LANGUAGE = "Accept-Language";
         protected const string CONTENT_TYPE = "Content-Type";
-        protected const string CONTENT_JSON = "application/json";
-        protected const string AUTHORIZATION = "Authorization";
+        public const string CONTENT_JSON = "application/json";
+        public const string AUTHORIZATION = "Authorization";
 
         // common strings in Request
         public const string BASIC_TOKEN = "Basic YWRtOmdhbnNpbmk=";
@@ -118,49 +133,72 @@ namespace Joycollab.v2
                     {
                         result = msg;
                     }
-                    // Debug.LogError("  error : "+ badRequest.Error);
-                    // Debug.LogError("  message : "+ badRequest.Message);
                     break;
 
                 case HTTP_STATUS_CODE_UNAUTHORIZED :
                     SimpleError simpleError = JsonUtility.FromJson<SimpleError>(data);
-                    // Debug.LogError("  error : "+ simpleError.error); 
-                    // Debug.LogError("  desc : "+ simpleError.error_description);
                     result = simpleError.error_description;
                     break;
 
                 case HTTP_STATUS_CODE_FORBIDDEN : 
-                    // Debug.LogError("  error : "+ data);
                     result = data;
                     break;
 
                 case HTTP_STATUS_CODE_NOT_FOUND :  
-                    // Debug.LogError("  Not Found");
                     result = "Not Found";
                     break;
 
                 case HTTP_STATUS_CODE_NOT_ACCEPTABLE :
-                    // Debug.LogError("  Not Acceptable");
                     result = data;
                     break;
 
                 case HTTP_STATUS_CODE_CONFLICT :
-                    // Debug.LogError("  Conflict");
                     result = data;
                     break;
                 
                 case HTTP_STATUS_CODE_GONE :
-                    // Debug.LogError("  Gone");
                     result = data;
                     break;
 
                 case HTTP_STATUS_CODE_SERVER_ERROR :  
-                    // Debug.LogError("  Internal Server Error - "+ data);
                     result = "Internal Server Error";
                     break;
             }
 
             return result;
+        }
+
+        private static async UniTask<string> RefreshToken() 
+        {
+            // 1. network check
+            await CheckConnection();
+
+            // 2. timeout setting
+            var cts = new CancellationTokenSource();
+            cts.CancelAfterSlim(TimeSpan.FromSeconds(TIMEOUT_DEFAULT));
+
+            WWWForm form = new WWWForm();
+            form.AddField(GRANT_TYPE, GRANT_TYPE_REFRESH);
+            form.AddField(PASSWORD, string.Empty);
+            form.AddField(REFRESH_TOKEN, R.singleton.refreshToken);
+            form.AddField(SCOPE, R.singleton.tokenScope);
+            form.AddField(USERNAME, R.singleton.ID);
+
+            PsResponse<ResToken> res = await NetworkTask.PostAsync<ResToken>(URL.REQUEST_TOKEN, form, string.Empty, 
+                R.singleton.tokenScope.Equals(SCOPE_ADM) ? NetworkTask.BASIC_TOKEN : NetworkTask.MOBILE_BASIC_TOKEN);
+
+            if (string.IsNullOrEmpty(res.message)) 
+            {
+                Debug.Log("토큰 재발행 성공.");
+                R.singleton.TokenInfo = res.data;
+
+                return string.Empty;
+            }
+            else 
+            {
+                Debug.LogError("토큰 재발행 실패.");
+                return res.message;
+            }
         }
     #endregion  // common 
 
@@ -169,7 +207,7 @@ namespace Joycollab.v2
         public static async UniTask<PsResponse<T>> PostAsync<T>(string url, WWWForm body, string contentType="", string token="") 
         {
             // 0. test
-            // await UniTask.Delay(TimeSpan.FromSeconds(2));
+            Debug.Log("Request url : "+ url);
 
             // 1. network check
             await CheckConnection();
@@ -186,7 +224,7 @@ namespace Joycollab.v2
 
             // 4. set header
             // req.SetRequestHeader(ACCEPT_LANGUAGE, LanguageManager.Instance.Region);
-            req.SetRequestHeader(ACCEPT_LANGUAGE, "ko");
+            req.SetRequestHeader(ACCEPT_LANGUAGE, S.REGION_KOREAN);
             if (!string.IsNullOrEmpty(contentType))
             {
                 req.SetRequestHeader(CONTENT_TYPE, contentType);
@@ -242,14 +280,25 @@ namespace Joycollab.v2
                         - Result : {req.downloadHandler.text}
                         - Exception : {e.Message}");
 
-                long code = req.responseCode;
-                string message = HandleError(req.responseCode, req.downloadHandler.text);
-                if (message.Length == 0)
+                if (req.responseCode == HTTP_STATUS_CODE_UNAUTHORIZED && ! string.IsNullOrEmpty(R.singleton.refreshToken)) 
                 {
-                    return new PsResponse<T>(code, string.Empty);
+                    string t = await RefreshToken();
+                    if (string.IsNullOrEmpty(t))
+                    {
+                        return await PostAsync<T>(url, body, contentType, R.singleton.token);
+                    }
                 }
+                else 
+                {
+                    long code = req.responseCode;
+                    string message = HandleError(req.responseCode, req.downloadHandler.text);
+                    if (message.Length == 0)
+                    {
+                        return new PsResponse<T>(code, e.Message);
+                    }
 
-                return new PsResponse<T>(code, message);
+                    return new PsResponse<T>(code, message);
+                }
             }
 
             return new PsResponse<T>(HTTP_EXCEPTION, "알 수 없는 오류");
@@ -260,6 +309,9 @@ namespace Joycollab.v2
     #region File, Image and ETC
         public static async UniTask<Texture2D> GetTextureAsync(string url) 
         {
+            // 0. test
+            Debug.Log("Request url : "+ url);
+
             // 1. network check
             await CheckConnection();
 
@@ -298,7 +350,18 @@ namespace Joycollab.v2
                         - Response Code : {req.responseCode}
                         - Result : {e.Message}");
 
-                return null;
+                if (req.responseCode == HTTP_STATUS_CODE_UNAUTHORIZED && ! string.IsNullOrEmpty(R.singleton.refreshToken)) 
+                {
+                    string t = await RefreshToken();
+                    if (string.IsNullOrEmpty(t)) 
+                    {
+                        return await GetTextureAsync(url);
+                    }
+                }
+                else 
+                {
+                    return null;
+                }
             }
 
             return null;
@@ -307,16 +370,17 @@ namespace Joycollab.v2
 
 
     #region Common Request
-        public static async UniTask<PsResponse<T>> RequestAsync<T>(string url, MethodType type, string body="", string token="") 
+        public static async UniTask<PsResponse<T>> RequestAsync<T>(string url, eMethodType type, string body="", string token="") 
         {
             byte[] bodyRaw = Encoding.UTF8.GetBytes(body);
             return await RequestAsync<T>(url, type, bodyRaw, token);
         }
     
-        private static async UniTask<PsResponse<T>> RequestAsync<T>(string url, MethodType type, byte[] bodyRaw, string token="") 
+        private static async UniTask<PsResponse<T>> RequestAsync<T>(string url, eMethodType type, byte[] bodyRaw, string token="") 
         {
             // 0. test
             // await UniTask.Delay(TimeSpan.FromSeconds(2f));
+            Debug.Log("Request url : "+ url);
 
             // 1. network check
             await CheckConnection();
@@ -333,7 +397,7 @@ namespace Joycollab.v2
 
             // 4. set header
             // req.SetRequestHeader(ACCEPT_LANGUAGE, LanguageManager.Instance.Region);
-            req.SetRequestHeader(ACCEPT_LANGUAGE, "ko");
+            req.SetRequestHeader(ACCEPT_LANGUAGE, S.REGION_KOREAN);
             req.SetRequestHeader(CONTENT_TYPE, CONTENT_JSON);
             if (!string.IsNullOrEmpty(token)) 
             {
@@ -392,20 +456,30 @@ namespace Joycollab.v2
                         - Result : {req.downloadHandler.text}
                         - Exception : {e.Message}");
 
-                long code = req.responseCode;
-                string message = HandleError(req.responseCode, req.downloadHandler.text);
-                if (message.Length == 0)
+                if (req.responseCode == HTTP_STATUS_CODE_UNAUTHORIZED && ! string.IsNullOrEmpty(R.singleton.refreshToken)) 
                 {
-                    return new PsResponse<T>(code, string.Empty);
+                    string t = await RefreshToken();
+                    if (string.IsNullOrEmpty(t)) 
+                    {
+                        return await RequestAsync<T>(url, type, bodyRaw, R.singleton.token);
+                    }
                 }
+                else 
+                {
+                    long code = req.responseCode;
+                    string message = HandleError(req.responseCode, req.downloadHandler.text);
+                    if (message.Length == 0)
+                    {
+                        return new PsResponse<T>(code, e.Message);
+                    }
 
-                return new PsResponse<T>(code, message);
+                    return new PsResponse<T>(code, message);
+                }
             }
 
             return new PsResponse<T>(HTTP_EXCEPTION, "알 수 없는 오류");
         }
 
-        // TODO. 토큰 갱신 함수 추가 예정
     #endregion  // Common Request
     }
 }

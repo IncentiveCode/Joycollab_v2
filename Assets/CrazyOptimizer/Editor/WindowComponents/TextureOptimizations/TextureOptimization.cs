@@ -187,7 +187,7 @@ namespace CrazyGames.WindowComponents.TextureOptimizations
                 }
                 catch (Exception e)
                 {
-                    Debug.LogWarning("Failed to analyze texture at path: " + texturePath);
+                    Debug.LogWarning("Failed to analyze texture at path: " + texturePath +", exception : "+ e.Message);
                 }
             }
 

@@ -15,11 +15,12 @@ namespace Joycollab.v2
     public enum eScenes
     {
         Login = 0,
-        Main, TextUI,
-        ArragneSpace, Management,
+        GraphicUI, TextUI,
+        ArrangeSpace, Management,
         World, Square,
         Loading, 
-        Test
+        Test,
+        Loader
     }
 
 
@@ -44,29 +45,34 @@ namespace Joycollab.v2
     /// <summary>
     /// NetworkTask 전송시 선택 가능한 요청 형태 구분
     /// </summary>
-    public enum MethodType 
+    public enum eMethodType 
     {
         POST, PUT, GET, DELETE, PATCH, HEAD
     }
 
 
     /// <summary>
-    /// Popup 형태 및 속성
+    /// Popup, Menu 형태 및 속성
     /// </summary>
-    public enum PopupType 
+    public enum ePopupType 
     {
-        Alert, Confirm, Prompt, ConfirmWithOption
+        Alert, Prompt, Confirm, ConfirmWithOption,
     }
-
-    public enum PopupButtonType 
+    public enum ePopupButtonType 
     {
-        Normal = 0,
-        Success, Info, Warning, Error
-    }
+        Normal = 0, Warning,
+        worldNormal, worldWarning,
 
-    public enum PopupStyle 
+        // 아직 사용 하지 않는 항목들.
+        Success, Info, Error
+    }
+    public enum ePopupStyle 
     {
         Office, World, Mobile
+    } 
+    public enum eMenuTitle 
+    {
+        Detail = 0, Enter, Test
     }
     // -----
 
@@ -80,7 +86,7 @@ namespace Joycollab.v2
         Building, Elevator, Information, WorldAvatar,
         
         // Joycollab 과 World 에서 공통으로 사용할 항목들.
-        Board, Notice, Seminar, Display,
+        Board, Notice, Seminar, Display, Meeting,
 
         // 추후 object 는 상세하게 쪼개질 가능성 있음.
         Object,
@@ -92,35 +98,84 @@ namespace Joycollab.v2
         Nothing
     }
 
-    public enum eMenuTitle 
-    {
-        Detail = 0, Enter, Test
-    }
-    // -----
-
 
     /// <summary>
-    /// Sprite Sorting 을 위한 항목 구분
+    /// Button object decoration 구분
     /// </summary>
-    public enum eSortingType 
+    public enum eDecoratableType 
     {
-        Static, Update
+        None = 0,
+        SwapImage,              // 이미지만 변경할 때.
+        SwapImageWithTooltip,   // 이미지 변경 + 툴팁 출력시
+        ChangeTextStyle,        // 텍스트만 변경할 때.
+        Both,                   // 두 가지 다 변경할 때.
+        TooltipOnly,            // 툴팁만.
     }
-    
-    
+
+
     /// <summary>
-    /// Gesture Detection 을 위한 항목 구분
+    /// tooltip anchor
+    /// </summary>
+	public enum eTooltipAnchor 
+	{
+		TopCenter,
+        MiddleLeft,
+        MiddleRight,
+        BottomCenter,
+        Center
+	}
+
+
+    /// <summary>
+    /// Mobile Gesture 구분
     /// </summary>
     public enum eGestureAct 
     {
-    	ScaleDown, ScaleUp, UpDown, LeftRight, TurnAround	
+        ScaleDown, ScaleUp, UpDown, LeftRight, TurnAround
     }
-    
-    public enum eGestureMotion
+    public enum eGestureMotion 
     {
-    	LeftRight, UpDown,
-    	RotateCCW, RotateCW,
-    	Other, LENGTH	
+        LeftRight, UpDown, 
+        RotateCCW, RotateCW,
+        Other, LENGTH
     }
     // -----
+
+
+    /// <summary>
+    /// 일정 관련 정보를 볼 때, 일별/주별/월별 선택 구분
+    /// </summary>
+    public enum eViewOption 
+    {
+        Daily, Weekly, Monthly
+    }
+
+
+    /// <summary>
+    /// 공유 정보를 볼 때, 전체/팀/회사/개인 선택 구분
+    /// </summary>
+    public enum eShareFilter
+    {
+        All, Team, Office, Individual
+    }
+
+
+    /// <summary>
+    /// 저장소 알림을 받기 위한 key 구분
+    /// </summary>
+    public enum eStorageKey 
+    {
+        UserInfo, Alarm,
+
+        Test
+    }
+
+
+    /// <summary>
+    /// 업무 구분
+    /// </summary>
+    public enum eWorkType
+    {
+        ToDo, Objective, KeyResult
+    }
 }

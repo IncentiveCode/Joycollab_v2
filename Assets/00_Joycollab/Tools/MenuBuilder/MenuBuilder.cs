@@ -24,7 +24,8 @@ namespace Joycollab.v2
         private void Awake() 
         {
             Instance = this;
-            canvas = GameObject.Find(S.POPUP_CANVAS).GetComponent<Transform>();
+            // canvas = GameObject.Find(S.POPUP_CANVAS).GetComponent<Transform>();
+            canvas = GameObject.Find("Popup Canvas").GetComponent<Transform>();
         }
     #endregion  // Unity function
 
