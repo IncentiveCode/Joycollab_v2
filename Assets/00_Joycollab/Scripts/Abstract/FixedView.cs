@@ -15,6 +15,7 @@ namespace Joycollab.v2
 {
     public abstract class FixedView : MonoBehaviour
     {
+        protected int viewID;
         protected eVisibleState visibleState;
         protected CanvasGroup canvasGroup;
         protected Canvas canvas;
@@ -22,6 +23,7 @@ namespace Joycollab.v2
 
         protected virtual void Init() 
         {
+            viewID = 0;
             visibleState = eVisibleState.Disappeared;
 
             if (! TryGetComponent<CanvasGroup>(out canvasGroup)) 
@@ -75,7 +77,16 @@ namespace Joycollab.v2
             await UniTask.Yield();
         }
 
-        public async virtual UniTaskVoid Show<T>(T opt=default(T)) 
+        public async virtual UniTaskVoid Show(int opt) 
+        {
+            visibleState = eVisibleState.Appearing;
+
+            // TODO. add 'Mobile Progress'
+
+            await UniTask.Yield();
+        }
+
+        public async virtual UniTaskVoid Show(string opt="") 
         {
             visibleState = eVisibleState.Appearing;
 
