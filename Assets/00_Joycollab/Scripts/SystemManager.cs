@@ -6,19 +6,18 @@
 /// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 04. 07) : 최초 작성.
-///     v0.2 (2023. 04. 19) : singleton pattern 수정, LocaleManager 추가.
+///     v0.2 (2023. 04. 19) : singleton pattern 수정
 /// </summary>
 
+using System.Collections;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 
 namespace Joycollab.v2
 {
     public class SystemManager : MonoBehaviour
     {
         public static SystemManager singleton { get; private set; }
-
-        [Header("Manager classes")]
-        [SerializeField] private LocaleManager localeManager; 
 
 
     #region Unity functions
@@ -47,6 +46,7 @@ namespace Joycollab.v2
 
     #endregion  // Initialize
 
+
     #region First Act (공지사항 확인 후 URL parsing)
 
     #endregion  // First Act (공지사항 확인 후 URL parsing)
@@ -55,5 +55,30 @@ namespace Joycollab.v2
     #region Popup
 
     #endregion  // Popup
+
+
+    #region Localization
+
+        public string Region { get; private set; }
+        private bool isChanging = false;
+
+        private void ChangeLocale(int locale) 
+        {
+            if (isChanging) return;
+
+            StartCoroutine(ChangeLocaleCoroutine(locale));
+        }
+
+        private IEnumerator ChangeLocaleCoroutine(int locale) 
+        {
+            isChanging = true;
+
+            yield return LocalizationSettings.InitializationOperation;
+            LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[locale];
+
+            isChanging = false;
+        }
+
+    #endregion  // Localization
     }
 }
