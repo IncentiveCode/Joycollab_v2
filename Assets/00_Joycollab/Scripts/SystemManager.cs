@@ -25,6 +25,19 @@ namespace Joycollab.v2
         {
             InitSingleton();     
         }
+
+        private void Start() 
+        {
+        #if UNITY_WEBGL && !UNITY_EDITOR 
+
+            Application.targetFrameRate = -1;
+
+        #else
+
+            Application.targetFrameRate = 30;
+
+        #endif
+        }
     #endregion  // Unity functions
 
 
@@ -57,28 +70,11 @@ namespace Joycollab.v2
     #endregion  // Popup
 
 
-    #region Localization
-
-        public string Region { get; private set; }
-        private bool isChanging = false;
-
-        private void ChangeLocale(int locale) 
+    #region Temp
+        public void Exit() 
         {
-            if (isChanging) return;
-
-            StartCoroutine(ChangeLocaleCoroutine(locale));
+            SceneLoader.Load(eScenes.Login);
         }
-
-        private IEnumerator ChangeLocaleCoroutine(int locale) 
-        {
-            isChanging = true;
-
-            yield return LocalizationSettings.InitializationOperation;
-            LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[locale];
-
-            isChanging = false;
-        }
-
-    #endregion  // Localization
+    #endregion  // Temp
     }
 }

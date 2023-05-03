@@ -15,12 +15,12 @@ namespace Joycollab.v2
     public enum eScenes
     {
         Login = 0,
-        GraphicUI, TextUI,
-        ArrangeSpace, Management,
-        World, Square,
+        // GraphicUI, TextUI,
+        // ArrangeSpace, Management,
+        //World, Square,
         Loading, 
-        Test,
-        Loader
+        Sample,
+        // LoadInfo
     }
 
 

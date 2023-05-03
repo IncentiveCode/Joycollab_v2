@@ -1,11 +1,12 @@
 /// <summary>
 /// NetworkTask 를 위한 API URL 정리 문서 
 /// @author         : HJ Lee
-/// @last update    : 2023. 03. 17
-/// @version        : 0.1
+/// @last update    : 2023. 05. 03
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리. (정리 중)
-///     v0.2 (2023. 03. 20) : Tray app 관련 URL 추가. (아직 정리 중)
+///     v0.2 (2023. 03. 20) : Tray app 관련 URL 추가. (정리 중)
+///     v0.3 (2023. 05. 03) : Index, World Index 추가. (정리 중)
 /// </summary>
 
 #define DEV // Dev Server
@@ -60,6 +61,14 @@ namespace Joycollab.v2
             "https://jcollab.com";
 
         public const string SERVER_PATH = PATH +"/serv";
+
+        public const string XMPP_SERVER = DEV ?
+            "dev.jcollab.com" :
+            "chat.jcollab.com";
+
+        public const string INDEX = PATH +"/workspace/";
+        public const string SUB_INDEX = PATH +"/{0}/workspace/";
+        public const string WORLD_INDEX = PATH +"/world/";
 
     #endregion  // Server address
 

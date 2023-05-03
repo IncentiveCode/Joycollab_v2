@@ -38,6 +38,7 @@ namespace Joycollab.v2
 
 
     #region Common functions
+    
         private void Awake() 
         {
             list = new List<Tuple<iRepositoryObserver, eStorageKey>>();
@@ -65,10 +66,12 @@ namespace Joycollab.v2
             ClearWorkspaceInfo();
             // ClearAlarmInfo();
         }
+
     #endregion  // Common functions
 
 
     #region Storage Controller functions - implementations
+
         public void RegisterObserver(iRepositoryObserver observer, eStorageKey key)
         {
             bool exist = isExist(observer, key);
@@ -129,10 +132,12 @@ namespace Joycollab.v2
                     break;
             }
         }
+
     #endregion  // ModuleController functions - implementations
 
 
     #region Language
+
         private string _region;
 
         public string Region 
@@ -167,10 +172,12 @@ namespace Joycollab.v2
             // LocalizationManager.Language = S.LANGUAGE_ENGLISH;
             _region = S.REGION_ENGLISH;
         }
+
     #endregion  // Language
 
 
     #region Token & important information
+
         private ResToken _tokenInfo = null;
         private string _id;
         private string _domainName;
@@ -232,10 +239,12 @@ namespace Joycollab.v2
             _id = _domainName = _uiType = string.Empty;
             _workspaceSeq = _memberSeq = 0;
         }
+
     #endregion   
 
 
     #region Member Info 
+
         private ResMemberInfo _memberInfo = null;
 
         public ResMemberInfo MemberInfo {
@@ -343,10 +352,12 @@ namespace Joycollab.v2
         {
             _memberInfo = null;
         }
+
     #endregion  // Member Info
 
 
     #region Workspace Info
+
         private SimpleWorkspace _simpleWorkspaceInfo = null;
         private LobbyInfo _lobbyInfo = null;
 
@@ -364,10 +375,12 @@ namespace Joycollab.v2
         {
             _simpleWorkspaceInfo = null;
         }
+
     #endregion  // Workspace Info 
 
 
     #region Alarm Info 
+
     /**
         private List<ResAlarmInfo> _alarmList;
         private int _alarmCount;
@@ -388,6 +401,7 @@ namespace Joycollab.v2
             _alarmCount = -1;
         }
      */
+
     #endregion  // Alarm Info
     }
 }

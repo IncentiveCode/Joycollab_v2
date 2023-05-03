@@ -19,6 +19,7 @@ namespace Joycollab.v2
     internal class JsLibPlugin
     {
 #if UNITY_WEBGL && !UNITY_EDITOR
+
     #region cookie
         [DllImport("__Internal")]
         public static extern string psGetCookie(string name);
@@ -53,6 +54,7 @@ namespace Joycollab.v2
         [DllImport("__Internal")] 
         public static extern void psSetTextUI(bool isOn);
     #endregion  // change style
+
 #else
 
     #region cookie

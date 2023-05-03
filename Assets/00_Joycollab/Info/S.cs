@@ -28,6 +28,13 @@ namespace Joycollab.v2
     #endregion  // Scene name
 
 
+    #region Canvas name
+
+        public const string Canvas_Popup = "Popup Canvas";
+
+    #endregion  // Canvas name
+
+
     #region LoginScene FixedView Name 
 
         // workspace login -> 추후 변경 예정

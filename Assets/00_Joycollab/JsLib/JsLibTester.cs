@@ -32,7 +32,9 @@ namespace Joycollab.v2
         // local variables
         private string objectName;
 
+
     #region Unity functions
+
         private void Awake()
         {
             // set button listener
@@ -64,9 +66,12 @@ namespace Joycollab.v2
             WebGLWindow.OnFocusEvent -= OnFocus;
             WebGLWindow.OnBlurEvent -= OnBlur;
         }
+
     #endregion
 
+
     #region JsLib Callback functions
+
         public void PostCheckcBrowser(string result) 
         {
             var arr = result.Split('|');
@@ -77,9 +82,12 @@ namespace Joycollab.v2
         {
             JsLib.Alert($"System check result : {result}");
         }
+
     #endregion
 
+
     #region focus Callback functions
+
         private void OnFocus() 
         {
             JsLib.Log("on focus");
@@ -89,6 +97,7 @@ namespace Joycollab.v2
         {
             JsLib.Log("on blur");
         }
+
     #endregion
     }
 }
