@@ -25,6 +25,17 @@ namespace Joycollab.v2
 
 
     /// <summary>
+    /// Joycollab 에서 사용하는 View Tag 목록 정리
+    /// </summary>
+    public enum eViewType 
+    {
+        Login,
+        TextUI,
+        Mobile,
+    }
+
+
+    /// <summary>
     /// Image 표현 방식 구분 (UGUI 의 Image / SpriteRenderer) 
     /// </summary>
     public enum eRendererType 

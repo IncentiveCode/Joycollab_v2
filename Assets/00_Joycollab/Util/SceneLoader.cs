@@ -2,9 +2,9 @@
 /// Scene 전환 관리자
 /// @author         : HJ Lee
 /// @last update    : 2023. 02. 22
-/// @version        : 1.0
+/// @version        : 0.1
 /// @update
-///     [2023. 02. 22] v1.0 - Joycollab 에서 사용하던 클래스 정리.
+///     v0.1 (2023. 02. 22) : Joycollab 에서 사용하던 클래스 정리.
 /// </summary>
 
 using UnityEngine;
@@ -34,11 +34,9 @@ namespace Joycollab.v2
 
 
     #region Unity functions
+
         private void Start() 
         {
-            // test
-            // SceneLoader.nextScene = eScenes.MainMenu;
-
             LoadScene().Forget();
         }
 
@@ -46,10 +44,12 @@ namespace Joycollab.v2
         {
             _imgProgress.fillAmount = Mathf.MoveTowards(_imgProgress.fillAmount, loadRatio, 3 * Time.deltaTime);
         }
-    #endregion
+
+    #endregion  // Unity functions
 
 
-    #region Private functions
+    #region Scene loading
+
         private async UniTaskVoid LoadScene() 
         {
             AsyncOperation operation = SceneManager.LoadSceneAsync((int) nextScene);
@@ -76,6 +76,7 @@ namespace Joycollab.v2
             // loading done. change scene.
             operation.allowSceneActivation = true;
         }
-    #endregion
+
+    #endregion  // Scene loading
     }
 }
