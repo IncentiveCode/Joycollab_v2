@@ -28,11 +28,6 @@ namespace Joycollab.v2
         private void Awake() 
         {
             InitSingleton();
-
-            if (_transform == null) 
-            {
-                _transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
-            }
         }
 
     #endregion
@@ -42,7 +37,11 @@ namespace Joycollab.v2
 
         public PopupController Build() 
         {
-            if (_transform == null || _goPopup == null) return null;
+            if (_goPopup == null) return null;
+            if (_transform == null) 
+            {
+                _transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
+            }
 
             var view = Instantiate(_goPopup, Vector3.zero, Quaternion.identity);
             var lib = view.GetComponent<PopupController>();
@@ -97,7 +96,7 @@ namespace Joycollab.v2
         public void OpenAlert(string title, string content, string btnText) => OpenAlert(title, content, btnText, null);
         public void OpenAlert(string title, string content, string btnText, System.Action action) 
         {
-            PopupController ctrl = PopupBuilder.singleton.Build();
+            PopupController ctrl = Build();
             ctrl.Type = ePopupType.Alert;
 
             string t = string.IsNullOrEmpty(title) ? "알림" : title;
@@ -123,7 +122,7 @@ namespace Joycollab.v2
         public void OpenConfirm(string title, string content, string yesText, System.Action yesAction, string noText) => OpenConfirm(title, content, yesText, yesAction, noText, null); 
         public void OpenConfirm(string title, string content, string yesText, System.Action yesAction, string noText, System.Action noAction) 
         {
-            PopupController ctrl = PopupBuilder.singleton.Build();
+            PopupController ctrl = Build();
             ctrl.Type = ePopupType.Confirm;
 
             string t = string.IsNullOrEmpty(title) ? "알림" : title;
