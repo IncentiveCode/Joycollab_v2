@@ -1,12 +1,13 @@
 /// <summary>
 /// Network 통신 라이브러리  
 /// @author         : HJ Lee
-/// @last update    : 2023. 04. 03
-/// @version        : 0.3
+/// @last update    : 2023. 05. 10
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 02. 20) : UniTask 사용해서 최초 생성.
 ///     v0.2 (2023. 03. 31) : int 형태로 리턴되는 결과를 처리하기 위해, PsResponse 안에 int 형 data 추가.
 ///     v0.3 (2023. 04. 03) : Token refresh logic 추가. API 호출시 항상 체크 > 만료시에만 체크.
+///     v0.4 (2023. 05. 10) : extra field 추가.
 /// </summary>
 
 using System;
@@ -25,6 +26,7 @@ namespace Joycollab.v2
         public T data { get; }
         public string stringData { get; }
         public int intData { get; }
+        public string extra { get; set; }
 
         public PsResponse(long code, T data) 
         {
@@ -33,6 +35,7 @@ namespace Joycollab.v2
             this.data = data;
             this.stringData = string.Empty;
             this.intData = -1;
+            this.extra = string.Empty;
         }
 
         public PsResponse(long code, string message) 
@@ -42,6 +45,7 @@ namespace Joycollab.v2
             this.data = default(T);
             this.stringData = string.Empty;
             this.intData = -1;
+            this.extra = string.Empty;
         }
 
         public PsResponse(long code, string message, string strData) 
@@ -51,6 +55,7 @@ namespace Joycollab.v2
             this.data = default(T);
             this.stringData = strData;
             this.intData = -1;
+            this.extra = string.Empty;
         }
 
         public PsResponse(long code, string message, int intData) 
@@ -60,6 +65,7 @@ namespace Joycollab.v2
             this.data = default(T);
             this.stringData = string.Empty;
             this.intData = intData;
+            this.extra = string.Empty;
         }
     }
 
@@ -92,7 +98,7 @@ namespace Joycollab.v2
 
         // common strings in Request
         public const string BASIC_TOKEN = "Basic YWRtOmdhbnNpbmk=";
-        public const string MOBILE_BASIC_TOKEN = "Basic YXBwOmdhbnNpbmk=";
+        public const string BASIC_TOKEN_M = "Basic YXBwOmdhbnNpbmk=";
         public const string GRANT_TYPE = "grant_type";
         public const string GRANT_TYPE_PW = "password";
         public const string GRANT_TYPE_REFRESH = "refresh_token";
@@ -185,7 +191,7 @@ namespace Joycollab.v2
             form.AddField(USERNAME, R.singleton.ID);
 
             PsResponse<ResToken> res = await NetworkTask.PostAsync<ResToken>(URL.REQUEST_TOKEN, form, string.Empty, 
-                R.singleton.tokenScope.Equals(SCOPE_ADM) ? NetworkTask.BASIC_TOKEN : NetworkTask.MOBILE_BASIC_TOKEN);
+                R.singleton.tokenScope.Equals(SCOPE_ADM) ? NetworkTask.BASIC_TOKEN : NetworkTask.BASIC_TOKEN_M);
 
             if (string.IsNullOrEmpty(res.message)) 
             {

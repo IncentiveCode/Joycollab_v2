@@ -35,7 +35,7 @@ namespace Joycollab.v2
         {
             // init UI Stack
             dictViews = new Dictionary<string, FixedView>();
-            arrViews = GameObject.FindGameObjectsWithTag(S.LoginScene_ViewTag);
+            // arrViews = GameObject.FindGameObjectsWithTag(S.LoginScene_ViewTag);
             foreach (GameObject obj in arrViews) 
             {
                 dictViews.Add(obj.name, obj.GetComponent<FixedView>());

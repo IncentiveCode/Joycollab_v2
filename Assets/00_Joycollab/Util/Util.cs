@@ -17,6 +17,7 @@ namespace Joycollab.v2
 	{
 
     #region Resize
+
 		/// <summary>
         /// Canvas scaler 의 비율을 구하는 함수.
         /// </summary>
@@ -39,6 +40,36 @@ namespace Joycollab.v2
             {
                 return 1.0f;
             }
+        }
+
+
+        /// <summary>
+        /// Texture 를 복사하는 함수
+        /// </summary>
+        /// <param name="source">복사할 Texture2D source</param>
+        /// <returns>복사된 Texture2D</returns>
+        public static Texture2D CopyTexture(Texture2D source) 
+        {
+            RenderTexture tmp = RenderTexture.GetTemporary(
+                source.width, source.height, 0,
+                RenderTextureFormat.Default, RenderTextureReadWrite.Default
+            );
+            Graphics.Blit(source, tmp);
+            RenderTexture prev = RenderTexture.active;
+            RenderTexture.active = tmp;
+
+            Texture2D t = new Texture2D(source.width, source.height);
+            t.ReadPixels(new Rect(0, 0, tmp.width, tmp.height), 0, 0);
+
+            t.hideFlags = HideFlags.HideAndDontSave;
+            t.filterMode = FilterMode.Point;
+
+            t.Apply();
+
+            RenderTexture.active = prev;
+            RenderTexture.ReleaseTemporary(tmp);
+
+            return t;
         }
 
 
@@ -80,10 +111,12 @@ namespace Joycollab.v2
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, w);
             rect.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, h);
         }
+
     #endregion  // Resize
 
 
     #region Enum
+
         /// <summary>
         /// Enumtype 의 항목을 문자열로 변경하는 함수.
         /// </summary>

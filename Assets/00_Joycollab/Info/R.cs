@@ -1,19 +1,19 @@
 /// <summary>
 /// 시스템 상 저장 공간 (Repository) 
 /// @author         : HJ Lee
-/// @last update    : 2023. 04. 07
-/// @version        : 0.3
+/// @last update    : 2023. 05. 10
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 03. 17) : 파일 생성, Joycollab 에서 사용하는 것들 정리 시작.
 ///     v0.2 (2023. 03. 31) : SimpleWorkspace, Alarm 관련 항목 정리 시작, Notify 에서 generic <T> 제거.
 ///     v0.3 (2023. 04. 07) : LanguageManager 내용 추가. 
+///     v0.4 (2023. 05. 10) : LoginViewManager 에서 사용하던 Param 관련 함수 추가.
 /// </summary>
 
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-// using Assets.SimpleLocalization;
 
 namespace Joycollab.v2
 {
@@ -44,6 +44,8 @@ namespace Joycollab.v2
             list = new List<Tuple<iRepositoryObserver, eStorageKey>>();
             list.Clear();
 
+            dictParams = new Dictionary<string, string>();
+            dictParams.Clear();
             // 
             /**
             _alarmList = new List<ResAlarmInfo>();
@@ -241,6 +243,46 @@ namespace Joycollab.v2
         }
 
     #endregion   
+
+
+    #region Param values
+
+        private Dictionary<string, string> dictParams;
+
+        public void AddParam(string key, string value) 
+        {
+            // Debug.Log($"R | AddParam(), key : {key}, value : {value}");
+            if (dictParams.ContainsKey(key)) 
+                dictParams[key] = value;
+            else 
+                dictParams.Add(key, value);
+        }
+
+        public string GetParam(string key) 
+        {
+            if (dictParams.ContainsKey(key))
+                return dictParams[key];
+            else
+                return string.Empty;
+        }
+
+        public bool ExistParamKey(string key) 
+        {
+            return dictParams.ContainsKey(key);
+        }
+
+        public int GetParamCount() 
+        {
+            return dictParams.Count;
+        }
+
+        public void ClearParamValues() 
+        {
+            dictParams.Clear();
+        }
+
+
+    #endregion  // Param values
 
 
     #region Member Info 

@@ -1,12 +1,13 @@
 /// <summary>
 /// NetworkTask 를 위한 API URL 정리 문서 
 /// @author         : HJ Lee
-/// @last update    : 2023. 05. 03
-/// @version        : 0.3
+/// @last update    : 2023. 05. 10
+/// @version        : 0.4
 /// @update
-///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리. (정리 중)
-///     v0.2 (2023. 03. 20) : Tray app 관련 URL 추가. (정리 중)
-///     v0.3 (2023. 05. 03) : Index, World Index 추가. (정리 중)
+///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리.
+///     v0.2 (2023. 03. 20) : Tray app 관련 URL 추가.
+///     v0.3 (2023. 05. 03) : Index, World Index 추가.
+///     v0.4 (2023. 05. 10) : 사용하지 않는 일부 항목 삭제 
 /// </summary>
 
 #define DEV // Dev Server
@@ -25,31 +26,6 @@ namespace Joycollab.v2
         #elif RELEASE
         public const bool DEV = false;
         #endif
-
-        // ---------- ---------- ----------
-        // Basic token
-        public const string BASIC_TOKEN = "Basic YWRtOmdhbnNpbmk=";
-        public const string MOBILE_BASIC_TOKEN = "Basic YXBwOmdhbnNpbmk=";
-
-        // ---------- ---------- ----------
-        // Grant type
-        public const string GRANT_TYPE = "grant_type";
-        public const string PASSWORD = "password";
-        public const string REFRESH_TOKEN = "refresh_token";
-        public const string USERNAME = "username";
-
-        // ---------- ---------- ----------
-        // Scope
-        public const string SCOPE = "scope";
-        public const string SCOPE_ADM = "adm";
-        public const string SCOPE_APP = "app";
-
-        // ---------- ---------- ----------
-        // for NetworkTask
-        public const string ACCEPT_LANGUAGE = "Accept-Language";
-        public const string CONTENT_TYPE = "Content-Type";
-        public const string CONTENT_JSON = "application/json";
-        public const string AUTHORIZATION = "Authorization";
 
     #endregion  // Constants
 

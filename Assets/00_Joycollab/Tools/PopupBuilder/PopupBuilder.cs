@@ -18,6 +18,7 @@ namespace Joycollab.v2
     public class PopupBuilder : MonoBehaviour
     {
         [SerializeField] private GameObject _goPopup;
+        [SerializeField] private GameObject _goSlidePopup;
         [SerializeField] private Transform _transform;
 
         public static PopupBuilder singleton { get; private set; }
@@ -38,9 +39,18 @@ namespace Joycollab.v2
         public PopupController Build() 
         {
             if (_goPopup == null) return null;
+
+        #if UNITY_ANDROID || UNITY_IOS
+            if (_goSlidePopup == null) return null;
+        #endif
+
             if (_transform == null) 
             {
+        #if UNITY_ANDROID || UNITY_IOS
+                _transform = GameObject.Find(S.Canvas_Popup_M).GetComponent<Transform>();
+        #else
                 _transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
+        #endif
             }
 
             var view = Instantiate(_goPopup, Vector3.zero, Quaternion.identity);
@@ -139,5 +149,35 @@ namespace Joycollab.v2
         }
 
     #endregion  // Confirm functions
+
+
+    #region Slide popup 
+
+        public void OpenSlide(string title, string[] options, string[] extra, int viewID, bool cancelable=false) 
+        {
+            if (_transform == null) 
+            {
+        #if UNITY_ANDROID || UNITY_IOS
+                _transform = GameObject.Find(S.Canvas_Popup_M).GetComponent<Transform>();
+        #else
+                _transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
+        #endif
+            }
+
+            AndroidSelectCallback.ViewID = viewID;
+            AndroidSelectCallback.extraData.Clear();
+            foreach (string s in extra) 
+            {
+                AndroidSelectCallback.extraData.Add(s);
+            }
+            AndroidSelectCallback.isUpdated = false;
+
+            var popup = Instantiate(_goSlidePopup, Vector3.zero, Quaternion.identity);
+            SlidePopupM sc = popup.GetComponent<SlidePopupM>();
+            sc.InitPopup(title, options, cancelable);
+            sc.transform.SetParent(_transform, false);
+        }
+
+    #endregion  // Slide popup
     }
 }

@@ -2,8 +2,8 @@
 /// [PC Web]
 /// 사용자 Login 화면
 /// @author         : HJ Lee
-/// @last update    : 2023. 04. 22
-/// @version        : 0.8
+/// @last update    : 2023. 05. 10
+/// @version        : 0.9
 /// @update
 ///     v0.1 : UI Canvas 최적화 (static canvas, active canvas 분리)
 ///     v0.2 : Tab key 로 input field 이동할 수 있게 수정.
@@ -14,6 +14,7 @@
 ///                 Strings class 에 몰아넣은 문자열들도 필요한 부분에서 사용할 수 있도록 분리. (S, Key, NetworkTask class, and etc) 
 ///     v0.7 (2023. 04. 14) : Popup Builder 적용
 ///     v0.8 (2023. 04. 22) : FixedView 적용
+///     v0.9 (2023. 05. 10) : LoginModule 분리 및 적용
 /// </summary>
 
 using UnityEngine;
@@ -42,7 +43,7 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnNext;
         [SerializeField] private Button _btnVersion;
         [SerializeField] private Button _btnSample;
-        // [SerializeField] private Button _btnWorld;
+        [SerializeField] private Button _btnWorld;
 
 
     #region Unity functions
@@ -55,6 +56,18 @@ namespace Joycollab.v2
 
         private void Update() 
         {
+            // ctrl-c + ctrl-v
+            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) ||
+                Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightCommand))
+            {
+                if (Input.GetKeyDown(KeyCode.V)) 
+                {
+                    if (_inputId.isFocused) _inputId.text = ClipBoard.singleton.contents;
+                    if (_inputPw.isFocused) _inputPw.text = ClipBoard.singleton.contents;
+                    if (_inputDomain.isFocused) _inputDomain.text = ClipBoard.singleton.contents;
+                }
+            }
+
             // tab key process
             if (Input.GetKeyDown(KeyCode.Tab)) 
             {
@@ -86,7 +99,7 @@ namespace Joycollab.v2
                 if (_inputId.isFocused) _inputPw.Select();
             });
             _inputPw.onSubmit.AddListener((value) => {
-                if (_inputPw.isFocused) CheckParams().Forget();
+                if (_inputPw.isFocused) Request().Forget();
             });
             _inputDomain.onSubmit.AddListener((value) => {
                 MoveToSubLoginAsync(value).Forget();
@@ -94,7 +107,7 @@ namespace Joycollab.v2
 
 
             // set button listener
-            _btnSignIn.onClick.AddListener(() => CheckParams().Forget());
+            _btnSignIn.onClick.AddListener(() => Request().Forget());
             _btnResetPw.onClick.AddListener(() => Debug.Log("TODO. LoginManager 생성 후, Reset 화면으로 이동"));
             _btnSignUp.onClick.AddListener(() => {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
@@ -105,23 +118,21 @@ namespace Joycollab.v2
             });
 
             _btnNext.onClick.AddListener(() => MoveToSubLoginAsync(_inputDomain.text).Forget());
-            _btnVersion.onClick.AddListener(() => Debug.Log("TODO. LoginManager 생성 후, 패치 노트 화면으로 이동"));
+            _btnVersion.onClick.AddListener(() => Debug.Log("TODO. ViewManager 생성 후, 패치 노트 화면으로 이동"));
 
             _btnSample.onClick.AddListener(() => {
                 SceneLoader.Load(eScenes.Sample);
             });
             _btnSample.gameObject.SetActive(URL.DEV);
 
-            /**
             _btnWorld.onClick.AddListener(() => {
         #if UNITY_WEBGL && !UNITY_EDITOR
                 JsLib.Redirection(URL.WORLD_INDEX);
         #else
-                Debug.Log("TODO. LoginManager 생성 후, World Login 화면으로 이동.");
+                Debug.Log("TODO. ViewManager 생성 후, World Login 화면으로 이동.");
         #endif
             });
             _btnWorld.gameObject.SetActive(URL.DEV);
-             */
         }
 
         public async override UniTaskVoid Show() 
@@ -157,7 +168,7 @@ namespace Joycollab.v2
 
     #region login
 
-        private async UniTaskVoid CheckParams() 
+        private async UniTaskVoid Request() 
         {
             if (string.IsNullOrEmpty(_inputId.text)) 
             {
@@ -177,23 +188,10 @@ namespace Joycollab.v2
                 return;
             }
 
-            // LoginAsync(_inputId.text, _inputPw.text).Forget();
-            string res = await loginModule.LoginAsync(_inputId.text, _inputPw.text, () => {
-                Debug.Log("success.");
-            });
-            Debug.Log("Login | CheckParams(), login failure : "+ res);
-        }
+            string id = _inputId.text;
+            string pw = _inputPw.text;
 
-        private async UniTaskVoid LoginAsync(string id, string pw) 
-        {
-            WWWForm form = new WWWForm();
-            form.AddField(NetworkTask.GRANT_TYPE, NetworkTask.GRANT_TYPE_PW);
-            form.AddField(NetworkTask.PASSWORD, pw);
-            form.AddField(NetworkTask.REFRESH_TOKEN, string.Empty);
-            form.AddField(NetworkTask.SCOPE, NetworkTask.SCOPE_ADM);
-            form.AddField(NetworkTask.USERNAME, id);
-
-            PsResponse<ResToken> res = await NetworkTask.PostAsync<ResToken>(URL.REQUEST_TOKEN, form, string.Empty, NetworkTask.BASIC_TOKEN);
+            PsResponse<ResToken> res = await loginModule.LoginAsync(id, pw);
             if (string.IsNullOrEmpty(res.message)) 
             {
                 JsLib.SetCookie(Key.TOGGLE_ID_SAVED, _toggleRemember.isOn ? S.TRUE : S.FALSE);
@@ -205,7 +203,6 @@ namespace Joycollab.v2
                 R.singleton.TokenInfo = res.data;
 
                 // TODO. LoginManager 생성 후, SpaceSelector 추가
-                // LoginViewManager.Instance.ShowSpaceSelector();
             }
             else 
             {
@@ -222,7 +219,17 @@ namespace Joycollab.v2
             PsResponse<SimpleWorkspace> res = await NetworkTask.RequestAsync<SimpleWorkspace>(url, eMethodType.GET);
             if (string.IsNullOrEmpty(res.message)) 
             {
+                R.singleton.AddParam(Key.WORKSPACE_SEQ, res.data.seq.ToString()); 
+                R.singleton.AddParam(Key.WORKSPACE_NAME, res.data.nm);
+                R.singleton.AddParam(Key.WORKSPACE_LOGO, res.data.logo);
+                R.singleton.AddParam(Key.WORKSPACE_END_DATE, res.data.edtm);
 
+        #if UNITY_WEBGL && !UNITY_EDITOR
+                string url = string.Format(URL.SUB_INDEX, domain);
+                JsLib.Redirection(url);
+        #else
+                ViewManager.singleton.Push(S.LoginScene_SubLogin);
+        #endif
             }
             else 
             {

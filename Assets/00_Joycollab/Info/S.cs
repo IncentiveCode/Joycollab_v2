@@ -31,6 +31,7 @@ namespace Joycollab.v2
     #region Canvas name
 
         public const string Canvas_Popup = "Popup Canvas";
+        public const string Canvas_Popup_M = "SafeArea _ popup";
 
     #endregion  // Canvas name
 
@@ -38,7 +39,6 @@ namespace Joycollab.v2
     #region LoginScene FixedView Name 
 
         // workspace login -> 추후 변경 예정
-        public const string LoginScene_ViewTag = "LoginView";
         public const string LoginScene_Login = "login";
         public const string LoginScene_SubLogin = "sub login";
         public const string LoginScene_GuestLogin = "guest login";
@@ -68,11 +68,6 @@ namespace Joycollab.v2
 
 
     #region MobileScene FixedView Name 
-
-        // ---------- ---------- ----------
-        // 00. common
-        
-        public const string MobileScene_ViewTag = "MobileView";
 
 
         // ---------- ---------- ----------
@@ -180,6 +175,7 @@ namespace Joycollab.v2
 
         public const string TRUE = "true";
         public const string FALSE = "false";
+        public const string WORLD = "world";
 
     #endregion  // Value
 

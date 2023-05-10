@@ -20,7 +20,11 @@ namespace Joycollab.v2
 
         [TagSelector]
         [SerializeField] private string viewTag;
-        private bool isDone;
+        private bool _isDone;
+        public bool isDone {
+            get { return _isDone; }
+            set { _isDone = value; }
+        }
 
 
     #region Unity functions
@@ -47,7 +51,11 @@ namespace Joycollab.v2
             isDone = true;
 
             // test
+        #if UNITY_ANDROID || UNITY_IOS
+            Push(S.MobileScene_Login);
+        #else
             Push(S.LoginScene_Login);
+        #endif
         }
 
     #endregion  // Unity functions

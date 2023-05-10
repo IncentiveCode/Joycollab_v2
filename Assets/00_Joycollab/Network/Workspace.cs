@@ -59,6 +59,7 @@ namespace Joycollab.v2
         public ResWorkspaceInfo[] list;
     }
 
+
     [Serializable]
     public class ResWorkspaceInfo
     {
@@ -69,7 +70,9 @@ namespace Joycollab.v2
         public string nickNm;
         public string photo;
         public string jobGrade;
+        public string uiType;
     }
+
 
     [Serializable]
     public class LobbyInfo

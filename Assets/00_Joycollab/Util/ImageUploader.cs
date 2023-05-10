@@ -36,10 +36,12 @@ namespace Joycollab.v2
 
 
     #region Unity functions
+
         private void OnDestroy() 
         {
             Clear();
         }
+
     #endregion
 
 
@@ -57,7 +59,8 @@ namespace Joycollab.v2
         public void Clear() 
         {
             _base64Header = _encodedString = string.Empty;
-            rect.sizeDelta = new Vector2(width, height);
+
+            if (rect != null) rect.sizeDelta = new Vector2(width, height);
         }
 
         public void OnImageUpload(string data) 
