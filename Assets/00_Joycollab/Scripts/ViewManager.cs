@@ -47,7 +47,7 @@ namespace Joycollab.v2
             isDone = true;
 
             // test
-            // Push(S.LoginScene_Login);
+            Push(S.LoginScene_Login);
         }
 
     #endregion  // Unity functions

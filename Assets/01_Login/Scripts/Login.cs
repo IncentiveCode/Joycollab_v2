@@ -26,6 +26,9 @@ namespace Joycollab.v2
 {
     public class Login : FixedView
     {
+        [Header("Module")]
+        [SerializeField] private LoginModule loginModule;
+
         [Header("InputField")] 
         [SerializeField] private InputSubmitDetector _inputId;
         [SerializeField] private InputSubmitDetector _inputPw;
@@ -50,6 +53,24 @@ namespace Joycollab.v2
             base.Reset();
         }
 
+        private void Update() 
+        {
+            // tab key process
+            if (Input.GetKeyDown(KeyCode.Tab)) 
+            {
+                if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) 
+                {
+                    if (_inputId.isFocused) return;
+                    else if (_inputPw.isFocused) _inputId.Select();
+                }
+                else 
+                {
+                    if (_inputId.isFocused) _inputPw.Select();
+                    else if (_inputPw.isFocused) return;
+                }
+            }
+        }
+
     #endregion  // Unity functions
 
 
@@ -65,7 +86,7 @@ namespace Joycollab.v2
                 if (_inputId.isFocused) _inputPw.Select();
             });
             _inputPw.onSubmit.AddListener((value) => {
-                if (_inputPw.isFocused) CheckParams();
+                if (_inputPw.isFocused) CheckParams().Forget();
             });
             _inputDomain.onSubmit.AddListener((value) => {
                 MoveToSubLoginAsync(value).Forget();
@@ -73,7 +94,7 @@ namespace Joycollab.v2
 
 
             // set button listener
-            _btnSignIn.onClick.AddListener(() => CheckParams());
+            _btnSignIn.onClick.AddListener(() => CheckParams().Forget());
             _btnResetPw.onClick.AddListener(() => Debug.Log("TODO. LoginManager 생성 후, Reset 화면으로 이동"));
             _btnSignUp.onClick.AddListener(() => {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
@@ -136,7 +157,7 @@ namespace Joycollab.v2
 
     #region login
 
-        private void CheckParams() 
+        private async UniTaskVoid CheckParams() 
         {
             if (string.IsNullOrEmpty(_inputId.text)) 
             {
@@ -156,7 +177,11 @@ namespace Joycollab.v2
                 return;
             }
 
-            LoginAsync(_inputId.text, _inputPw.text).Forget();
+            // LoginAsync(_inputId.text, _inputPw.text).Forget();
+            string res = await loginModule.LoginAsync(_inputId.text, _inputPw.text, () => {
+                Debug.Log("success.");
+            });
+            Debug.Log("Login | CheckParams(), login failure : "+ res);
         }
 
         private async UniTaskVoid LoginAsync(string id, string pw) 
