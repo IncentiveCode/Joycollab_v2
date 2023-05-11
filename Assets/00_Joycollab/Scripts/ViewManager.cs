@@ -1,15 +1,17 @@
 /// <summary>
 /// 각 Scene 에서 화면을 관리하는 manager class
 /// @author         : HJ Lee
-/// @last update    : 2023. 05. 04
-/// @version        : 0.1
+/// @last update    : 2023. 05. 11
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 05. 04) : 최초 작성, 기존 Manager 에서 View 관리 부분만 빼서 생성.
+///     v0.2 (2023. 05. 11) : android 의 back button 처리 추가.
 /// </summary>
 
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Joycollab.v2 
 {
@@ -25,6 +27,32 @@ namespace Joycollab.v2
             get { return _isDone; }
             set { _isDone = value; }
         }
+
+
+    #if UNITY_ANDROID // for android (bridge)
+
+        // const strings
+        //  - common
+        private const string PackageName = "kr.co.pitchsolution.joycollab.bridge.Bridge";
+        private const string UnityDefaultJavaClassName = "com.unity3d.player.UnityPlayer";
+        private const string UnityCurrentActivity = "currentActivity";
+
+        //  - bridge method list
+        private const string CustomClassReceiveActivityInstanceMethod = "receiveActivityInstance";
+        private const string CustomClassLogMethod = "debugLog";
+        private const string CustomClassToastMethod = "showToast";
+        private const string CustomClassSetInfo = "setInfo";
+        private const string CustomClassStartServiceMethod = "startService";
+        private const string CustomClassStopServiceMethod = "stopService";
+
+
+        private AndroidJavaClass unityClass;
+        private AndroidJavaObject unityActivity;
+        private AndroidJavaObject customObject;
+        private Text txtTarget;
+    
+    #endif
+
 
 
     #region Unity functions
@@ -57,6 +85,42 @@ namespace Joycollab.v2
             Push(S.LoginScene_Login);
         #endif
         }
+
+        #if UNITY_ANDROID
+        private void Update() 
+        {
+            if (Input.GetKeyDown(KeyCode.Escape))
+            {
+                string name = GetTopViewName();
+                MobileEvents.singleton.BackButtonProcess(name);
+            }
+
+            // date picker
+            if (AndroidDateCallback.isDateUpdated) 
+            {
+                if (txtTarget != null) 
+                {
+                    txtTarget.text = AndroidDateCallback.SelectedDate.ToString("yyyy-MM-dd");
+                }
+
+                AndroidDateCallback.isDateUpdated = false;
+            }
+
+            // time picker
+            if (AndroidTimeCallback.isTimeUpdated) 
+            {
+                if (txtTarget != null) 
+                {
+                    txtTarget.text = string.Format("{0:00}:{1:00}", 
+                        AndroidTimeCallback.SelectedHour,
+                        AndroidTimeCallback.SelectedMinute
+                    );
+                }
+
+                AndroidTimeCallback.isTimeUpdated = false;
+            }
+        }
+        #endif
 
     #endregion  // Unity functions
 

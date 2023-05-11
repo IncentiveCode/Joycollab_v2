@@ -12,7 +12,8 @@
 /// </summary>
 
 using UnityEngine;
-
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 namespace Joycollab.v2
 {
     public class PopupBuilder : MonoBehaviour
@@ -106,14 +107,18 @@ namespace Joycollab.v2
         public void OpenAlert(string title, string content, string btnText) => OpenAlert(title, content, btnText, null);
         public void OpenAlert(string title, string content, string btnText, System.Action action) 
         {
+            Locale currentLocale = LocalizationSettings.SelectedLocale;
+            string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "알림", currentLocale);
+            string confirm = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "text.확인", currentLocale);
+
             PopupController ctrl = Build();
             ctrl.Type = ePopupType.Alert;
 
-            string t = string.IsNullOrEmpty(title) ? "알림" : title;
+            string t = string.IsNullOrEmpty(title) ? notice : title;
             ctrl.Title = t; 
             ctrl.Content = content;
 
-            t = string.IsNullOrEmpty(btnText) ? "확인" : btnText;
+            t = string.IsNullOrEmpty(btnText) ? confirm : btnText;
             ctrl.AddButton(ePopupButtonType.Normal, t, () => action?.Invoke());
 
             ctrl.Open();
@@ -132,17 +137,22 @@ namespace Joycollab.v2
         public void OpenConfirm(string title, string content, string yesText, System.Action yesAction, string noText) => OpenConfirm(title, content, yesText, yesAction, noText, null); 
         public void OpenConfirm(string title, string content, string yesText, System.Action yesAction, string noText, System.Action noAction) 
         {
+            Locale currentLocale = LocalizationSettings.SelectedLocale;
+            string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "알림", currentLocale);
+            string confirm = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "text.확인", currentLocale);
+            string cancel = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "text.취소", currentLocale);
+
             PopupController ctrl = Build();
             ctrl.Type = ePopupType.Confirm;
 
-            string t = string.IsNullOrEmpty(title) ? "알림" : title;
+            string t = string.IsNullOrEmpty(title) ? notice : title;
             ctrl.Title = t;
             ctrl.Content = content;
 
-            t = string.IsNullOrEmpty(yesText) ? "확인" : yesText;
+            t = string.IsNullOrEmpty(yesText) ? confirm : yesText;
             ctrl.AddButton(ePopupButtonType.Normal, t, () => yesAction?.Invoke());
 
-            t = string.IsNullOrEmpty(noText) ? "취소" : noText;
+            t = string.IsNullOrEmpty(noText) ? cancel : noText;
             ctrl.AddButton(ePopupButtonType.Warning, t, () => noAction?.Invoke());
 
             ctrl.Open();

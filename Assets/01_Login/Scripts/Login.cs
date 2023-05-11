@@ -174,7 +174,7 @@ namespace Joycollab.v2
             {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "alert.이메일 없음", currentLocale)
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "이메일 없음", currentLocale)
                 );
                 return;
             }
@@ -183,7 +183,7 @@ namespace Joycollab.v2
             {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "alert.비밀번호 없음", currentLocale)
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호 없음", currentLocale)
                 );
                 return;
             }
@@ -208,7 +208,7 @@ namespace Joycollab.v2
             {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "alert.로그인 실패", currentLocale)
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "로그인 실패", currentLocale)
                 );
             }
         }
@@ -235,7 +235,7 @@ namespace Joycollab.v2
             {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "alert.도메인 탐색 실패", currentLocale)
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "도메인 탐색 실패", currentLocale)
                 );
             }
         }
