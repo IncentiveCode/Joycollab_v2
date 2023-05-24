@@ -54,8 +54,6 @@ namespace Joycollab.v2
 
             base.Appearing().Forget();
 
-            // await UniTask.Delay(1000);
-
             ViewManager.singleton.Push(S.MobileScene_Office);
 
             // string state = JsLib.GetCookie(Key.MOBILE_FIRST_PAGE);
@@ -164,12 +162,10 @@ namespace Joycollab.v2
 
             if (string.IsNullOrEmpty(res.message)) 
             {
-                /**
                 foreach (ResAlarmInfo info in res.data.list) 
                 {
                     R.singleton.AddAlarmInfo(info);
                 }
-                 */
             }
             else 
             {

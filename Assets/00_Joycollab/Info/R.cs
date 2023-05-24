@@ -46,19 +46,10 @@ namespace Joycollab.v2
 
             dictParams = new Dictionary<string, string>();
             dictParams.Clear();
+
             // 
-            /**
             _alarmList = new List<ResAlarmInfo>();
             _alarmList.Clear();
-             */
-
-            /**
-            LocalizationManager.Read();
-            LocalizationManager.Language = (Application.systemLanguage == SystemLanguage.Korean) ? 
-                S.LANGUAGE_KOREAN : S.LANGUAGE_ENGLISH;
-            _region = (Application.systemLanguage == SystemLanguage.Korean) ? 
-                S.REGION_KOREAN : S.REGION_ENGLISH;
-             */
         }
 
         public void Clear() 
@@ -66,7 +57,7 @@ namespace Joycollab.v2
             ClearTokenInfo();
             ClearMemberInfo();
             ClearWorkspaceInfo();
-            // ClearAlarmInfo();
+            ClearAlarmInfo();
         }
 
     #endregion  // Common functions
@@ -423,7 +414,6 @@ namespace Joycollab.v2
 
     #region Alarm Info 
 
-    /**
         private List<ResAlarmInfo> _alarmList;
         private int _alarmCount;
 
@@ -442,7 +432,6 @@ namespace Joycollab.v2
             _alarmList.Clear();
             _alarmCount = -1;
         }
-     */
 
     #endregion  // Alarm Info
     }
