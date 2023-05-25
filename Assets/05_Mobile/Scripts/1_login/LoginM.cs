@@ -154,7 +154,7 @@ namespace Joycollab.v2
 
             await Refresh();
 
-            base.Appearing().Forget();
+            base.Appearing();
         }
 
     #endregion  // FixedView functions

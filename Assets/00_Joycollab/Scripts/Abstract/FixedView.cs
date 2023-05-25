@@ -1,15 +1,17 @@
 /// <summary>
 /// 고정 위치를 가지는 창의 속성을 관리하기 위한 추상 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 03. 20
-/// @version        : 0.1
+/// @last update    : 2023. 05. 25
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 03. 20) : 최초 생성
 ///     v0.2 (2023. 03. 21) : Show() 를 async 로 변경
+///     v0.3 (2023. 05. 25) : DOTween test
 /// </summary>
 
 using UnityEngine;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 
 namespace Joycollab.v2
 {
@@ -18,8 +20,12 @@ namespace Joycollab.v2
         protected int viewID;
         protected eVisibleState visibleState;
         protected CanvasGroup canvasGroup;
-        protected Canvas canvas;
+        // protected Canvas canvas;
         protected RectTransform viewRect;
+
+        //
+        protected float fadeTime = 1f;
+
 
         protected virtual void Init() 
         {
@@ -32,11 +38,13 @@ namespace Joycollab.v2
                 return;
             }
 
+            /**
             if (! TryGetComponent<Canvas>(out canvas)) 
             {
                 Debug.Log("Canvas component 확인 요망");
                 return;
             }
+             */
 
             if (! TryGetComponent<RectTransform>(out viewRect)) 
             {
@@ -54,18 +62,23 @@ namespace Joycollab.v2
 
         public virtual void Hide() 
         {
-            visibleState = eVisibleState.Disappearing;
+            if (canvasGroup == null) return;
 
-            if (canvasGroup != null)
-            { 
+            if (visibleState == eVisibleState.Disappeared) 
+            {
                 canvasGroup.alpha = 0f;
                 canvasGroup.interactable = false;
+                canvasGroup.blocksRaycasts = false;
+                return;
             }
 
-            if (canvas != null) 
-            {
-                canvas.enabled = false;
-            }
+            if (visibleState != eVisibleState.Disappeared) 
+                visibleState = eVisibleState.Disappeared;
+
+            // dotween test
+            canvasGroup.DOFade(0f, fadeTime);
+            canvasGroup.interactable = false;
+            canvasGroup.blocksRaycasts = false;
         }
 
         public async virtual UniTaskVoid Show() 
@@ -95,12 +108,14 @@ namespace Joycollab.v2
             await UniTask.Yield();
         }
 
-        protected async virtual UniTaskVoid Appearing() 
+        // protected async virtual UniTaskVoid Appearing() 
+        protected virtual void Appearing() 
         {
             if (canvasGroup == null) return;
             if (visibleState != eVisibleState.Appearing) 
                 visibleState = eVisibleState.Appearing;
 
+            /**
             canvasGroup.interactable = false;
             canvasGroup.alpha = 0f;
             canvas.enabled = true;
@@ -121,6 +136,14 @@ namespace Joycollab.v2
 
             canvasGroup.alpha = 1f;
             canvasGroup.interactable = true;
+            visibleState = eVisibleState.Appeared;
+             */
+
+            // dotween test
+            canvasGroup.DOFade(1f, fadeTime);
+            canvasGroup.interactable = true;
+            canvasGroup.blocksRaycasts = true;
+
             visibleState = eVisibleState.Appeared;
         }
     }

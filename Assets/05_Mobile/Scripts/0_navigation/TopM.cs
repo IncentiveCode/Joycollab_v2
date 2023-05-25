@@ -29,7 +29,6 @@ namespace Joycollab.v2
         [SerializeField] private RawImage _imgProfile;
         [SerializeField] private Vector2 _v2ProfileSize;
         [SerializeField] private Texture2D _texDefault;
-        private RectTransform rectProfile;
 
         [Header("alarm")]
         [SerializeField] private Button _btnAlarm;
@@ -38,6 +37,10 @@ namespace Joycollab.v2
 
         [Header("channel")]
         [SerializeField] private Button _btnChannel;
+
+        // local variables
+        private RectTransform rectProfile;
+        private Texture2D texture;
 
 
     #region Unity functions
@@ -54,7 +57,11 @@ namespace Joycollab.v2
         private void OnDestroy()
         {
             if (_imgProfile.texture != null && string.IsNullOrEmpty(_imgProfile.texture.name))
+            {
                 Destroy(_imgProfile.texture);
+            }
+
+            if (texture != null) Destroy(texture);
 
             if (R.singleton != null)
             {
@@ -133,7 +140,7 @@ namespace Joycollab.v2
                 if (myAlarmCount != R.singleton.AlarmCount)
                 {
                     myAlarmCount = R.singleton.AlarmCount;
-                    _txtAlarmCount.text = myAlarmCount >= 99 ? "100+" : $"myAlarmCount";
+                    _txtAlarmCount.text = myAlarmCount >= 99 ? "100+" : $"{myAlarmCount}";
                     _imgAlarmOn.gameObject.SetActive(myAlarmCount != 0);
                 }
             }
@@ -154,7 +161,8 @@ namespace Joycollab.v2
 
             canvasGroup.alpha = on ? 1 : 0;
             canvasGroup.interactable = on ? true : false;
-            canvas.enabled = on ? true : false;
+            canvasGroup.blocksRaycasts = on ? true : false;
+            // canvas.enabled = on ? true : false;
             visibleState = on ? eVisibleState.Appeared : eVisibleState.Disappeared;
         }
 
@@ -163,7 +171,7 @@ namespace Joycollab.v2
             Texture2D res = await NetworkTask.GetTextureAsync(url);
             if (res == null)
             {
-                Debug.LogError($"{TAG} | 이미지 로딩 실패.");
+                texture = null;
                 _imgProfile.texture = _texDefault;
                 return;
             }
@@ -174,10 +182,12 @@ namespace Joycollab.v2
 
             if (_imgProfile.texture != null && string.IsNullOrEmpty(_imgProfile.texture.name))
             {
+                Destroy(texture);
                 Destroy(_imgProfile.texture);
             }
 
-            _imgProfile.texture = res;
+            texture = Util.CopyTexture(res);
+            _imgProfile.texture = texture;
             Util.ResizeRawImage(rectProfile, _imgProfile, _v2ProfileSize.x, _v2ProfileSize.y);
         }
 

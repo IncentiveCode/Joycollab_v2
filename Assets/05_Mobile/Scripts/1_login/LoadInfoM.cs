@@ -52,9 +52,10 @@ namespace Joycollab.v2
 
             await Refresh();
 
-            base.Appearing().Forget();
+            base.Appearing();
 
-            ViewManager.singleton.Push(S.MobileScene_Office);
+            // ViewManager.singleton.Push(S.MobileScene_Office);
+            ViewManager.singleton.Push(S.MobileScene_MySeat);
 
             // string state = JsLib.GetCookie(Key.MOBILE_FIRST_PAGE);
             // ViewManager.singleton.StartOnMySeat(state.Equals("1"));
@@ -160,12 +161,17 @@ namespace Joycollab.v2
             string url = string.Format(URL.ALARM_LIST, memberSeq);
             PsResponse<ResAlarmList> res = await NetworkTask.RequestAsync<ResAlarmList>(url, eMethodType.GET, string.Empty, token);
 
+            int unreadCnt = 0;
             if (string.IsNullOrEmpty(res.message)) 
             {
                 foreach (ResAlarmInfo info in res.data.list) 
                 {
                     R.singleton.AddAlarmInfo(info);
+                    if (info.read == false) unreadCnt++;
                 }
+
+                Debug.Log($"{TAG} | unread alarm count : {unreadCnt}");
+                R.singleton.AlarmCount = unreadCnt;
             }
             else 
             {

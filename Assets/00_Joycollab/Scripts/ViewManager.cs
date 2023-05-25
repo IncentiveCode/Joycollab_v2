@@ -29,7 +29,7 @@ namespace Joycollab.v2
         }
 
 
-    #if UNITY_ANDROID // for android (bridge)
+    #if UNITY_ANDROID // for android plugin
 
         // const strings
         //  - common
@@ -51,7 +51,33 @@ namespace Joycollab.v2
         private AndroidJavaObject customObject;
         private Text txtTarget;
     
-    #endif
+    #endif  // for android plugin
+
+
+    #if UNITY_ANDROID || UNITY_IOS  // for navigation bar
+
+        [Header("Mobile navigation")]
+        [SerializeField] private TopM _goTop;
+        [SerializeField] private BottomM _goBottom;
+
+        public void ShowNavigation(bool on) 
+        {
+            _goTop.ShowNavigation(on);
+            _goBottom.ShowNavigation(on);
+        }
+
+        public void ShowBottomNavigation() 
+        {
+            _goTop.ShowNavigation(false);
+            _goBottom.ShowNavigation(true);
+        }
+
+        public void StartOnMySeat(bool on) 
+        {
+            _goBottom.StartOnMySeat(on);
+        }
+
+    #endif  // for navigation bar
 
 
 

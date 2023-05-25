@@ -635,7 +635,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7760823725156698309}
   - component: {fileID: 7760823725156698307}
-  - component: {fileID: 7760823725156698306}
   - component: {fileID: 7760823725156698304}
   m_Layer: 5
   m_Name: patch note_m
@@ -681,27 +680,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!223 &7760823725156698306
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7760823725156698308}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 0
-  m_OverridePixelPerfect: 1
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_TargetDisplay: 0
 --- !u!114 &7760823725156698304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -985,7 +963,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7760823724467183757}
   m_HandleRect: {fileID: 7760823724467183756}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -1197,7 +1175,7 @@ MonoBehaviour:
     m_TableReference:
       m_TableCollectionName: GUID:652bb641706a649bca7e92f0a57d2b7a
     m_TableEntryReference:
-      m_KeyId: 7864617822257152
+      m_KeyId: 12992924318367744
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0

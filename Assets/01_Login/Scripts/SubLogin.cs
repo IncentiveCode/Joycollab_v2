@@ -159,7 +159,7 @@ namespace Joycollab.v2
 
             await Refresh();
 
-            base.Appearing().Forget();
+            base.Appearing();
         }
 
         public override void Hide() 

@@ -51,7 +51,7 @@ namespace Joycollab.v2
     /// </summary>
     public enum eVisibleState 
     {
-        Appearing, Appeared, Disappearing, Disappeared
+        Appearing, Appeared, Disappeared
     }
 
 

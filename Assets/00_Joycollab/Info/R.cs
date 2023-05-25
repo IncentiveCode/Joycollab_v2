@@ -421,7 +421,10 @@ namespace Joycollab.v2
 
         public int AlarmCount {
             get { return _alarmCount; }
-            set { _alarmCount = value; }
+            set { 
+                _alarmCount = value;
+                NotifyAll(eStorageKey.Alarm);
+            }
         }
 
         // TODO. 필요한 정보가 생길 때 마다 추가할 것.

@@ -108,7 +108,8 @@ namespace Joycollab.v2
         {
             canvasGroup.alpha = on ? 1 : 0;
             canvasGroup.interactable = on ? true : false;
-            canvas.enabled = on ? true : false;
+            canvasGroup.blocksRaycasts = on ? true : false;
+            // canvas.enabled = on ? true : false;
         }
 
         public void StartOnMySeat(bool on) 
