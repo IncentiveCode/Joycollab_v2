@@ -250,8 +250,9 @@ namespace Joycollab.v2
                 res.filterMode = FilterMode.Point;
                 res.Apply();
 
-                texture = Util.CopyTexture(res);
-                _imgOfficeLogo.texture = texture;
+                // texture = Util.CopyTexture(res);
+                // _imgOfficeLogo.texture = texture;
+                _imgOfficeLogo.texture = res;
             }
             Util.ResizeRawImage(rectLogo, _imgOfficeLogo, _v2MaxSize.x, _v2MaxSize.y);
 

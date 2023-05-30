@@ -76,6 +76,12 @@ namespace Joycollab.v2
         {
             _goBottom.StartOnMySeat(on);
         }
+    
+    #else
+
+        public void ShowNavigation(bool on) { }
+        public void ShowBottomNavigation() { }
+        public void StartOnMySeat(bool on) { }
 
     #endif  // for navigation bar
 
