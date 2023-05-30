@@ -81,6 +81,7 @@ namespace Joycollab.v2
 
 		public const int MobileScene_NaviTop = 10000;
 		public const int MobileScene_NaviBottom = 10001;
+		public const int MobileScene_Template = 10002;
 
 
 		// ---------- ---------- ----------
