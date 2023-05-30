@@ -191,4 +191,24 @@ namespace Joycollab.v2
     {
         ToDo, Objective, KeyResult
     }
+	
+	
+	/// <summary>
+    /// 즐겨찾기 구분
+    /// </summary>
+    public enum eBookmarkType 
+    {
+        Notice, Board    
+    }
+
+
+    /// <summary>
+    /// 멤버 선택창 타입
+    /// </summary>
+    public enum eAddMemberType 
+    {
+        Meeting, 
+        SeminarMember, SeminarLecturer, 
+        LobbyManager
+    }
 }
