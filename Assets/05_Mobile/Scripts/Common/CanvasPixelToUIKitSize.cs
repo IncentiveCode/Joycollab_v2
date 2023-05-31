@@ -21,6 +21,7 @@ namespace Joycollab.v2
 
 
     #region Unity functions
+
         private void Awake() 
         {
             scaler = GetComponent<CanvasScaler>();
@@ -38,7 +39,7 @@ namespace Joycollab.v2
 
         private void Resize() 
         {
-            if (Application.isEditor) return;
+            // if (Application.isEditor) return;
             if (scaler == null) return;
 
             scaler.uiScaleMode = CanvasScaler.ScaleMode.ConstantPixelSize;
@@ -46,10 +47,14 @@ namespace Joycollab.v2
         #if UNITY_ANDROID
 
             scaler.scaleFactor = Screen.dpi / 160;
+            Debug.Log($"CanvasPixelToUIKitSize | Resize(), scale factor : {Screen.dpi / 160}");
+            
+            // HJ Lee. 2023. 05. 31. 
+            // Constant pixel size 로 설정할 경우, matchWidthOrHeight option 은 사용하지 않아도 되기에, 주석처리함.
 
-            float fixedRatio = 9f / 19f;
-            float currentRatio = (float) Screen.width / (float) Screen.height;
-            scaler.matchWidthOrHeight = (currentRatio >= fixedRatio) ? 0 : 1;
+            // float fixedRatio = 9f / 19f;
+            // float currentRatio = (float) Screen.width / (float) Screen.height;
+            // scaler.matchWidthOrHeight = (currentRatio >= fixedRatio) ? 0 : 1;
 
         #elif UNITY_IOS
 
