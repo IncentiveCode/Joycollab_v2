@@ -55,6 +55,7 @@ namespace Joycollab.v2
             base.Appearing();
 
             // ViewManager.singleton.Push(S.MobileScene_Office);
+            ViewManager.singleton.StartOnMySeat(true);
             ViewManager.singleton.Push(S.MobileScene_MySeat);
 
             // string state = JsLib.GetCookie(Key.MOBILE_FIRST_PAGE);
