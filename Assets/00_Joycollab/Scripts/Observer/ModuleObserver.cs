@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace PitchSolution
+namespace Joycollab.v2
 {
     public class ModuleObserver : MonoBehaviour, IModuleObserver
     {
@@ -21,6 +21,7 @@ namespace PitchSolution
 
 
     #region Unity functions
+
         private void Start() 
         {
             if (_moduleController != null) 
@@ -36,10 +37,12 @@ namespace PitchSolution
                 _moduleController.UnregisterObserver(this);
             }
         }
+
     #endregion  // Unity functions
 
 
     #region ModuleObserver functions - implementations
+
         public void UpdateModuleList<T>(T menu) 
         {
             if (menu.GetType() == typeof(FloatingMenu)) 
@@ -56,6 +59,7 @@ namespace PitchSolution
                 _btnKanban.gameObject.SetActive(m.kanban);
             }
         }
+
     #endregion  // ModuleObserver functions - implementations
     }
 }

@@ -17,21 +17,6 @@ using UnityEngine;
 
 namespace Joycollab.v2
 {
-    public interface iRepositoryController 
-    {
-        void RegisterObserver(iRepositoryObserver observer, eStorageKey key);
-        void UnregisterObserver(iRepositoryObserver observer, eStorageKey key);
-        void RequestInfo(iRepositoryObserver observer, eStorageKey key);
-        void Notify(iRepositoryObserver observer, eStorageKey key);
-        void NotifyAll(eStorageKey key);
-    }
-
-    public interface iRepositoryObserver 
-    {
-        void UpdateInfo(eStorageKey key);
-    }
-
-
     public class R : Singleton<R>, iRepositoryController
     {
         private List<Tuple<iRepositoryObserver, eStorageKey>> list;

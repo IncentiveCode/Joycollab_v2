@@ -1,6 +1,6 @@
 using System;
 
-namespace PitchSolution
+namespace Joycollab.v2
 {
 	[Serializable]
 	public class FloatingMenu 

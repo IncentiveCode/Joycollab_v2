@@ -1,4 +1,4 @@
-namespace PitchSolution
+namespace Joycollab.v2
 {
     public interface IModuleController 
     {

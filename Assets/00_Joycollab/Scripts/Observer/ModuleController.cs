@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace PitchSolution
+namespace Joycollab.v2
 {
     public class ModuleController : MonoBehaviour, IModuleController
     {
