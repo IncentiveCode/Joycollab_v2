@@ -188,6 +188,27 @@ namespace Joycollab.v2
                 currentView.Show(option).Forget();
         }
 
+        public void PushTest(string viewName) 
+        {
+            Debug.Log($"{TAG} | PushTest(), inserted view : {viewName}");
+
+            bool inDictionary = dictViews.ContainsKey(viewName);
+            if (! inDictionary) 
+            {
+                Debug.Log($"{TAG} | Push(), 잘못된 View 이름 : {viewName}");
+                return;
+            }
+
+            if (currentView != null) 
+            {
+                uiNavigation.Push(currentView);
+                currentView.Hide();
+            }
+
+            currentView = dictViews[viewName];
+            currentView.Show().Forget();
+        }
+
         public void Pop(string option="") 
         {
             if (uiNavigation.Count <= 0) 
