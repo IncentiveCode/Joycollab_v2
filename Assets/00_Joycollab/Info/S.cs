@@ -106,8 +106,8 @@ namespace Joycollab.v2
         // 04. Board
 
         public const string MobileScene_Board = "board_m";
-        public const string MobileScene_PostWrite = "post write_m";
         public const string MobileScene_PostDetail = "post detail_m";
+        public const string MobileScene_PostWrite = "post write_m";
 
 
         // ---------- ---------- ----------
