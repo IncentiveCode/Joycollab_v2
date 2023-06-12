@@ -17,6 +17,7 @@ using UnityEngine.UI;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
+using TMPro;
 
 namespace Joycollab.v2
 {
@@ -68,6 +69,31 @@ namespace Joycollab.v2
             _btnBoard.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Board));
             _btnBookmark.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Bookmark));
             _btnContact.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Contact));
+
+            /**
+            // set input field test
+            _inputTest.onValueChanged.AddListener(Editing);
+            _inputTest.onSelect.AddListener(OnSelect);
+            _inputTest.onDeselect.AddListener((value) => {
+                if (keepOldTextInField) 
+                {
+                    _inputTest.text = oldText;
+                    keepOldTextInField = false;
+                }
+            });
+            _inputTest.onTouchScreenKeyboardStatusChanged.AddListener(ReportChangeStatus);
+
+            _inputTest2.onValueChanged.AddListener(Editing);
+            _inputTest2.onSelect.AddListener(OnSelect);
+            _inputTest2.onDeselect.AddListener((value) => {
+                if (keepOldTextInField) 
+                {
+                    _inputTest2.text = oldText;
+                    keepOldTextInField = false;
+                } 
+            });
+            _inputTest2.onTouchScreenKeyboardStatusChanged.AddListener(ReportChangeStatus);
+             */
         }
 
         public async override UniTaskVoid Show() 
@@ -99,6 +125,11 @@ namespace Joycollab.v2
             if (! name.Equals(gameObject.name)) return;
             if (visibleState != eVisibleState.Appeared) return;
 
+            if (TouchScreenKeyboard.visible) 
+            {
+                return;
+            }
+
             BackProcess();
         }
 
@@ -110,6 +141,7 @@ namespace Joycollab.v2
                 () => Application.Quit()
             );
         }
+
     #endregion  // event handling
     }
 }

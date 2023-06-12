@@ -2,18 +2,21 @@
 /// [mobile]
 /// 로그인 성공 후 대기 화면을 관리하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 03. 31
-/// @version        : 0.4
+/// @last update    : 2023. 06. 12
+/// @version        : 0.5
 /// @update         
 ///     v0.1 : 새 기획과 새 디자인 적용.
 ///     v0.2 (2022. 05. 25) : GetLobbyInfo() 추가.
 ///     v0.3 (2023. 03. 22) : FixedView 실험, UniTask 적용, UI Canvas 최적화.
 ///     v0.4 (2023. 03. 31) : Alarm, workspace info 관련해서도 Repository 에 저장하도록 로직 추가.
+///     v0.5 (2023. 06. 12) : Legacy Text 대신 TMP Text 사용하도록 수정.
 /// </summary>
 
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
+using TMPro;
 
 namespace Joycollab.v2
 {
@@ -22,9 +25,9 @@ namespace Joycollab.v2
         private const string TAG = "LoadInfoM";
 
         [Header("greetings")]
-        [SerializeField] private Text _txtGreetings;
-        [SerializeField] private Text _txtMessage;
-        [SerializeField] private Text _txtSpeaker;
+        [SerializeField] private TMP_Text _txtGreetings;
+        [SerializeField] private TMP_Text _txtMessage;
+        [SerializeField] private TMP_Text _txtSpeaker;
 
 
     #region Unity functions
@@ -54,10 +57,10 @@ namespace Joycollab.v2
 
             base.Appearing();
 
-            // ViewManager.singleton.Push(S.MobileScene_Office);
             ViewManager.singleton.StartOnMySeat(true);
             ViewManager.singleton.Push(S.MobileScene_MySeat);
 
+            // ViewManager.singleton.Push(S.MobileScene_Office);
             // string state = JsLib.GetCookie(Key.MOBILE_FIRST_PAGE);
             // ViewManager.singleton.StartOnMySeat(state.Equals("1"));
         }
@@ -122,7 +125,9 @@ namespace Joycollab.v2
             if (string.IsNullOrEmpty(res.message))
             {
                 R.singleton.MemberInfo = res.data;
-                _txtGreetings.text = $"환영합니다, {res.data.nickNm} 님";
+                Locale currentLocale = LocalizationSettings.SelectedLocale;
+                string greetings = LocalizationSettings.StringDatabase.GetLocalizedString("Sentences", "환영인사 m", currentLocale);
+                _txtGreetings.text = string.Format(greetings, res.data.nickNm);
             }
             else 
             {

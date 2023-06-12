@@ -2,19 +2,21 @@
 /// [mobile]
 /// TOP Navigation Bar
 /// @author         : HJ Lee
-/// @last update    : 2023. 03. 31
-/// @version        : 0.5
+/// @last update    : 2023. 06. 12
+/// @version        : 0.6
 /// @update
 ///     v0.1 (2022. 04. 27) : 최초 생성
 ///     v0.2 (2023. 03. 16) : 기존 코드 수정. UI 최적화 진행. (UniTask 적용)
 ///     v0.3 (2023. 03. 22) : FixedView 실험, UI 최적화 (TMP 제거)
 ///     v0.4 (2023. 03. 23) : Repository observer 실험.
 ///     v0.5 (2023. 03. 31) : R 에 추가한 alarm count 정보 업데이트 로직 추가.
+///     v0.6 (2023. 06. 12) : Legacy Text 를 TMP Text 로 변경.
 /// </summary>
 
 using UnityEngine;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
+using TMPro;
 
 namespace Joycollab.v2
 {
@@ -24,8 +26,8 @@ namespace Joycollab.v2
 
         [Header("profile")]
         [SerializeField] private Button _btnMyPage;
-        [SerializeField] private Text _txtName;
-        [SerializeField] private Text _txtDesc;
+        [SerializeField] private TMP_Text _txtName;
+        [SerializeField] private TMP_Text _txtDesc;
         [SerializeField] private RawImage _imgProfile;
         [SerializeField] private Vector2 _v2ProfileSize;
         [SerializeField] private Texture2D _texDefault;
@@ -33,7 +35,7 @@ namespace Joycollab.v2
         [Header("alarm")]
         [SerializeField] private Button _btnAlarm;
         [SerializeField] private Image _imgAlarmOn;
-        [SerializeField] private Text _txtAlarmCount;
+        [SerializeField] private TMP_Text _txtAlarmCount;
 
         [Header("channel")]
         [SerializeField] private Button _btnChannel;

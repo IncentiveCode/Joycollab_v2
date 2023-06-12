@@ -112,7 +112,7 @@ namespace Joycollab.v2
             _btnSignUp.onClick.AddListener(() => {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
                 PopupBuilder.singleton.OpenConfirm(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "text.회원가입 안내", currentLocale),
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Sentences", "회원가입 안내", currentLocale),
                     () => Debug.Log("TODO. LoginManager 생성 후, 확인 누르면 약관 동의로 이동.")
                 );
             });

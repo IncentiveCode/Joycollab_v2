@@ -1,14 +1,15 @@
 /// <summary>
 /// 여기저기 떨어져 있는 팝업 생성 함수를 하나로 묶기 위한 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 04. 17
-/// @version        : 0.5
+/// @last update    : 2023. 06. 12
+/// @version        : 0.6
 /// @update
 ///     v0.1 (2023. 02. 09) : TP 에서 작업했던 내용을 가지고 와서 편집.
 ///     v0.2 (2023. 03. 30) : 추가 정리 및 예시 기술.
 ///     v0.3 (2023. 04. 07) : mobile 과 web 에서 함께 사용할 수 있도록 구성.
 ///     v0.4 (2023. 04. 13) : singleton pattern 수정.
 ///     v0.5 (2023. 04. 17) : public function (for alert, confirm) 추가.
+///     v0.6 (2023. 06. 12) : GetPopupCount, Clear function 에서 transform 을 못 찾는 부분이 있어서 함수 수정.
 /// </summary>
 
 using UnityEngine;
@@ -64,6 +65,15 @@ namespace Joycollab.v2
 
         public int GetPopupCount() 
         {
+            if (_transform == null) 
+            {
+        #if UNITY_ANDROID || UNITY_IOS
+                _transform = GameObject.Find(S.Canvas_Popup_M).GetComponent<Transform>();
+        #else
+                _transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
+        #endif
+            }
+
             return _transform.childCount;
         }        
 
@@ -88,6 +98,15 @@ namespace Joycollab.v2
 
         private void Clear()
         {
+            if (_transform == null) 
+            {
+        #if UNITY_ANDROID || UNITY_IOS
+                _transform = GameObject.Find(S.Canvas_Popup_M).GetComponent<Transform>();
+        #else
+                _transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
+        #endif
+            }
+
             foreach (Transform child in _transform.GetComponentInChildren<Transform>())
             {
                 if (child.name.Equals(_transform.name) || child.GetComponent<PopupController>() == null) continue;
@@ -109,7 +128,7 @@ namespace Joycollab.v2
         {
             Locale currentLocale = LocalizationSettings.SelectedLocale;
             string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "알림", currentLocale);
-            string confirm = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "text.확인", currentLocale);
+            string confirm = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "확인", currentLocale);
 
             PopupController ctrl = Build();
             ctrl.Type = ePopupType.Alert;
@@ -139,8 +158,8 @@ namespace Joycollab.v2
         {
             Locale currentLocale = LocalizationSettings.SelectedLocale;
             string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "알림", currentLocale);
-            string confirm = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "text.확인", currentLocale);
-            string cancel = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "text.취소", currentLocale);
+            string confirm = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "확인", currentLocale);
+            string cancel = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "취소", currentLocale);
 
             PopupController ctrl = Build();
             ctrl.Type = ePopupType.Confirm;

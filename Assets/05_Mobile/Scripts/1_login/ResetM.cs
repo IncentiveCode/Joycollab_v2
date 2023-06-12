@@ -2,14 +2,15 @@
 /// [mobile]
 /// 비밀번호 재설정을 담당하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 03. 31
-/// @version        : 0.5
+/// @last update    : 2023. 06. 12
+/// @version        : 0.6
 /// @update
 ///     v0.1 : 최초 생성
 ///     v0.2 : 새로운 디자인 적용.
 ///     v0.3 (2022. 05. 25) : 디자인 수정안 적용. input field clear button 추가.
 ///     v0.4 (2023. 03. 20) : FixedView 실험, UniTask 적용, UI Canvas 최적화.
 ///     v0.5 (2023. 03. 31) : PopupBuilder 적용, InputSubmitDetector 적용
+///     v0.6 (2023. 06. 12) : Legacy InputField 를 TMP_InputField 로 변경, softkeyboard 출력상태에서 back button 입력시 내용 사라지는 오류 수정.
 /// </summary>
 
 using UnityEngine;
@@ -17,6 +18,7 @@ using UnityEngine.UI;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
+using TMPro;
 
 namespace Joycollab.v2
 {
@@ -26,11 +28,11 @@ namespace Joycollab.v2
         [SerializeField] private GameObject _goBeforeAuth;
 
         [Header(" - input e-mail")]
-        [SerializeField] private InputSubmitDetector _inputId;
+        [SerializeField] private TMP_InputField _inputId;
         [SerializeField] private Button _btnClearId;
 
         [Header(" - input phone")]
-        [SerializeField] private InputSubmitDetector _inputPhone;
+        [SerializeField] private TMP_InputField _inputPhone;
         [SerializeField] private Button _btnClearPhone;
 
         [Header(" - buttons")]
@@ -41,15 +43,15 @@ namespace Joycollab.v2
         [SerializeField] private GameObject _goAfterAuth;
 
         [Header(" - input code")]
-        [SerializeField] private InputSubmitDetector _inputCode;
+        [SerializeField] private TMP_InputField _inputCode;
         [SerializeField] private Button _btnClearCode;
 
         [Header(" - input new password")]
-        [SerializeField] private InputSubmitDetector _inputPw;
+        [SerializeField] private TMP_InputField _inputPw;
         [SerializeField] private Button _btnClearPw;
 
         [Header(" - input password confirm")]
-        [SerializeField] private InputSubmitDetector _inputPwConfirm;
+        [SerializeField] private TMP_InputField _inputPwConfirm;
         [SerializeField] private Button _btnClearPwConfirm;
 
         [Header(" - buttons")]
@@ -91,39 +93,66 @@ namespace Joycollab.v2
 
 
             // 0. before auth view
+            // - set 'e-mail' inputfield listener
+            SetInputFieldListener(_inputId);
             _inputId.onValueChanged.AddListener((value) => {
                 _btnClearId.gameObject.SetActive(! string.IsNullOrEmpty(value));
             });
-            _inputId.onKeyboardDone.AddListener(() => _inputPhone.Select());
-            _btnClearId.onClick.AddListener(() => _inputId.text = string.Empty);
+            _inputId.onSubmit.AddListener((value) => _inputPhone.Select());
+            _btnClearId.onClick.AddListener(() => {
+                _inputId.text = string.Empty;
+                _inputId.Select();
+            });
 
+            // - set 'phone' inputfield listener
+            SetInputFieldListener(_inputPhone);
             _inputPhone.onValueChanged.AddListener((value) => {
                 _btnClearPhone.gameObject.SetActive(! string.IsNullOrEmpty(value));
             });
-			_btnClearPhone.onClick.AddListener(() => _inputPhone.text = string.Empty);
+			_btnClearPhone.onClick.AddListener(() => {
+                _inputPhone.text = string.Empty;
+                _inputPhone.Select();
+            });
 
+            // - set button listener
             _btnFind.onClick.AddListener(() => CheckValidation());
             _btnBack.onClick.AddListener(() => BackProcess());
 
 
             // 1. after auth view
+            // - set 'auth code' inputfield listener
+            SetInputFieldListener(_inputCode);
             _inputCode.onValueChanged.AddListener((value) => {
                 _btnClearCode.gameObject.SetActive(! string.IsNullOrEmpty(value));
             });
-            _inputCode.onKeyboardDone.AddListener(() => _inputPw.Select());
-            _btnClearCode.onClick.AddListener(() => _inputCode.text = string.Empty);
+            _inputCode.onSubmit.AddListener((value) => _inputPw.Select());
+            _btnClearCode.onClick.AddListener(() => {
+                _inputCode.text = string.Empty;
+                _inputCode.Select();
+            });
 
+            // - set 'password' inputfield listener
+            SetInputFieldListener(_inputPw);
             _inputPw.onValueChanged.AddListener((value) => {
                 _btnClearPw.gameObject.SetActive(! string.IsNullOrEmpty(value));
             });
-            _inputPw.onKeyboardDone.AddListener(() => _inputPwConfirm.Select());
-            _btnClearPw.onClick.AddListener(() => _inputPw.text = string.Empty);
+            _inputPw.onSubmit.AddListener((value) => _inputPwConfirm.Select());
+            _btnClearPw.onClick.AddListener(() => {
+                _inputPw.text = string.Empty;
+                _inputPw.Select();
+            });
 
+            // - set 'password confirm' inputfield listener
+            SetInputFieldListener(_inputPwConfirm);
             _inputPwConfirm.onValueChanged.AddListener((value) => {
                 _btnClearPwConfirm.gameObject.SetActive(! string.IsNullOrEmpty(value));
             });
-            _btnClearPwConfirm.onClick.AddListener(() => _inputPwConfirm.text = string.Empty);
+            _btnClearPwConfirm.onClick.AddListener(() => {
+                _inputPwConfirm.text = string.Empty;
+                _inputPwConfirm.Select();
+            });
 
+            // - set button listener
             _btnReset.onClick.AddListener(() => ResetPassword());
             _btnCancel.onClick.AddListener(() => BackProcess());
         }
@@ -333,6 +362,7 @@ namespace Joycollab.v2
 
 
     #region event handling functions
+
         private async UniTask<int> Refresh() 
         {
             isAuth = false;
@@ -357,7 +387,14 @@ namespace Joycollab.v2
             if (! name.Equals(gameObject.name)) return; 
             if (visibleState != eVisibleState.Appeared) return;
 
-            BackProcess();
+            if (PopupBuilder.singleton.GetPopupCount() > 0) 
+            {
+                PopupBuilder.singleton.RequestClear();
+            }
+            else 
+            {
+                BackProcess();
+            }
         }
 
         private void BackProcess() 
@@ -375,6 +412,7 @@ namespace Joycollab.v2
                 ViewManager.singleton.Pop();
             }
         }
+
     #endregion  // event handling functions
     }
 }

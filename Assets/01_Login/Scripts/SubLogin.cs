@@ -129,7 +129,7 @@ namespace Joycollab.v2
             _btnSignUp.onClick.AddListener(() => {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
                 PopupBuilder.singleton.OpenConfirm(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "text.회원가입 안내", currentLocale),
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Sentences", "회원가입 안내", currentLocale),
                     () => Debug.Log("TODO. LoginManager 생성 후, 확인 누르면 약관 동의로 이동.")
                 );
             });
@@ -260,7 +260,7 @@ namespace Joycollab.v2
             // set info
             string officeName = R.singleton.GetParam(Key.WORKSPACE_NAME);
             Locale currentLocale = LocalizationSettings.SelectedLocale;
-            string greetings = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "text.환영인사2", currentLocale);
+            string greetings = LocalizationSettings.StringDatabase.GetLocalizedString("Sentences", "환영인사2", currentLocale);
             _txtGreetings.text = string.Format(greetings, officeName);
 
             string toggleValue = JsLib.GetCookie(Key.TOGGLE_SUB_ID_SAVED);
