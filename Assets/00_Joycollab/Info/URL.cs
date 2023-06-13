@@ -959,6 +959,18 @@ namespace Joycollab.v2
         /// </summary>
         public const string GET_TODO_LIST = SERVER_PATH +"/api/todo/target/{0}/{1}/{2}/{3}";
 
+        /// <summary>
+        /// desc : 공유 옵션이 있는 To-Do 조회
+        /// method : get
+        /// param
+        ///     {0} : my member seq
+        ///     {1} : view option (일간, 주간, 월간)
+        ///     {2} : filter type
+        ///     {3} : 조회 일자
+        /// </summary>
+        /// <value></value>
+        public const string GET_SHARE_TODO_LIST = SERVER_PATH +"/api/todo/{0}/{1}/{2}/{3}";
+
     #endregion
     }
 }

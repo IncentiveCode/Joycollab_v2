@@ -17,6 +17,7 @@ namespace Joycollab.v2
     {
         private const string TAG = "LoginModule";
 
+
     #region public functions
 
         /// <summary>
@@ -80,7 +81,8 @@ namespace Joycollab.v2
             return res;
         }
 
-    #endregion  // public functions
+        // TODO. GUEST LOGIN 추가
 
+    #endregion  // public functions
     }
 }

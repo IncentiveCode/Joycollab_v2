@@ -1,16 +1,60 @@
 /// <summary>
-/// Network 통신 - Space 관련 응답 
+/// Network 통신 - Space 관련 요청과 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 03. 24
-/// @version        : 1.0
+/// @last update    : 2023. 06. 13
+/// @version        : 0.2
 /// @update
-///     v1.0 (2023. 03. 24) : Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
+///     v0.1 (2023. 03. 24) : Joycollab 에서 사용하던 클래스 정리 및 통합.
+/// 	v0.2 (2023. 06. 12) : ToDoModule 을 사용하기 위한 ReqToDoList 추가.
 /// </summary>
 
 using System;
 
 namespace Joycollab.v2
 {
+	[Serializable]
+	public class ReqToDoList
+	{
+		public bool share;
+		public string startDate;
+		public int targetMemberSeq;
+		public int viewOpt;		// 0 : daily, 1 : weekly, 2 : monthly
+		public int filterOpt;	// 0 : 모든 공유, 1 : 부서 공유, 2 : 전사 공유
+		public string keyword;
+		public int pageNo;
+		public int pageSize;
+		public bool sortDescending;
+		public string sortProperty;
+
+		public ReqToDoList() 
+		{
+			share = sortDescending = false;
+			startDate = keyword = sortProperty = string.Empty;
+			targetMemberSeq = viewOpt = filterOpt = pageNo = pageSize = -1;
+		}
+
+		public string url
+		{
+			get {
+            	int memberSeq = R.singleton.memberSeq;
+
+				string url = share ?
+					string.Format(URL.GET_SHARE_TODO_LIST, memberSeq, viewOpt, filterOpt, startDate) :
+					string.Format(URL.GET_TODO_LIST, memberSeq, targetMemberSeq, viewOpt, startDate) ;
+				url += "?";
+
+				if (! string.IsNullOrEmpty(keyword)) url += "keyword="+ keyword +"&";
+				url += "page="+ pageNo +"&size="+ pageSize +"&";
+				url += "sortDirection=";
+				url += sortDescending ? "descending" : "ascending";
+				url += "sortProperty=";
+				url += sortProperty;
+
+				return url;
+			}
+		}
+	}
+
 	[Serializable]
 	public class ResToDoList 
 	{
