@@ -1,14 +1,16 @@
 /// <summary>
 /// Network 통신 - Space 관련 요청과 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 13
-/// @version        : 0.2
+/// @last update    : 2023. 06. 14
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 03. 24) : Joycollab 에서 사용하던 클래스 정리 및 통합.
 /// 	v0.2 (2023. 06. 12) : ToDoModule 을 사용하기 위한 ReqToDoList 추가.
+/// 	v0.3 (2023. 06. 14) : infinite scroll data 추가.
 /// </summary>
 
 using System;
+using Gpm.Ui;
 
 namespace Joycollab.v2
 {
@@ -74,13 +76,26 @@ namespace Joycollab.v2
 		public string st;
 		public string et;
 		public string completeTime;
-		// public MemberSeq createMember;
+		public MemberSeq createMember;
 		public string createdDate;
 		public int repetition;
 		public int shereType;
 		public string completeYn;
 		public string alarm;
 		public string pushedYn;
-		// public CreatorSpaceInfo space;
+		public CreatorSpaceInfo space;
+	}
+
+
+	public class ToDoData : InfiniteScrollData 
+	{
+		public ResToDoInfo info;
+		public bool loadMore;
+
+		public ToDoData() 
+		{
+			info = new ResToDoInfo();
+			loadMore = false;
+		}
 	}
 }

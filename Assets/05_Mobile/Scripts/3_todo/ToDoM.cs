@@ -15,6 +15,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
+using Gpm.Ui;
 using Cysharp.Threading.Tasks;
 using TMPro;
 
@@ -33,15 +34,6 @@ namespace Joycollab.v2
         public const int typeDaily = 0;
         public const int typeWeekly = 1;
         public const int typeMonthly = 2;
-
-
-        [Header("module")]    
-        [SerializeField] private ToDoModule _module;
-
-        [Header("contents")]
-        [SerializeField] private Transform _transformList;
-        [SerializeField] private GameObject _goItem;
-        [SerializeField] private GameObject _goLoadMore;
 
         [Header("input field")]
         [SerializeField] private TMP_InputField _inputSearch;
@@ -64,10 +56,19 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnBack;
         [SerializeField] private Button _btnCreate;
 
+        [Header("contents")]
+        [SerializeField] private InfiniteScroll _scrollView;
+        [SerializeField] private bool _isShare;
+
         // local variables
         private int filterOpt;
         private int viewOpt;
         private DateTime selectDate, startDate, endDate;
+
+        private List<ToDoData> dataList;
+        private int seq;
+        private ReqToDoList req;
+        private bool firstRequest;
         
 
     #region Unity functions
@@ -122,6 +123,9 @@ namespace Joycollab.v2
                 {
                     viewOpt = 0;
                     DisplayDate();
+
+                    req.viewOpt = viewOpt;
+                    GetList(req, true).Forget();
                 }
             });
             _toggleWeekly.onValueChanged.AddListener((on) => {
@@ -129,6 +133,9 @@ namespace Joycollab.v2
                 {
                     viewOpt = 1;
                     DisplayDate();
+
+                    req.viewOpt = viewOpt;
+                    GetList(req, true).Forget();
                 }
             });
             _toggleMonthly.onValueChanged.AddListener((on) => {
@@ -136,6 +143,9 @@ namespace Joycollab.v2
                 {
                     viewOpt = 2;
                     DisplayDate();
+
+                    req.viewOpt = viewOpt;
+                    GetList(req, true).Forget();
                 }
             });
 
@@ -146,11 +156,23 @@ namespace Joycollab.v2
             _btnDate.onClick.AddListener(() => PickDate());
             _btnPrev.onClick.AddListener(() => ChangeDate(true));
             _btnNext.onClick.AddListener(() => ChangeDate(false));
-            _btnCreate.onClick.AddListener(() => { });
+            _btnCreate.onClick.AddListener(() => {
+                // test
+                ToDoData data = new ToDoData();
+                dataList.Add(data);
+
+                _scrollView.InsertData(data);
+                seq ++;
+            });
 
 
             // init local variables
             selectDate = startDate = endDate = DateTime.Now;
+
+            dataList = new List<ToDoData>();
+            seq = 0;
+            req = new ReqToDoList();
+            firstRequest = true;
         }
 
         public async override UniTaskVoid Show() 
@@ -163,6 +185,50 @@ namespace Joycollab.v2
         }
 
     #endregion  // FixedView functions
+
+
+    #region for list
+
+        private async UniTaskVoid GetList(ReqToDoList req, bool refresh=true) 
+        {
+            string token = R.singleton.token;
+            string url = req.url;
+            PsResponse<ResToDoList> res = await NetworkTask.RequestAsync<ResToDoList>(url, eMethodType.GET, string.Empty, token);
+            if (string.IsNullOrEmpty(res.message)) 
+            {
+                _scrollView.Clear();
+                dataList.Clear();
+
+                ToDoData t;
+                foreach (var item in res.data.content) 
+                {
+                    t = new ToDoData();
+                    t.info = item;
+                    t.loadMore = false;
+
+                    dataList.Add(t);
+                    _scrollView.InsertData(t);
+                }
+
+                if (res.data.hasNext) 
+                {
+                    t = new ToDoData();
+                    t.loadMore = true;
+
+                    dataList.Add(t);
+                    _scrollView.InsertData(t);
+                }
+            }
+            else 
+            {
+                _scrollView.Clear();
+                dataList.Clear();
+
+                PopupBuilder.singleton.OpenAlert(res.message);
+            }
+        }
+
+    #endregion  // for list
 
 
     #region for date
@@ -228,6 +294,10 @@ namespace Joycollab.v2
             }
 
             DisplayDate();
+
+            req.startDate = selectDate.ToString("yyyy-MM-dd");
+            // req.viewOpt = viewOpt;
+            GetList(req, true).Forget();
         }
 
     #endregion  // for date
@@ -243,7 +313,25 @@ namespace Joycollab.v2
             // date
             DisplayDate();
 
-            await UniTask.Yield();
+            // get list
+            if (firstRequest)
+            {
+                req.share = _isShare;
+                req.startDate = selectDate.ToString("yyyy-MM-dd");
+                req.targetMemberSeq = R.singleton.memberSeq;
+                req.viewOpt = viewOpt;
+                req.filterOpt = filterOpt;
+                req.keyword = string.Empty;
+                req.pageNo = 1; 
+                req.pageSize = 20;
+                req.sortDescending = true;
+                req.sortProperty = "sd";
+                GetList(req, true).Forget();
+            }
+            else
+            {
+                await UniTask.Yield();
+            }
 
             return 0;
         }

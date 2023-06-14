@@ -1,13 +1,15 @@
 /// <summary>
 /// Network 통신 - 알림 관련 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 05. 10
-/// @version        : 0.1
+/// @last update    : 2023. 06. 14
+/// @version        : 0.2
 /// @update
 /// 	v0.1 (2023. 05. 10) : Joycollab 에서 사용하던 클래스 정리 및 통합
+/// 	v0.2 (2023. 06. 14) : infinite scroll data 추가
 /// </summary>
 
 using System;
+using Gpm.Ui;
 
 namespace Joycollab.v2
 {
@@ -35,5 +37,19 @@ namespace Joycollab.v2
 		public string contentJson;
 		public string dtm;
 		public bool read;
+	}
+
+
+	/// <summary>
+	/// NHN Gpm 의 infinite scroll view 를 위한 클래스.
+	/// </summary>
+	public class AlarmData : InfiniteScrollData 
+	{
+		public ResAlarmInfo info;
+
+		public AlarmData() 
+		{
+			info = new ResAlarmInfo();
+		}
 	}
 }

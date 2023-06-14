@@ -1,10 +1,11 @@
 /// <summary>
 /// Network 통신 - 사용자, 워크스페이스 멤버 관련 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 02. 23
-/// @version        : 1.0
+/// @last update    : 2023. 06. 14
+/// @version        : 0.2
 /// @update
-///     [2023. 02. 23] v1.0 - Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
+///     v0.1 (2023. 02. 23) : Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
+///     v0.2 (2023. 06. 14) : MemberSeq 클래스 추가.
 /// </summary>
 
 using System;
@@ -56,7 +57,7 @@ namespace Joycollab.v2
         public int seq;
         public ResUserInfo user;
         public string memberType;
-        public InfoSpace space;
+        public SpaceInfo space;
         public string nickNm;
         public string photo;
         public string jobGrade;
@@ -68,7 +69,7 @@ namespace Joycollab.v2
         public int position;
         public float x;
         public float y;
-        public InfoSpace cspace;
+        public SpaceInfo cspace;
         public float cx;
         public float cy;
         public MemberAuthInfo[] memberAuths;
@@ -88,5 +89,14 @@ namespace Joycollab.v2
         public bool lobby;
         public string zoomId;
         public string uiType;
+    }
+
+    [Serializable]
+    public class MemberSeq 
+    {
+        public string useYn;
+        public int seq;
+        public string nickNm;
+        public OnlySeq space;
     }
 }
