@@ -295,12 +295,12 @@ namespace Joycollab.v2
                     {
                         case eMenuTitle.Detail :
                             Debug.Log("건물 상세 화면 연결 예정.");
-                            ProgressBuilder.Instance.Build().Open(1f);
+                            ProgressBuilder.singleton.OpenProgress(1f);
                             break;
 
                         case eMenuTitle.Enter :
                             Debug.Log("Mirror server 연결 후 Square Scene 으로 이동 예정.");
-                            ProgressBuilder.Instance.Build().Open();
+                            ProgressBuilder.singleton.OpenProgress(1f);
 
                             /**
                             var manager = WorldNetworkManager.singleton;

@@ -44,6 +44,7 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnResetPw;
         [SerializeField] private Button _btnVersion;
         [SerializeField] private Button _btnTest;
+        [SerializeField] private Button _btnProgressTest;
 
         // local variables
         private List<ResWorkspaceInfo> workspaces;
@@ -142,6 +143,10 @@ namespace Joycollab.v2
             });
             _btnTest.gameObject.SetActive(URL.DEV);
 
+            _btnProgressTest.onClick.AddListener(() => {
+                ProgressBuilder.singleton.OpenProgress(2f);
+            });
+            _btnProgressTest.gameObject.SetActive(URL.DEV);
 
             // set local variables
             workspaces = new List<ResWorkspaceInfo>();
@@ -224,7 +229,7 @@ namespace Joycollab.v2
                 stringBuilder.Clear();
 
                 // ready
-                for (int i = 0; i < res.data.list.Length; i++) 
+                for (int i = 0; i < res.data.list.Count; i++) 
                 {
                     if (res.data.list[i].workspace.workspaceType.Equals(S.WORLD)) continue;
                     

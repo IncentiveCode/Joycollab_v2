@@ -1,21 +1,23 @@
 /// <summary>
 /// Network 통신 - 설정, 공통 코드 등의 정보 관련 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 14
-/// @version        : 0.2
+/// @last update    : 2023. 06. 15
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 02. 23) : Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
-///     v0.2 (2023. 06. 14) : seq 하나만 담고 있는 OnlySeq 클래스 추가
+///     v0.2 (2023. 06. 14) : seq 하나만 담고 있는 Seq 클래스 추가
+///     v0.3 (2023. 06. 15) : array 를 list 로 변경
 /// </summary>
 
 using System;
+using System.Collections.Generic;
 
 namespace Joycollab.v2
 {
     [Serializable]
     public class TpsList
     {
-        public TpsInfo[] list;
+        public List<TpsInfo> list;
     }
 
     [Serializable]
@@ -44,8 +46,8 @@ namespace Joycollab.v2
     {
         public string useYn;
         public int seq;
-        public alarmOptItemInfo[] alarmOptItems;
-        public alarmOptItemInfo[] alarmOptSounds;
+        public List<alarmOptItemInfo> alarmOptItems;
+        public List<alarmOptItemInfo> alarmOptSounds;
         public bool bottomPopupNotice;
     }
 
@@ -69,7 +71,7 @@ namespace Joycollab.v2
     }
 
     [Serializable]
-    public class OnlySeq 
+    public class Seq 
     {
         public int seq;
     }

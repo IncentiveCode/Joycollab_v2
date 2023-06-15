@@ -1,15 +1,17 @@
 /// <summary>
 /// Network 통신 - Space 관련 요청과 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 14
-/// @version        : 0.3
+/// @last update    : 2023. 06. 15
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 03. 24) : Joycollab 에서 사용하던 클래스 정리 및 통합.
 /// 	v0.2 (2023. 06. 12) : ToDoModule 을 사용하기 위한 ReqToDoList 추가.
 /// 	v0.3 (2023. 06. 14) : infinite scroll data 추가.
+/// 	v0.4 (2023. 06. 14) : array 를 list 로 변경.
 /// </summary>
 
 using System;
+using System.Collections.Generic;
 using Gpm.Ui;
 
 namespace Joycollab.v2

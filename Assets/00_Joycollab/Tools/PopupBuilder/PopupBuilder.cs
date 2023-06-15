@@ -38,29 +38,6 @@ namespace Joycollab.v2
 
     #region Public function
 
-        public PopupController Build() 
-        {
-            if (_goPopup == null) return null;
-
-        #if UNITY_ANDROID || UNITY_IOS
-            if (_goSlidePopup == null) return null;
-        #endif
-
-            if (_transform == null) 
-            {
-        #if UNITY_ANDROID || UNITY_IOS
-                _transform = GameObject.Find(S.Canvas_Popup_M).GetComponent<Transform>();
-        #else
-                _transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
-        #endif
-            }
-
-            var view = Instantiate(_goPopup, Vector3.zero, Quaternion.identity);
-            var lib = view.GetComponent<PopupController>();
-            view.transform.SetParent(_transform, false);
-            return lib;
-        }
-
         public void RequestClear() => Clear();
 
         public int GetPopupCount() 
@@ -94,6 +71,29 @@ namespace Joycollab.v2
             singleton = this;
             DontDestroyOnLoad(gameObject);
             return;
+        }
+        
+        private PopupController Build() 
+        {
+            if (_goPopup == null) return null;
+
+        #if UNITY_ANDROID || UNITY_IOS
+            if (_goSlidePopup == null) return null;
+        #endif
+
+            if (_transform == null) 
+            {
+        #if UNITY_ANDROID || UNITY_IOS
+                _transform = GameObject.Find(S.Canvas_Popup_M).GetComponent<Transform>();
+        #else
+                _transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
+        #endif
+            }
+
+            var view = Instantiate(_goPopup, Vector3.zero, Quaternion.identity);
+            var lib = view.GetComponent<PopupController>();
+            view.transform.SetParent(_transform, false);
+            return lib;
         }
 
         private void Clear()

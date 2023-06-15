@@ -32,6 +32,7 @@ namespace Joycollab.v2
 
         public const string Canvas_Popup = "Popup Canvas";
         public const string Canvas_Popup_M = "SafeArea _ popup";
+        public const string Canvas_Progress_M = "SafeArea _ progress";
 
     #endregion  // Canvas name
 
@@ -99,6 +100,8 @@ namespace Joycollab.v2
         public const string MobileScene_ToDo = "todo_m";
         public const string MobileScene_ToDoDetail = "todo detail_m";
         public const string MobileScene_CreateTodo = "create todo_m";
+        public const string MobileScene_Okr = "okr_m";
+        public const string MobileScene_OkrDetail = "okr detail_m";
         public const string MobileScene_CreateOkr = "create okr_m";
 
 

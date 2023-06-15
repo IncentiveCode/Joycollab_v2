@@ -19,6 +19,7 @@ namespace Joycollab.v2
 
 
     #region Unity functions
+
         private void Update() 
         {
             if (fAutoCloseTime == 0f) return;
@@ -29,10 +30,12 @@ namespace Joycollab.v2
                 Close();
             }
         }
+
     #endregion  // Unity functions
 
 
     #region Public functions
+
         public void Open(float timer=0f, System.Action func=null)
         {
             this.fAutoCloseTime = timer;
@@ -41,15 +44,18 @@ namespace Joycollab.v2
         }
 
         public void ForceClose() => Destroy(gameObject);
+
     #endregion  // Public functions
 
 
     #region Private functions
+    
         private void Close() 
         {
             func?.Invoke();
             Destroy(gameObject);
         }
+
     #endregion
     }
 }

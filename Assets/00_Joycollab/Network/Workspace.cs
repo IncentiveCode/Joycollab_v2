@@ -1,14 +1,16 @@
 /// <summary>
 /// Network 통신 - 워크스페이스 관련 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 03. 22
-/// @version        : 0.2
+/// @last update    : 2023. 06. 15
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 02. 22) : Joycollab 에서 사용하던 클래스 정리 및 통합 진행 (SimpleWorkspace, ResWorkspaceList, ResWorkspaceInfo)
 ///     v0.2 (2023. 03. 22) : Joycollab 에서 사용하던 클래스 정리 및 통합 진행 (LobbyInfo)
+///     v0.3 (2023. 06. 15) : array 를 list 로 변경 
 /// </summary>
 
 using System;
+using System.Collections.Generic;
 
 namespace Joycollab.v2
 {
@@ -56,7 +58,7 @@ namespace Joycollab.v2
     [Serializable]
     public class ResWorkspaceList 
     {
-        public ResWorkspaceInfo[] list;
+        public List<ResWorkspaceInfo> list;
     }
 
 
@@ -78,7 +80,7 @@ namespace Joycollab.v2
     public class LobbyInfo
     {
         public bool guest;
-        public int[] lobbyMembers;
+        public List<int> lobbyMembers;
         public string monitType;
         public string monitFile;
         public string monitUrl;

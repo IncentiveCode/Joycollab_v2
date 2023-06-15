@@ -13,34 +13,85 @@ namespace Joycollab.v2
 {
     public class ProgressBuilder : MonoBehaviour
     {
-        public static ProgressBuilder Instance; 
-
-        [SerializeField, Tooltip("for test")] private Transform canvas;
         // TODO. 추후 프로그레스 바도 제어할 수 있도록 만들 예정.
         // [SerializeField] private GameObject _goProgressBar;
         [SerializeField] private GameObject _goProgressDialog;
+        [SerializeField] private Transform _transform;
+
+        public static ProgressBuilder singleton { get; private set; } 
 
 
     #region Unity functions
+
         private void Awake() 
         {
-            Instance = this;
-            // canvas = GameObject.Find(S.POPUP_CANVAS).GetComponent<Transform>();
-            canvas = GameObject.Find("Popup Canvas").GetComponent<Transform>();
+            InitSingleton();
         }
+
     #endregion  // Unity functions
 
 
     #region Public functions
-        public ProgressDialog Build() 
+
+        public void OpenProgress(float timer) => OpenProgress(timer, null);
+        public void OpenProgress(float timer, System.Action action) 
         {
-            if (_goProgressDialog == null || canvas == null) return null;
+            ProgressDialog dialog = Build();
+            dialog.Open(timer, action);
+        }
+
+    #endregion  // Public functions
+
+
+    #region Private functions
+
+        private void InitSingleton() 
+        {
+            if (singleton != null && singleton == this) return;
+            if (singleton != null) 
+            {
+                Destroy(gameObject);
+                return;
+            }
+
+            singleton = this;
+            DontDestroyOnLoad(gameObject);
+            return;
+        }
+
+        private ProgressDialog Build() 
+        {
+            if (_goProgressDialog == null) return null;
+
+            if (_transform == null) 
+            {
+        #if UNITY_ANDROID || UNITY_IOS
+                _transform = GameObject.Find(S.Canvas_Progress_M).GetComponent<Transform>();
+        #endif
+            }
 
             var view = Instantiate(_goProgressDialog, Vector3.zero, Quaternion.identity);
             var lib = view.GetComponent<ProgressDialog>();
-            view.transform.SetParent(canvas, false);
+            view.transform.SetParent(_transform, false);
             return lib;
         }
-    #endregion  // Public functions
+
+        private void Clear() 
+        {
+            if (_transform == null) 
+            {
+        #if UNITY_ANDROID || UNITY_IOS
+                _transform = GameObject.Find(S.Canvas_Progress_M).GetComponent<Transform>();
+        #endif
+            }
+
+            foreach (Transform child in _transform.GetComponentInChildren<Transform>())
+            {
+                if (child.name.Equals(_transform.name) || child.GetComponent<ProgressDialog>() == null) continue;
+                Destroy(child.gameObject);
+            }
+        }
+
+    #endregion  // Private functions
     }
 }

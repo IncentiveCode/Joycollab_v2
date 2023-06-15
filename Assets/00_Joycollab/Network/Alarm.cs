@@ -2,13 +2,15 @@
 /// Network 통신 - 알림 관련 응답 
 /// @author         : HJ Lee
 /// @last update    : 2023. 06. 14
-/// @version        : 0.2
+/// @version        : 0.3
 /// @update
 /// 	v0.1 (2023. 05. 10) : Joycollab 에서 사용하던 클래스 정리 및 통합
 /// 	v0.2 (2023. 06. 14) : infinite scroll data 추가
+/// 	v0.3 (2023. 06. 15) : array 를 list 로 변경
 /// </summary>
 
 using System;
+using System.Collections.Generic;
 using Gpm.Ui;
 
 namespace Joycollab.v2
@@ -22,7 +24,7 @@ namespace Joycollab.v2
 	[Serializable]
 	public class ResAlarmList 
 	{
-		public ResAlarmInfo[] list;
+		public List<ResAlarmInfo> list;
 	}
 
 	[Serializable] 

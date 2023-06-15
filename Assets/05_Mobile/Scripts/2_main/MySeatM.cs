@@ -30,6 +30,7 @@ namespace Joycollab.v2
 
         [Header("menu")]
         [SerializeField] private Button _btnTodo;
+        [SerializeField] private Button _btnOkr;
         [SerializeField] private Button _btnBoard;
         [SerializeField] private Button _btnBookmark;
         [SerializeField] private Button _btnContact;
@@ -66,6 +67,7 @@ namespace Joycollab.v2
 
             // set button listener
             _btnTodo.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_ToDo));
+            _btnOkr.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Okr));
             _btnBoard.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Board));
             _btnBookmark.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Bookmark));
             _btnContact.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Contact));

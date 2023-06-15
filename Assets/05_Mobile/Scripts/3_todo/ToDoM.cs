@@ -55,6 +55,7 @@ namespace Joycollab.v2
         [Header("buttons")]
         [SerializeField] private Button _btnBack;
         [SerializeField] private Button _btnCreate;
+        [SerializeField] private Button _btnTest;
 
         [Header("contents")]
         [SerializeField] private InfiniteScroll _scrollView;
@@ -156,14 +157,7 @@ namespace Joycollab.v2
             _btnDate.onClick.AddListener(() => PickDate());
             _btnPrev.onClick.AddListener(() => ChangeDate(true));
             _btnNext.onClick.AddListener(() => ChangeDate(false));
-            _btnCreate.onClick.AddListener(() => {
-                // test
-                ToDoData data = new ToDoData();
-                dataList.Add(data);
-
-                _scrollView.InsertData(data);
-                seq ++;
-            });
+            // _btnCreate.onClick.AddListener(() => { });
 
 
             // init local variables
@@ -296,7 +290,6 @@ namespace Joycollab.v2
             DisplayDate();
 
             req.startDate = selectDate.ToString("yyyy-MM-dd");
-            // req.viewOpt = viewOpt;
             GetList(req, true).Forget();
         }
 
@@ -332,6 +325,8 @@ namespace Joycollab.v2
             {
                 await UniTask.Yield();
             }
+
+            _btnClear.gameObject.SetActive(! string.IsNullOrEmpty(_inputSearch.text));
 
             return 0;
         }
