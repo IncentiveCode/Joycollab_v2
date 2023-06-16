@@ -2,12 +2,13 @@
 /// [mobile] 
 /// BOTTOM Navigation Bar
 /// @author         : HJ Lee
-/// @last update    : 2023. 03. 22
-/// @version        : 0.3
+/// @last update    : 2023. 06. 16
+/// @version        : 0.4
 /// @update         :
 ///     v0.1 : 최초 생성.
 ///     v0.2 (2022. 06. 08) : toggle 에 속한 이미지 중 background 이미지는 on 상태일 때 Active false 처리. 
 ///     v0.3 (2023. 03. 22) : FixedView 실험, UI 최적화 (TMP 제거)
+///     v0.4 (2023. 06. 16) : meeting_m -> meeting root_m 로 변경.
 /// </summary>
 
 using UnityEngine;
@@ -80,10 +81,10 @@ namespace Joycollab.v2
             _toggleMeeting.onValueChanged.AddListener((on) => {
                 if (on) 
                 {
-                    if (ViewManager.singleton.GetTopViewName().Equals(S.MobileScene_Meeting)) return;
+                    if (ViewManager.singleton.GetTopViewName().Equals(S.MobileScene_MeetingRoot)) return;
 
                     ViewManager.singleton.PopAll();
-                    ViewManager.singleton.Push(S.MobileScene_Meeting);
+                    ViewManager.singleton.Push(S.MobileScene_MeetingRoot);
                 }
             });
 

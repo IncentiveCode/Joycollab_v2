@@ -1,19 +1,22 @@
 /// <summary>
 /// 시스템 상 저장 공간 (Repository) 
 /// @author         : HJ Lee
-/// @last update    : 2023. 05. 10
-/// @version        : 0.4
+/// @last update    : 2023. 06. 16
+/// @version        : 0.5
 /// @update
 ///     v0.1 (2023. 03. 17) : 파일 생성, Joycollab 에서 사용하는 것들 정리 시작.
 ///     v0.2 (2023. 03. 31) : SimpleWorkspace, Alarm 관련 항목 정리 시작, Notify 에서 generic <T> 제거.
 ///     v0.3 (2023. 04. 07) : LanguageManager 내용 추가. 
 ///     v0.4 (2023. 05. 10) : LoginViewManager 에서 사용하던 Param 관련 함수 추가.
+///     v0.5 (2023. 06. 16) : Locale 관련 코드 추가. (ChangeTextKorean, ChangeTextEnglish -> ChangeLocale)
 /// </summary>
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 
 namespace Joycollab.v2
 {
@@ -26,13 +29,15 @@ namespace Joycollab.v2
     
         private void Awake() 
         {
+            // region setting
+
+
             list = new List<Tuple<iRepositoryObserver, eStorageKey>>();
             list.Clear();
 
             dictParams = new Dictionary<string, string>();
             dictParams.Clear();
 
-            // 
             _alarmList = new List<ResAlarmInfo>();
             _alarmList.Clear();
         }
@@ -114,9 +119,10 @@ namespace Joycollab.v2
     #endregion  // ModuleController functions - implementations
 
 
-    #region Language
+    #region Language, region
 
         private string _region;
+        private bool isChanging;
 
         public string Region 
         {
@@ -140,18 +146,24 @@ namespace Joycollab.v2
                 return Region.Equals(S.REGION_KOREAN);
             }
         }
-        public void ChangeTextToKorean() 
+        public void ChangeLocale(int locale) 
         {
-            // LocalizationManager.Language = S.LANGUAGE_KOREAN;
-            _region = S.REGION_KOREAN;
+            if (isChanging) return; 
+            StartCoroutine(Change(locale));
         }
-        public void ChangeTextToEnglish() 
+        private IEnumerator Change(int locale) 
         {
-            // LocalizationManager.Language = S.LANGUAGE_ENGLISH;
-            _region = S.REGION_ENGLISH;
+            isChanging = true;
+
+            yield return LocalizationSettings.InitializationOperation;
+            LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[locale];
+
+            _region = locale == 0 ? S.REGION_KOREAN : S.REGION_ENGLISH;
+
+            isChanging = false;
         }
 
-    #endregion  // Language
+    #endregion  // Language, region
 
 
     #region Token & important information

@@ -1,5 +1,4 @@
 /// <summary>
-/// [PC Web]
 /// 여기저기 떨어져 있는 팝업 제어 함수를 하나로 묶기 위한 클래스
 /// @author         : HJ Lee
 /// @last update    : 2023. 04. 13

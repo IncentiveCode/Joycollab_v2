@@ -15,6 +15,7 @@
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
+
 namespace Joycollab.v2
 {
     public class PopupBuilder : MonoBehaviour
@@ -42,15 +43,7 @@ namespace Joycollab.v2
 
         public int GetPopupCount() 
         {
-            if (_transform == null) 
-            {
-        #if UNITY_ANDROID || UNITY_IOS
-                _transform = GameObject.Find(S.Canvas_Popup_M).GetComponent<Transform>();
-        #else
-                _transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
-        #endif
-            }
-
+            if (_transform == null) SetTransform();
             return _transform.childCount;
         }        
 
@@ -70,25 +63,24 @@ namespace Joycollab.v2
 
             singleton = this;
             DontDestroyOnLoad(gameObject);
-            return;
+        }
+
+        private void SetTransform() 
+        {
+        #if UNITY_ANDROID || UNITY_IOS
+            _transform = GameObject.Find(S.Canvas_Popup_M).GetComponent<Transform>();
+        #else
+            _transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
+        #endif
         }
         
         private PopupController Build() 
         {
-            if (_goPopup == null) return null;
-
         #if UNITY_ANDROID || UNITY_IOS
             if (_goSlidePopup == null) return null;
         #endif
-
-            if (_transform == null) 
-            {
-        #if UNITY_ANDROID || UNITY_IOS
-                _transform = GameObject.Find(S.Canvas_Popup_M).GetComponent<Transform>();
-        #else
-                _transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
-        #endif
-            }
+            if (_goPopup == null) return null;
+            if (_transform == null) SetTransform();
 
             var view = Instantiate(_goPopup, Vector3.zero, Quaternion.identity);
             var lib = view.GetComponent<PopupController>();
@@ -98,14 +90,7 @@ namespace Joycollab.v2
 
         private void Clear()
         {
-            if (_transform == null) 
-            {
-        #if UNITY_ANDROID || UNITY_IOS
-                _transform = GameObject.Find(S.Canvas_Popup_M).GetComponent<Transform>();
-        #else
-                _transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
-        #endif
-            }
+            if (_transform == null) SetTransform();
 
             foreach (Transform child in _transform.GetComponentInChildren<Transform>())
             {
@@ -184,15 +169,8 @@ namespace Joycollab.v2
 
         public void OpenSlide(string title, string[] options, string[] extra, int viewID, bool cancelable=false) 
         {
-            if (_transform == null) 
-            {
-        #if UNITY_ANDROID || UNITY_IOS
-                _transform = GameObject.Find(S.Canvas_Popup_M).GetComponent<Transform>();
-        #else
-                _transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
-        #endif
-            }
-
+            if (_transform == null) SetTransform();
+            
             AndroidSelectCallback.ViewID = viewID;
             AndroidSelectCallback.extraData.Clear();
             foreach (string s in extra) 

@@ -56,19 +56,19 @@ namespace Joycollab.v2
 
             singleton = this;
             DontDestroyOnLoad(gameObject);
-            return;
+        }
+
+        private void SetTransform() 
+        {
+        #if UNITY_ANDROID || UNITY_IOS
+            _transform = GameObject.Find(S.Canvas_Progress_M).GetComponent<Transform>();
+        #endif
         }
 
         private ProgressDialog Build() 
         {
             if (_goProgressDialog == null) return null;
-
-            if (_transform == null) 
-            {
-        #if UNITY_ANDROID || UNITY_IOS
-                _transform = GameObject.Find(S.Canvas_Progress_M).GetComponent<Transform>();
-        #endif
-            }
+            if (_transform == null) SetTransform();
 
             var view = Instantiate(_goProgressDialog, Vector3.zero, Quaternion.identity);
             var lib = view.GetComponent<ProgressDialog>();
@@ -78,12 +78,7 @@ namespace Joycollab.v2
 
         private void Clear() 
         {
-            if (_transform == null) 
-            {
-        #if UNITY_ANDROID || UNITY_IOS
-                _transform = GameObject.Find(S.Canvas_Progress_M).GetComponent<Transform>();
-        #endif
-            }
+            if (_transform == null) SetTransform();
 
             foreach (Transform child in _transform.GetComponentInChildren<Transform>())
             {

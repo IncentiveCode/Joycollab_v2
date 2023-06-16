@@ -1,3 +1,12 @@
+/// <summary>
+/// View ID 값 정리 문서
+/// @author         : HJ Lee
+/// @last update    : 2023. 06. 16
+/// @version        : 0.2
+/// @update
+///     v0.1 (2023. 04. 19) : 최초 생성. 기존 Joycollab 에서 사용하는 ID 와 Mobile View ID 정리
+///     v0.2 (2023. 06. 16) : Mobile Seminar 관련 ID 추가
+/// </summary>
 
 namespace Joycollab.v2
 {
@@ -103,7 +112,7 @@ namespace Joycollab.v2
         public const int MobileScene_Office = 10023;
         public const int MobileScene_MySeat = 10024;
         public const int MobileScene_FileRoot = 10025;
-        public const int MobileScene_Meeting = 10026;
+        public const int MobileScene_MeetingRoot = 10026;
         public const int MobileScene_Chat = 10027;
 
 
@@ -113,7 +122,9 @@ namespace Joycollab.v2
         public const int MobileScene_ToDo = 10030;
         public const int MobileScene_ToDoDetail = 10031;
         public const int MobileScene_CreateTodo = 10032;
-        public const int MobileScene_CreateOkr = 10033;
+		public const int MobileScene_Okr = 10033;
+		public const int MobileScene_OkrDetail = 10034;
+        public const int MobileScene_CreateOkr = 10035;
 
 
         // ---------- ---------- ----------
@@ -131,6 +142,7 @@ namespace Joycollab.v2
         public const int MobileScene_NoticeWrite = 10051;
         public const int MobileScene_NoticeDetail = 10052;
         public const int MobileScene_SystemNotice = 10053;
+        public const int MobileScene_SystemNoticeDetail = 10054;
 
 
         // ---------- ---------- ----------
@@ -143,32 +155,41 @@ namespace Joycollab.v2
         // ---------- ---------- ----------
         // 07. Meeting 
 
-        public const int MobileScene_MeetingCreate = 10070;
-        public const int MobileScene_MeetingDetail = 10071;
-        public const int MobileScene_MeetingHistory = 10072;
-        public const int MobileScene_MeetingMembers = 10073;
-
-
-		// ---------- ---------- ----------
-        // 08. my page 
-
-        public const int MobileScene_Bookmark = 10080;
-        public const int MobileScene_Contact = 10081;
-        public const int MobileScene_MyInfo = 10082;
-        public const int MobileScene_MyEmotion = 10083;
-        public const int MobileScene_Attendance = 10084;
-        public const int MobileScene_AttendanceHistory = 10085;
-        public const int MobileScene_MyWorkspace = 10086;
-        public const int MobileScene_Settings = 10087;
-        public const int MobileScene_Subscriptions = 10088;
-        public const int MobileScene_Feedback = 10089;
+		public const int MobileScene_Meeting = 10070;
+        public const int MobileScene_MeetingCreate = 10071;
+        public const int MobileScene_MeetingDetail = 10072;
+        public const int MobileScene_MeetingHistory = 10073;
+        public const int MobileScene_MeetingMembers = 10074;
 
 
         // ---------- ---------- ----------
-        // 09. Popup
+        // 08. Seminar 
+
+		public const int MobileScene_Seminar = 10080;
+		public const int MobileScene_SeminarCreate = 10081;
+		public const int MobileScene_SeminarDetail = 10082;
+
+
+		// ---------- ---------- ----------
+        // 09. my page 
+
+        public const int MobileScene_Bookmark = 10090;
+        public const int MobileScene_Contact = 10091;
+        public const int MobileScene_MyInfo = 10092;
+        public const int MobileScene_MyEmotion = 10093;
+        public const int MobileScene_Attendance = 10094;
+        public const int MobileScene_AttendanceHistory = 10095;
+        public const int MobileScene_MyWorkspace = 10096;
+        public const int MobileScene_Settings = 10097;
+        public const int MobileScene_Subscriptions = 10098;
+        public const int MobileScene_Feedback = 10099;
+
+
+        // ---------- ---------- ----------
+        // 10. Popup
         
-        public const int MobileScene_MemberDetail = 10090;
-        public const int MobileScene_SlidePopup = 10091;
+        public const int MobileScene_MemberDetail = 10100;
+        public const int MobileScene_SlidePopup = 10101;
 
 	#endregion	// MobileScene ID
 	}

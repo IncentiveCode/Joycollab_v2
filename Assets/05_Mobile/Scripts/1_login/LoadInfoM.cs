@@ -56,6 +56,7 @@ namespace Joycollab.v2
             await Refresh();
 
             base.Appearing();
+            await UniTask.Delay(500);
 
             ViewManager.singleton.StartOnMySeat(true);
             ViewManager.singleton.Push(S.MobileScene_MySeat);
@@ -78,6 +79,11 @@ namespace Joycollab.v2
                 GetOfficeInfo(),
                 GetAlarmList()
             );
+
+            // text 출력
+            Locale currentLocale = LocalizationSettings.SelectedLocale;
+            string greetings = LocalizationSettings.StringDatabase.GetLocalizedString("Sentences", "환영인사 m", currentLocale);
+            _txtGreetings.text = string.Format(greetings, R.singleton.myName);
 
             // TODO. 추후 office view 작업할 때 다시 적용할 것.
             // MobileManager.singleton.SetInfo();
@@ -125,9 +131,12 @@ namespace Joycollab.v2
             if (string.IsNullOrEmpty(res.message))
             {
                 R.singleton.MemberInfo = res.data;
-                Locale currentLocale = LocalizationSettings.SelectedLocale;
-                string greetings = LocalizationSettings.StringDatabase.GetLocalizedString("Sentences", "환영인사 m", currentLocale);
-                _txtGreetings.text = string.Format(greetings, res.data.nickNm);
+
+                Debug.Log("LoadInfoM | current language : "+ res.data.lan.id);
+                if (res.data.lan.id.Equals(S.REGION_KOREAN))
+                    R.singleton.ChangeLocale(0);
+                else
+                    R.singleton.ChangeLocale(1);
             }
             else 
             {

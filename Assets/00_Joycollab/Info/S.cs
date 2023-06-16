@@ -33,6 +33,8 @@ namespace Joycollab.v2
         public const string Canvas_Popup = "Popup Canvas";
         public const string Canvas_Popup_M = "SafeArea _ popup";
         public const string Canvas_Progress_M = "SafeArea _ progress";
+        public const string Canvas_Webview = "Webview Canvas";
+        public const string Canvas_Webview_M = "SafeArea _ webview";
 
     #endregion  // Canvas name
 
@@ -146,7 +148,6 @@ namespace Joycollab.v2
         public const string MobileScene_Seminar = "seminar_m";
         public const string MobileScene_SeminarCreate = "seminar create_m";
         public const string MobileScene_SeminarDetail = "seminar detail_m";
-        public const string MobileScene_SeminarHistory = "seminar history_m";
 
 
         // ---------- ---------- ----------

@@ -53,7 +53,7 @@ namespace Joycollab.v2
             viewID = ID.MobileScene_PatchNote;
 
             // set button listener
-            _btnBack.onClick.AddListener(() => ViewManager.singleton.Pop());
+            _btnBack.onClick.AddListener(() => BackProcess());
         }
 
         public async override UniTaskVoid Show() 
@@ -72,10 +72,9 @@ namespace Joycollab.v2
 
         private async UniTask<int> Refresh() 
         {
-            await UniTask.Yield();
-
             _scrollbar.value = 1;
 
+            await UniTask.Yield();
             return 0;
         }
 

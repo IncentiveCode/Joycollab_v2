@@ -54,7 +54,6 @@ namespace Joycollab.v2
 
             singleton = this;
             DontDestroyOnLoad(gameObject);
-            return;
         }
 
     #endregion  // Initialize

@@ -200,6 +200,7 @@ namespace Joycollab.v2
 
                 R.singleton.ID = id;
                 R.singleton.TokenInfo = res.data;
+                JsLib.SetCookie(Key.SAVED_LOGIN_ID, id);
 
                 GetWorkspaceList().Forget();
             }
@@ -290,7 +291,7 @@ namespace Joycollab.v2
         private async UniTask<int> Refresh() 
         {
             // view control
-            // MobileManager.singleton.ShowNavigation(false);
+            ViewManager.singleton.ShowNavigation(false);
 
             // refresh
             _inputPw.text = string.Empty;
