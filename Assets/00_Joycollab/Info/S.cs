@@ -90,7 +90,7 @@ namespace Joycollab.v2
         public const string MobileScene_Office = "office_m";
         public const string MobileScene_MySeat = "my seat_m";
         public const string MobileScene_FileRoot = "file root_m";
-        public const string MobileScene_Meeting = "meeting_m";
+        public const string MobileScene_MeetingRoot = "meeting root_m";
         public const string MobileScene_Chat = "chat_m";
 
 
@@ -133,6 +133,7 @@ namespace Joycollab.v2
         // ---------- ---------- ----------
         // 07. Meeting 
 
+        public const string MobileScene_Meeting = "meeting_m";
         public const string MobileScene_MeetingCreate = "meeting create_m";
         public const string MobileScene_MeetingDetail = "meeting detail_m";
         public const string MobileScene_MeetingHistory = "meeting history_m";
@@ -140,7 +141,16 @@ namespace Joycollab.v2
 
 
         // ---------- ---------- ----------
-        // 08. my page 
+        // 08. Seminar 
+
+        public const string MobileScene_Seminar = "seminar_m";
+        public const string MobileScene_SeminarCreate = "seminar create_m";
+        public const string MobileScene_SeminarDetail = "seminar detail_m";
+        public const string MobileScene_SeminarHistory = "seminar history_m";
+
+
+        // ---------- ---------- ----------
+        // 09. my page 
 
         public const string MobileScene_Bookmark = "bookmark_m";
         public const string MobileScene_Contact = "contact_m";
@@ -155,7 +165,7 @@ namespace Joycollab.v2
 
 
         // ---------- ---------- ----------
-        // 09. Popup
+        // 10. Popup
         
         public const string MobileScene_MemberDetail = "member detail_m";
         public const string MobileScene_SlidePopup = "slide popup_m";
