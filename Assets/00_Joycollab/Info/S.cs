@@ -204,5 +204,39 @@ namespace Joycollab.v2
         public const string GUEST = "게스트"; 
 
     #endregion  // Member type
+
+
+    #region permission
+
+        // - 로비, 로비 권한
+        public const string LOBBY = "로비";
+        public const string AUTH_CREATE_NOTICE = "공지사항 작성";
+
+        // - 회의실, 회의실 권한
+        public const string MEETING_ROOM = "회의실";
+        public const string AUTH_CREATE_MEETING = "회의 생성/수정";
+        public const string AUTH_READ_MEETING = "회의 조회";
+        public const string AUTH_INVITE_MEETING = "회의 초대/추방";
+
+        // - 휴게실
+        public const string LOUNGE = "휴게실";
+
+        // - 게시판 권한
+        public const string AUTH_READ_BOARD = "게시글 조회";
+        public const string AUTH_CREATE_BOARD = "게시글 작성";
+        public const string AUTH_CREATE_COMMENT = "게시글 댓글 작성";
+
+        // - 파일함 권한
+        public const string AUTH_CREATE_FOLDER = "폴더 생성";
+        public const string AUTH_DELETE_FOLDER = "폴더 삭제";
+        public const string AUTH_READ_FILE = "파일 조회";
+        public const string AUTH_UPLOAD_FILE = "파일 업로드";
+        public const string AUTH_DOWNLOAD_FILE = "파일 다운로드";
+        public const string AUTH_DELETE_FILE = "파일 삭제";
+
+        // - 스페이스에서 사용하는 권한
+        public const string AUTH_SEATING_ARRANGE = "자리 배치";
+    
+    #endregion  // permission
     }
 }

@@ -88,15 +88,6 @@ namespace Joycollab.v2
             await UniTask.Yield();
         }
 
-        public async virtual UniTaskVoid Show(int opt) 
-        {
-            visibleState = eVisibleState.Appearing;
-
-            // TODO. add 'Mobile Progress'
-
-            await UniTask.Yield();
-        }
-
         public async virtual UniTaskVoid Show(string opt="") 
         {
             visibleState = eVisibleState.Appearing;

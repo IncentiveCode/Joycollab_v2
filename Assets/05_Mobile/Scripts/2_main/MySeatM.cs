@@ -102,12 +102,14 @@ namespace Joycollab.v2
             if (! name.Equals(gameObject.name)) return;
             if (visibleState != eVisibleState.Appeared) return;
 
-            if (TouchScreenKeyboard.visible) 
+            if (PopupBuilder.singleton.GetPopupCount() > 0)
             {
-                return;
+                PopupBuilder.singleton.RequestClear();
             }
-
-            BackProcess();
+            else 
+            {
+                BackProcess();
+            } 
         }
 
         private void BackProcess() 

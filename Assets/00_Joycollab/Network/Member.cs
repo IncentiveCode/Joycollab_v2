@@ -1,12 +1,13 @@
 /// <summary>
 /// Network 통신 - 사용자, 워크스페이스 멤버 관련 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 15
-/// @version        : 0.3
+/// @last update    : 2023. 06. 19
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 02. 23) : Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
 ///     v0.2 (2023. 06. 14) : MemberSeq 클래스 추가.
 ///     v0.3 (2023. 06. 15) : array 를 list 로 변경, SimpleMemberList, SimpleMemberInfo, SimpleUser 클래스 추가.
+///     v0.4 (2023. 06. 19) : MemberName 클래스 추가.
 /// </summary>
 
 using System;
@@ -100,6 +101,13 @@ namespace Joycollab.v2
         public int seq;
         public string nickNm;
         public Seq space;
+    }
+
+    [Serializable] 
+    public class MemberName 
+    {
+        public string useYn;
+        public string nickNm;
     }
 
     [Serializable]

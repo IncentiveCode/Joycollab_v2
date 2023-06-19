@@ -8,8 +8,6 @@
 ///     v0.1 (2023. 06. 16) : 최초 생성.
 /// </summary>
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Localization;

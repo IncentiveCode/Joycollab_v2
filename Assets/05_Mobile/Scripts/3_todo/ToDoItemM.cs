@@ -8,8 +8,6 @@
 ///     v0.1 (2022. 06. 14) : 최초 생성
 /// </summary>
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Gpm.Ui;
@@ -59,7 +57,6 @@ namespace Joycollab.v2
         public override void UpdateData(InfiniteScrollData itemData) 
         {
             base.UpdateData(itemData);
-
             ToDoData data = (ToDoData) itemData; 
 
             _imgLoadMore.gameObject.SetActive(data.loadMore);

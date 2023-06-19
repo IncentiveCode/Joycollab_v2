@@ -1,16 +1,18 @@
 /// <summary>
 /// Network 통신 라이브러리  
 /// @author         : HJ Lee
-/// @last update    : 2023. 05. 10
-/// @version        : 0.4
+/// @last update    : 2023. 06. 19
+/// @version        : 0.5
 /// @update
 ///     v0.1 (2023. 02. 20) : UniTask 사용해서 최초 생성.
 ///     v0.2 (2023. 03. 31) : int 형태로 리턴되는 결과를 처리하기 위해, PsResponse 안에 int 형 data 추가.
 ///     v0.3 (2023. 04. 03) : Token refresh logic 추가. API 호출시 항상 체크 > 만료시에만 체크.
 ///     v0.4 (2023. 05. 10) : extra field 추가.
+///     v0.5 (2023. 06. 19) : multipart form post method 추가.
 /// </summary>
 
 using System;
+using System.Collections.Generic;
 using System.Text;
 using System.Threading;
 using UnityEngine;
@@ -75,6 +77,7 @@ namespace Joycollab.v2
         protected static double TIMEOUT_DEFAULT = 3;
         protected static double TIMEOUT_WEATHER = 10;
         protected static double TIMEOUT_TEXTURE = 15;
+        protected static double TIMEOUT_MULTIPART = 180;
 
         // HTTP Status Code
         protected const int HTTP_EXCEPTION = -1; 
@@ -94,6 +97,7 @@ namespace Joycollab.v2
         protected const string ACCEPT_LANGUAGE = "Accept-Language";
         protected const string CONTENT_TYPE = "Content-Type";
         public const string CONTENT_JSON = "application/json";
+        public const string CONTENT_MULTIPART = "multipart/form-data; boundary=";
         public const string AUTHORIZATION = "Authorization";
 
         // common strings in Request
@@ -309,6 +313,112 @@ namespace Joycollab.v2
 
             return new PsResponse<T>(HTTP_EXCEPTION, "알 수 없는 오류");
         }
+
+        public static async UniTask<PsResponse<T>> PostMultipartAsync<T>(string url, List<IMultipartFormSection> body, string token) 
+        {
+            // 0. test
+            Debug.Log("Request url : "+ url);
+
+            // 1. network check
+            await CheckConnection();
+
+            // 2. timeout setting
+            var cts = new CancellationTokenSource();
+            cts.CancelAfterSlim(TimeSpan.FromSeconds(TIMEOUT_MULTIPART));
+
+            // 3. set multipart form section process
+            List<IMultipartFormSection> origin = new List<IMultipartFormSection>(body);
+            byte[] boundary = UnityWebRequest.GenerateBoundary();
+            byte[] formSections = UnityWebRequest.SerializeFormSections(origin, boundary);
+            byte[] terminate = Encoding.UTF8.GetBytes(string.Concat("\r\n--", Encoding.UTF8.GetString(boundary), "--"));
+            byte[] bytes = new byte[formSections.Length + terminate.Length];
+            Buffer.BlockCopy(formSections, 0, bytes, 0, formSections.Length);
+            Buffer.BlockCopy(terminate, 0, bytes, formSections.Length, terminate.Length);
+            string contentType = string.Concat(CONTENT_MULTIPART, Encoding.UTF8.GetString(boundary));
+
+            // 4. create UnityWebRequest
+            UnityWebRequest req = UnityWebRequest.Post(url, origin); 
+            req.certificateHandler = new WebRequestCert();
+            req.useHttpContinue = false;
+            req.uploadHandler = (UploadHandler)new UploadHandlerRaw(bytes);
+            req.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
+
+            // 5. set header
+            // req.SetRequestHeader(ACCEPT_LANGUAGE, LanguageManager.Instance.Region);
+            req.SetRequestHeader(ACCEPT_LANGUAGE, S.REGION_KOREAN);
+            req.SetRequestHeader(CONTENT_TYPE, contentType);
+            req.SetRequestHeader(AUTHORIZATION, token);
+
+            // 6. request to server
+            try 
+            {
+                var res = await req.SendWebRequest().WithCancellation(cts.Token);
+                long code = req.responseCode;
+                string data = res.downloadHandler.text;
+
+                if (data.Length == 0)
+                {
+                    return new PsResponse<T>(code, string.Empty);
+                }
+
+                // json 형태가 아니라면, data 를 그대로 리턴
+                string first = data.Substring(0, 1);
+                if (! first.Equals("[") && ! first.Equals("{")) 
+                {
+                    return new PsResponse<T>(code, string.Empty, data);
+                }
+
+                // 첫글자가 [ 로 시작하면, list 를 붙여준다.
+                if (first.Equals("["))
+                {
+                    data = "{\"list\":" + data + "}";
+                }
+
+                T result = JsonUtility.FromJson<T>(data);
+                return new PsResponse<T>(code, result);
+            }
+            catch (OperationCanceledException ce) 
+            {
+                if (ce.CancellationToken == cts.Token) 
+                {
+                    Debug.LogError("NetworkTask | PostMultipartAsync() timeout exception : "+ ce.Message);
+
+                    // re-try
+                    return await PostMultipartAsync<T>(url, body, token);
+                }
+            }
+            catch (Exception e) 
+            {
+                Debug.LogError($@"NetworkTask | PostMultipartAsync() occur exception.
+                        - URL : {url}
+                        - Response Code : {req.responseCode}
+                        - Result : {req.downloadHandler.text}
+                        - Exception : {e.Message}");
+
+                if (req.responseCode == HTTP_STATUS_CODE_UNAUTHORIZED && ! string.IsNullOrEmpty(R.singleton.refreshToken)) 
+                {
+                    string t = await RefreshToken();
+                    if (string.IsNullOrEmpty(t))
+                    {
+                        return await PostMultipartAsync<T>(url, body, R.singleton.token);
+                    }
+                }
+                else 
+                {
+                    long code = req.responseCode;
+                    string message = HandleError(req.responseCode, req.downloadHandler.text);
+                    if (message.Length == 0)
+                    {
+                        return new PsResponse<T>(code, e.Message);
+                    }
+
+                    return new PsResponse<T>(code, message);
+                }
+            }
+
+            return new PsResponse<T>(HTTP_EXCEPTION, "알 수 없는 오류");
+        }
+
     #endregion
 
 

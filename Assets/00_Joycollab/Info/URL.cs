@@ -1,18 +1,19 @@
 /// <summary>
 /// NetworkTask 를 위한 API URL 정리 문서 
 /// @author         : HJ Lee
-/// @last update    : 2023. 04. 14
-/// @version        : 0.5
+/// @last update    : 2023. 06. 19
+/// @version        : 0.6
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리
 ///     v0.2 (2023. 03. 20) : Tray app 관련 URL 추가
 ///     v0.3 (2023. 04. 04) : Joycollab 에서 사용하던 URL 정리. (Server address, System link, Google Drive API, Joycollab Web Page Link)
 ///     v0.4 (2023. 04. 05) : Joycollab 에서 사용하던 URL 정리. (AdmApi, UserApi - workspace, meeting)
 ///     v0.5 (2023. 04. 14) : Joycollab 에서 사용하던 URL 정리. (UserApi - member)
+///     v0.6 (2023. 06. 19) : Joycollab 에서 사용하던 URL 정리. (UserApi - File)
 /// </summary>
 
-// #define DEV // Dev Server
-#define RELEASE // Live Server
+#define DEV // Dev Server
+// #define RELEASE // Live Server
 
 namespace Joycollab.v2
 {
@@ -727,9 +728,9 @@ namespace Joycollab.v2
         ///     {3} : language code (ko / en)
         ///     {4} : mobile 의 경우, token
         /// </summary>
-        public const string URL_MEETING_LINK = PATH +"/meeting_service/{0}/{1}/{2}/meeting?lan={3}";
-        public const string URL_SEMINAR_LINK = PATH +"/meeting_service/{0}/{1}/{2}/seminar?lan={3}";
-        public const string URL_MOBILE_MEETING_LINK = PATH +"/meeting_service/{0}/{1}/{2}/meeting_mobile?lan={3}&token={4}";
+        public const string MEETING_LINK = PATH +"/meeting_service/{0}/{1}/{2}/meeting?lan={3}";
+        public const string SEMINAR_LINK = PATH +"/meeting_service/{0}/{1}/{2}/seminar?lan={3}";
+        public const string MOBILE_MEETING_LINK = PATH +"/meeting_service/{0}/{1}/{2}/meeting_mobile?lan={3}&token={4}";
 
 
         /// <summary>
@@ -818,6 +819,108 @@ namespace Joycollab.v2
         ///     {2} : file path
         /// </summary>
         public const string DOWNLOAD_MEETING_FILE = SERVER_PATH +"/api/meeting/down/{0}/{1}?filePath={2}";
+
+
+        // ---------- ---------- ----------
+        // 05. File API
+
+        /// <summary>
+        /// desc : 파일 리스트 조회 / 파일 업로드
+        /// method : get, post
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : folder path
+        /// </summary>
+        public const string FILE_LIST = SERVER_PATH +"/api/file/{0}/{1}?folder={2}";
+
+        /// <summary>
+        /// desc : 파일 삭제
+        /// method : delete
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : file path
+        /// </summary>
+        public const string DELETE_FILE = SERVER_PATH +"/api/file/{0}/{1}?filePath={2}";  
+
+        /// <summary>
+        /// desc : 파일/폴더 복사 붙여넣기
+        /// method : post
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : source space seq
+        ///     {2} : target space seq
+        ///     {3} : source
+        ///     {4} : target
+        /// </summary>
+        public const string COPY_AND_PASTE = SERVER_PATH +"/api/file/copy/{0}/{1}/{2}?source={3}&target={4}";  
+
+        /// <summary>
+        /// desc : 파일 다운로드
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : file path
+        /// </summary>
+        public const string DOWNLOAD_FILE = SERVER_PATH +"/api/file/down/{0}/{1}?filePath={2}";
+
+        /// <summary>
+        /// desc : 파일 경로 조회
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : member seq
+        ///     {3} : file seq
+        /// </summary>
+        public const string GET_FULLPATH = SERVER_PATH +"/api/file/fullPath/{0}/{1}/{2}/{3}";
+
+        /// <summary>
+        /// desc : 파일함 키워드 검색
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : member seq
+        ///     {3} : keyword
+        ///     {4} : page
+        ///     {5} : size
+        /// </summary>
+        public const string SEARCH_FILE = SERVER_PATH +"/api/file/keyword/{0}/{1}/{2}?keyword={3}&page={4}&size={5}";  
+
+        /// <summary>
+        /// desc : 새 폴더 생성
+        /// method : post
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : folder path
+        /// </summary>
+        public const string CREATE_FOLDER = SERVER_PATH +"/api/file/mkdir/{0}/{1}?folder={2}";
+
+        /// <summary>
+        /// desc : 파일/폴더명 변경
+        /// method : patch
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : file path
+        ///     {3} : file path with new name
+        /// </summary>
+        /// <value></value>
+        public const string URL_FILE_RENAME = SERVER_PATH + "/api/file/rename/{0}/{1}?newFilePath={2}&sourceFilePath={3}";    
+
+        ///  <summary>
+        /// desc : 폴더 삭제
+        /// method : delete
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : folder path
+        /// </summary>
+        public const string DELETE_FOLDER = SERVER_PATH +"/api/file/rm/{0}/{1}?folder={2}";
 
 
         // ---------- ---------- ----------
