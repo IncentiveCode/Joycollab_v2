@@ -340,7 +340,7 @@ namespace Joycollab.v2
             UnityWebRequest req = UnityWebRequest.Post(url, origin); 
             req.certificateHandler = new WebRequestCert();
             req.useHttpContinue = false;
-            req.uploadHandler = (UploadHandler)new UploadHandlerRaw(bytes);
+            req.uploadHandler = (UploadHandler) new UploadHandlerRaw(bytes);
             req.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
 
             // 5. set header

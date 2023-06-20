@@ -315,7 +315,8 @@ namespace Joycollab.v2
                 async (path) => { 
                     if (! string.IsNullOrEmpty(path)) 
                     {
-                        string[] split = path.Split(Path.DirectorySeparatorChar);
+                        // string[] split = path.Split(Path.DirectorySeparatorChar);
+                        string[] split = path.Split('/');
                         Debug.Log($"{TAG} | file name : {split[split.Length-1]}"); 
 
                         byte[] fileData = File.ReadAllBytes(path);
@@ -325,9 +326,8 @@ namespace Joycollab.v2
                         int workspaceSeq = R.singleton.workspaceSeq;
                         string url = string.Format(URL.FILE_LIST, workspaceSeq, currentSpaceSeq, currentPath);
                         if (currentPath == "/") url = url.Replace("?folder=/", "");
-                        PsResponse<string> res = await NetworkTask.PostMultipartAsync<string>(url, form, token);
-                        Debug.Log(res.message);
 
+                        PsResponse<string> res = await NetworkTask.PostMultipartAsync<string>(url, form, token);
                         if (string.IsNullOrEmpty(res.message)) 
                         {
                             OpenPath(currentSpaceSeq, currentPath).Forget();
@@ -346,7 +346,8 @@ namespace Joycollab.v2
             string path = UnityEditor.EditorUtility.OpenFilePanel("pick", "", "");
             if (! string.IsNullOrEmpty(path)) 
             {
-                string[] split = path.Split(Path.DirectorySeparatorChar);
+                // string[] split = path.Split(Path.DirectorySeparatorChar);
+                string[] split = path.Split('/');
                 Debug.Log($"{TAG} | file name : {split[split.Length-1]}"); 
 
                 byte[] fileData = File.ReadAllBytes(path);
@@ -356,9 +357,8 @@ namespace Joycollab.v2
                 int workspaceSeq = R.singleton.workspaceSeq;
                 string url = string.Format(URL.FILE_LIST, workspaceSeq, currentSpaceSeq, currentPath);
                 if (currentPath == "/") url = url.Replace("?folder=/", "");
-                PsResponse<string> res = await NetworkTask.PostMultipartAsync<string>(url, form, token);
-                Debug.Log(res.message);
 
+                PsResponse<string> res = await NetworkTask.PostMultipartAsync<string>(url, form, token);
                 if (string.IsNullOrEmpty(res.message)) 
                 {
                     OpenPath(currentSpaceSeq, currentPath).Forget();
