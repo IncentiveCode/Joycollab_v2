@@ -101,6 +101,13 @@ namespace Joycollab.v2
             viewID = ID.MobileScene_ToDo;
 
 
+            // set infinite scrollview
+            _scrollView.AddSelectCallback((data) => {
+                int seq = ((ToDoData)data).info.seq;
+                ViewManager.singleton.Push(S.MobileScene_ToDoDetail, seq.ToString());
+            });
+
+
             // set 'search' inputfiled listener
             SetInputFieldListener(_inputSearch);
             _inputSearch.onValueChanged.AddListener((value) => {
@@ -117,6 +124,8 @@ namespace Joycollab.v2
             _dropdownFilter.onValueChanged.AddListener((value) => {
                 Debug.Log($"{TAG} | filter changed. selected value : {value}"); 
                 filterOpt = value;
+                req.filterOpt = value;
+                GetList(req, true).Forget();
             });
             _toggleDaily.onValueChanged.AddListener((on) => {
                 if (on) 
@@ -156,7 +165,7 @@ namespace Joycollab.v2
             _btnDate.onClick.AddListener(() => PickDate());
             _btnPrev.onClick.AddListener(() => ChangeDate(true));
             _btnNext.onClick.AddListener(() => ChangeDate(false));
-            // _btnCreate.onClick.AddListener(() => { });
+            _btnCreate.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_CreateTodo));
 
 
             // init local variables

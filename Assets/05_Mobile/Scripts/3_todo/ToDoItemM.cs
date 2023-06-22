@@ -92,6 +92,8 @@ namespace Joycollab.v2
                 isDone = false;
                 Debug.Log("ToDoItemM | item done cancel. seq : "+ seq);
             }
+
+            _imgCheck.gameObject.SetActive(isDone);
         }
 
         public void OnLoadMoreClick() 
