@@ -188,8 +188,6 @@ namespace Joycollab.v2
                 Destroy(_imgProfile.texture);
             }
 
-            // texture = Util.CopyTexture(res);
-            // _imgProfile.texture = texture;
             _imgProfile.texture = res;
             Util.ResizeRawImage(rectProfile, _imgProfile, _v2ProfileSize.x, _v2ProfileSize.y);
         }

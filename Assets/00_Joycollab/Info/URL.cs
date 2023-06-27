@@ -12,8 +12,8 @@
 ///     v0.6 (2023. 06. 19) : Joycollab 에서 사용하던 URL 정리. (UserApi - File)
 /// </summary>
 
-#define DEV // Dev Server
-// #define RELEASE // Live Server
+// #define DEV // Dev Server
+#define RELEASE // Live Server
 
 namespace Joycollab.v2
 {

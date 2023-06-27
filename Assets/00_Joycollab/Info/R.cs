@@ -1,8 +1,8 @@
 /// <summary>
 /// 시스템 상 저장 공간 (Repository) 
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 16
-/// @version        : 0.5
+/// @last update    : 2023. 06. 27
+/// @version        : 0.6
 /// @update
 ///     v0.1 (2023. 03. 17) : 파일 생성, Joycollab 에서 사용하는 것들 정리 시작.
 ///     v0.2 (2023. 03. 31) : SimpleWorkspace, Alarm 관련 항목 정리 시작, Notify 에서 generic <T> 제거.
@@ -29,17 +29,19 @@ namespace Joycollab.v2
     
         private void Awake() 
         {
-            // region setting
-
-
             list = new List<Tuple<iRepositoryObserver, eStorageKey>>();
             list.Clear();
 
             dictParams = new Dictionary<string, string>();
             dictParams.Clear();
 
-            _alarmList = new List<ResAlarmInfo>();
-            _alarmList.Clear();
+            // for alarm
+            alarmList = new List<ResAlarmInfo>();
+            alarmList.Clear();
+
+            // for contact
+            listContact = new List<ContactData>();
+            dictPhoto = new Dictionary<int, Texture2D>();
         }
 
         public void Clear() 
@@ -411,15 +413,15 @@ namespace Joycollab.v2
 
     #region Alarm Info 
 
-        private List<ResAlarmInfo> _alarmList;
-        private int _alarmCount;
+        private List<ResAlarmInfo> alarmList;
+        private int alarmCount;
 
-        public void AddAlarmInfo(ResAlarmInfo info) => _alarmList.Add(info);
+        public void AddAlarmInfo(ResAlarmInfo info) => alarmList.Add(info);
 
         public int AlarmCount {
-            get { return _alarmCount; }
+            get { return alarmCount; }
             set { 
-                _alarmCount = value;
+                alarmCount = value;
                 NotifyAll(eStorageKey.Alarm);
             }
         }
@@ -429,10 +431,40 @@ namespace Joycollab.v2
 
         private void ClearAlarmInfo() 
         {
-            _alarmList.Clear();
-            _alarmCount = -1;
+            alarmList.Clear();
+            alarmCount = -1;
         }
 
     #endregion  // Alarm Info
+
+
+    #region Contact Info
+
+        private List<ContactData> listContact;
+        private Dictionary<int, Texture2D> dictPhoto;
+
+        public void AddPhoto(int seq, Texture2D photo) 
+        {
+            if (dictPhoto.ContainsKey(seq)) 
+            {
+                if (dictPhoto[seq] != null) Destroy(dictPhoto[seq]);
+
+                dictPhoto[seq] = photo;
+            }
+            else 
+            {
+                dictPhoto.Add(seq, photo);
+            }
+        }
+
+        public Texture2D GetPhoto(int seq) 
+        {
+            if (dictPhoto.ContainsKey(seq))
+                return dictPhoto[seq];
+            else
+                return null;
+        }
+
+    #endregion  // Contact Info
     }
 }
