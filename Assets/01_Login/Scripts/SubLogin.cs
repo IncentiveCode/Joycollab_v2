@@ -28,12 +28,10 @@ namespace Joycollab.v2
 
 
         [Header("Module")]
-        [SerializeField] private LoginModule loginModule;
+        [SerializeField] private LoginModule _module;
 
         [Header("RawImage controller")]
         [SerializeField] private RawImage _imgOfficeLogo;
-        [SerializeField] private Texture2D _texDefault;
-        [SerializeField] private Vector2 _v2MaxSize;
 
         [Header("Text")]
         [SerializeField] private Text _txtGreetings;
@@ -52,8 +50,8 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnVersion;
 
         // local vairables
-        private RectTransform rectLogo;
-        private Texture2D texture;
+        private ImageLoader imageLoader;
+
         private bool isInvite;
         private bool isExpire;
 
@@ -93,6 +91,11 @@ namespace Joycollab.v2
                     else if (_inputPw.isFocused) return;
                 }
             }
+        }
+
+        private void OnDestroy() 
+        {
+            _imgOfficeLogo.texture = null;
         }
 
     #endregion  // Unity functions
@@ -150,15 +153,14 @@ namespace Joycollab.v2
 
 
             // set local variables
-            rectLogo = _imgOfficeLogo.GetComponent<RectTransform>();   
+            // rectLogo = _imgOfficeLogo.GetComponent<RectTransform>();   
+            imageLoader = _imgOfficeLogo.GetComponent<ImageLoader>();
         }
 
         public async override UniTaskVoid Show() 
         {
             base.Show().Forget();
-
             await Refresh();
-
             base.Appearing();
         }
 
@@ -166,12 +168,7 @@ namespace Joycollab.v2
         {
             base.Hide();
 
-            if (_imgOfficeLogo.texture != null && string.IsNullOrEmpty(_imgOfficeLogo.texture.name)) 
-            {
-                Destroy(_imgOfficeLogo.texture);
-            }
-
-            if (texture != null) Destroy(texture);
+            _imgOfficeLogo.texture = null;
         }
 
     #endregion  // FixedView functions
@@ -181,7 +178,7 @@ namespace Joycollab.v2
 
         private async UniTask<int> Refresh() 
         {
-            PsResponse<ResCheckToken> res = await loginModule.CheckTokenAsync();
+            PsResponse<ResCheckToken> res = await _module.CheckTokenAsync();
             if (res == null) 
             {
                 OpenView();
@@ -233,29 +230,12 @@ namespace Joycollab.v2
             return 0;
         }
 
-        private async UniTaskVoid PostCheckToken() 
+        private void PostCheckToken() 
         {
             // get office logo
             string logoPath = R.singleton.GetParam(Key.WORKSPACE_LOGO);
             string url = URL.SERVER_PATH + logoPath;
-            Texture2D res = await NetworkTask.GetTextureAsync(url);
-            if (res == null) 
-            {
-                texture = null;
-                _imgOfficeLogo.texture = _texDefault;
-            }
-            else 
-            {
-                res.hideFlags = HideFlags.HideAndDontSave;
-                res.filterMode = FilterMode.Point;
-                res.Apply();
-
-                // texture = Util.CopyTexture(res);
-                // _imgOfficeLogo.texture = texture;
-                _imgOfficeLogo.texture = res;
-            }
-            Util.ResizeRawImage(rectLogo, _imgOfficeLogo, _v2MaxSize.x, _v2MaxSize.y);
-
+            imageLoader.LoadOfficeLogo(url).Forget();
 
             // set info
             string officeName = R.singleton.GetParam(Key.WORKSPACE_NAME);
@@ -287,7 +267,7 @@ namespace Joycollab.v2
         private void OpenView() 
         {
             R.singleton.Clear();
-            PostCheckToken().Forget();
+            PostCheckToken();
         }
 
         private async UniTaskVoid EnterWorkspace(string token, string workspaceSeq) 
@@ -324,7 +304,7 @@ namespace Joycollab.v2
             string id = _inputId.text;
             string pw = _inputPw.text;
 
-            PsResponse<ResToken> res = await loginModule.LoginAsync(id, pw);
+            PsResponse<ResToken> res = await _module.LoginAsync(id, pw);
             if (string.IsNullOrEmpty(res.message)) 
             {
                 JsLib.SetCookie(Key.TOGGLE_ID_SAVED, _toggleRemember.isOn ? S.TRUE : S.FALSE);

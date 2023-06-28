@@ -2,16 +2,17 @@
 /// [mobile]
 /// Contact Item Script
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 27
-/// @version        : 0.1
+/// @last update    : 2023. 06. 28
+/// @version        : 0.2
 /// @update
-///     v0.1 (2022. 06. 27) : 최초 생성
+///     v0.1 (2023. 06. 27) : 최초 생성
+///     v0.2 (2023. 06. 28) : ImageLoader 적용
 /// </summary>
 
 using UnityEngine;
 using UnityEngine.UI;
 using Gpm.Ui;
-using Cysharp.Threading.Tasks;
+using TMPro;
 
 namespace Joycollab.v2
 {
@@ -19,17 +20,16 @@ namespace Joycollab.v2
     {
         [Header("photo")]
         [SerializeField] private RawImage _imgPhoto;
-        [SerializeField] private Texture2D _texDefault;
-        [SerializeField] private Vector2 _v2PhotoSize;
 
         [Header("text")]
-        [SerializeField] private Text _txtName;
+        [SerializeField] private TMP_Text _txtName;
+        [SerializeField] private TMP_Text _txtDesc;
 
         [Header("button")]
         [SerializeField] private Button _btnMenu;
 
         // local variables
-        private RectTransform rectPhoto;
+        private ImageLoader imageLoader;
         private int seq;
         private string photoPath;
 
@@ -40,7 +40,7 @@ namespace Joycollab.v2
         {
             _btnMenu.onClick.AddListener(OnSelect);
 
-            rectPhoto = _imgPhoto.GetComponent<RectTransform>();
+            imageLoader = _imgPhoto.GetComponent<ImageLoader>();
         }
 
         private void OnDestroy() => _imgPhoto.texture = null;
@@ -58,54 +58,20 @@ namespace Joycollab.v2
             this.seq = data.info.seq;
             this.photoPath = data.info.photo;
             _txtName.text = data.info.nickNm;
+            _txtDesc.text = data.info.description;
+            _txtDesc.gameObject.SetActive(! string.IsNullOrEmpty(data.info.description));
 
             if (string.IsNullOrEmpty(photoPath)) 
             {
-                _imgPhoto.texture = _texDefault;
-                Util.ResizeRawImage(rectPhoto, _imgPhoto, _v2PhotoSize.x, _v2PhotoSize.y);
-                return;
+                imageLoader.LoadProfile(string.Empty, seq).Forget();
             }
-
-
-            // check 'R'
-            Texture2D t = R.singleton.GetPhoto(seq);
-            if (t != null) 
+            else 
             {
-                _imgPhoto.texture = t;
-                Util.ResizeRawImage(rectPhoto, _imgPhoto, _v2PhotoSize.x, _v2PhotoSize.y);
-                return;
+                string url = $"{URL.SERVER_PATH}{photoPath}";
+                imageLoader.LoadProfile(url, seq).Forget();
             }
-
-
-            string url = $"{URL.SERVER_PATH}{photoPath}";
-            GetTexture(url).Forget();
         }
 
     #endregion  // GPM functions
-
-
-    #region other function
-
-        private async UniTaskVoid GetTexture(string url) 
-        {
-            Texture2D res = await NetworkTask.GetTextureAsync(url);
-            if (res == null)
-            {
-                _imgPhoto.texture = _texDefault;
-                return;
-            }
-
-            _imgPhoto.texture = null;
-
-            res.hideFlags = HideFlags.HideAndDontSave;
-            res.filterMode = FilterMode.Point;
-            res.Apply();
-
-            R.singleton.AddPhoto(this.seq, res);
-            _imgPhoto.texture = res;
-            Util.ResizeRawImage(rectPhoto, _imgPhoto, _v2PhotoSize.x, _v2PhotoSize.y);
-        }
-
-    #endregion  // other function
     }
 }

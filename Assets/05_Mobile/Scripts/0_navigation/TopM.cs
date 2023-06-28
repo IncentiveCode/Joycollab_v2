@@ -2,15 +2,16 @@
 /// [mobile]
 /// TOP Navigation Bar
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 12
-/// @version        : 0.6
+/// @last update    : 2023. 06. 28
+/// @version        : 0.7
 /// @update
 ///     v0.1 (2022. 04. 27) : 최초 생성
 ///     v0.2 (2023. 03. 16) : 기존 코드 수정. UI 최적화 진행. (UniTask 적용)
 ///     v0.3 (2023. 03. 22) : FixedView 실험, UI 최적화 (TMP 제거)
-///     v0.4 (2023. 03. 23) : Repository observer 실험.
+///     v0.4 (2023. 03. 23) : Repository observer 실험. 실험 이후 적용.
 ///     v0.5 (2023. 03. 31) : R 에 추가한 alarm count 정보 업데이트 로직 추가.
 ///     v0.6 (2023. 06. 12) : Legacy Text 를 TMP Text 로 변경.
+///     v0.7 (2023. 06. 28) : ImageLoader 실험. 실험 이후 적용.
 /// </summary>
 
 using UnityEngine;
@@ -29,8 +30,6 @@ namespace Joycollab.v2
         [SerializeField] private TMP_Text _txtName;
         [SerializeField] private TMP_Text _txtDesc;
         [SerializeField] private RawImage _imgProfile;
-        [SerializeField] private Vector2 _v2ProfileSize;
-        [SerializeField] private Texture2D _texDefault;
 
         [Header("alarm")]
         [SerializeField] private Button _btnAlarm;
@@ -41,8 +40,7 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnChannel;
 
         // local variables
-        private RectTransform rectProfile;
-        private Texture2D texture;
+        private ImageLoader imageLoader;
 
 
     #region Unity functions
@@ -58,12 +56,7 @@ namespace Joycollab.v2
 
         private void OnDestroy()
         {
-            if (_imgProfile.texture != null && string.IsNullOrEmpty(_imgProfile.texture.name))
-            {
-                Destroy(_imgProfile.texture);
-            }
-
-            if (texture != null) Destroy(texture);
+            _imgProfile.texture = null;
 
             if (R.singleton != null)
             {
@@ -88,7 +81,7 @@ namespace Joycollab.v2
             _btnChannel.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Channel));
 
             // set local variables
-            rectProfile = _imgProfile.GetComponent<RectTransform>();
+            imageLoader = _imgProfile.GetComponent<ImageLoader>();
 
             // set event variables
             eMemberKey = eStorageKey.UserInfo;
@@ -134,15 +127,16 @@ namespace Joycollab.v2
                     myPhoto = R.singleton.myPhoto;
 
                     string url = $"{URL.SERVER_PATH}{myPhoto}";
-                    GetProfileImage(url).Forget();
+                    int seq = R.singleton.memberSeq;
+                    imageLoader.LoadProfile(url, seq).Forget();
                 }
             }
             else if (key == eAlarmKey)
             {
-                if (myAlarmCount != R.singleton.AlarmCount)
+                if (myAlarmCount != R.singleton.UnreadAlarmCount)
                 {
-                    myAlarmCount = R.singleton.AlarmCount;
-                    _txtAlarmCount.text = myAlarmCount >= 99 ? "100+" : $"{myAlarmCount}";
+                    myAlarmCount = R.singleton.UnreadAlarmCount;
+                    _txtAlarmCount.text = myAlarmCount > 99 ? "99+" : $"{myAlarmCount}";
                     _imgAlarmOn.gameObject.SetActive(myAlarmCount != 0);
                 }
             }
@@ -166,30 +160,6 @@ namespace Joycollab.v2
             canvasGroup.blocksRaycasts = on ? true : false;
             // canvas.enabled = on ? true : false;
             visibleState = on ? eVisibleState.Appeared : eVisibleState.Disappeared;
-        }
-
-        private async UniTaskVoid GetProfileImage(string url)
-        {
-            Texture2D res = await NetworkTask.GetTextureAsync(url);
-            if (res == null)
-            {
-                texture = null;
-                _imgProfile.texture = _texDefault;
-                return;
-            }
-
-            res.hideFlags = HideFlags.HideAndDontSave;
-            res.filterMode = FilterMode.Point;
-            res.Apply();
-
-            if (_imgProfile.texture != null && string.IsNullOrEmpty(_imgProfile.texture.name))
-            {
-                Destroy(texture);
-                Destroy(_imgProfile.texture);
-            }
-
-            _imgProfile.texture = res;
-            Util.ResizeRawImage(rectProfile, _imgProfile, _v2ProfileSize.x, _v2ProfileSize.y);
         }
 
     #endregion  // other function

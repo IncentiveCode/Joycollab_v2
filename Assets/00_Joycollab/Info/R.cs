@@ -414,14 +414,17 @@ namespace Joycollab.v2
     #region Alarm Info 
 
         private List<ResAlarmInfo> alarmList;
-        private int alarmCount;
+        private int unreadAlarmCount;
 
         public void AddAlarmInfo(ResAlarmInfo info) => alarmList.Add(info);
-
         public int AlarmCount {
-            get { return alarmCount; }
+            get { return alarmList.Count; }
+        }
+
+        public int UnreadAlarmCount {
+            get { return unreadAlarmCount; }
             set { 
-                alarmCount = value;
+                unreadAlarmCount = Mathf.Clamp(value, 0, 100);
                 NotifyAll(eStorageKey.Alarm);
             }
         }
@@ -429,10 +432,10 @@ namespace Joycollab.v2
         // TODO. 필요한 정보가 생길 때 마다 추가할 것.
 
 
-        private void ClearAlarmInfo() 
+        public void ClearAlarmInfo() 
         {
             alarmList.Clear();
-            alarmCount = -1;
+            unreadAlarmCount = -1;
         }
 
     #endregion  // Alarm Info

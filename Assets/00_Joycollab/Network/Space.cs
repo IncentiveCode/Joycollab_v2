@@ -1,11 +1,12 @@
 /// <summary>
 /// Network 통신 - Space 관련 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 14
-/// @version        : 0.2
+/// @last update    : 2023. 06. 28
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 02. 23) : Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
 ///     v0.2 (2023. 06. 14) : InfoSpace -> SpaceInfo, InfoSpaceMng -> SpaceMng 로 이름 변경.
+///     v0.3 (2023. 06. 28) : ResSpaceInfo, TopSpace 클래스 추가.
 /// </summary>
 
 using System;
@@ -37,5 +38,32 @@ namespace Joycollab.v2
         public int seq;
         public string nm;
         public string topSpace;
+    }
+
+    [Serializable]
+    public class ResSpaceInfo
+    {
+        public string useYn;
+        public int seq;
+        public string nm;
+        public Seq[] members;
+        public SpaceMng spaceMng;
+        public int arow;
+        public int acol;
+        public TopSpace topSpace;
+        public string setSpaceYn;
+    }
+
+    [Serializable]
+    public class TopSpace 
+    {
+        public string useYn;
+        public int seq;
+        public string nm;
+        public Seq[] members;
+        public SpaceMng spaceMng;
+        public int arow;
+        public int acol;
+        public string setSpaceYn;
     }
 }

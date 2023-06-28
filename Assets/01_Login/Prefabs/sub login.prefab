@@ -173,10 +173,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3d66e14aedf22014a890574940bbfd50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  loginModule: {fileID: 5360900155746557333, guid: e4312bf969bb3479d8942dcd7fbe78f8, type: 3}
+  _module: {fileID: 5360900155746557333, guid: e4312bf969bb3479d8942dcd7fbe78f8, type: 3}
   _imgOfficeLogo: {fileID: 2338082789496336192}
-  _texDefault: {fileID: 2800000, guid: 9150e37a4772a5341b667fa5a28093e5, type: 3}
-  _v2MaxSize: {x: 300, y: 100}
   _txtGreetings: {fileID: 5592694072944331518}
   _inputId: {fileID: 5592694073631831373}
   _inputPw: {fileID: 5592694072623545594}
@@ -458,6 +456,7 @@ GameObject:
   - component: {fileID: 6150717763552440879}
   - component: {fileID: 1189077933986875896}
   - component: {fileID: 2338082789496336192}
+  - component: {fileID: 4979343909101811550}
   m_Layer: 0
   m_Name: RawImage _ logo
   m_TagString: Untagged
@@ -520,6 +519,20 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!114 &4979343909101811550
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4133564458343925489}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50c2a8145db98d1478f61f4c73146341, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _v2Size: {x: 300, y: 100}
+  _texDefault: {fileID: 2800000, guid: 9150e37a4772a5341b667fa5a28093e5, type: 3}
 --- !u!1 &5592694072032844360
 GameObject:
   m_ObjectHideFlags: 0
@@ -1501,7 +1514,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_StringReference:
     m_TableReference:
-      m_TableCollectionName: GUID:ce2aa06bdf6be40e49e0c5664c7c9861
+      m_TableCollectionName: GUID:652bb641706a649bca7e92f0a57d2b7a
     m_TableEntryReference:
       m_KeyId: 1779414516883456
       m_Key: 
@@ -1762,7 +1775,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_StringReference:
     m_TableReference:
-      m_TableCollectionName: GUID:ce2aa06bdf6be40e49e0c5664c7c9861
+      m_TableCollectionName: GUID:652bb641706a649bca7e92f0a57d2b7a
     m_TableEntryReference:
       m_KeyId: 1900865904640
       m_Key: 
@@ -1883,7 +1896,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_StringReference:
     m_TableReference:
-      m_TableCollectionName: GUID:ce2aa06bdf6be40e49e0c5664c7c9861
+      m_TableCollectionName: GUID:652bb641706a649bca7e92f0a57d2b7a
     m_TableEntryReference:
       m_KeyId: 1778324404690944
       m_Key: 

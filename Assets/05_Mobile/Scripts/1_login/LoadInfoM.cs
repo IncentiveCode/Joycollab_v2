@@ -56,7 +56,7 @@ namespace Joycollab.v2
             await Refresh();
 
             base.Appearing();
-            await UniTask.Delay(500);
+            await UniTask.Delay(1000);
 
             ViewManager.singleton.StartOnMySeat(true);
             ViewManager.singleton.Push(S.MobileScene_MySeat);
@@ -186,7 +186,7 @@ namespace Joycollab.v2
                 }
 
                 Debug.Log($"{TAG} | unread alarm count : {unreadCnt}");
-                R.singleton.AlarmCount = unreadCnt;
+                R.singleton.UnreadAlarmCount = unreadCnt;
             }
             else 
             {

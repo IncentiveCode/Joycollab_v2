@@ -41,6 +41,7 @@ namespace Joycollab.v2
 		{
 			_btnItem.onClick.AddListener(OnClick);
 			_btnDelete.onClick.AddListener(OnDeleteClick);
+			_btnDelete.gameObject.SetActive(false);
 		}
 
 	#endregion	// Unity functions
@@ -55,12 +56,15 @@ namespace Joycollab.v2
 			AlarmData data = (AlarmData) itemData;
 
 			this.seq = data.info.seq;
+			_imgMark.gameObject.SetActive(! data.info.read);
 			_txtTitle.text = data.info.title;
-			_txtContent.text = data.info.content;
 			_txtDate.text = data.info.dtm;
 
-			// TODO. get texture
+			// set text - TODO. 권한 체크
+			_txtContent.text = data.info.content;
+			
 
+			// TODO. set texture
 		}
 
 		public void OnClick() => OnSelect();

@@ -8,14 +8,11 @@
 ///     v0.1 (2023. 06. 27) : 최초 생성
 /// </summary>
 
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Localization;
-using UnityEngine.Localization.Settings;
-using Cysharp.Threading.Tasks;
 using Gpm.Ui;
+using Cysharp.Threading.Tasks;
 using TMPro;
 
 namespace Joycollab.v2
@@ -25,7 +22,7 @@ namespace Joycollab.v2
         private const string TAG = "ContactM";
 
         [Header("module")]
-        [SerializeField] private ContactModule module; 
+        [SerializeField] private ContactModule _module; 
 
         [Header("search field")]
         [SerializeField] private TMP_InputField _inputSearch;
@@ -116,7 +113,7 @@ namespace Joycollab.v2
 
         private async UniTaskVoid GetList() 
         {
-            PsResponse<WorkspaceMemberList> res = await module.GetContact();
+            PsResponse<WorkspaceMemberList> res = await _module.GetMemberList();
 
             _scrollView.Clear();
             dataList.Clear();

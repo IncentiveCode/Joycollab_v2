@@ -53,5 +53,10 @@ namespace Joycollab.v2
 		{
 			info = new ResAlarmInfo();
 		}
+
+		public AlarmData(ResAlarmInfo data) 
+		{
+			info = data;
+		}
 	}
 }

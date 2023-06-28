@@ -201,6 +201,7 @@ namespace Joycollab.v2
             if (currentView != null) 
             {
                 uiNavigation.Push(currentView);
+                currentView.Block(false);
             }
 
             currentView = dictViews[viewName];
@@ -221,7 +222,7 @@ namespace Joycollab.v2
             FixedView previous = uiNavigation.Pop() as FixedView;
             if (previous == null) 
             {
-                Debug.Log($"{TAG} | Overlay(), previous view is null. return.");
+                Debug.Log($"{TAG} | CloseOverlay(), previous view is null. return.");
                 return;
             }
 
@@ -231,6 +232,7 @@ namespace Joycollab.v2
             }
 
             currentView = previous;
+            currentView.Block(true);
         }
 
         public void PopAll() => uiNavigation.Clear();

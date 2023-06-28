@@ -1,3 +1,13 @@
+/// <summary>
+/// 이미지 업로드 담당 클래스 
+/// @author         : HJ Lee
+/// @last update    : 2023. 06. 28
+/// @version        : 0.2
+/// @update
+///     v0.1 (2023. 03. 21) : 최초 생성, login scene 에 적용 실험.
+///     v0.2 (2023. 06. 28) : mobile scene 적용 실험. 
+/// </summary>
+
 #if UNITY_WEBGL && !UNITY_EDITOR
 using System.Runtime.InteropServices;
 #endif
@@ -31,7 +41,9 @@ namespace Joycollab.v2
         }
 
     #if UNITY_WEBGL && !UNITY_EDITOR
+
         [DllImport("__Internal")] private static extern void UploadFile(string gameObjectName, string methodName, string filter, bool multiple);
+
     #endif
 
 
@@ -46,6 +58,7 @@ namespace Joycollab.v2
 
 
     #region Public functions
+
         public void Init(int width=128, int height=128)
         {
             Interactable = true;
@@ -74,10 +87,12 @@ namespace Joycollab.v2
                 GetImageTexture(url).Forget();
             }
         }
+
     #endregion
 
 
     #region Private functions
+
         private async UniTaskVoid GetImageTexture(string url)
         {
             if (_imgUpload == null) 
@@ -126,10 +141,12 @@ namespace Joycollab.v2
                 _encodedString = System.Convert.ToBase64String(bytes);
             }
         }
+
     #endregion
 
 
     #region Interface functions
+
         public void OnPointerDown(PointerEventData data) 
         {
         #if UNITY_WEBGL && !UNITY_EDITOR
@@ -143,6 +160,7 @@ namespace Joycollab.v2
                 Debug.Log($"{TAG} | 취소 되었습니다.");
         #endif
         }
+
     #endregion
     }
 }

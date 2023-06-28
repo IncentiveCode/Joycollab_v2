@@ -974,7 +974,7 @@ namespace Joycollab.v2
         ///     {0} : member seq
         ///     {1} : alarm seq
         /// </summary>
-        public const string URL_CHECK_ALARM = SERVER_PATH + "/api/alarm/readed/{0}/{1}";
+        public const string READ_ALARM = SERVER_PATH + "/api/alarm/readed/{0}/{1}";
 
 
         // ---------- ---------- ----------

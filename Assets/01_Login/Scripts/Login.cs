@@ -28,7 +28,7 @@ namespace Joycollab.v2
     public class Login : FixedView
     {
         [Header("Module")]
-        [SerializeField] private LoginModule loginModule;
+        [SerializeField] private LoginModule _module;
 
         [Header("InputField")] 
         [SerializeField] private InputSubmitDetector _inputId;
@@ -191,7 +191,7 @@ namespace Joycollab.v2
             string id = _inputId.text;
             string pw = _inputPw.text;
 
-            PsResponse<ResToken> res = await loginModule.LoginAsync(id, pw);
+            PsResponse<ResToken> res = await _module.LoginAsync(id, pw);
             if (string.IsNullOrEmpty(res.message)) 
             {
                 JsLib.SetCookie(Key.TOGGLE_ID_SAVED, _toggleRemember.isOn ? S.TRUE : S.FALSE);

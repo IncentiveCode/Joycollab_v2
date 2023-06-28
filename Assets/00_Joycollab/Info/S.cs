@@ -1,11 +1,12 @@
 /// <summary>
 /// 자주 사용하는 string 값 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 04. 07
-/// @version        : 0.2
+/// @last update    : 2023. 06. 28
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 03. 20) : 최초 생성. Scene 이름, LoginView, MobileView 이름 정리
 ///     v0.2 (2023. 04. 07) : Language, region 관련 상수 정리 
+///     v0.3 (2023. 06. 28) : avatar state 값 정리
 /// </summary>
 
 namespace Joycollab.v2
@@ -71,7 +72,6 @@ namespace Joycollab.v2
 
 
     #region MobileScene FixedView Name 
-
 
         // ---------- ---------- ----------
         // 01. login
@@ -238,5 +238,21 @@ namespace Joycollab.v2
         public const string AUTH_SEATING_ARRANGE = "자리 배치";
     
     #endregion  // permission
+
+
+    #region avatar state
+
+        public const string ONLINE = "온라인";
+        public const string OFFLINE = "오프라인";
+        public const string MEETING = "회의중";
+        public const string LINE_BUSY = "통화중";
+        public const string BUSY = "바쁨";
+        public const string OUT_ON_BUSINESS = "외근중";
+        public const string NOT_HERE = "자리비움";
+        public const string DO_NOT_DISTURB = "방해금지";
+        public const string VACATION = "휴가중";
+        public const string NOT_AVAILABLE = "부재중";
+    
+    #endregion  // avatar status
     }
 }

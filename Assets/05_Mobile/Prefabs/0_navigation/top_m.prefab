@@ -1023,6 +1023,7 @@ GameObject:
   - component: {fileID: 7034609068324759906}
   - component: {fileID: 7034609068324759908}
   - component: {fileID: 7034609068324759909}
+  - component: {fileID: 7389514374618626053}
   m_Layer: 5
   m_Name: RawImage _ photo
   m_TagString: Untagged
@@ -1085,6 +1086,21 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
+--- !u!114 &7389514374618626053
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7034609068324759907}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50c2a8145db98d1478f61f4c73146341, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _imgLoad: {fileID: 7034609068324759909}
+  _v2Size: {x: 50, y: 50}
+  _texDefault: {fileID: 2800000, guid: 82f61e6f15c6a445c91f619b2b3290fa, type: 3}
 --- !u!1 &7034609068428048086
 GameObject:
   m_ObjectHideFlags: 0

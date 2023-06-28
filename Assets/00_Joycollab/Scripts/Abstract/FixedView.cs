@@ -79,6 +79,17 @@ namespace Joycollab.v2
             canvasGroup.blocksRaycasts = false;
         }
 
+        public virtual void Block(bool on) 
+        {
+            if (canvasGroup == null) return;
+            if (visibleState == eVisibleState.Disappeared) return;
+
+            if (visibleState == eVisibleState.Appeared) 
+            {
+                canvasGroup.blocksRaycasts = on; 
+            }
+        }
+
         public async virtual UniTaskVoid Show() 
         {
             visibleState = eVisibleState.Appearing;
