@@ -16,21 +16,27 @@ namespace Joycollab.v2
     {
         private const string TAG = "ToDoModule";
 
-        [SerializeField] private Transform _transformList;
-        [SerializeField] private GameObject _goItem;
-
 
     #region public functions
 
-        public async UniTask<string> GetList(ReqToDoList req, bool refresh=true)
+        public async UniTask<PsResponse<ResToDoList>> GetList(string url)
         {
             string token = R.singleton.token;
             int memberSeq = R.singleton.memberSeq;
 
-            string url = req.url;
             PsResponse<ResToDoList> res = await NetworkTask.RequestAsync<ResToDoList>(url, eMethodType.GET, string.Empty, token);
+            return res;
+        }
 
-            return res.message;
+        public async UniTask<PsResponse<string>> CheckItem(int seq) 
+        {
+            string token = R.singleton.token;
+            int memberSeq = R.singleton.memberSeq;
+
+            string url = string.Format(URL.CONTROL_TODO, memberSeq, seq);
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.PUT, string.Empty, token);
+
+            return res;
         }
 
     #endregion  // public functions

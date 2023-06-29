@@ -102,6 +102,7 @@ namespace Joycollab.v2
         public const string MobileScene_ToDo = "todo_m";
         public const string MobileScene_ToDoDetail = "todo detail_m";
         public const string MobileScene_CreateTodo = "create todo_m";
+        public const string MobileScene_ShareToDo = "todo share_m";
         public const string MobileScene_Okr = "okr_m";
         public const string MobileScene_OkrDetail = "okr detail_m";
         public const string MobileScene_CreateOkr = "create okr_m";
@@ -254,5 +255,22 @@ namespace Joycollab.v2
         public const string NOT_AVAILABLE = "부재중";
     
     #endregion  // avatar status
+
+
+    #region share, reminder option
+
+        public const int SHARE_NONE = 0;
+        public const int SHARE_DEPARTMENT = 1;
+        public const int SHARE_COMPANY = 2;
+
+        public const int TYPE_ALL = 0;
+        public const int TYPE_DEPARTMENT = 1;
+        public const int TYPE_COMPANY = 2;
+
+        public const int TYPE_DAILY = 0;
+        public const int TYPE_WEEKLY = 1;
+        public const int TYPE_MONTHLY = 2;
+
+    #endregion  // share, reminder option
     }
 }

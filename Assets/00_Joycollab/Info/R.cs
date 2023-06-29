@@ -39,9 +39,13 @@ namespace Joycollab.v2
             alarmList = new List<ResAlarmInfo>();
             alarmList.Clear();
 
-            // for contact
-            listContact = new List<ContactData>();
+            // for to-do, OKR
+            listToDo = new List<ToDoData>();
+            listToDo.Clear();
+
+            // for memory
             dictPhoto = new Dictionary<int, Texture2D>();
+            dictPhoto.Clear();
         }
 
         public void Clear() 
@@ -49,7 +53,12 @@ namespace Joycollab.v2
             ClearTokenInfo();
             ClearMemberInfo();
             ClearWorkspaceInfo();
+            
             ClearAlarmInfo();
+
+            ClearToDoList();
+
+            ClearPhotoDict();
         }
 
     #endregion  // Common functions
@@ -441,9 +450,51 @@ namespace Joycollab.v2
     #endregion  // Alarm Info
 
 
-    #region Contact Info
+    #region To-Do, OKR Info
 
-        private List<ContactData> listContact;
+        private List<ToDoData> listToDo;
+
+        public void AddToDoInfo(int seq, ToDoData todo)
+        {
+            int index = listToDo.FindIndex(item => item.info.seq == seq);
+            if (index == -1) 
+                listToDo.Add(todo);
+            else             
+                listToDo[index].info = todo.info;
+        }
+
+        public ToDoData GetToDoInfo(int seq) 
+        {
+            int index = listToDo.FindIndex(item => item.info.seq == seq);
+            if (index == -1) return null;
+            
+            return listToDo[index];
+        }
+
+        public int GetToDoIndex(int seq) 
+        {
+            int index = listToDo.FindIndex(item => item.info.seq == seq);
+            if (index == -1) return -1;
+            
+            return index;
+        }
+
+        public bool DeleteToDoInfo(int seq) 
+        {
+            int index = listToDo.FindIndex(item => item.info.seq == seq);
+            if (index == -1) return false;
+
+            listToDo.RemoveAt(index);
+            return true;
+        }
+
+        public void ClearToDoList() => listToDo.Clear(); 
+        
+    #endregion  // To-Do, OKR Info
+
+
+    #region memory management
+
         private Dictionary<int, Texture2D> dictPhoto;
 
         public void AddPhoto(int seq, Texture2D photo) 
@@ -451,7 +502,6 @@ namespace Joycollab.v2
             if (dictPhoto.ContainsKey(seq)) 
             {
                 if (dictPhoto[seq] != null) Destroy(dictPhoto[seq]);
-
                 dictPhoto[seq] = photo;
             }
             else 
@@ -468,6 +518,8 @@ namespace Joycollab.v2
                 return null;
         }
 
-    #endregion  // Contact Info
+        private void ClearPhotoDict() => dictPhoto.Clear();
+
+    #endregion memory management
     }
 }

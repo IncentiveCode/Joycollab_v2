@@ -1,0 +1,225 @@
+/// <summary>
+/// [mobile]
+/// To-Do 상세 화면을 담당하는 클래스.
+/// @author         : HJ Lee
+/// @last update    : 2023. 06. 29
+/// @version        : 0.1
+/// @update
+///     v0.1 (2023. 06. 29) : 최초 생성.
+/// </summary>
+
+using System;
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
+using Cysharp.Threading.Tasks;
+using TMPro;
+
+namespace Joycollab.v2
+{
+    public class ToDoDetailM : FixedView
+    {
+        private const string TAG = "ToDoDetailM";
+        
+        [Header("module")]
+        [SerializeField] private ToDoModule _module;
+
+        [Header("button")]
+        [SerializeField] private Button _btnBack;
+        [SerializeField] private Button _btnEdit;
+        [SerializeField] private Button _btnDelete;
+
+        [Header("check")]
+        [SerializeField] private Button _btnDone;
+        [SerializeField] private Image _imgCheck;
+
+        [Header("text")]
+        [SerializeField] private TMP_Text _txtTitle;
+        [SerializeField] private TMP_Text _txtCreator;
+        [SerializeField] private TMP_Text _txtCreateDate;
+        [SerializeField] private TMP_Text _txtPeriod;
+        [SerializeField] private TMP_Text _txtDoneDate;
+        [SerializeField] private TMP_Text _txtShareOpt;
+        [SerializeField] private TMP_Text _txtDetail;
+
+        // local variables
+        private ToDoData data;
+        private ToDoData prevData;
+        private int seq;
+        private bool isDone;
+
+
+    #region Unity functions
+
+        private void Awake() 
+        {
+            Init();
+            base.Reset();
+
+            // add event handling
+            MobileEvents.singleton.OnBackButtonProcess += BackButtonProcess;
+        }
+
+        private void OnDestroy() 
+        {
+            if (MobileEvents.singleton != null) 
+            {
+                MobileEvents.singleton.OnBackButtonProcess -= BackButtonProcess;
+            }
+        }
+
+    #endregion  // Unity functions
+
+
+    #region FixedView functions
+
+        protected override void Init() 
+        {
+            base.Init();
+            viewID = ID.MobileScene_ToDoDetail;
+
+
+            // set 'button' listener
+            _btnBack.onClick.AddListener(() => ViewManager.singleton.Pop());
+            _btnEdit.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_CreateTodo, seq.ToString()));
+            _btnDelete.onClick.AddListener(() => Debug.Log("물어보고 삭제하기."));
+            _btnDone.onClick.AddListener(async () => {
+                PsResponse<string> res = await _module.CheckItem(this.seq);
+                if (string.IsNullOrEmpty(res.message)) 
+                {
+                    isDone = !isDone;
+                    DoneProcess(isDone);
+                }
+                else 
+                {
+                    PopupBuilder.singleton.OpenAlert(res.message);
+                }
+            });
+
+
+            // init local variables
+            data = prevData = null;
+            seq = 0;
+            isDone = false;
+        }
+
+        public async override UniTaskVoid Show(string opt) 
+        {
+            base.Show().Forget();
+
+            int temp = -1;
+            int.TryParse(opt, out temp);
+
+            seq = temp;
+            data = R.singleton.GetToDoInfo(seq);
+            if (data == null) 
+            {
+                // TODO. error 처리
+            }
+
+            await Refresh();
+            base.Appearing();
+        }
+
+        public override void Hide() 
+        {
+            base.Hide();
+
+            prevData = data;
+        }
+
+    #endregion  // FixedView functions
+
+
+    #region event handling
+
+        private async UniTask<int> Refresh() 
+        {
+            // view control
+            ViewManager.singleton.ShowNavigation(false);
+
+            // display info 
+            this.seq = data.info.seq;
+            this.isDone = data.info.completeYn.Equals("Y");
+
+            _txtTitle.text = data.info.title;
+            _txtCreator.text = string.Format("{0} ({1})", data.info.createMember.nickNm, data.info.space.nm);
+            _txtCreateDate.text = data.info.createdDate;
+            _txtPeriod.text = string.Format("{0} - {1}", data.info.sd, data.info.ed);
+            _txtDoneDate.text = data.info.completeTime;
+            _txtDetail.text = data.info.content;
+
+            Locale currentLocale = LocalizationSettings.SelectedLocale;
+            switch (data.info.shereType) 
+            {
+                case S.SHARE_DEPARTMENT :
+                    string t = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (부서)", currentLocale);
+                    _txtShareOpt.text = string.Format(t, data.info.space.nm);
+                    break;
+
+                case S.SHARE_COMPANY :
+                    _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (전사)", currentLocale);
+                    break;
+
+                case S.SHARE_NONE :
+                default :
+                    _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (개인)", currentLocale);
+                    break;
+            }
+
+            // 내 정보인 경우에만 버튼 출력
+            bool isMyInfo = (R.singleton.memberSeq == data.info.createMember.seq);
+            _btnDone.interactable = isMyInfo;
+            _btnEdit.gameObject.SetActive(isMyInfo);
+            _btnDelete.gameObject.SetActive(isMyInfo);
+
+            // 완료 마크 처리
+            Color tempColor = _imgCheck.color;
+            tempColor.a = isMyInfo ? 1f : 0.5f;
+            _imgCheck.color = tempColor;
+            
+            // 완료 처리
+            DoneProcess(isDone);
+
+            await UniTask.Yield();
+            return 0;
+        }
+
+        private void DoneProcess(bool done) 
+        {
+            _imgCheck.gameObject.SetActive(done);
+            _txtDoneDate.gameObject.SetActive(done);
+            _txtTitle.fontStyle = done ? FontStyles.Strikethrough : FontStyles.Normal;
+            _txtPeriod.fontStyle = done ? FontStyles.Strikethrough : FontStyles.Normal;
+
+            data.info.completeYn = done ? "Y" : "N";
+            data.info.completeTime = done ? DateTime.Now.ToString("yyyy-MM-dd HH:mm") : string.Empty;
+            _txtDoneDate.text = data.info.completeTime;
+            
+            R.singleton.AddToDoInfo(this.seq, data);
+        }
+
+        private void BackButtonProcess(string name="") 
+        {
+            if (! name.Equals(gameObject.name)) return; 
+            if (visibleState != eVisibleState.Appeared) return;
+
+            if (PopupBuilder.singleton.GetPopupCount() > 0)
+            {
+                PopupBuilder.singleton.RequestClear();
+            }
+            else 
+            {
+                BackProcess();
+            }
+        }
+
+        private void BackProcess() 
+        {
+            ViewManager.singleton.Pop();
+        }
+
+    #endregion  // event handling
+    }
+}

@@ -2,14 +2,15 @@
 /// [mobile]
 /// 내 자리 화면을 제어하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 05. 25
-/// @version        : 0.5
+/// @last update    : 2023. 06. 29
+/// @version        : 0.6
 /// @update         
 ///     v0.1 : 최초 생성. swipe ui 사용.
 ///     v0.2 : 새로운 기획 & 디자인 적용. swipe ui 삭제.
 ///     v0.3 (2022. 05. 26) : 디자인 수정안 적용, 이벤트 핸들러 추가.
 ///     v0.4 (2023. 03. 23) : 디자인 최적화. FixedView 실험. 스크립트 최적화, To-Do 합병 & calendar 삭제.
 ///     v0.5 (2023. 05. 25) : unity localization 적용.
+///     v0.6 (2023. 06. 29) : 공유 할일 버튼 추가.
 /// </summary>
 
 using UnityEngine;
@@ -17,7 +18,6 @@ using UnityEngine.UI;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
-using TMPro;
 
 namespace Joycollab.v2
 {
@@ -30,6 +30,7 @@ namespace Joycollab.v2
 
         [Header("menu")]
         [SerializeField] private Button _btnTodo;
+        [SerializeField] private Button _btnShareTodo;
         [SerializeField] private Button _btnOkr;
         [SerializeField] private Button _btnBoard;
         [SerializeField] private Button _btnBookmark;
@@ -66,8 +67,9 @@ namespace Joycollab.v2
             viewID = ID.MobileScene_MySeat;
 
             // set button listener
-            _btnTodo.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_ToDo));
-            _btnOkr.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Okr));
+            _btnTodo.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_ToDo, R.singleton.memberSeq.ToString()));
+            _btnShareTodo.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_ShareToDo));
+            _btnOkr.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Okr, R.singleton.memberSeq.ToString()));
             _btnBoard.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Board));
             _btnBookmark.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Bookmark));
             _btnContact.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Contact));
@@ -76,9 +78,7 @@ namespace Joycollab.v2
         public async override UniTaskVoid Show() 
         {
             base.Show().Forget();
-
             await Refresh();
-
             base.Appearing();
         }
 

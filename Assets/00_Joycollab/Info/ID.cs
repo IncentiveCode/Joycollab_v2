@@ -122,9 +122,10 @@ namespace Joycollab.v2
         public const int MobileScene_ToDo = 10030;
         public const int MobileScene_ToDoDetail = 10031;
         public const int MobileScene_CreateTodo = 10032;
-		public const int MobileScene_Okr = 10033;
-		public const int MobileScene_OkrDetail = 10034;
-        public const int MobileScene_CreateOkr = 10035;
+		public const int MobileScene_ShareToDo = 10033;
+		public const int MobileScene_Okr = 10034;
+		public const int MobileScene_OkrDetail = 10035;
+        public const int MobileScene_CreateOkr = 10036;
 
 
         // ---------- ---------- ----------

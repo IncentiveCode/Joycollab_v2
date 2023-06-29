@@ -2,10 +2,11 @@
 /// [mobile]
 /// To-Do 리스트 화면을 담당하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 13
-/// @version        : 0.1
+/// @last update    : 2023. 06. 29
+/// @version        : 0.2
 /// @update
-///     v0.1 : 최초 생성.
+///     v0.1 (2023. 06. 13) : 최초 생성.
+///     v0.2 (2023. 06. 29) : ToDoM 과 ToDoShareM 으로 분리. 분리하면서 filter 는 삭제.
 /// </summary>
 
 using System;
@@ -23,24 +24,17 @@ namespace Joycollab.v2
     public class ToDoM : FixedView
     {
         private const string TAG = "ToDoM";
-
-        // filter Type
-        public const int typeAll = 0;
-        public const int typeTeam = 1;
-        public const int typeOffice = 2;
-
-        // View Type
-        public const int typeDaily = 0;
-        public const int typeWeekly = 1;
-        public const int typeMonthly = 2;
+        
+        [Header("module")]
+        [SerializeField] private ToDoModule _module;
 
         [Header("input field")]
         [SerializeField] private TMP_InputField _inputSearch;
         [SerializeField] private Button _btnClear;
         [SerializeField] private Button _btnSearch;
 
-        [Header("dropdown, toggle")]
-        [SerializeReference] private TMP_Dropdown _dropdownFilter;
+        [Header("toggle")]
+        // [SerializeReference] private TMP_Dropdown _dropdownFilter;
         [SerializeField] private Toggle _toggleDaily;
         [SerializeField] private Toggle _toggleWeekly;
         [SerializeField] private Toggle _toggleMonthly;
@@ -54,19 +48,20 @@ namespace Joycollab.v2
         [Header("buttons")]
         [SerializeField] private Button _btnBack;
         [SerializeField] private Button _btnCreate;
-        [SerializeField] private Button _btnTest;
 
         [Header("contents")]
         [SerializeField] private InfiniteScroll _scrollView;
-        [SerializeField] private bool _isShare;
 
         // local variables
         private int filterOpt;
         private int viewOpt;
         private DateTime selectDate, startDate, endDate;
 
-        private List<ToDoData> dataList;
-        private int seq;
+        // private List<ToDoData> dataList;
+        private ToDoData selectedData;
+        private int targetMemberSeq;
+        private bool isMyInfo;
+        // private int selectedIndex;
         private ReqToDoList req;
         private bool firstRequest;
         
@@ -103,7 +98,10 @@ namespace Joycollab.v2
 
             // set infinite scrollview
             _scrollView.AddSelectCallback((data) => {
-                int seq = ((ToDoData)data).info.seq;
+                selectedData = (ToDoData) data;
+                int seq = selectedData.info.seq;
+                // selectedIndex = R.singleton.GetToDoIndex(seq);
+
                 ViewManager.singleton.Push(S.MobileScene_ToDoDetail, seq.ToString());
             });
 
@@ -121,12 +119,14 @@ namespace Joycollab.v2
 
 
             // set 'filter, toggle' listener
+            /**
             _dropdownFilter.onValueChanged.AddListener((value) => {
                 Debug.Log($"{TAG} | filter changed. selected value : {value}"); 
                 filterOpt = value;
                 req.filterOpt = value;
                 GetList(req, true).Forget();
             });
+             */
             _toggleDaily.onValueChanged.AddListener((on) => {
                 if (on) 
                 {
@@ -171,8 +171,10 @@ namespace Joycollab.v2
             // init local variables
             selectDate = startDate = endDate = DateTime.Now;
 
-            dataList = new List<ToDoData>();
-            seq = 0;
+            // dataList = new List<ToDoData>();
+            targetMemberSeq = 0;
+            isMyInfo = false;
+            // selectedIndex = -1;
             req = new ReqToDoList();
             firstRequest = true;
         }
@@ -180,9 +182,29 @@ namespace Joycollab.v2
         public async override UniTaskVoid Show() 
         {
             base.Show().Forget();
+            await Refresh();
+            base.Appearing();
+        }
+
+        public async override UniTaskVoid Show(string opt) 
+        {
+            base.Show().Forget();
+
+            int temp = -1;
+            int.TryParse(opt, out temp);
+
+            if (targetMemberSeq != temp)
+            {
+                Debug.Log($"{TAG} | Show(), targetMemberSeq : {targetMemberSeq}, temp : {temp}");
+                targetMemberSeq = temp;
+                selectDate = startDate = endDate = DateTime.Now;
+                viewOpt = 0;
+                firstRequest = true;
+            }
+            isMyInfo = (R.singleton.memberSeq == targetMemberSeq);
+            _btnCreate.gameObject.SetActive(isMyInfo);
 
             await Refresh();
-
             base.Appearing();
         }
 
@@ -195,11 +217,15 @@ namespace Joycollab.v2
         {
             string token = R.singleton.token;
             string url = req.url;
-            PsResponse<ResToDoList> res = await NetworkTask.RequestAsync<ResToDoList>(url, eMethodType.GET, string.Empty, token);
+            PsResponse<ResToDoList> res = await _module.GetList(url);
             if (string.IsNullOrEmpty(res.message)) 
             {
-                _scrollView.Clear();
-                dataList.Clear();
+                if (refresh)
+                {
+                    // dataList.Clear();
+                    _scrollView.Clear();
+                    R.singleton.ClearToDoList();
+                }
 
                 ToDoData t;
                 foreach (var item in res.data.content) 
@@ -208,8 +234,9 @@ namespace Joycollab.v2
                     t.info = item;
                     t.loadMore = false;
 
-                    dataList.Add(t);
+                    // dataList.Add(t);
                     _scrollView.InsertData(t);
+                    R.singleton.AddToDoInfo(item.seq, t);
                 }
 
                 if (res.data.hasNext) 
@@ -217,14 +244,16 @@ namespace Joycollab.v2
                     t = new ToDoData();
                     t.loadMore = true;
 
-                    dataList.Add(t);
+                    // dataList.Add(t);
                     _scrollView.InsertData(t);
+                    R.singleton.AddToDoInfo(-1, t);
                 }
             }
             else 
             {
+                // dataList.Clear();
                 _scrollView.Clear();
-                dataList.Clear();
+                R.singleton.ClearToDoList();
 
                 PopupBuilder.singleton.OpenAlert(res.message);
             }
@@ -248,11 +277,11 @@ namespace Joycollab.v2
 
             switch (viewOpt) 
             {
-                case typeDaily:
+                case S.TYPE_DAILY:
                     tempDate = selectDate.ToString("yyyy-MM-dd");
                     break;
 
-                case typeWeekly:
+                case S.TYPE_WEEKLY:
                     int day = (int)selectDate.DayOfWeek;
                     startDate = selectDate.AddDays(-day);
                     endDate = startDate.AddDays(6);
@@ -262,7 +291,7 @@ namespace Joycollab.v2
                     );
                     break;
 
-                case typeMonthly:
+                case S.TYPE_MONTHLY:
                     tempDate = selectDate.ToString("yyyy-MM");
                     break;
             }
@@ -276,19 +305,19 @@ namespace Joycollab.v2
 
             switch (viewOpt) 
             {
-                case typeDaily:
+                case S.TYPE_DAILY:
                     selectDate = selectDate.AddDays(prev ? -1 : 1);
                     startDate = startDate.AddDays(prev ? -1 : 1);
                     endDate = endDate.AddDays(prev ? -1 : 1);
                     break;
 
-                case typeWeekly:
+                case S.TYPE_WEEKLY:
                     selectDate = selectDate.AddDays(prev ? -7 : 7);
                     startDate = startDate.AddDays(prev ? -7 : 7);
                     endDate = endDate.AddDays(prev ? -7 : 7);
                     break;
 
-                case typeMonthly:
+                case S.TYPE_MONTHLY:
                     selectDate = selectDate.AddMonths(prev ? -1 : 1);
                     startDate = startDate.AddMonths(prev ? -1 : 1);
                     endDate = endDate.AddMonths(prev ? -1 : 1);
@@ -317,9 +346,10 @@ namespace Joycollab.v2
             // get list
             if (firstRequest)
             {
-                req.share = _isShare;
+                // req.share = ! isMyInfo;
+                req.share = false;
                 req.startDate = selectDate.ToString("yyyy-MM-dd");
-                req.targetMemberSeq = R.singleton.memberSeq;
+                req.targetMemberSeq = targetMemberSeq;
                 req.viewOpt = viewOpt;
                 req.filterOpt = filterOpt;
                 req.keyword = string.Empty;
@@ -327,15 +357,24 @@ namespace Joycollab.v2
                 req.pageSize = 20;
                 req.sortDescending = true;
                 req.sortProperty = "sd";
-                GetList(req, true).Forget();
+
+                // 기본값은 daily 로 출력.
+                if (! _toggleDaily.isOn)
+                    _toggleDaily.isOn = true;
+                else 
+                    GetList(req, true).Forget();
+
+                firstRequest = false;
             }
             else
             {
-                await UniTask.Yield();
+                _scrollView.UpdateAllData();
+                _scrollView.MoveTo(selectedData, (InfiniteScroll.MoveToType) 0);
             }
 
             _btnClear.gameObject.SetActive(! string.IsNullOrEmpty(_inputSearch.text));
 
+            await UniTask.Yield();
             return 0;
         }
 
