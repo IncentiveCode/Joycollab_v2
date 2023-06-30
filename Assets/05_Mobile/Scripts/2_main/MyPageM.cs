@@ -74,7 +74,10 @@ namespace Joycollab.v2
             _btnMyInfo.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_MyInfo));
             _btnAttendance.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Attendance));
             _btnMyWorkspace.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_MyWorkspace));
-            _btnSettings.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_MyWorkspace));
+            _btnSettings.onClick.AddListener(() => {
+                // ViewManager.singleton.Push(S.MobileScene_MyWorkspace);
+                PopupBuilder.singleton.OpenAlert("정리 중 입니다.");
+            });
             _btnSendFeedback.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Feedback));
             _btnSystemNotice.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_SystemNotice));
             _btnTutorial.onClick.AddListener(() => {
@@ -93,9 +96,7 @@ namespace Joycollab.v2
         public async override UniTaskVoid Show() 
         {
             base.Show().Forget();
-
             await Refresh();
-
             base.Appearing();
         }
 

@@ -2,19 +2,17 @@
 /// [mobile]
 /// To-Do 리스트 화면을 담당하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 29
-/// @version        : 0.2
+/// @last update    : 2023. 06. 30
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 06. 13) : 최초 생성.
 ///     v0.2 (2023. 06. 29) : ToDoM 과 ToDoShareM 으로 분리. 분리하면서 filter 는 삭제.
+///     v0.3 (2023. 06. 30) : date picker 처리 수정. share option 추가.
 /// </summary>
 
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Localization;
-using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
 using Gpm.Ui;
 using TMPro;
@@ -33,8 +31,8 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnClear;
         [SerializeField] private Button _btnSearch;
 
-        [Header("toggle")]
-        // [SerializeReference] private TMP_Dropdown _dropdownFilter;
+        [Header("Dropdown, toggle")]
+        [SerializeReference] private TMP_Dropdown _dropdownFilter;
         [SerializeField] private Toggle _toggleDaily;
         [SerializeField] private Toggle _toggleWeekly;
         [SerializeField] private Toggle _toggleMonthly;
@@ -50,6 +48,7 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnCreate;
 
         [Header("contents")]
+        [SerializeField] private bool _isShare;
         [SerializeField] private InfiniteScroll _scrollView;
 
         // local variables
@@ -57,13 +56,14 @@ namespace Joycollab.v2
         private int viewOpt;
         private DateTime selectDate, startDate, endDate;
 
-        // private List<ToDoData> dataList;
         private ToDoData selectedData;
         private int targetMemberSeq;
         private bool isMyInfo;
-        // private int selectedIndex;
         private ReqToDoList req;
         private bool firstRequest;
+
+        // for date picker, time picker
+        private TMP_Text txtTarget;
         
 
     #region Unity functions
@@ -76,6 +76,29 @@ namespace Joycollab.v2
             // add event handling
             MobileEvents.singleton.OnBackButtonProcess += BackButtonProcess;
         }
+
+        #if UNITY_ANDROID
+        private void Update() 
+        {
+            // date picker 처리
+            if (AndroidDateCallback.isDateUpdated && AndroidDateCallback.viewID == this.viewID) 
+            {
+                string result = AndroidDateCallback.SelectedDate.ToString("yyyy-MM-dd");
+                if (txtTarget != null)
+                {
+                    txtTarget.text = result;
+                }
+
+                // 후속 조치
+                selectDate = AndroidDateCallback.SelectedDate;
+                DisplayDate();
+                req.startDate = result;
+                GetList(req, true).Forget();
+
+                AndroidDateCallback.isDateUpdated = false;
+            }
+        }
+        #endif
 
         private void OnDestroy() 
         {
@@ -93,15 +116,13 @@ namespace Joycollab.v2
         protected override void Init() 
         {
             base.Init();
-            viewID = ID.MobileScene_ToDo;
+            viewID = _isShare ? ID.MobileScene_ShareToDo : ID.MobileScene_ToDo;
 
 
             // set infinite scrollview
             _scrollView.AddSelectCallback((data) => {
                 selectedData = (ToDoData) data;
                 int seq = selectedData.info.seq;
-                // selectedIndex = R.singleton.GetToDoIndex(seq);
-
                 ViewManager.singleton.Push(S.MobileScene_ToDoDetail, seq.ToString());
             });
 
@@ -119,14 +140,15 @@ namespace Joycollab.v2
 
 
             // set 'filter, toggle' listener
-            /**
-            _dropdownFilter.onValueChanged.AddListener((value) => {
-                Debug.Log($"{TAG} | filter changed. selected value : {value}"); 
-                filterOpt = value;
-                req.filterOpt = value;
-                GetList(req, true).Forget();
-            });
-             */
+            if (_dropdownFilter != null) 
+            {
+                _dropdownFilter.onValueChanged.AddListener((value) => {
+                    Debug.Log($"{TAG} | filter changed. selected value : {value}"); 
+                    filterOpt = value;
+                    req.filterOpt = value;
+                    GetList(req, true).Forget();
+                });
+            }
             _toggleDaily.onValueChanged.AddListener((on) => {
                 if (on) 
                 {
@@ -162,7 +184,10 @@ namespace Joycollab.v2
             // set button listener
             _btnBack.onClick.AddListener(() => ViewManager.singleton.Pop());
             _btnSearch.onClick.AddListener(() => Debug.Log($"{TAG} | search, {_inputSearch.text}"));
-            _btnDate.onClick.AddListener(() => PickDate());
+            _btnDate.onClick.AddListener(() => {
+                txtTarget = _txtDate;
+                AndroidLib.singleton.ShowDatepicker(viewID);
+            });
             _btnPrev.onClick.AddListener(() => ChangeDate(true));
             _btnNext.onClick.AddListener(() => ChangeDate(false));
             _btnCreate.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_CreateTodo));
@@ -170,11 +195,8 @@ namespace Joycollab.v2
 
             // init local variables
             selectDate = startDate = endDate = DateTime.Now;
-
-            // dataList = new List<ToDoData>();
             targetMemberSeq = 0;
             isMyInfo = false;
-            // selectedIndex = -1;
             req = new ReqToDoList();
             firstRequest = true;
         }
@@ -264,13 +286,6 @@ namespace Joycollab.v2
 
     #region for date
 
-        private void PickDate() 
-        {
-            Locale currentLocale = LocalizationSettings.SelectedLocale;
-            string title = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "날짜 선택", currentLocale);
-            AndroidLib.singleton.ShowDatepicker(_txtDate, title);
-        }
-
         private void DisplayDate() 
         {
             string tempDate = string.Empty;
@@ -346,8 +361,7 @@ namespace Joycollab.v2
             // get list
             if (firstRequest)
             {
-                // req.share = ! isMyInfo;
-                req.share = false;
+                req.share = _isShare;
                 req.startDate = selectDate.ToString("yyyy-MM-dd");
                 req.targetMemberSeq = targetMemberSeq;
                 req.viewOpt = viewOpt;

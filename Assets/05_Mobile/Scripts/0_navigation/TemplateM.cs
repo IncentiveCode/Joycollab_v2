@@ -20,6 +20,8 @@ namespace Joycollab.v2
 
         [SerializeField] private bool _showTopNavigation;
         [SerializeField] private bool _showBottomNavigation;
+        [SerializeField] private Button _btnBack;
+        [SerializeField] private int id;
 
 
     #region Unity functions
@@ -49,15 +51,18 @@ namespace Joycollab.v2
         protected override void Init()
         {
             base.Init();
-            viewID = ID.MobileScene_Template;
+            viewID = id;
+
+            if (_btnBack != null) 
+            {
+                _btnBack.onClick.AddListener(() => ViewManager.singleton.Pop());
+            }
         }
 
         public async override UniTaskVoid Show() 
         {
             base.Show().Forget();
-
             await Refresh();
-
             base.Appearing();
         }
 

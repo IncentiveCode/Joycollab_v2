@@ -132,16 +132,16 @@ namespace Joycollab.v2
         // 04. Board
 
         public const int MobileScene_Board = 10040;
-        public const int MobileScene_PostWrite = 10041;
-        public const int MobileScene_PostDetail = 10042;
+        public const int MobileScene_PostDetail = 10041;
+        public const int MobileScene_PostWrite = 10042;
 
 
         // ---------- ---------- ----------
         // 05. Notice
 
         public const int MobileScene_Notice = 10050;
-        public const int MobileScene_NoticeWrite = 10051;
-        public const int MobileScene_NoticeDetail = 10052;
+        public const int MobileScene_NoticeDetail = 10051;
+        public const int MobileScene_NoticeWrite = 10052;
         public const int MobileScene_SystemNotice = 10053;
         public const int MobileScene_SystemNoticeDetail = 10054;
 

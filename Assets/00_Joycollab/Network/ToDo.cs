@@ -11,7 +11,6 @@
 /// </summary>
 
 using System;
-using System.Collections.Generic;
 using Gpm.Ui;
 
 namespace Joycollab.v2

@@ -9,8 +9,6 @@
 ///     v0.2 (2023. 06. 28) : alarm api 모듈 연결
 /// </summary>
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Localization;
@@ -28,11 +26,11 @@ namespace Joycollab.v2
         [Header("module")]
         [SerializeField] private AlarmModule _module; 
 
-        [Header("buttons")]
+        [Header("button")]
         [SerializeField] private Button _btnBack;
         [SerializeField] private Button _btnTruncate;
 
-        [Header("contents")]
+        [Header("content")]
         [SerializeField] private TMP_Text _txtGuide;
         [SerializeField] private TMP_Text _txtCount;
         [SerializeField] private InfiniteScroll _scrollView;

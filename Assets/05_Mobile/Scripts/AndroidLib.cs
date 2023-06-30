@@ -40,7 +40,7 @@ namespace Joycollab.v2
         private AndroidJavaObject customObject;
         private AndroidJavaClass versionInfo;
         private int sdk_int;
-        private TMP_Text txtTarget;
+        // private TMP_Text txtTarget;
     
     #endif  // for android plugin
 
@@ -58,6 +58,7 @@ namespace Joycollab.v2
             SendActivityReference(PackageName); 
         }
 
+        /**
         private void Update() 
         {
             // date picker
@@ -67,7 +68,6 @@ namespace Joycollab.v2
                 {
                     txtTarget.text = AndroidDateCallback.SelectedDate.ToString("yyyy-MM-dd");
                 }
-
                 AndroidDateCallback.isDateUpdated = false;
             }
 
@@ -85,6 +85,7 @@ namespace Joycollab.v2
                 AndroidTimeCallback.isTimeUpdated = false;
             }
         }
+         */
         #endif
 
     #endregion  // Unity functions
@@ -102,7 +103,7 @@ namespace Joycollab.v2
             unityActivity = unityClass.GetStatic<AndroidJavaObject>(UnityCurrentActivity);
             
             customObject = new AndroidJavaObject(packageName);
-            customObject.Call(CustomClassReceiveActivityInstanceMethod, unityActivity);
+            // customObject.Call(CustomClassReceiveActivityInstanceMethod, unityActivity);
 
             versionInfo = new AndroidJavaClass("android.os.Build$VERSION");
             sdk_int = versionInfo.GetStatic<int>("SDK_INT");
@@ -196,10 +197,10 @@ namespace Joycollab.v2
         #endif
         }
 
-        public void ShowDatepicker(TMP_Text target, string title) 
+        public void ShowDatepicker(int viewID) 
         {
         #if UNITY_ANDROID && !UNITY_EDITOR
-            txtTarget = target;
+            AndroidDateCallback.viewID = viewID;
 
             unityActivity.Call("runOnUiThread", new AndroidJavaRunnable(() => PickDate()));
         #endif
@@ -218,10 +219,10 @@ namespace Joycollab.v2
         #endif
         }
 
-        public void ShowTimePicker(TMP_Text target, string title) 
+        public void ShowTimePicker(int viewID) 
         {
         #if UNITY_ANDROID && !UNITY_EDITOR
-            txtTarget = target;
+            AndroidTimeCallback.viewID = viewID;
 
             unityActivity.Call("runOnUiThread", new AndroidJavaRunnable(() => PickTime()));
         #endif
