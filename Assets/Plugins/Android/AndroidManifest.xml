@@ -12,6 +12,7 @@
         <!--activity android:name="com.unity3d.player.UnityPlayerActivity" -->
         <activity android:name="com.google.firebase.MessagingUnityPlayerActivity"
                 android:theme="@style/UnityThemeSelector"
+                android:configChanges="keyboard|keyboardHidden|screenLayout|screenSize|smallestScreenSize|uiMode|touchscreen"
                 android.hardwareAccelerated="true" >
 
             <intent-filter>
@@ -27,23 +28,11 @@
             android:permission="android.permission.BIND_JOB_SERVICE"
             android:exported="false" >
         </service>
-
-        <!--최초 실행시 스킵 삭제-->
-        <meta-data android:name="unityplayer.SkipPermissionsDialog" android:value="true" />
-
-        <!-- FCM 자동 초기화 방지 -->
-        <!--
-        <meta-data android:name="firebase_messaging_auto_init_enabled" android:value="false" />
-        <meta-data android:name="firebase_analytics_collection_enabled" android:value="false" /> 
-         -->
     </application>
 
     <uses-feature android:name="android.hardware.camera" />
     <uses-feature android:name="android.hardware.microphone" />
     <uses-feature android:name="android.hardware.location.gps" />
-
-    <!-- 권한 요청 -->
-    <uses-permission-sdk-23 tools:node="removeAll" />
 
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.VIBRATE" />

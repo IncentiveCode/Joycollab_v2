@@ -191,6 +191,7 @@ namespace Joycollab.v2
         
         public const int MobileScene_MemberDetail = 10100;
         public const int MobileScene_SlidePopup = 10101;
+		public const int MobileScene_Test = 10102;
 
 	#endregion	// MobileScene ID
 	}

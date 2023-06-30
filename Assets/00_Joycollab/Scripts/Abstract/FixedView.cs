@@ -1,13 +1,14 @@
 /// <summary>
 /// 고정 위치를 가지는 창의 속성을 관리하기 위한 추상 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 12
-/// @version        : 0.4
+/// @last update    : 2023. 06. 30
+/// @version        : 0.5
 /// @update
 ///     v0.1 (2023. 03. 20) : 최초 생성
 ///     v0.2 (2023. 03. 21) : Show() 를 async 로 변경
 ///     v0.3 (2023. 05. 25) : DOTween test
 ///     v0.4 (2023. 06. 12) : softkeyboard 출력상태에서 back button 입력시 내용 사라지는 오류 수정.
+///     v0.5 (2023. 06. 30) : softkeyboard 관련 listener 정리.
 /// </summary>
 
 using UnityEngine;
@@ -25,11 +26,6 @@ namespace Joycollab.v2
         protected CanvasGroup canvasGroup;
         protected RectTransform viewRect;
         protected float fadeTime = 1f;
-
-        // for mobile keyboard
-        protected bool keepOldTextInField;
-        protected string oldText;
-        protected string editText;
 
 
     #region FixedView functions
@@ -126,10 +122,15 @@ namespace Joycollab.v2
 
     #region Mobile inputfield 예외처리
 
+        protected bool keepOldTextInField;
+        protected string oldText;
+        protected string editText;
+
         public virtual void SetInputFieldListener(TMP_InputField input) 
         {
-            input.onValueChanged.AddListener(Editing);
             input.onSelect.AddListener(OnSelect);
+            input.onValueChanged.AddListener(OnValueChanged);
+            input.onTouchScreenKeyboardStatusChanged.AddListener(OnStatusChanged);
             input.onDeselect.AddListener((value) => {
                 if (keepOldTextInField) 
                 {
@@ -137,13 +138,6 @@ namespace Joycollab.v2
                     keepOldTextInField = false;
                 }
             });
-            input.onTouchScreenKeyboardStatusChanged.AddListener(ReportChangeStatus);
-        }
-
-        private void Editing(string currentText) 
-        {
-            oldText = editText;
-            editText = currentText;
         }
 
         private void OnSelect(string currentText)
@@ -151,7 +145,13 @@ namespace Joycollab.v2
             oldText = currentText;
         }
 
-        private void ReportChangeStatus(TouchScreenKeyboard.Status status) 
+        private void OnValueChanged(string currentText) 
+        {
+            oldText = editText;
+            editText = currentText;
+        }
+
+        private void OnStatusChanged(TouchScreenKeyboard.Status status) 
         {
             if (status == TouchScreenKeyboard.Status.Canceled) 
             {

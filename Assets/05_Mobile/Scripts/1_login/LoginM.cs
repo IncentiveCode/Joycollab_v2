@@ -146,8 +146,9 @@ namespace Joycollab.v2
 
             _btnProgressTest.onClick.AddListener(() => {
                 ProgressBuilder.singleton.OpenProgress(2f);
+                ViewManager.singleton.Push(S.MobileScene_Test);
             });
-            _btnProgressTest.gameObject.SetActive(URL.DEV);
+            // _btnProgressTest.gameObject.SetActive(URL.DEV);
 
             // set local variables
             workspaces = new List<ResWorkspaceInfo>();
@@ -160,9 +161,7 @@ namespace Joycollab.v2
         public async override UniTaskVoid Show() 
         {
             base.Show().Forget();
-
             await Refresh();
-
             base.Appearing();
         }
 

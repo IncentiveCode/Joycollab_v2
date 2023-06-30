@@ -171,6 +171,7 @@ namespace Joycollab.v2
         
         public const string MobileScene_MemberDetail = "member detail_m";
         public const string MobileScene_SlidePopup = "slide popup_m";
+        public const string MobileScene_Test = "test";
 
     #endregion  // MobileScene FixedView Name 
 
