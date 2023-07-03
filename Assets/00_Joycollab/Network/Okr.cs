@@ -70,4 +70,15 @@ namespace Joycollab.v2
     {
 
     }
+
+    [Serializable] 
+    public class OkrData : InfiniteScrollData 
+    {
+        public ResOkrList info;
+
+        public OkrData() 
+        {
+            info = new ResOkrList();
+        }
+    }
 }

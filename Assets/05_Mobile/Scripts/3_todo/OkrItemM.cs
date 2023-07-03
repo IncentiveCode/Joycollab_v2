@@ -29,7 +29,6 @@ namespace Joycollab.v2
         [SerializeField] private TMP_Text _txtCreator; 
         [SerializeField] private TMP_Text _txtCreateDate;
         [SerializeField] private TMP_Text _txtPeriod;
-        [SerializeField] private TMP_Text _txtDoneDate;
         [SerializeField] private TMP_Text _txtShareOpt;
         [SerializeField] private TMP_Text _txtDetail;
 
@@ -47,7 +46,7 @@ namespace Joycollab.v2
         private bool isDone;
 
         // data
-        private ToDoData data;
+        private OkrData data;
 
 
     #region Unity functions
@@ -70,6 +69,7 @@ namespace Joycollab.v2
             base.UpdateData(itemData);  
             this.data = (OkrData) itemData; 
 
+            /**
             _imgLoadMore.gameObject.SetActive(data.loadMore);
             _btnLoadMore.gameObject.SetActive(data.loadMore);
             if (! data.loadMore) 
@@ -122,23 +122,10 @@ namespace Joycollab.v2
                 // 완료 처리 
                 DoneProcess(isDone);
             }
+             */
         }
 
         public void OnClick() => OnSelect();
-
-        public async UniTaskVoid OnDoneClick() 
-        {
-            PsResponse<string> res = await _module.CheckItem(this.seq);
-            if (string.IsNullOrEmpty(res.message)) 
-            {
-                isDone = !isDone;
-                DoneProcess(isDone);
-            }
-            else 
-            {
-                PopupBuilder.singleton.OpenAlert(res.message);
-            }
-        }
 
         public void OnLoadMoreClick() 
         {
@@ -146,20 +133,5 @@ namespace Joycollab.v2
         }
 
     #endregion  // GPM functions
-
-        private void DoneProcess(bool done) 
-        {
-            _imgCheck.gameObject.SetActive(done);
-            _txtDoneDate.gameObject.SetActive(done);
-            _txtTitle.fontStyle = done ? FontStyles.Strikethrough : FontStyles.Normal;
-            _txtPeriod.fontStyle = done ? FontStyles.Strikethrough : FontStyles.Normal;
-
-            data.info.completeYn = done ? "Y" : "N";
-            data.info.completeTime = done ? DateTime.Now.ToString("yyyy-MM-dd HH:mm") : string.Empty;
-            _txtDoneDate.text = data.info.completeTime;
-            
-            R.singleton.AddToDoInfo(this.seq, data);
-            base.UpdateData((InfiniteScrollData) data);
-        }
     }
 }
