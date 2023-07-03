@@ -1,13 +1,14 @@
 /// <summary>
-/// Network 통신 - Space 관련 요청과 응답 
+/// Network 통신 - To-Do 관련 요청과 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 15
-/// @version        : 0.4
+/// @last update    : 2023. 07. 03
+/// @version        : 0.5
 /// @update
 ///     v0.1 (2023. 03. 24) : Joycollab 에서 사용하던 클래스 정리 및 통합.
 /// 	v0.2 (2023. 06. 12) : ToDoModule 을 사용하기 위한 ReqToDoList 추가.
 /// 	v0.3 (2023. 06. 14) : infinite scroll data 추가.
 /// 	v0.4 (2023. 06. 14) : array 를 list 로 변경.
+/// 	v0.5 (2023. 07. 03) : ReqToDoInfo 클래스 추가.
 /// </summary>
 
 using System;
@@ -50,12 +51,25 @@ namespace Joycollab.v2
 				url += "page="+ pageNo +"&size="+ pageSize +"&";
 				url += "sortDirection=";
 				url += sortDescending ? "descending" : "ascending";
-				url += "sortProperty=";
+				url += "&sortProperty=";
 				url += sortProperty;
 
 				return url;
 			}
 		}
+	}
+
+	[Serializable]
+	public class ReqToDoInfo
+	{
+		public string content;
+		public string ed;
+		public int repetition;
+		public string sd;
+		public int shereType;
+		public string st;
+		public string et;
+		public string title;
 	}
 
 	[Serializable]

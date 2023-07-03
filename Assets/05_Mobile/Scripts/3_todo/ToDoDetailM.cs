@@ -45,7 +45,6 @@ namespace Joycollab.v2
 
         // local variables
         private ToDoData data;
-        private ToDoData prevData;
         private int seq;
         private bool isDone;
 
@@ -81,9 +80,14 @@ namespace Joycollab.v2
 
 
             // set 'button' listener
-            _btnBack.onClick.AddListener(() => ViewManager.singleton.Pop());
+            _btnBack.onClick.AddListener(() => BackProcess());
             _btnEdit.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_CreateTodo, seq.ToString()));
-            _btnDelete.onClick.AddListener(() => Debug.Log("물어보고 삭제하기."));
+            _btnDelete.onClick.AddListener(() => {
+                Locale currentLocale = LocalizationSettings.SelectedLocale;
+                string message = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "삭제 안내", currentLocale);
+
+                PopupBuilder.singleton.OpenConfirm(message, () => DeleteInfo().Forget());
+            });
             _btnDone.onClick.AddListener(async () => {
                 PsResponse<string> res = await _module.CheckItem(this.seq);
                 if (string.IsNullOrEmpty(res.message)) 
@@ -99,7 +103,7 @@ namespace Joycollab.v2
 
 
             // init local variables
-            data = prevData = null;
+            data = null;
             seq = 0;
             isDone = false;
         }
@@ -120,13 +124,6 @@ namespace Joycollab.v2
 
             await Refresh();
             base.Appearing();
-        }
-
-        public override void Hide() 
-        {
-            base.Hide();
-
-            prevData = data;
         }
 
     #endregion  // FixedView functions
@@ -198,6 +195,23 @@ namespace Joycollab.v2
             _txtDoneDate.text = data.info.completeTime;
             
             R.singleton.AddToDoInfo(this.seq, data);
+        }
+
+        private async UniTaskVoid DeleteInfo()
+        {
+            PsResponse<string> res = await _module.DeleteToDo(this.seq);
+            if (string.IsNullOrEmpty(res.message)) 
+            {
+                Locale currentLocale = LocalizationSettings.SelectedLocale;
+                string message = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "삭제 완료", currentLocale);
+                PopupBuilder.singleton.OpenAlert(message, () => {
+                    ViewManager.singleton.Pop(true);
+                });
+            }
+            else 
+            {
+                PopupBuilder.singleton.OpenAlert(res.message);
+            }
         }
 
         private void BackButtonProcess(string name="") 

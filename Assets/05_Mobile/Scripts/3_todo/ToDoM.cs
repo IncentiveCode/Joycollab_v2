@@ -230,6 +230,14 @@ namespace Joycollab.v2
             base.Appearing();
         }
 
+        public async override UniTaskVoid Show(bool refresh) 
+        {
+            base.Show().Forget();
+            GetList(req, refresh).Forget();
+            await UniTask.Yield();
+            base.Appearing();
+        }
+
     #endregion  // FixedView functions
 
 

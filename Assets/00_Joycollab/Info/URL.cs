@@ -1,8 +1,8 @@
 /// <summary>
 /// NetworkTask 를 위한 API URL 정리 문서 
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 19
-/// @version        : 0.6
+/// @last update    : 2023. 07. 03
+/// @version        : 0.7
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리
 ///     v0.2 (2023. 03. 20) : Tray app 관련 URL 추가
@@ -10,6 +10,7 @@
 ///     v0.4 (2023. 04. 05) : Joycollab 에서 사용하던 URL 정리. (AdmApi, UserApi - workspace, meeting)
 ///     v0.5 (2023. 04. 14) : Joycollab 에서 사용하던 URL 정리. (UserApi - member)
 ///     v0.6 (2023. 06. 19) : Joycollab 에서 사용하던 URL 정리. (UserApi - File)
+///     v0.7 (2023. 07. 03) : Joycollab 에서 사용하던 URL 정리. (UserApi - OKR)
 /// </summary>
 
 // #define DEV // Dev Server
@@ -1071,8 +1072,68 @@ namespace Joycollab.v2
         ///     {2} : filter type
         ///     {3} : 조회 일자
         /// </summary>
-        /// <value></value>
         public const string GET_SHARE_TODO_LIST = SERVER_PATH +"/api/todo/{0}/{1}/{2}/{3}";
+
+
+        // ---------- ---------- ----------
+        // 14. OKR API
+
+        /// <summary>
+        /// desc : 공유 옵션이 있는 OKR 조회 
+        /// method : get
+        /// param
+        ///     {0} : member seq
+        ///     {1} : filter type (통합, 부서, 전사)
+        ///     {2} : view type (일간, 주간, 월간)
+        ///     {3} : 조회 일자
+        /// </summary>
+        public const string GET_SHARE_OKR_LIST = SERVER_PATH +"/api/okr/{0}/{1}/{2}/{3}";
+
+        /// <summary>
+        /// desc : OKR 수정 또는 삭제
+        /// method : put 또는 delete
+        /// param
+        ///     {0} : member seq
+        ///     {1} : OKR seq
+        /// </summary>
+        public const string CONTROL_OKR = SERVER_PATH +"/api/okr/{0}/{1}";
+
+        /// <summary>
+        /// desc : objective 목록 조회
+        /// method : get
+        /// param
+        ///     {0} : member seq
+        ///     {1} : share type (개인, 부서, 전사)
+        /// </summary>
+        public const string GET_OBJECTIVES = SERVER_PATH +"/api/okr/{0}/{1}";
+
+        /// <summary>
+        /// desc : key result 등록
+        /// method : post
+        /// param
+        ///     {0} : member seq
+        ///     {1} : 상위 OKR seq
+        /// </summary>
+        public const string REGIST_KEY_RESULT = SERVER_PATH +"/api/okr/kr/{0}/{1}";
+
+        /// <summary>
+        /// desc : 내 OKR 조회
+        /// method : get
+        /// param
+        ///     {0} : member seq
+        ///     {1} : view type (일간, 주간, 월간)
+        ///     {2} : 조회 일자
+        /// </summary>
+        public const string GET_OKR_LIST = SERVER_PATH +"/api/okr/my/{0}/{1}/{2}";
+
+        /// <summary>
+        /// desc : objective 등록
+        /// method : post
+        /// param
+        ///     {0} : member seq
+        ///     {1} : filter type (개인, 부서, 전사) 
+        /// </summary>
+        public const string REGIST_OBJECTIVE = SERVER_PATH +"/api/okr/o/{0}/{1}";
 
     #endregion
     }

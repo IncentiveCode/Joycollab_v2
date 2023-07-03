@@ -39,6 +39,39 @@ namespace Joycollab.v2
             return res;
         }
 
+        public async UniTask<PsResponse<string>> SaveToDo(string body, int shareOpt, int remindOpt)
+        {
+            string token = R.singleton.token;
+            int memberSeq = R.singleton.memberSeq;
+
+            string url = string.Format(URL.REGIST_TODO, memberSeq, shareOpt, remindOpt);
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.POST, body, token);
+
+            return res;
+        }
+
+        public async UniTask<PsResponse<string>> UpdateToDo(int seq, string body, int shareOpt, int remindOpt)
+        {
+            string token = R.singleton.token;
+            int memberSeq = R.singleton.memberSeq;
+
+            string url = string.Format(URL.MODIFY_TODO, memberSeq, seq, shareOpt, remindOpt);
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.PUT, body, token);
+
+            return res;
+        }
+
+        public async UniTask<PsResponse<string>> DeleteToDo(int seq) 
+        {
+            string token = R.singleton.token;
+            int memberSeq = R.singleton.memberSeq;
+
+            string url = string.Format(URL.CONTROL_TODO, memberSeq, seq);
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.DELETE, string.Empty, token);
+
+            return res;
+        }
+
     #endregion  // public functions
     }
 }

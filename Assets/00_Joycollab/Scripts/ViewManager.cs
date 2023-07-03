@@ -187,6 +187,30 @@ namespace Joycollab.v2
                 currentView.Show(option).Forget();
         }
 
+        public void Pop(bool refresh) 
+        {
+            if (uiNavigation.Count <= 0) 
+            {
+                Debug.Log($"{TAG} | Pop(), uiNavigation count is zero. return.");
+                return;
+            }
+
+            FixedView previous = uiNavigation.Pop() as FixedView;
+            if (previous == null) 
+            {
+                Debug.Log($"{TAG} | Pop(), previous view is null. return.");
+                return;
+            }
+
+            if (currentView != null) 
+            {
+                currentView.Hide(); 
+            }
+
+            currentView = previous;
+            currentView.Show(refresh).Forget();
+        }
+
         public void Overlay(string viewName, string option="") 
         {
             Debug.Log($"{TAG} | Overlay(), inserted view : {viewName}, option : {option}");
