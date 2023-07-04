@@ -12,6 +12,7 @@
 /// </summary>
 
 using System;
+using System.Collections.Generic;
 using Gpm.Ui;
 
 namespace Joycollab.v2
@@ -76,7 +77,7 @@ namespace Joycollab.v2
 	public class ResToDoList 
 	{
 		public bool hasNext;
-		public ResToDoInfo[] content;
+		public List<ResToDoInfo> content;
 	}	
 
 	[Serializable]

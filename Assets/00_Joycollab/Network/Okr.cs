@@ -8,6 +8,7 @@
 /// </summary>
 
 using System;
+using System.Collections.Generic;
 using Gpm.Ui;
 
 namespace Joycollab.v2
@@ -54,7 +55,7 @@ namespace Joycollab.v2
         }
     } 
 
-    [Serializable] 
+    [Serializable]
     public class ReqOkrInfo 
     {
         public string content;
@@ -65,20 +66,75 @@ namespace Joycollab.v2
         public string title;
     }
 
-    [Serializable] 
-    public class ResOkrList 
-    {
+    [Serializable]
+    public class ResOkrList
+    { 
+        public bool hasNext;
+		public List<ResOkrInfo> content;
+	}
 
+    [Serializable] 
+    public class ResOkrInfo 
+    {
+        public bool useYn;
+        public int seq;
+        public string title;
+        public string content;
+        public string sd;
+        public string ed;
+        public MemberSeq createMember;
+        public MemberSeq modifyMember;
+        public string createdDate;
+        public string modifiedDate;
+        public int shereType;
+        public TopOkrInfo topOkr;
+        public List<SubOkrInfo> subOkr;
     }
 
-    [Serializable] 
+    [Serializable]
+    public class TopOkrInfo
+    { 
+	    public bool useYn;
+        public int seq;
+        public string title;
+        public string content;
+        public string sd;
+        public string ed;
+        public MemberSeq createMember;
+        public MemberSeq modifyMember;
+        public string createdDate;
+        public string modifiedDate;
+        public int shereType;
+        // public TopOkrInfo topOkr;
+	}
+
+    [Serializable]
+    public class SubOkrInfo
+    { 
+		public bool useYn;
+        public int seq;
+        public string title;
+        public string content;
+        public string sd;
+        public string ed;
+        public MemberSeq createMember;
+        public MemberSeq modifyMember;
+        public string createdDate;
+        public string modifiedDate;
+        public int shereType;
+
+	}
+
+
     public class OkrData : InfiniteScrollData 
     {
-        public ResOkrList info;
+        public ResOkrInfo info;
+        public bool loadMore;
 
         public OkrData() 
         {
-            info = new ResOkrList();
+            info = new ResOkrInfo();
+            loadMore = false;
         }
     }
 }

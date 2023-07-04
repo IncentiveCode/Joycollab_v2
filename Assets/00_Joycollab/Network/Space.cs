@@ -6,10 +6,11 @@
 /// @update
 ///     v0.1 (2023. 02. 23) : Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
 ///     v0.2 (2023. 06. 14) : InfoSpace -> SpaceInfo, InfoSpaceMng -> SpaceMng 로 이름 변경.
-///     v0.3 (2023. 06. 28) : ResSpaceInfo, TopSpace 클래스 추가.
+///     v0.3 (2023. 06. 28) : ResSpaceList, ResSpaceInfo, TopSpace 클래스 추가.
 /// </summary>
 
 using System;
+using System.Collections.Generic;
 
 namespace Joycollab.v2
 {
@@ -41,12 +42,18 @@ namespace Joycollab.v2
     }
 
     [Serializable]
+    public class ResSpaceList
+    { 
+        public List<ResSpaceInfo> list;
+    }
+
+    [Serializable]
     public class ResSpaceInfo
     {
         public string useYn;
         public int seq;
         public string nm;
-        public Seq[] members;
+        public List<Seq> members;
         public SpaceMng spaceMng;
         public int arow;
         public int acol;
@@ -60,7 +67,7 @@ namespace Joycollab.v2
         public string useYn;
         public int seq;
         public string nm;
-        public Seq[] members;
+        public List<Seq> members;
         public SpaceMng spaceMng;
         public int arow;
         public int acol;

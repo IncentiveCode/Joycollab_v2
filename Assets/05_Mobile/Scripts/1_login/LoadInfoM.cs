@@ -77,7 +77,8 @@ namespace Joycollab.v2
                 GetLobbyInfoAsync(), 
                 GetMyInfo(),
                 GetOfficeInfo(),
-                GetAlarmList()
+                GetAlarmList(),
+                GetSpaceList()
             );
 
             // text 출력
@@ -196,6 +197,31 @@ namespace Joycollab.v2
 
             return string.Empty;
         }
+
+        // 5. get space info
+        private async UniTask<string> GetSpaceList()
+        {
+	        int workspaceSeq = R.singleton.workspaceSeq;
+	        string token = R.singleton.token;
+
+            string url = string.Format(URL.SPACE_LIST, workspaceSeq);	     
+            PsResponse<ResSpaceList> res = await NetworkTask.RequestAsync<ResSpaceList>(url, eMethodType.GET, string.Empty, token);
+
+            if (string.IsNullOrEmpty(res.message))
+            { 
+	            foreach (ResSpaceInfo info in res.data.list)
+                { 
+                    R.singleton.AddSpaceName(info.seq, info.nm);
+		        } 
+	        }
+            else
+            { 
+                Debug.Log($"{TAG} | GetSpaceList() : {res.message}");
+                return res.message;
+	        }
+
+            return string.Empty;
+	    }
 
     #endregion  // Get information
     }

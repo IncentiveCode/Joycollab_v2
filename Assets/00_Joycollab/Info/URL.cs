@@ -1131,7 +1131,7 @@ namespace Joycollab.v2
         /// method : post
         /// param
         ///     {0} : member seq
-        ///     {1} : filter type (개인, 부서, 전사) 
+        ///     {1} : filter type (1. 개인, 2. 부서, 3. 전사) 
         /// </summary>
         public const string REGIST_OBJECTIVE = SERVER_PATH +"/api/okr/o/{0}/{1}";
 

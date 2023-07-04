@@ -43,7 +43,6 @@ namespace Joycollab.v2
         // local variables
         private RectTransform rect;
         private int seq;
-        private bool isDone;
 
         // data
         private OkrData data;
@@ -69,19 +68,16 @@ namespace Joycollab.v2
             base.UpdateData(itemData);  
             this.data = (OkrData) itemData; 
 
-            /**
             _imgLoadMore.gameObject.SetActive(data.loadMore);
             _btnLoadMore.gameObject.SetActive(data.loadMore);
             if (! data.loadMore) 
             {
                 this.seq = data.info.seq;
-                this.isDone = data.info.completeYn.Equals("Y");
 
                 _txtTitle.text = data.info.title;
-                _txtCreator.text = string.Format("{0} ({1})", data.info.createMember.nickNm, data.info.space.nm);
+                _txtCreator.text = data.info.createMember.nickNm;
                 _txtCreateDate.text = data.info.createdDate;
                 _txtPeriod.text = string.Format("{0} - {1}", data.info.sd, data.info.ed);
-                _txtDoneDate.text = data.info.completeTime;
                 _txtDetail.text = data.info.content;
 
                 bool smaller = string.IsNullOrEmpty(data.info.content);
@@ -97,7 +93,7 @@ namespace Joycollab.v2
                 {
                     case S.SHARE_DEPARTMENT :
                         string t = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (부서)", currentLocale);
-                        _txtShareOpt.text = string.Format(t, data.info.space.nm);
+                        _txtShareOpt.text = string.Format(t, R.singleton.GetSpaceName(data.info.createMember.space.seq));
                         break;
 
                     case S.SHARE_COMPANY :
@@ -109,20 +105,7 @@ namespace Joycollab.v2
                         _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (개인)", currentLocale);
                         break;
                 }
-
-                // 내 정보인 경우에만 버튼 출력
-                bool isMyInfo = (R.singleton.memberSeq == data.info.createMember.seq);
-                _btnDone.interactable = isMyInfo;
-
-                // 완료 마크 처리
-                Color tempColor = _imgCheck.color;
-                tempColor.a = isMyInfo ? 1f : 0.5f;
-                _imgCheck.color = tempColor;
-
-                // 완료 처리 
-                DoneProcess(isDone);
             }
-             */
         }
 
         public void OnClick() => OnSelect();

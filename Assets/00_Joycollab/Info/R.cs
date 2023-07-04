@@ -1,7 +1,7 @@
 /// <summary>
 /// 시스템 상 저장 공간 (Repository) 
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 27
+/// @last update    : 2023. 07. 04
 /// @version        : 0.6
 /// @update
 ///     v0.1 (2023. 03. 17) : 파일 생성, Joycollab 에서 사용하는 것들 정리 시작.
@@ -9,6 +9,7 @@
 ///     v0.3 (2023. 04. 07) : LanguageManager 내용 추가. 
 ///     v0.4 (2023. 05. 10) : LoginViewManager 에서 사용하던 Param 관련 함수 추가.
 ///     v0.5 (2023. 06. 16) : Locale 관련 코드 추가. (ChangeTextKorean, ChangeTextEnglish -> ChangeLocale)
+///     v0.6 (2023. 07. 04) : Space Dictionary 관련 코드 추가.
 /// </summary>
 
 using System;
@@ -43,22 +44,34 @@ namespace Joycollab.v2
             listToDo = new List<ToDoData>();
             listToDo.Clear();
 
-            // for memory
+            listOkr = new List<OkrData>();
+            listOkr.Clear();
+
+            // for temp dictionary
             dictPhoto = new Dictionary<int, Texture2D>();
             dictPhoto.Clear();
+
+            dictSpaceName = new Dictionary<int, string>();
+            dictSpaceName.Clear();
         }
 
         public void Clear() 
         {
+            // cookie delete
             ClearTokenInfo();
             ClearMemberInfo();
             ClearWorkspaceInfo();
             
+            // for alarm
             ClearAlarmInfo();
 
+            //for to-do, OKR
             ClearToDoList();
+            ClearOkrList();
 
+            // for temp dictionary
             ClearPhotoDict();
+            ClearSpaceNameDict();
         }
 
     #endregion  // Common functions
@@ -462,7 +475,6 @@ namespace Joycollab.v2
             else             
                 listToDo[index].info = todo.info;
         }
-
         public ToDoData GetToDoInfo(int seq) 
         {
             int index = listToDo.FindIndex(item => item.info.seq == seq);
@@ -470,7 +482,6 @@ namespace Joycollab.v2
             
             return listToDo[index];
         }
-
         public int GetToDoIndex(int seq) 
         {
             int index = listToDo.FindIndex(item => item.info.seq == seq);
@@ -478,7 +489,6 @@ namespace Joycollab.v2
             
             return index;
         }
-
         public bool DeleteToDoInfo(int seq) 
         {
             int index = listToDo.FindIndex(item => item.info.seq == seq);
@@ -487,8 +497,35 @@ namespace Joycollab.v2
             listToDo.RemoveAt(index);
             return true;
         }
-
         public void ClearToDoList() => listToDo.Clear(); 
+
+
+        private List<OkrData> listOkr;
+
+        public void AddOkrInfo(int seq, OkrData data)
+        { 
+            int index = listOkr.FindIndex(item => item.info.seq == seq);
+            if (index == -1)
+                listOkr.Add(data);
+            else
+                listOkr[index].info = data.info;
+	    }
+        public OkrData GetOkrInfo(int seq)
+        { 
+            int index = listOkr.FindIndex(item => item.info.seq == seq);
+            if (index == -1) return null;
+
+			return listOkr[index];
+	    }
+        public bool DeleteOkrInfo(int seq)
+        { 
+            int index = listOkr.FindIndex(item => item.info.seq == seq);
+            if (index == -1) return false;
+
+            listOkr.RemoveAt(index);
+            return true;
+	    }
+        public void ClearOkrList() => listOkr.Clear();
         
     #endregion  // To-Do, OKR Info
 
@@ -496,7 +533,6 @@ namespace Joycollab.v2
     #region memory management
 
         private Dictionary<int, Texture2D> dictPhoto;
-
         public void AddPhoto(int seq, Texture2D photo) 
         {
             if (dictPhoto.ContainsKey(seq)) 
@@ -509,7 +545,6 @@ namespace Joycollab.v2
                 dictPhoto.Add(seq, photo);
             }
         }
-
         public Texture2D GetPhoto(int seq) 
         {
             if (dictPhoto.ContainsKey(seq))
@@ -517,9 +552,26 @@ namespace Joycollab.v2
             else
                 return null;
         }
-
         private void ClearPhotoDict() => dictPhoto.Clear();
 
-    #endregion memory management
+
+        private Dictionary<int, string> dictSpaceName;
+        public void AddSpaceName(int seq, string name)
+        { 
+            if (dictSpaceName.ContainsKey(seq))
+                dictSpaceName[seq] = name;
+            else
+                dictSpaceName.Add(seq, name);
+	    }
+        public string GetSpaceName(int seq)
+        { 
+            if (dictSpaceName.ContainsKey(seq))
+		        return dictSpaceName[seq];	
+            else
+                return string.Empty;
+	    }
+        private void ClearSpaceNameDict() => dictSpaceName.Clear();
+
+    #endregion  // memory management
     }
 }

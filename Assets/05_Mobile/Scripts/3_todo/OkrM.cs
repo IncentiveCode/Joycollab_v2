@@ -22,7 +22,7 @@ namespace Joycollab.v2
         private const string TAG = "OkrM";
         
         [Header("module")]
-        [SerializeField] private ToDoModule _module;
+        [SerializeField] private OkrModule _module;
 
         [Header("input field")]
         [SerializeField] private TMP_InputField _inputSearch;
@@ -46,7 +46,6 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnCreate;
 
         [Header("contents")]
-        [SerializeField] private bool _isShare;
         [SerializeField] private InfiniteScroll _scrollView;
 
         // local variables
@@ -54,10 +53,10 @@ namespace Joycollab.v2
         private int viewOpt;
         private DateTime selectDate, startDate, endDate;
 
-        private ToDoData selectedData;
+        private OkrData selectedData;
         private int targetMemberSeq;
         private bool isMyInfo;
-        private ReqToDoList req;
+        private ReqOkrList req;
         private bool firstRequest;
 
         // for date picker, time picker
@@ -114,14 +113,14 @@ namespace Joycollab.v2
         protected override void Init() 
         {
             base.Init();
-            viewID = _isShare ? ID.MobileScene_ShareToDo : ID.MobileScene_ToDo;
+            viewID = ID.MobileScene_Okr;
 
 
             // set infinite scrollview
             _scrollView.AddSelectCallback((data) => {
-                selectedData = (ToDoData) data;
+                selectedData = (OkrData) data;
                 int seq = selectedData.info.seq;
-                ViewManager.singleton.Push(S.MobileScene_ToDoDetail, seq.ToString());
+                ViewManager.singleton.Push(S.MobileScene_OkrDetail, seq.ToString());
             });
 
 
@@ -195,7 +194,7 @@ namespace Joycollab.v2
             selectDate = startDate = endDate = DateTime.Now;
             targetMemberSeq = 0;
             isMyInfo = false;
-            req = new ReqToDoList();
+            req = new ReqOkrList();
             firstRequest = true;
         }
 
@@ -221,8 +220,7 @@ namespace Joycollab.v2
                 viewOpt = 0;
                 firstRequest = true;
             }
-            isMyInfo = (R.singleton.memberSeq == targetMemberSeq);
-            _btnCreate.gameObject.SetActive(isMyInfo);
+            _btnCreate.gameObject.SetActive(true);
 
             await Refresh();
             base.Appearing();
@@ -241,47 +239,42 @@ namespace Joycollab.v2
 
     #region for list
 
-        private async UniTaskVoid GetList(ReqToDoList req, bool refresh=true) 
+        private async UniTaskVoid GetList(ReqOkrList req, bool refresh=true) 
         {
-            string token = R.singleton.token;
             string url = req.url;
-            PsResponse<ResToDoList> res = await _module.GetList(url);
+            PsResponse<ResOkrList> res = await _module.GetList(url);
             if (string.IsNullOrEmpty(res.message)) 
             {
                 if (refresh)
                 {
-                    // dataList.Clear();
                     _scrollView.Clear();
-                    R.singleton.ClearToDoList();
+                    R.singleton.ClearOkrList();
                 }
 
-                ToDoData t;
+                OkrData t;
                 foreach (var item in res.data.content) 
                 {
-                    t = new ToDoData();
+                    t = new OkrData();
                     t.info = item;
                     t.loadMore = false;
 
-                    // dataList.Add(t);
                     _scrollView.InsertData(t);
-                    R.singleton.AddToDoInfo(item.seq, t);
+                    R.singleton.AddOkrInfo(item.seq, t);
                 }
 
                 if (res.data.hasNext) 
                 {
-                    t = new ToDoData();
+                    t = new OkrData();
                     t.loadMore = true;
 
-                    // dataList.Add(t);
                     _scrollView.InsertData(t);
-                    R.singleton.AddToDoInfo(-1, t);
+                    R.singleton.AddOkrInfo(-1, t);
                 }
             }
             else 
             {
-                // dataList.Clear();
                 _scrollView.Clear();
-                R.singleton.ClearToDoList();
+                R.singleton.ClearOkrList();
 
                 PopupBuilder.singleton.OpenAlert(res.message);
             }
@@ -367,9 +360,7 @@ namespace Joycollab.v2
             // get list
             if (firstRequest)
             {
-                req.share = _isShare;
                 req.startDate = selectDate.ToString("yyyy-MM-dd");
-                req.targetMemberSeq = targetMemberSeq;
                 req.viewOpt = viewOpt;
                 req.filterOpt = filterOpt;
                 req.keyword = string.Empty;
