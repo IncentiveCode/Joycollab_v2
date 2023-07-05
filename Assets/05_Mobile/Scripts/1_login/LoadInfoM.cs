@@ -223,6 +223,33 @@ namespace Joycollab.v2
             return string.Empty;
 	    }
 
+        // 6. get member data
+        /**
+        private async UniTask<string> GetMemberPart() 
+        {
+            string token = R.singleton.token;
+            int workspaceSeq = R.singleton.workspaceSeq;
+
+            string url = string.Format(URL.WORKSPACE_MEMBER_LIST, workspaceSeq);
+            PsResponse<WorkspaceMemberList> res = await NetworkTask.RequestAsync<WorkspaceMemberList>(url, eMethodType.GET, string.Empty, token);
+
+            if (string.IsNullOrEmpty(res.message)) 
+            {
+                foreach (var item in res.data.list) 
+                {
+                    if (item.
+                }
+            }
+            else 
+            {
+                Debug.Log($"{TAG} | GetMemberList() : {res.message}");
+                return res.message;
+            }
+
+            return string.Empty;
+        }
+         */
+
     #endregion  // Get information
     }
 }

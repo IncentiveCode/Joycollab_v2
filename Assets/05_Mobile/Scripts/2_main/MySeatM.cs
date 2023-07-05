@@ -69,7 +69,7 @@ namespace Joycollab.v2
             // set button listener
             _btnTodo.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_ToDo, R.singleton.memberSeq.ToString()));
             _btnShareTodo.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_ShareToDo));
-            _btnOkr.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Okr, R.singleton.memberSeq.ToString()));
+            _btnOkr.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Okr));
             _btnBoard.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Board));
             _btnBookmark.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Bookmark));
             _btnContact.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Contact));

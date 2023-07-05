@@ -1,10 +1,11 @@
 /// <summary>
 /// Network 통신 - OKR 관련 요청과 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 03
-/// @version        : 0.1
+/// @last update    : 2023. 07. 05
+/// @version        : 0.2
 /// @update
 /// 	v0.1 (2023. 07. 03) : Joycollab 에서 사용하던 클래스 정리 및 통합.
+///     v0.2 (2023. 07. 05) : CreatorSpaceInfo 형태의 space 와 topSpace 추가. ReqOkrInfo 클래스 수정.
 /// </summary>
 
 using System;
@@ -59,9 +60,9 @@ namespace Joycollab.v2
     public class ReqOkrInfo 
     {
         public string content;
-        public MemberSeq createMember;
+        public Seq createMember;
         public string ed;
-        public MemberSeq modifyMember;
+        public Seq modifyMember;
         public string sd;
         public string title;
     }
@@ -76,7 +77,7 @@ namespace Joycollab.v2
     [Serializable] 
     public class ResOkrInfo 
     {
-        public bool useYn;
+        public string useYn;
         public int seq;
         public string title;
         public string content;
@@ -88,13 +89,15 @@ namespace Joycollab.v2
         public string modifiedDate;
         public int shereType;
         public TopOkrInfo topOkr;
+        public CreatorSpaceInfo space;
+        public CreatorSpaceInfo topSpace;
         public List<SubOkrInfo> subOkr;
     }
 
     [Serializable]
     public class TopOkrInfo
     { 
-	    public bool useYn;
+	    public string useYn;
         public int seq;
         public string title;
         public string content;
@@ -105,13 +108,14 @@ namespace Joycollab.v2
         public string createdDate;
         public string modifiedDate;
         public int shereType;
-        // public TopOkrInfo topOkr;
+        public CreatorSpaceInfo space;
+        public CreatorSpaceInfo topSpace;
 	}
 
     [Serializable]
     public class SubOkrInfo
     { 
-		public bool useYn;
+		public string useYn;
         public int seq;
         public string title;
         public string content;
@@ -122,19 +126,56 @@ namespace Joycollab.v2
         public string createdDate;
         public string modifiedDate;
         public int shereType;
-
+        public TopOkrInfo topOkr;
+        public CreatorSpaceInfo space;
+        public CreatorSpaceInfo topSpace;
 	}
-
 
     public class OkrData : InfiniteScrollData 
     {
         public ResOkrInfo info;
+        public SubOkrInfo subInfo;
+
+        public int seq;
+        public bool isShare;
+        public bool isKeyResult;
+        public int shareType;
         public bool loadMore;
+
+        public OkrData(ResOkrInfo o, bool isKR=false) 
+        {
+            info = o;
+            subInfo = null;
+
+            seq = o.seq;
+            isShare = true;
+            isKeyResult = isKR;
+            shareType = isKR ? o.topOkr.shereType : o.shereType;
+            loadMore = false;
+        }
+
+        public OkrData(SubOkrInfo kr, int share)
+        {
+            info = null;
+            subInfo = kr;
+
+            seq = kr.seq;
+            isShare = false;
+            isKeyResult = true;
+            shareType = share;
+            loadMore = false;
+        }
 
         public OkrData() 
         {
-            info = new ResOkrInfo();
-            loadMore = false;
+            info = null;
+            subInfo = null;
+
+            seq = -1;
+            isShare = false;
+            isKeyResult = false;
+            shareType = -1;
+            loadMore = true;
         }
     }
 }

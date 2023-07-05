@@ -127,7 +127,10 @@ namespace Joycollab.v2
             }
         }
 
-        public void OnClick() => OnSelect();
+        public void OnClick()
+        {
+            ViewManager.singleton.Push(S.MobileScene_ToDoDetail, seq.ToString());
+        } 
 
         public async UniTaskVoid OnDoneClick() 
         {
@@ -143,10 +146,7 @@ namespace Joycollab.v2
             }
         }
 
-        public void OnLoadMoreClick() 
-        {
-
-        }
+        public void OnLoadMoreClick() => OnSelect();
 
     #endregion  // GPM functions
 

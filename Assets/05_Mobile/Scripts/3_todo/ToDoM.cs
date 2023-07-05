@@ -56,7 +56,7 @@ namespace Joycollab.v2
         private int viewOpt;
         private DateTime selectDate, startDate, endDate;
 
-        private ToDoData selectedData;
+        // private ToDoData selectedData;
         private int targetMemberSeq;
         private bool isMyInfo;
         private ReqToDoList req;
@@ -121,9 +121,11 @@ namespace Joycollab.v2
 
             // set infinite scrollview
             _scrollView.AddSelectCallback((data) => {
-                selectedData = (ToDoData) data;
-                int seq = selectedData.info.seq;
-                ViewManager.singleton.Push(S.MobileScene_ToDoDetail, seq.ToString());
+                // selectedData = (ToDoData) data;
+                // int seq = selectedData.info.seq;
+                // ViewManager.singleton.Push(S.MobileScene_ToDoDetail, seq.ToString());
+
+                Debug.Log($"{TAG} | Load More");
             });
 
 
@@ -390,8 +392,9 @@ namespace Joycollab.v2
             }
             else
             {
+                Debug.Log($"{TAG} | update all data");
                 _scrollView.UpdateAllData();
-                _scrollView.MoveTo(selectedData, (InfiniteScroll.MoveToType) 0);
+                // _scrollView.MoveTo(selectedData, (InfiniteScroll.MoveToType) 0);
             }
 
             _btnClear.gameObject.SetActive(! string.IsNullOrEmpty(_inputSearch.text));

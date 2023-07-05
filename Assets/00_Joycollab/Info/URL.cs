@@ -1083,7 +1083,7 @@ namespace Joycollab.v2
         /// method : get
         /// param
         ///     {0} : member seq
-        ///     {1} : filter type (통합, 부서, 전사)
+        ///     {1} : filter type (0 : 통합, 1 : 부서, 2 : 전사)
         ///     {2} : view type (일간, 주간, 월간)
         ///     {3} : 조회 일자
         /// </summary>

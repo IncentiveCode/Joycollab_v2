@@ -2,13 +2,15 @@
 /// [mobile]
 /// OKR 리스트 화면을 담당하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 03
-/// @version        : 0.1
+/// @last update    : 2023. 07. 05
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 07. 03) : 최초 생성.
+///     v0.2 (2023. 07. 05) : OKR 출력, 상세 화면 이동, 생성 화면 이동 등의 기능 추가
 /// </summary>
 
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Cysharp.Threading.Tasks;
@@ -49,15 +51,13 @@ namespace Joycollab.v2
         [SerializeField] private InfiniteScroll _scrollView;
 
         // local variables
-        private int filterOpt;
-        private int viewOpt;
+        private int filterOpt, viewOpt;
+        private bool shareOpt;
         private DateTime selectDate, startDate, endDate;
 
-        private OkrData selectedData;
-        private int targetMemberSeq;
-        private bool isMyInfo;
         private ReqOkrList req;
         private bool firstRequest;
+        private List<int> listKeyResult;
 
         // for date picker, time picker
         private TMP_Text txtTarget;
@@ -118,9 +118,11 @@ namespace Joycollab.v2
 
             // set infinite scrollview
             _scrollView.AddSelectCallback((data) => {
-                selectedData = (OkrData) data;
-                int seq = selectedData.info.seq;
-                ViewManager.singleton.Push(S.MobileScene_OkrDetail, seq.ToString());
+                // selectedData = (OkrData) data;
+                // int seq = selectedData.info.seq;
+                // ViewManager.singleton.Push(S.MobileScene_OkrDetail, seq.ToString());
+
+                Debug.Log($"{TAG} | Load More");
             });
 
 
@@ -141,7 +143,11 @@ namespace Joycollab.v2
             {
                 _dropdownFilter.onValueChanged.AddListener((value) => {
                     Debug.Log($"{TAG} | filter changed. selected value : {value}"); 
-                    filterOpt = value;
+
+                    shareOpt = (value != 3);
+                    filterOpt = (value == 3) ? -1 : value;
+
+                    req.share = shareOpt;
                     req.filterOpt = value;
                     GetList(req, true).Forget();
                 });
@@ -187,24 +193,31 @@ namespace Joycollab.v2
             });
             _btnPrev.onClick.AddListener(() => ChangeDate(true));
             _btnNext.onClick.AddListener(() => ChangeDate(false));
-            _btnCreate.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_CreateTodo));
+            _btnCreate.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_CreateOkr));
 
 
             // init local variables
             selectDate = startDate = endDate = DateTime.Now;
-            targetMemberSeq = 0;
-            isMyInfo = false;
             req = new ReqOkrList();
             firstRequest = true;
+
+            listKeyResult = new List<int>();
         }
 
         public async override UniTaskVoid Show() 
         {
             base.Show().Forget();
+
+            selectDate = startDate = endDate = DateTime.Now;
+            filterOpt = viewOpt = 0;
+            shareOpt = true;
+            firstRequest = true;
+
             await Refresh();
             base.Appearing();
         }
 
+        /**
         public async override UniTaskVoid Show(string opt) 
         {
             base.Show().Forget();
@@ -217,7 +230,8 @@ namespace Joycollab.v2
                 Debug.Log($"{TAG} | Show(), targetMemberSeq : {targetMemberSeq}, temp : {temp}");
                 targetMemberSeq = temp;
                 selectDate = startDate = endDate = DateTime.Now;
-                viewOpt = 0;
+                filterOpt = viewOpt = 0;
+                shareOpt = true;
                 firstRequest = true;
             }
             _btnCreate.gameObject.SetActive(true);
@@ -225,6 +239,7 @@ namespace Joycollab.v2
             await Refresh();
             base.Appearing();
         }
+         */
 
         public async override UniTaskVoid Show(bool refresh) 
         {
@@ -249,26 +264,103 @@ namespace Joycollab.v2
                 {
                     _scrollView.Clear();
                     R.singleton.ClearOkrList();
+
+                    listKeyResult.Clear();
                 }
 
+                int index = 0;
                 OkrData t;
-                foreach (var item in res.data.content) 
-                {
-                    t = new OkrData();
-                    t.info = item;
-                    t.loadMore = false;
 
-                    _scrollView.InsertData(t);
-                    R.singleton.AddOkrInfo(item.seq, t);
+                // 공유 OKR
+                if (req.share)
+                {
+                    // key result 정리
+                    foreach (var item in res.data.content)
+                    {
+                        if (! string.IsNullOrEmpty(item.topOkr.title))
+                            listKeyResult.Add(item.seq);
+                    }
+
+                    // objective 출력 
+                    foreach (var item in res.data.content) 
+                    {
+                        if (! string.IsNullOrEmpty(item.topOkr.title)) continue;
+
+                        t = new OkrData(item);
+                        Debug.Log($"{TAG} | share objective, title : {item.title}, share type : {t.shareType}");
+                        R.singleton.AddOkrInfo(item.seq, t);
+                        _scrollView.InsertData(t);
+
+                        // key result 출력
+                        foreach (var subItem in res.data.content) 
+                        {
+                            if (item.seq == subItem.topOkr.seq && listKeyResult.Contains(subItem.seq))
+                            {
+                                t = new OkrData(subItem, true);
+                                Debug.Log($"{TAG} | share key result, title : {subItem.title}, share type : {t.shareType}");
+                                R.singleton.AddOkrInfo(subItem.seq, t);
+                                _scrollView.InsertData(t);
+
+                                listKeyResult.Remove(subItem.seq);
+                            } 
+                        }                        
+                    }
+                }
+                // 개인 OKR
+                else 
+                {
+                    // key result 정리
+                    foreach (var item in res.data.content) 
+                    {
+                        if (item.shereType == 0) 
+                            listKeyResult.Add(item.seq);
+                    }
+
+                    // objective 출력
+                    foreach (var item in res.data.content) 
+                    {
+                        if (item.shereType == 0) continue;
+
+                        t = new OkrData(item);
+                        Debug.Log($"{TAG} | personal objective, title : {item.title}, share type : {t.shareType}");
+                        R.singleton.AddOkrInfo(item.seq, t);
+                        _scrollView.InsertData(t);
+
+                        // key result 출력
+                        foreach (var subItem in item.subOkr) 
+                        {
+                            t = new OkrData(subItem, item.shereType);
+                            Debug.Log($"{TAG} | personal key result, title : {subItem.title}, share type : {t.shareType}");
+                            index = R.singleton.AddOkrInfo(subItem.seq, t);
+                            _scrollView.InsertData(t);
+
+                            listKeyResult.Remove(subItem.seq);
+                        }
+                    }
+                }
+
+                // 남은 key result 출력
+                if (listKeyResult.Count > 0) 
+                {
+                    foreach (var subItem in res.data.content) 
+                    {
+                        if (listKeyResult.Contains(subItem.seq))
+                        {
+                            t = new OkrData(subItem, true);
+                            Debug.Log($"{TAG} | other key result, title : {subItem.title}, share type : {t.shareType}");
+                            R.singleton.AddOkrInfo(subItem.seq, t);
+                            _scrollView.InsertData(t);
+
+                            listKeyResult.Remove(subItem.seq);
+                        } 
+                    }
                 }
 
                 if (res.data.hasNext) 
                 {
                     t = new OkrData();
-                    t.loadMore = true;
-
-                    _scrollView.InsertData(t);
                     R.singleton.AddOkrInfo(-1, t);
+                    _scrollView.InsertData(t);
                 }
             }
             else 
@@ -360,6 +452,7 @@ namespace Joycollab.v2
             // get list
             if (firstRequest)
             {
+                req.share = true;
                 req.startDate = selectDate.ToString("yyyy-MM-dd");
                 req.viewOpt = viewOpt;
                 req.filterOpt = filterOpt;
@@ -379,8 +472,9 @@ namespace Joycollab.v2
             }
             else
             {
+                Debug.Log($"{TAG} | update all data");
                 _scrollView.UpdateAllData();
-                _scrollView.MoveTo(selectedData, (InfiniteScroll.MoveToType) 0);
+                // _scrollView.MoveTo(selectedData, (InfiniteScroll.MoveToType) 0);
             }
 
             _btnClear.gameObject.SetActive(! string.IsNullOrEmpty(_inputSearch.text));

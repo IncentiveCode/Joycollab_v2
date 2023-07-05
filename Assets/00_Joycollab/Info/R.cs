@@ -53,6 +53,9 @@ namespace Joycollab.v2
 
             dictSpaceName = new Dictionary<int, string>();
             dictSpaceName.Clear();
+            
+            dictPart = new Dictionary<int, string>();
+            dictPart.Clear();
         }
 
         public void Clear() 
@@ -72,6 +75,7 @@ namespace Joycollab.v2
             // for temp dictionary
             ClearPhotoDict();
             ClearSpaceNameDict();
+            ClearPartDict();
         }
 
     #endregion  // Common functions
@@ -482,48 +486,27 @@ namespace Joycollab.v2
             
             return listToDo[index];
         }
-        public int GetToDoIndex(int seq) 
-        {
-            int index = listToDo.FindIndex(item => item.info.seq == seq);
-            if (index == -1) return -1;
-            
-            return index;
-        }
-        public bool DeleteToDoInfo(int seq) 
-        {
-            int index = listToDo.FindIndex(item => item.info.seq == seq);
-            if (index == -1) return false;
-
-            listToDo.RemoveAt(index);
-            return true;
-        }
         public void ClearToDoList() => listToDo.Clear(); 
 
 
         private List<OkrData> listOkr;
 
-        public void AddOkrInfo(int seq, OkrData data)
+        public int AddOkrInfo(int seq, OkrData data)
         { 
-            int index = listOkr.FindIndex(item => item.info.seq == seq);
+            int index = listOkr.FindIndex(item => item.seq == seq);
             if (index == -1)
                 listOkr.Add(data);
             else
                 listOkr[index].info = data.info;
+
+            return index;
 	    }
         public OkrData GetOkrInfo(int seq)
         { 
-            int index = listOkr.FindIndex(item => item.info.seq == seq);
+            int index = listOkr.FindIndex(item => item.seq == seq);
             if (index == -1) return null;
 
 			return listOkr[index];
-	    }
-        public bool DeleteOkrInfo(int seq)
-        { 
-            int index = listOkr.FindIndex(item => item.info.seq == seq);
-            if (index == -1) return false;
-
-            listOkr.RemoveAt(index);
-            return true;
 	    }
         public void ClearOkrList() => listOkr.Clear();
         
@@ -571,6 +554,24 @@ namespace Joycollab.v2
                 return string.Empty;
 	    }
         private void ClearSpaceNameDict() => dictSpaceName.Clear();
+
+
+        private Dictionary<int, string> dictPart;
+        public void AddPartName(int seq, string name)
+        { 
+            if (dictPart.ContainsKey(seq))
+                dictPart[seq] = name;
+            else
+                dictPart.Add(seq, name);
+	    }
+        public string GetPart(int seq)
+        { 
+            if (dictPart.ContainsKey(seq))
+		        return dictPart[seq];	
+            else
+                return string.Empty;
+	    }
+        private void ClearPartDict() => dictPart.Clear();
 
     #endregion  // memory management
     }

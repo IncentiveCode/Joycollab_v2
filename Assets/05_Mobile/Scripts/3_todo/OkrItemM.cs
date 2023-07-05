@@ -21,16 +21,23 @@ namespace Joycollab.v2
 {
     public class OkrItemM : InfiniteScrollItem
     {
+        private const string TAG = "OkrItemM";
+
         [Header("module")]
         [SerializeField] private ToDoModule _module;
 
         [Header("texts")]
         [SerializeField] private TMP_Text _txtTitle;
         [SerializeField] private TMP_Text _txtCreator; 
-        [SerializeField] private TMP_Text _txtCreateDate;
         [SerializeField] private TMP_Text _txtPeriod;
         [SerializeField] private TMP_Text _txtShareOpt;
         [SerializeField] private TMP_Text _txtDetail;
+
+        [Header("sprite")]
+        [SerializeField] private Image _imgReply;
+        [SerializeField] private Image _imgIcon;
+        [SerializeField] private Sprite _sprObjective;
+        [SerializeField] private Sprite _sprKeyResult;
 
         [Header("normal buttons")]
         [SerializeField] private Button _btnItem;
@@ -43,6 +50,7 @@ namespace Joycollab.v2
         // local variables
         private RectTransform rect;
         private int seq;
+        private bool isKeyResult;
 
         // data
         private OkrData data;
@@ -72,15 +80,22 @@ namespace Joycollab.v2
             _btnLoadMore.gameObject.SetActive(data.loadMore);
             if (! data.loadMore) 
             {
-                this.seq = data.info.seq;
+                this.seq = data.seq;
+                this.isKeyResult = data.isKeyResult;
+                
+                // icon 처리
+                _imgReply.gameObject.SetActive(isKeyResult);
+                _imgIcon.sprite = isKeyResult ? _sprKeyResult : _sprObjective;
 
-                _txtTitle.text = data.info.title;
-                _txtCreator.text = data.info.createMember.nickNm;
-                _txtCreateDate.text = data.info.createdDate;
-                _txtPeriod.text = string.Format("{0} - {1}", data.info.sd, data.info.ed);
-                _txtDetail.text = data.info.content;
+                // text 처리
+                bool sub = (! this.data.isShare && this.data.isKeyResult);
+                _txtTitle.text = sub ? data.subInfo.title : data.info.title;
+                _txtCreator.text = sub ? data.subInfo.createMember.nickNm : data.info.createMember.nickNm;
+                _txtPeriod.text = sub ? string.Format("{0} - {1}", data.subInfo.sd, data.subInfo.ed) :
+                                        string.Format("{0} - {1}", data.info.sd, data.info.ed);
+                _txtDetail.text = sub ? data.subInfo.content : data.info.content;
 
-                bool smaller = string.IsNullOrEmpty(data.info.content);
+                bool smaller = string.IsNullOrEmpty(_txtDetail.text);
                 _goDetailArea.SetActive(! smaller);
 
                 Vector2 size = rect.sizeDelta;
@@ -88,32 +103,40 @@ namespace Joycollab.v2
                 SetSize(size);
                 OnUpdateItemSize();
 
-                Locale currentLocale = LocalizationSettings.SelectedLocale;
-                switch (data.info.shereType) 
+                if (! data.isKeyResult)
                 {
-                    case S.SHARE_DEPARTMENT :
-                        string t = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (부서)", currentLocale);
-                        _txtShareOpt.text = string.Format(t, R.singleton.GetSpaceName(data.info.createMember.space.seq));
-                        break;
+                    Locale currentLocale = LocalizationSettings.SelectedLocale;
+                    switch (data.info.shereType - 1) 
+                    {
+                        case S.SHARE_DEPARTMENT :
+                            string t = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (부서)", currentLocale);
+                            bool isTop = string.IsNullOrEmpty(data.info.topSpace.nm);
+                            _txtShareOpt.text = string.Format(t, isTop ? data.info.topSpace.nm : data.info.space.nm);
+                            break;
 
-                    case S.SHARE_COMPANY :
-                        _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (전사)", currentLocale);
-                        break;
+                        case S.SHARE_COMPANY :
+                            _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (전사)", currentLocale);
+                            break;
 
-                    case S.SHARE_NONE :
-                    default :
-                        _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (개인)", currentLocale);
-                        break;
+                        case S.SHARE_NONE :
+                        default :
+                            _txtShareOpt.text = string.Empty;
+                            break;
+                    }
+                }
+                else 
+                {
+                    _txtShareOpt.text = string.Empty;
                 }
             }
         }
 
-        public void OnClick() => OnSelect();
-
-        public void OnLoadMoreClick() 
+        public void OnClick()
         {
-
+            ViewManager.singleton.Push(S.MobileScene_OkrDetail, seq.ToString());
         }
+
+        public void OnLoadMoreClick() => OnSelect();
 
     #endregion  // GPM functions
     }
