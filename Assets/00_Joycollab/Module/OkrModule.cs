@@ -7,6 +7,7 @@
 ///     v0.1 (2023. 07. 04) : 최초 생성 및 작업 중.
 /// </summary>
 
+using System.Collections.Generic;
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 
@@ -27,11 +28,14 @@ namespace Joycollab.v2
             return res;
         }
 
-        public async UniTask<PsResponse<ResOkrList>> GetObjectives(string url)
+        public async UniTask<PsResponse<TopOkrList>> GetObjectives(int share)
         { 
             string token = R.singleton.token;
+            int memberSeq = R.singleton.memberSeq;
 
-            PsResponse<ResOkrList> res = await NetworkTask.RequestAsync<ResOkrList>(url, eMethodType.GET, string.Empty, token);
+            string url = string.Format(URL.GET_OBJECTIVES, memberSeq, share);
+            PsResponse<TopOkrList> res = await NetworkTask.RequestAsync<TopOkrList>(url, eMethodType.GET, string.Empty, token);
+
             return res;
 	    }
 

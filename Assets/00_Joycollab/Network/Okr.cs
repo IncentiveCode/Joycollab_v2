@@ -95,6 +95,12 @@ namespace Joycollab.v2
     }
 
     [Serializable]
+    public class TopOkrList 
+    {
+        public List<TopOkrInfo> list;
+    }
+
+    [Serializable]
     public class TopOkrInfo
     { 
 	    public string useYn;
@@ -140,6 +146,7 @@ namespace Joycollab.v2
         public bool isShare;
         public bool isKeyResult;
         public int shareType;
+        public string objective;
         public bool loadMore;
 
         public OkrData(ResOkrInfo o, bool isKR=false) 
@@ -151,10 +158,11 @@ namespace Joycollab.v2
             isShare = true;
             isKeyResult = isKR;
             shareType = isKR ? o.topOkr.shereType : o.shereType;
+            objective = isKR ? o.topOkr.title : o.title;
             loadMore = false;
         }
 
-        public OkrData(SubOkrInfo kr, int share)
+        public OkrData(SubOkrInfo kr, int share, string obj)
         {
             info = null;
             subInfo = kr;
@@ -163,6 +171,7 @@ namespace Joycollab.v2
             isShare = false;
             isKeyResult = true;
             shareType = share;
+            objective = obj;
             loadMore = false;
         }
 

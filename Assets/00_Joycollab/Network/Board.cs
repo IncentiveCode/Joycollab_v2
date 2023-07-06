@@ -59,5 +59,12 @@ namespace Joycollab.v2
     public class BoardData : InfiniteScrollData 
     {
         public BoardContent info;
+        public bool loadMore;
+
+        public BoardData() 
+        {
+            info = new BoardContent();
+            loadMore = false;
+        }
     }
 }

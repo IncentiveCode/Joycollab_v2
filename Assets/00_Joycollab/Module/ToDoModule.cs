@@ -4,7 +4,7 @@
 /// @last update    : 2023. 06. 12
 /// @version        : 0.1
 /// @update
-///     v0.1 (2023. 06. 12) : 최초 생성 및 작업 중.
+///     v0.1 (2023. 06. 12) : 최초 생성 
 /// </summary>
 
 using UnityEngine;

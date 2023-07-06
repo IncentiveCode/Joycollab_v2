@@ -1,8 +1,8 @@
 /// <summary>
 /// NetworkTask 를 위한 API URL 정리 문서 
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 03
-/// @version        : 0.7
+/// @last update    : 2023. 07. 06
+/// @version        : 0.8
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리
 ///     v0.2 (2023. 03. 20) : Tray app 관련 URL 추가
@@ -11,6 +11,7 @@
 ///     v0.5 (2023. 04. 14) : Joycollab 에서 사용하던 URL 정리. (UserApi - member)
 ///     v0.6 (2023. 06. 19) : Joycollab 에서 사용하던 URL 정리. (UserApi - File)
 ///     v0.7 (2023. 07. 03) : Joycollab 에서 사용하던 URL 정리. (UserApi - OKR)
+///     v0.8 (2023. 07. 06) : Joycollab 에서 사용하던 URL 정리. (UserApi - Board)
 /// </summary>
 
 // #define DEV // Dev Server
@@ -1006,7 +1007,7 @@ namespace Joycollab.v2
         ///     {1} : language code (ko / en)
         ///     {2} : token
         /// </summary>
-        public const string MOBILE_CHAT_LINK = PATH + "/chat_service/{0}/mobile?lan={1}&token={2}";
+        public const string MOBILE_CHAT_LINK = PATH +"/chat_service/{0}/mobile?lan={1}&token={2}";
 
         /// <summary>
         /// desc : 모바일에서 대화방을 출력하기 위한 link
@@ -1016,7 +1017,48 @@ namespace Joycollab.v2
         ///     {2} : language code (ko / en)
         ///     {3} : token
         /// </summary>
-        public const string MOBILE_CHATVIEW_LINK = PATH + "/chat_service/{0}/mobile?otherMemberSeq={1}&lan={2}&token={3}"; 
+        public const string MOBILE_CHATVIEW_LINK = PATH +"/chat_service/{0}/mobile?otherMemberSeq={1}&lan={2}&token={3}"; 
+
+
+        // ---------- ---------- ----------
+        // 10. Board API
+
+        /// <summary>
+        /// desc : 게시글 목록 조회 / 게시글 등록
+        /// method : get / post
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        /// </summary>
+        public const string BOARD_LIST = PATH +"/api/board/{0}/{1}";
+
+        /// <summary>
+        /// desc : 게시글 상세 조회 / 게시글 수정 / 게시글 삭제
+        /// method : get / put / delete
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : board seq
+        /// </summary>
+        public const string BOARD_CONTENT = PATH +"/api/board/{0}/{1}/{2}";
+
+        /// <summary>
+        /// desc : 게시글 파일 다운로드
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        /// </summary>
+        public const string BOARD_FILE_DOWNLOAD = PATH +"/api/board/down/{0}/{1}";
+
+        /// <summary>
+        /// desc : 게시글 파일 업로드 with MultipartFormFileSection (section : files)
+        /// method : post
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        /// </summary>
+        public const string BOARD_FILE_UPLOAD = PATH +"/api/board/files/{0}/{1}";
 
 
         // ---------- ---------- ----------

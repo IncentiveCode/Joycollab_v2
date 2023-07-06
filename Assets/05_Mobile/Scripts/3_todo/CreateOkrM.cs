@@ -36,6 +36,7 @@ namespace Joycollab.v2
         [SerializeField] private TMP_Dropdown _dropdownCategory;
         [SerializeField] private TMP_Dropdown _dropdownShare;
         [SerializeField] private TMP_Dropdown _dropdownObjective;
+        [SerializeField] private TMP_Text _txtSelectedObjective;
 
         [Header("button")]
         [SerializeField] private Button _btnBack;
@@ -50,11 +51,11 @@ namespace Joycollab.v2
         // local variables
         private int seq;
         private OkrData data;
-        private bool isKeyResult;
         private bool sub;
 
         // temp
         private TMP_Text txtTarget;
+        private List<TopOkrInfo> listObjective;
 
 
     #region Unity functions
@@ -114,7 +115,9 @@ namespace Joycollab.v2
             _inputTitle.onValueChanged.AddListener((value) => {
                 _btnClearTitle.gameObject.SetActive(! string.IsNullOrEmpty(value));
             });
-            _inputTitle.onSubmit.AddListener((value) => Debug.Log($"{TAG} | search, {value}"));
+            _btnClearTitle.onClick.AddListener(() => {
+                _inputTitle.text = string.Empty;
+            });
             SetInputFieldListener(_inputDetail);
 
 
@@ -122,14 +125,24 @@ namespace Joycollab.v2
             _dropdownCategory.onValueChanged.AddListener((value) => {
                 Debug.Log($"{TAG} | category changed. selected value : {value}"); 
 
-                // TODO. objective list 가지고 오기
                 _dropdownObjective.gameObject.SetActive(value == 1);
+                if (value == 1)
+                    GetObjectives(_dropdownShare.value + 1).Forget();
             });
             _dropdownShare.onValueChanged.AddListener((value) => {
-                Debug.Log($"{TAG} | share option changed. selected value : {value}"); 
+                if (_dropdownCategory.value == 1)
+                {
+                    Debug.Log($"{TAG} | share option changed. selected value : {value}"); 
+                    GetObjectives(value + 1).Forget();
+                }
             });
             _dropdownObjective.onValueChanged.AddListener((value) => {
                 Debug.Log($"{TAG} | objective option changed. selected value : {value}"); 
+
+                if (listObjective.Count == 0) return;
+
+                _txtStartDate.text = listObjective[value].sd;
+                _txtDueDate.text = listObjective[value].ed;
             });
 
 
@@ -138,22 +151,24 @@ namespace Joycollab.v2
             _btnSave.onClick.AddListener(() => SaveOkr().Forget());
             _btnStartDate.onClick.AddListener(() => {
                 txtTarget = _txtStartDate;
-                AndroidLib.singleton.ShowDatepicker(viewID);
+                AndroidLib.singleton.ShowDatepicker(viewID, _txtStartDate.text);
             });
             _btnDueDate.onClick.AddListener(() => {
                 txtTarget = _txtDueDate;
-                AndroidLib.singleton.ShowDatepicker(viewID);
+                AndroidLib.singleton.ShowDatepicker(viewID, _txtDueDate.text);
             });
 
 
             // init local variables
             data = null;
             seq = 0;
-            isKeyResult = sub = false;
+            sub = false;
+            listObjective = new List<TopOkrInfo>();
+            listObjective.Clear();
         }
 
         /// <summary>
-        /// 새 할 일 등록.
+        /// 새 OKR 등록.
         /// </summary>
         public async override UniTaskVoid Show() 
         {
@@ -165,7 +180,7 @@ namespace Joycollab.v2
         }
 
         /// <summary>
-        /// 기존 할 일 수정.
+        /// 기존 OKR 수정.
         /// </summary>
         public async override UniTaskVoid Show(string opt) 
         {
@@ -192,16 +207,10 @@ namespace Joycollab.v2
     #endregion  // FixedView functions
 
 
-    #region to-do handling
+    #region okr handling
 
         private async UniTaskVoid SaveOkr() 
         {
-            if (_dropdownShare.value == 0) 
-            {
-                // TODO. 공유 옵션 설정 안내
-                return;
-            }
-
             ReqOkrInfo req = new ReqOkrInfo();
             req.content = _inputDetail.text;
             req.createMember = new Seq() { seq = R.singleton.memberSeq };
@@ -212,13 +221,25 @@ namespace Joycollab.v2
 
             PsResponse<string> res;
             string body = JsonUtility.ToJson(req);
-            int objectiveSeq = 0;
-            if (this.seq == -1) 
+            if (this.seq == 0) 
             {
                 if (_dropdownCategory.value == 0)
-                    res = await _module.SaveObjective(body, _dropdownShare.value);
+                {
+                    res = await _module.SaveObjective(body, _dropdownShare.value + 1);
+                }
                 else  
+                {
+                    if (listObjective.Count == 0)
+                    {
+                        Locale currentLocale = LocalizationSettings.SelectedLocale;
+                        string message = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "Objective 선택 안내", currentLocale);
+                        PopupBuilder.singleton.OpenAlert(message);
+                        return;
+                    }
+
+                    int objectiveSeq = listObjective[_dropdownObjective.value].seq;
                     res = await _module.SaveKeyResult(body, objectiveSeq);
+                }
             }
             else 
             {
@@ -228,12 +249,12 @@ namespace Joycollab.v2
             if (string.IsNullOrEmpty(res.message)) 
             {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
-                string message = (this.seq == -1) ? 
+                string message = (this.seq == 0) ? 
                     LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "등록 완료", currentLocale) :
                     LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "수정 완료", currentLocale);
 
                 PopupBuilder.singleton.OpenAlert(message, () => {
-                    if (this.seq == -1)
+                    if (this.seq == 0)
                     {
                         ViewManager.singleton.Pop(true);
                     }
@@ -266,7 +287,43 @@ namespace Joycollab.v2
             }
         }
 
-    #endregion to-do handling
+        private async UniTaskVoid GetObjectives(int shareOpt) 
+        {
+            PsResponse<TopOkrList> res = await _module.GetObjectives(shareOpt);
+            if (string.IsNullOrEmpty(res.message)) 
+            {
+                listObjective.Clear();
+                _dropdownObjective.options.Clear();
+                
+                foreach (var info in res.data.list) 
+                {
+                    listObjective.Add(info);
+                    _dropdownObjective.options.Add(new TMP_Dropdown.OptionData() {text = info.title});
+                }
+
+                if (data == null) 
+                {
+                    if (listObjective.Count >= 1)
+                    {
+                        _txtStartDate.text = listObjective[0].sd;
+                        _txtDueDate.text = listObjective[0].ed;
+                        _dropdownObjective.value = 0;
+                    }
+
+                    _dropdownObjective.RefreshShownValue();
+                }
+                else 
+                {
+                    _txtSelectedObjective.text = data.objective;
+                }
+            }
+            else 
+            {
+                PopupBuilder.singleton.OpenAlert(res.message);
+            }
+        }
+
+    #endregion okr handling
 
 
     #region event handling
@@ -298,7 +355,8 @@ namespace Joycollab.v2
                 _txtDueDate.text = now.ToString("yyyy-MM-dd");
 
                 // set dropdown value
-                _dropdownCategory.value = _dropdownShare.value = _dropdownObjective.value = 0;
+                _dropdownCategory.value = _dropdownShare.value = 0;
+                _dropdownObjective.gameObject.SetActive(false);
             }
             // refresh for content detail
             else 
@@ -320,9 +378,13 @@ namespace Joycollab.v2
                 Debug.Log($"{TAG} | share option : {_dropdownShare.value}");
                 Debug.Log($"{TAG} | data value : {shareOpt}");
 
-                // TODO. objective list 가져오기
-
+                // get objective list
+                if (this.data.isKeyResult) GetObjectives(shareOpt).Forget();    
+                _dropdownObjective.gameObject.SetActive(this.data.isKeyResult);
             }
+
+            // button visible
+            _btnClearTitle.gameObject.SetActive(! string.IsNullOrEmpty(_inputTitle.text));
 
             await UniTask.Yield();
             return 0;

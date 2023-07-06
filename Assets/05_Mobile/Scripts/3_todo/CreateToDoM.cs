@@ -130,7 +130,9 @@ namespace Joycollab.v2
             _inputTitle.onValueChanged.AddListener((value) => {
                 _btnClearTitle.gameObject.SetActive(! string.IsNullOrEmpty(value));
             });
-            _inputTitle.onSubmit.AddListener((value) => Debug.Log($"{TAG} | search, {value}"));
+            _btnClearTitle.onClick.AddListener(() => {
+                _inputTitle.text = string.Empty;
+            });
             SetInputFieldListener(_inputDetail);
 
 
@@ -338,6 +340,9 @@ namespace Joycollab.v2
                     }
                 }
             }
+
+            // button visible
+            _btnClearTitle.gameObject.SetActive(! string.IsNullOrEmpty(_inputTitle.text));
 
             await UniTask.Yield();
             return 0;

@@ -56,7 +56,6 @@ namespace Joycollab.v2
         private int viewOpt;
         private DateTime selectDate, startDate, endDate;
 
-        // private ToDoData selectedData;
         private int targetMemberSeq;
         private bool isMyInfo;
         private ReqToDoList req;
@@ -188,7 +187,7 @@ namespace Joycollab.v2
             _btnSearch.onClick.AddListener(() => Debug.Log($"{TAG} | search, {_inputSearch.text}"));
             _btnDate.onClick.AddListener(() => {
                 txtTarget = _txtDate;
-                AndroidLib.singleton.ShowDatepicker(viewID);
+                AndroidLib.singleton.ShowDatepicker(viewID, selectDate.ToString("yyyy-MM-dd"));
             });
             _btnPrev.onClick.AddListener(() => ChangeDate(true));
             _btnNext.onClick.AddListener(() => ChangeDate(false));

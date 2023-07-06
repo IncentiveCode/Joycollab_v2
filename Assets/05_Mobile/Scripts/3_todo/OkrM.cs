@@ -189,7 +189,7 @@ namespace Joycollab.v2
             _btnSearch.onClick.AddListener(() => Debug.Log($"{TAG} | search, {_inputSearch.text}"));
             _btnDate.onClick.AddListener(() => {
                 txtTarget = _txtDate;
-                AndroidLib.singleton.ShowDatepicker(viewID);
+                AndroidLib.singleton.ShowDatepicker(viewID, selectDate.ToString("yyyy-MM-dd"));
             });
             _btnPrev.onClick.AddListener(() => ChangeDate(true));
             _btnNext.onClick.AddListener(() => ChangeDate(false));
@@ -216,30 +216,6 @@ namespace Joycollab.v2
             await Refresh();
             base.Appearing();
         }
-
-        /**
-        public async override UniTaskVoid Show(string opt) 
-        {
-            base.Show().Forget();
-
-            int temp = -1;
-            int.TryParse(opt, out temp);
-
-            if (targetMemberSeq != temp)
-            {
-                Debug.Log($"{TAG} | Show(), targetMemberSeq : {targetMemberSeq}, temp : {temp}");
-                targetMemberSeq = temp;
-                selectDate = startDate = endDate = DateTime.Now;
-                filterOpt = viewOpt = 0;
-                shareOpt = true;
-                firstRequest = true;
-            }
-            _btnCreate.gameObject.SetActive(true);
-
-            await Refresh();
-            base.Appearing();
-        }
-         */
 
         public async override UniTaskVoid Show(bool refresh) 
         {
@@ -287,7 +263,7 @@ namespace Joycollab.v2
                         if (! string.IsNullOrEmpty(item.topOkr.title)) continue;
 
                         t = new OkrData(item);
-                        Debug.Log($"{TAG} | share objective, title : {item.title}, share type : {t.shareType}");
+                        // Debug.Log($"{TAG} | share objective, title : {item.title}, share type : {t.shareType}");
                         R.singleton.AddOkrInfo(item.seq, t);
                         _scrollView.InsertData(t);
 
@@ -297,7 +273,7 @@ namespace Joycollab.v2
                             if (item.seq == subItem.topOkr.seq && listKeyResult.Contains(subItem.seq))
                             {
                                 t = new OkrData(subItem, true);
-                                Debug.Log($"{TAG} | share key result, title : {subItem.title}, share type : {t.shareType}");
+                                // Debug.Log($"{TAG} | share key result, title : {subItem.title}, share type : {t.shareType}");
                                 R.singleton.AddOkrInfo(subItem.seq, t);
                                 _scrollView.InsertData(t);
 
@@ -329,7 +305,7 @@ namespace Joycollab.v2
                         // key result 출력
                         foreach (var subItem in item.subOkr) 
                         {
-                            t = new OkrData(subItem, item.shereType);
+                            t = new OkrData(subItem, item.shereType, item.title);
                             Debug.Log($"{TAG} | personal key result, title : {subItem.title}, share type : {t.shareType}");
                             index = R.singleton.AddOkrInfo(subItem.seq, t);
                             _scrollView.InsertData(t);
