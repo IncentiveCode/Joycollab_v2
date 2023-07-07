@@ -1,8 +1,8 @@
 /// <summary>
 /// NetworkTask 를 위한 API URL 정리 문서 
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 06
-/// @version        : 0.8
+/// @last update    : 2023. 07. 07
+/// @version        : 0.9
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리
 ///     v0.2 (2023. 03. 20) : Tray app 관련 URL 추가
@@ -12,10 +12,11 @@
 ///     v0.6 (2023. 06. 19) : Joycollab 에서 사용하던 URL 정리. (UserApi - File)
 ///     v0.7 (2023. 07. 03) : Joycollab 에서 사용하던 URL 정리. (UserApi - OKR)
 ///     v0.8 (2023. 07. 06) : Joycollab 에서 사용하던 URL 정리. (UserApi - Board)
+///     v0.9 (2023. 07. 07) : Joycollab 에서 사용하던 URL 정리. (UserApi - Bookmark)
 /// </summary>
 
-// #define DEV // Dev Server
-#define RELEASE // Live Server
+#define DEV // Dev Server
+// #define RELEASE // Live Server
 
 namespace Joycollab.v2
 {
@@ -1030,7 +1031,7 @@ namespace Joycollab.v2
         ///     {0} : workspace seq
         ///     {1} : space seq
         /// </summary>
-        public const string BOARD_LIST = PATH +"/api/board/{0}/{1}";
+        public const string BOARD_LIST = SERVER_PATH +"/api/board/{0}/{1}";
 
         /// <summary>
         /// desc : 게시글 상세 조회 / 게시글 수정 / 게시글 삭제
@@ -1040,7 +1041,7 @@ namespace Joycollab.v2
         ///     {1} : space seq
         ///     {2} : board seq
         /// </summary>
-        public const string BOARD_CONTENT = PATH +"/api/board/{0}/{1}/{2}";
+        public const string BOARD_CONTENT = SERVER_PATH +"/api/board/{0}/{1}/{2}";
 
         /// <summary>
         /// desc : 게시글 파일 다운로드
@@ -1049,7 +1050,7 @@ namespace Joycollab.v2
         ///     {0} : workspace seq
         ///     {1} : space seq
         /// </summary>
-        public const string BOARD_FILE_DOWNLOAD = PATH +"/api/board/down/{0}/{1}";
+        public const string BOARD_FILE_DOWNLOAD = SERVER_PATH +"/api/board/down/{0}/{1}";
 
         /// <summary>
         /// desc : 게시글 파일 업로드 with MultipartFormFileSection (section : files)
@@ -1058,7 +1059,46 @@ namespace Joycollab.v2
         ///     {0} : workspace seq
         ///     {1} : space seq
         /// </summary>
-        public const string BOARD_FILE_UPLOAD = PATH +"/api/board/files/{0}/{1}";
+        public const string BOARD_FILE_UPLOAD = SERVER_PATH +"/api/board/files/{0}/{1}";
+
+
+        // ---------- ---------- ----------
+        // 12. Bookmakr API
+
+        /// <summary>
+        /// desc : 북마크 조회
+        /// method : get
+        /// param
+        ///     {0} : member seq
+        /// </summary>
+        public const string GET_BOOKMARKS = SERVER_PATH +"/api/bookmark/{0}";
+
+        /// <summary>
+        /// desc : 북마크 삭제
+        /// method : delete
+        /// param
+        ///     {0} : member seq
+        ///     {1} : bookmark seq
+        /// </summary>
+        public const string DELETE_BOOKMARK = SERVER_PATH +"/api/bookmark/{0}/{1}";
+
+        /// <summary>
+        /// desc : 북마크 등록
+        /// method : post
+        /// param
+        ///     {0} : member seq
+        ///     {1} : type ('board' or 'noti')
+        ///     {2} : post seq
+        /// </summary>
+        public const string SET_BOOKMARK = SERVER_PATH +"/api/bookmark/{0}/{1}/{2}";
+
+        /// <summary>
+        /// desc : 모든 북마크 삭제
+        /// method : delete
+        /// param
+        ///     {0} : member seq
+        /// </summary>
+        public const string TRUNCATE_BOOKMARK = SERVER_PATH +"/api/bookmark/{0}/all";
 
 
         // ---------- ---------- ----------

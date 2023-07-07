@@ -1,8 +1,8 @@
 /// <summary>
 /// 시스템 상 저장 공간 (Repository) 
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 04
-/// @version        : 0.6
+/// @last update    : 2023. 07. 07
+/// @version        : 0.7
 /// @update
 ///     v0.1 (2023. 03. 17) : 파일 생성, Joycollab 에서 사용하는 것들 정리 시작.
 ///     v0.2 (2023. 03. 31) : SimpleWorkspace, Alarm 관련 항목 정리 시작, Notify 에서 generic <T> 제거.
@@ -10,6 +10,7 @@
 ///     v0.4 (2023. 05. 10) : LoginViewManager 에서 사용하던 Param 관련 함수 추가.
 ///     v0.5 (2023. 06. 16) : Locale 관련 코드 추가. (ChangeTextKorean, ChangeTextEnglish -> ChangeLocale)
 ///     v0.6 (2023. 07. 04) : Space Dictionary 관련 코드 추가.
+///     v0.7 (2023. 07. 07) : To-Do, OKR 등 임시로 저장하는 항목은 Tmp 로 이동. Bookmark 저장소 추가.
 /// </summary>
 
 using System;
@@ -40,20 +41,15 @@ namespace Joycollab.v2
             alarmList = new List<ResAlarmInfo>();
             alarmList.Clear();
 
-            // for to-do, OKR
-            listToDo = new List<ToDoData>();
-            listToDo.Clear();
-
-            listOkr = new List<OkrData>();
-            listOkr.Clear();
+            // for bookmark
+            listBookmark = new List<Bookmark>();
+            listBookmark.Clear(); 
 
             // for temp dictionary
             dictPhoto = new Dictionary<int, Texture2D>();
             dictPhoto.Clear();
-
-            dictSpaceName = new Dictionary<int, string>();
-            dictSpaceName.Clear();
-            
+            dictSpace = new Dictionary<int, ResSpaceInfo>();
+            dictSpace.Clear();
             dictPart = new Dictionary<int, string>();
             dictPart.Clear();
         }
@@ -68,9 +64,8 @@ namespace Joycollab.v2
             // for alarm
             ClearAlarmInfo();
 
-            //for to-do, OKR
-            ClearToDoList();
-            ClearOkrList();
+            // for bookmark
+            ClearBookmark();
 
             // for temp dictionary
             ClearPhotoDict();
@@ -467,53 +462,22 @@ namespace Joycollab.v2
     #endregion  // Alarm Info
 
 
-    #region To-Do, OKR Info
+    #region Bookmark Info
 
-        private List<ToDoData> listToDo;
-
-        public void AddToDoInfo(int seq, ToDoData todo)
-        {
-            int index = listToDo.FindIndex(item => item.info.seq == seq);
-            if (index == -1) 
-                listToDo.Add(todo);
-            else             
-                listToDo[index].info = todo.info;
-        }
-        public ToDoData GetToDoInfo(int seq) 
-        {
-            int index = listToDo.FindIndex(item => item.info.seq == seq);
-            if (index == -1) return null;
-            
-            return listToDo[index];
-        }
-        public void ClearToDoList() => listToDo.Clear(); 
-
-
-        private List<OkrData> listOkr;
-
-        public int AddOkrInfo(int seq, OkrData data)
-        { 
-            int index = listOkr.FindIndex(item => item.seq == seq);
-            if (index == -1)
-                listOkr.Add(data);
-            else
-                listOkr[index].info = data.info;
-
-            return index;
-	    }
-        public OkrData GetOkrInfo(int seq)
-        { 
-            int index = listOkr.FindIndex(item => item.seq == seq);
-            if (index == -1) return null;
-
-			return listOkr[index];
-	    }
-        public void ClearOkrList() => listOkr.Clear();
+        private List<Bookmark> listBookmark;
         
-    #endregion  // To-Do, OKR Info
+        public void AddBookmark(Bookmark info) => listBookmark.Add(info);
+        public bool Marked(eBookmarkType type, int seq) 
+        {
+            int index = listBookmark.FindIndex(item => item.postSeq == seq && item.type == type);
+            return (index != -1);
+        }
+        public void ClearBookmark() => listBookmark.Clear();
+
+    #endregion  // Bookmark Info
 
 
-    #region memory management
+    #region for temp dectionary
 
         private Dictionary<int, Texture2D> dictPhoto;
         public void AddPhoto(int seq, Texture2D photo) 
@@ -538,22 +502,46 @@ namespace Joycollab.v2
         private void ClearPhotoDict() => dictPhoto.Clear();
 
 
-        private Dictionary<int, string> dictSpaceName;
-        public void AddSpaceName(int seq, string name)
+        private Dictionary<int, ResSpaceInfo> dictSpace;
+        public void AddSpace(int seq, ResSpaceInfo info)
         { 
-            if (dictSpaceName.ContainsKey(seq))
-                dictSpaceName[seq] = name;
+            if (dictSpace.ContainsKey(seq))
+                dictSpace[seq] = info;
             else
-                dictSpaceName.Add(seq, name);
+                dictSpace.Add(seq, info);
 	    }
         public string GetSpaceName(int seq)
         { 
-            if (dictSpaceName.ContainsKey(seq))
-		        return dictSpaceName[seq];	
+            if (dictSpace.ContainsKey(seq))
+		        return dictSpace[seq].nm;	
             else
                 return string.Empty;
 	    }
-        private void ClearSpaceNameDict() => dictSpaceName.Clear();
+        public int GetTopSpaceSeq(int seq) 
+        {
+            if (dictSpace.ContainsKey(seq)) 
+            {
+                if (dictSpace[seq].topSpace == null)
+                    return dictSpace[seq].seq;
+                else
+                    return dictSpace[seq].topSpace.seq;
+            }
+            else 
+                return -1;
+        }
+        public string GetTopSpaceName(int seq) 
+        {
+            if (dictSpace.ContainsKey(seq)) 
+            {
+                if (dictSpace[seq].topSpace == null) 
+                    return dictSpace[seq].nm; 
+                else 
+                    return dictSpace[seq].topSpace.nm;
+            }
+            else 
+                return string.Empty;
+        }
+        private void ClearSpaceNameDict() => dictSpace.Clear();
 
 
         private Dictionary<int, string> dictPart;
@@ -573,6 +561,6 @@ namespace Joycollab.v2
 	    }
         private void ClearPartDict() => dictPart.Clear();
 
-    #endregion  // memory management
+    #endregion  // for temp dectionary
     }
 }

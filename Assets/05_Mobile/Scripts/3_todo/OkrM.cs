@@ -239,7 +239,7 @@ namespace Joycollab.v2
                 if (refresh)
                 {
                     _scrollView.Clear();
-                    R.singleton.ClearOkrList();
+                    Tmp.singleton.ClearOkrList();
 
                     listKeyResult.Clear();
                 }
@@ -264,7 +264,7 @@ namespace Joycollab.v2
 
                         t = new OkrData(item);
                         // Debug.Log($"{TAG} | share objective, title : {item.title}, share type : {t.shareType}");
-                        R.singleton.AddOkrInfo(item.seq, t);
+                        Tmp.singleton.AddOkrInfo(item.seq, t);
                         _scrollView.InsertData(t);
 
                         // key result 출력
@@ -274,7 +274,7 @@ namespace Joycollab.v2
                             {
                                 t = new OkrData(subItem, true);
                                 // Debug.Log($"{TAG} | share key result, title : {subItem.title}, share type : {t.shareType}");
-                                R.singleton.AddOkrInfo(subItem.seq, t);
+                                Tmp.singleton.AddOkrInfo(subItem.seq, t);
                                 _scrollView.InsertData(t);
 
                                 listKeyResult.Remove(subItem.seq);
@@ -299,7 +299,7 @@ namespace Joycollab.v2
 
                         t = new OkrData(item);
                         Debug.Log($"{TAG} | personal objective, title : {item.title}, share type : {t.shareType}");
-                        R.singleton.AddOkrInfo(item.seq, t);
+                        Tmp.singleton.AddOkrInfo(item.seq, t);
                         _scrollView.InsertData(t);
 
                         // key result 출력
@@ -307,7 +307,7 @@ namespace Joycollab.v2
                         {
                             t = new OkrData(subItem, item.shereType, item.title);
                             Debug.Log($"{TAG} | personal key result, title : {subItem.title}, share type : {t.shareType}");
-                            index = R.singleton.AddOkrInfo(subItem.seq, t);
+                            index = Tmp.singleton.AddOkrInfo(subItem.seq, t);
                             _scrollView.InsertData(t);
 
                             listKeyResult.Remove(subItem.seq);
@@ -324,7 +324,7 @@ namespace Joycollab.v2
                         {
                             t = new OkrData(subItem, true);
                             Debug.Log($"{TAG} | other key result, title : {subItem.title}, share type : {t.shareType}");
-                            R.singleton.AddOkrInfo(subItem.seq, t);
+                            Tmp.singleton.AddOkrInfo(subItem.seq, t);
                             _scrollView.InsertData(t);
 
                             listKeyResult.Remove(subItem.seq);
@@ -335,14 +335,14 @@ namespace Joycollab.v2
                 if (res.data.hasNext) 
                 {
                     t = new OkrData();
-                    R.singleton.AddOkrInfo(-1, t);
+                    Tmp.singleton.AddOkrInfo(-1, t);
                     _scrollView.InsertData(t);
                 }
             }
             else 
             {
                 _scrollView.Clear();
-                R.singleton.ClearOkrList();
+                Tmp.singleton.ClearOkrList();
 
                 PopupBuilder.singleton.OpenAlert(res.message);
             }

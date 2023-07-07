@@ -104,7 +104,7 @@ namespace Joycollab.v2
             int.TryParse(opt, out temp);
 
             seq = temp;
-            data = R.singleton.GetOkrInfo(seq);
+            data = Tmp.singleton.GetOkrInfo(seq);
             if (data == null) 
             {
                 // TODO. error 처리

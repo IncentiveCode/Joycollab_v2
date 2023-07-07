@@ -252,6 +252,7 @@ namespace Joycollab.v2
                         LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "모바일 스페이스 생성 안내", currentLocale),
                         () => {
                             R.singleton.Clear();
+                            Tmp.singleton.Clear();
                             ViewManager.singleton.Push(S.MobileScene_Login);
                         }
                     );

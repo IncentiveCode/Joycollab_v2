@@ -51,8 +51,8 @@ namespace Joycollab.v2
 				if (! string.IsNullOrEmpty(keyword)) url += "keyword="+ keyword +"&";
 				url += "page="+ pageNo +"&size="+ pageSize +"&";
 				url += "sortDirection=";
-				url += sortDescending ? "descending" : "ascending";
-				url += "&sortProperty=";
+				url += sortDescending ? "descending" : "ascending" + "&";
+				url += "sortProperty=";
 				url += sortProperty;
 
 				return url;

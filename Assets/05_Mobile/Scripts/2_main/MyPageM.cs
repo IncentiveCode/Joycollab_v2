@@ -117,6 +117,7 @@ namespace Joycollab.v2
         private void LogoutProcess() 
         {
             R.singleton.Clear();
+            Tmp.singleton.Clear();
 
             // TODO. 기타 작업 추가 (FCM logout, XMPP logout, PingManager stop, and etc)
 

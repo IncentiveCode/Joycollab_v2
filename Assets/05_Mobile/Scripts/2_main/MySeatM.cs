@@ -2,8 +2,8 @@
 /// [mobile]
 /// 내 자리 화면을 제어하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 29
-/// @version        : 0.6
+/// @last update    : 2023. 07. 07
+/// @version        : 0.7
 /// @update         
 ///     v0.1 : 최초 생성. swipe ui 사용.
 ///     v0.2 : 새로운 기획 & 디자인 적용. swipe ui 삭제.
@@ -11,6 +11,7 @@
 ///     v0.4 (2023. 03. 23) : 디자인 최적화. FixedView 실험. 스크립트 최적화, To-Do 합병 & calendar 삭제.
 ///     v0.5 (2023. 05. 25) : unity localization 적용.
 ///     v0.6 (2023. 06. 29) : 공유 할일 버튼 추가.
+///     v0.7 (2023. 07. 07) : Refresh() 에서 space seq 를 얻어오게 수정. _btnBoard listener 수정.
 /// </summary>
 
 using UnityEngine;
@@ -35,6 +36,9 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnBoard;
         [SerializeField] private Button _btnBookmark;
         [SerializeField] private Button _btnContact;
+
+        // local variable
+        private int spaceSeq;
 
 
     #region Unity functions
@@ -70,7 +74,7 @@ namespace Joycollab.v2
             _btnTodo.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_ToDo, R.singleton.memberSeq.ToString()));
             _btnShareTodo.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_ShareToDo));
             _btnOkr.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Okr));
-            _btnBoard.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Board));
+            _btnBoard.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Board, spaceSeq.ToString()));
             _btnBookmark.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Bookmark));
             _btnContact.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Contact));
         }
@@ -86,12 +90,15 @@ namespace Joycollab.v2
 
 
     #region event handling 
+
         private async UniTask<int> Refresh() 
         {
             // navigation control
             ViewManager.singleton.ShowNavigation(true);
 
             _txtOfficeName.text = JsLib.GetCookie(Key.WORKSPACE_NAME);
+            spaceSeq = R.singleton.GetTopSpaceSeq(R.singleton.mySpaceSeq);
+            Debug.Log($"{TAG} | my space seq : {R.singleton.mySpaceSeq}, top space seq : {spaceSeq}");
 
             await UniTask.Yield();
             return 0;

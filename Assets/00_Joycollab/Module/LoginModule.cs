@@ -38,6 +38,7 @@ namespace Joycollab.v2
                 Debug.Log($"{TAG} | CheckTokenAsync(), without cookie value");
 
                 R.singleton.Clear();
+                Tmp.singleton.Clear();
                 return null;
             }
 

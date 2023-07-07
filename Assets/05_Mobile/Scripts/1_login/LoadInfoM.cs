@@ -2,14 +2,15 @@
 /// [mobile]
 /// 로그인 성공 후 대기 화면을 관리하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 12
-/// @version        : 0.5
+/// @last update    : 2023. 07. 07
+/// @version        : 0.6
 /// @update         
 ///     v0.1 : 새 기획과 새 디자인 적용.
 ///     v0.2 (2022. 05. 25) : GetLobbyInfo() 추가.
 ///     v0.3 (2023. 03. 22) : FixedView 실험, UniTask 적용, UI Canvas 최적화.
 ///     v0.4 (2023. 03. 31) : Alarm, workspace info 관련해서도 Repository 에 저장하도록 로직 추가.
 ///     v0.5 (2023. 06. 12) : Legacy Text 대신 TMP Text 사용하도록 수정.
+///     v0.6 (2023. 07. 07) : Space Info list, Bookmark list 추가 
 /// </summary>
 
 using UnityEngine;
@@ -78,7 +79,8 @@ namespace Joycollab.v2
                 GetMyInfo(),
                 GetOfficeInfo(),
                 GetAlarmList(),
-                GetSpaceList()
+                GetSpaceList(),
+                GetBookmarkList()
             );
 
             // text 출력
@@ -211,7 +213,7 @@ namespace Joycollab.v2
             { 
 	            foreach (ResSpaceInfo info in res.data.list)
                 { 
-                    R.singleton.AddSpaceName(info.seq, info.nm);
+                    R.singleton.AddSpace(info.seq, info);
 		        } 
 	        }
             else
@@ -222,6 +224,38 @@ namespace Joycollab.v2
 
             return string.Empty;
 	    }
+
+        // 6. get bookmark data
+        private async UniTask<string> GetBookmarkList() 
+        {
+            int memberSeq = R.singleton.memberSeq;
+            string token = R.singleton.token;
+
+            string url = string.Format(URL.GET_BOOKMARKS, memberSeq);
+            PsResponse<ResBookmarkList> res = await NetworkTask.RequestAsync<ResBookmarkList>(url, eMethodType.GET, string.Empty, token);
+
+            if (string.IsNullOrEmpty(res.message)) 
+            {
+                Bookmark t;
+                foreach (var info in res.data.list) 
+                {
+                    t = new Bookmark(
+                        info.noti != null ? eBookmarkType.Notice : eBookmarkType.Board,
+                        info.seq,
+                        info.noti != null ? info.noti.seq : info.board.seq
+                    );
+
+                    R.singleton.AddBookmark(t);
+                }
+            }
+            else 
+            {
+                Debug.Log($"{TAG} | GetBookmarkList() : {res.message}");
+                return res.message;
+            }
+
+            return string.Empty;
+        }
 
         // 6. get member data
         /**

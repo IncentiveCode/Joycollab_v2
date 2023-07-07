@@ -161,7 +161,7 @@ namespace Joycollab.v2
             data.info.completeTime = done ? DateTime.Now.ToString("yyyy-MM-dd HH:mm") : string.Empty;
             _txtDoneDate.text = data.info.completeTime;
             
-            R.singleton.AddToDoInfo(this.seq, data);
+            Tmp.singleton.AddToDoInfo(this.seq, data);
             base.UpdateData((InfiniteScrollData) data);
         }
     }

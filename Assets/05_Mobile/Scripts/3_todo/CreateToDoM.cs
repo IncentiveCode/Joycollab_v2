@@ -189,7 +189,7 @@ namespace Joycollab.v2
             }
 
             seq = temp;
-            data = R.singleton.GetToDoInfo(seq);
+            data = Tmp.singleton.GetToDoInfo(seq);
             if (data == null)
             {
                 // TODO. 예외처리
@@ -256,7 +256,7 @@ namespace Joycollab.v2
                         data.info.st = req.st; 
                         data.info.et = req.et;
                         data.info.title = req.title;
-                        R.singleton.AddToDoInfo(this.seq, data);
+                        Tmp.singleton.AddToDoInfo(this.seq, data);
 
                         ViewManager.singleton.Pop(this.seq.ToString());
                     }

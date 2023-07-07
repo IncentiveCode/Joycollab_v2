@@ -8,6 +8,7 @@
 /// </summary>
 
 using UnityEngine;
+using Gpm.Ui;
 using Cysharp.Threading.Tasks;
 
 namespace Joycollab.v2
@@ -19,18 +20,44 @@ namespace Joycollab.v2
 
     #region public functions
 
-        /**
-        public async UniTask<PsResponse<ResToDoList>> GetList(int spaceSeq)
+        public async UniTask<string> GetList(RequestForBoard req, InfiniteScroll view)
         {
             string token = R.singleton.token;
-            int workspaceSeq = R.singleton.workspaceSeq;
+            PsResponse<ResBoardList> res = await NetworkTask.RequestAsync<ResBoardList>(req.url, eMethodType.GET, string.Empty, token);
 
-            string url = string.Format(URL.
-            PsResponse<ResToDoList> res = await NetworkTask.RequestAsync<ResToDoList>(url, eMethodType.GET, string.Empty, token);
+            if (string.IsNullOrEmpty(res.message))
+            {
+                if (req.refresh)
+                {
+                    view.Clear();
+                    Tmp.singleton.ClearBoardList();
+                }
 
-            return res;
+                BoardData t;
+                foreach (var item in res.data.content) 
+                {
+                    t = new BoardData(item); 
+                    view.InsertData(t);
+                    Tmp.singleton.AddBoardInfo(item.seq, t);
+                }
+
+                if (res.data.hasNext) 
+                {
+                    t = new BoardData();
+                    view.InsertData(t);
+                    Tmp.singleton.AddBoardInfo(-1, t);
+                }
+            }
+            else 
+            {
+                view.Clear();
+                Tmp.singleton.ClearBoardList();
+            }
+
+            return res.message;
         }
 
+        /**
         public async UniTask<PsResponse<string>> CheckItem(int seq) 
         {
             string token = R.singleton.token;

@@ -11,6 +11,8 @@
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
 using Gpm.Ui;
 using TMPro;
@@ -38,6 +40,8 @@ namespace Joycollab.v2
 
         // local variables
         private int targetSpaceSeq;
+        private RequestForBoard req;
+        private bool firstRequest;
 
 
     #region Unity functions
@@ -72,10 +76,6 @@ namespace Joycollab.v2
 
             // set infinite scrollview
             _scrollView.AddSelectCallback((data) => {
-                // selectedData = (ToDoData) data;
-                // int seq = selectedData.info.seq;
-                // ViewManager.singleton.Push(S.MobileScene_ToDoDetail, seq.ToString());
-
                 Debug.Log($"{TAG} | Load More");
             });
 
@@ -90,16 +90,17 @@ namespace Joycollab.v2
                 _inputSearch.text = string.Empty;
                 _inputSearch.Select();
             });
+            _btnSearch.onClick.AddListener(() => Debug.Log($"{TAG} | search, {_inputSearch.text}"));
 
 
             // set button listener
             _btnBack.onClick.AddListener(() => ViewManager.singleton.Pop());
-            _btnSearch.onClick.AddListener(() => Debug.Log($"{TAG} | search, {_inputSearch.text}"));
             _btnCreate.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_CreateTodo));
 
 
             // init local variables
             targetSpaceSeq = 0;
+            req = new RequestForBoard();
         }
 
         public async override UniTaskVoid Show(string opt) 
@@ -112,12 +113,36 @@ namespace Joycollab.v2
             if (targetSpaceSeq != temp)
             {
                 Debug.Log($"{TAG} | Show(), target space seq : {targetSpaceSeq}, temp : {temp}");
+
                 targetSpaceSeq = temp;
+                firstRequest = true;
+            }
+
+            // 예외처리
+            Locale currentLocale = LocalizationSettings.SelectedLocale;
+            if (targetSpaceSeq == -1)
+            {
+                PopupBuilder.singleton.OpenAlert(
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "잘못된 접근", currentLocale),
+                    () => BackProcess()
+                );
             }
             
-            // TODO. 해당 게시판 쓰기 권한이 있는지 확인
-            // _btnCreate.gameObject.SetActive(isMyInfo);
+            // 조회 권한 확인
+            bool hasAuth = R.singleton.CheckHasAuth(targetSpaceSeq, S.AUTH_READ_BOARD);
+            if (! hasAuth) 
+            {
+                PopupBuilder.singleton.OpenAlert(
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "권한오류 (게시글 조회)", currentLocale),
+                    () => BackProcess()
+                );
+            }
 
+            // 쓰기 권한 확인
+            hasAuth = R.singleton.CheckHasAuth(targetSpaceSeq, S.AUTH_CREATE_BOARD);
+            _btnCreate.gameObject.SetActive(hasAuth);
+
+            req.refresh = true;
             await Refresh();
             base.Appearing();
         }
@@ -125,8 +150,11 @@ namespace Joycollab.v2
         public async override UniTaskVoid Show(bool refresh) 
         {
             base.Show().Forget();
-            GetList(refresh).Forget();
-            await UniTask.Yield();
+            // GetList(refresh).Forget();
+            // await UniTask.Yield();
+
+            req.refresh = refresh;
+            await Refresh();
             base.Appearing();
         }
 
@@ -137,6 +165,9 @@ namespace Joycollab.v2
 
         private async UniTaskVoid GetList(bool refresh=true) 
         {
+
+            req.refresh = refresh;
+
             await UniTask.Yield();
             /**
             PsResponse<ResToDoList> res = await _module.GetList();
@@ -192,11 +223,29 @@ namespace Joycollab.v2
             ViewManager.singleton.ShowNavigation(false);
 
             // get list
-            // TODO. list 출력
+            if (firstRequest) 
+            {
+                req.workspaceSeq = R.singleton.workspaceSeq;
+                req.spaceSeq = targetSpaceSeq;
+                req.keyword = string.Empty;
+                req.pageNo = 1;
+                req.pageSize = 20;
+
+                firstRequest = false;
+                string res = await _module.GetList(req, _scrollView);
+                if (! string.IsNullOrEmpty(res)) 
+                {
+                    PopupBuilder.singleton.OpenAlert(res, () => BackProcess());
+                }
+            }
+            else 
+            {
+                Debug.Log($"{TAG} | update all data");
+                _scrollView.UpdateAllData();
+                await UniTask.Yield();
+            }
 
             _btnClear.gameObject.SetActive(! string.IsNullOrEmpty(_inputSearch.text));
-
-            await UniTask.Yield();
             return 0;
         }
 

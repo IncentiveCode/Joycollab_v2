@@ -120,10 +120,6 @@ namespace Joycollab.v2
 
             // set infinite scrollview
             _scrollView.AddSelectCallback((data) => {
-                // selectedData = (ToDoData) data;
-                // int seq = selectedData.info.seq;
-                // ViewManager.singleton.Push(S.MobileScene_ToDoDetail, seq.ToString());
-
                 Debug.Log($"{TAG} | Load More");
             });
 
@@ -138,6 +134,7 @@ namespace Joycollab.v2
                 _inputSearch.text = string.Empty;
                 _inputSearch.Select();
             });
+            _btnSearch.onClick.AddListener(() => Debug.Log($"{TAG} | search, {_inputSearch.text}"));
 
 
             // set 'filter, toggle' listener
@@ -184,7 +181,6 @@ namespace Joycollab.v2
 
             // set button listener
             _btnBack.onClick.AddListener(() => ViewManager.singleton.Pop());
-            _btnSearch.onClick.AddListener(() => Debug.Log($"{TAG} | search, {_inputSearch.text}"));
             _btnDate.onClick.AddListener(() => {
                 txtTarget = _txtDate;
                 AndroidLib.singleton.ShowDatepicker(viewID, selectDate.ToString("yyyy-MM-dd"));
@@ -255,7 +251,7 @@ namespace Joycollab.v2
                 {
                     // dataList.Clear();
                     _scrollView.Clear();
-                    R.singleton.ClearToDoList();
+                    Tmp.singleton.ClearToDoList();
                 }
 
                 ToDoData t;
@@ -267,7 +263,7 @@ namespace Joycollab.v2
 
                     // dataList.Add(t);
                     _scrollView.InsertData(t);
-                    R.singleton.AddToDoInfo(item.seq, t);
+                    Tmp.singleton.AddToDoInfo(item.seq, t);
                 }
 
                 if (res.data.hasNext) 
@@ -277,14 +273,14 @@ namespace Joycollab.v2
 
                     // dataList.Add(t);
                     _scrollView.InsertData(t);
-                    R.singleton.AddToDoInfo(-1, t);
+                    Tmp.singleton.AddToDoInfo(-1, t);
                 }
             }
             else 
             {
                 // dataList.Clear();
                 _scrollView.Clear();
-                R.singleton.ClearToDoList();
+                Tmp.singleton.ClearToDoList();
 
                 PopupBuilder.singleton.OpenAlert(res.message);
             }
@@ -393,7 +389,6 @@ namespace Joycollab.v2
             {
                 Debug.Log($"{TAG} | update all data");
                 _scrollView.UpdateAllData();
-                // _scrollView.MoveTo(selectedData, (InfiniteScroll.MoveToType) 0);
             }
 
             _btnClear.gameObject.SetActive(! string.IsNullOrEmpty(_inputSearch.text));

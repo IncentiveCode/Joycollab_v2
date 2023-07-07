@@ -194,7 +194,7 @@ namespace Joycollab.v2
             }
 
             seq = temp;
-            data = R.singleton.GetOkrInfo(seq);
+            data = Tmp.singleton.GetOkrInfo(seq);
             if (data == null)
             {
                 // TODO. 예외처리
@@ -275,7 +275,7 @@ namespace Joycollab.v2
                             data.info.ed = req.ed;
                         }
 
-                        R.singleton.AddOkrInfo(this.seq, data);
+                        Tmp.singleton.AddOkrInfo(this.seq, data);
 
                         ViewManager.singleton.Pop(this.seq.ToString());
                     }

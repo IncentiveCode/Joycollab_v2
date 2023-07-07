@@ -267,6 +267,7 @@ namespace Joycollab.v2
         private void OpenView() 
         {
             R.singleton.Clear();
+            Tmp.singleton.Clear();
             PostCheckToken();
         }
 
