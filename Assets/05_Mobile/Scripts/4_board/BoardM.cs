@@ -2,13 +2,13 @@
 /// [mobile]
 /// 게시판 화면을 담당하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 06
-/// @version        : 0.1
+/// @last update    : 2023. 07. 10
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 07. 06) : 최초 생성.
+///     v0.2 (2023. 07. 10) : 타이틀 변경 추가.
 /// </summary>
 
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Localization;
@@ -36,6 +36,7 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnCreate;
 
         [Header("contents")]
+        [SerializeField] private Text _txtTitle;
         [SerializeField] private InfiniteScroll _scrollView;
 
         // local variables
@@ -116,6 +117,10 @@ namespace Joycollab.v2
 
                 targetSpaceSeq = temp;
                 firstRequest = true;
+
+                string partName = R.singleton.GetTopSpaceName(targetSpaceSeq);
+                Debug.Log($"{TAG} | Show(), part name : {partName}");
+                _txtTitle.text = partName;
             }
 
             // 예외처리

@@ -213,6 +213,7 @@ namespace Joycollab.v2
             { 
 	            foreach (ResSpaceInfo info in res.data.list)
                 { 
+                    Debug.Log($"{TAG} | GetSpaceList(), seq : {info.seq}, name : {info.nm} // top space seq : {info.topSpace.seq}, top space name : {info.topSpace.nm}");
                     R.singleton.AddSpace(info.seq, info);
 		        } 
 	        }

@@ -2,7 +2,7 @@
 
 
 ## 주요 변경 사항
-1. Unity version upgrade (2020.3.32f1 -> 2021.3.13f1)
+1. Unity version upgrade (2020.3.32f1 -> 2021.3.13f1 -> 2021.3.26f1)
 2. 압축 방식 변경 (Disabled -> Brotli)
 3. Singleton (DontDestroyOnLoad) 형태로 사용되는 object 축소.
    static class 또는 static function 사용으로 변경.
@@ -12,7 +12,7 @@
    사용하지 않는 항목들은 정리하고, 사용하는 항목들은 크기를 POT 에 맞춰 Unity 에서 압축을 할 수 있도록 변경.
 6. script 최적화.
 7. list 최적화.
-   가능하다면 recycle view 를 적용.
+   Gpm.Ui 아래에 있는 Infinite Scroll View 적용.
    
 
 ## 작업 진행 사항
@@ -21,5 +21,6 @@
 
 	모든 윈도우의 부모가 될 창, TextUI 까지 고려해야 함
 		
-3. (진행할 때 마다 추가 예정)
+3. MobileView 재구성 및 기존 Joycollab script 개선 수정 중. 
+4. UniTask 를 최대한 적용 중.
    

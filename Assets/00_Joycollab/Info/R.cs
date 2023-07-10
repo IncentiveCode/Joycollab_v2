@@ -521,7 +521,7 @@ namespace Joycollab.v2
         {
             if (dictSpace.ContainsKey(seq)) 
             {
-                if (dictSpace[seq].topSpace == null)
+                if (dictSpace[seq].topSpace.seq == 0)
                     return dictSpace[seq].seq;
                 else
                     return dictSpace[seq].topSpace.seq;
@@ -533,7 +533,7 @@ namespace Joycollab.v2
         {
             if (dictSpace.ContainsKey(seq)) 
             {
-                if (dictSpace[seq].topSpace == null) 
+                if (dictSpace[seq].topSpace.seq == 0) 
                     return dictSpace[seq].nm; 
                 else 
                     return dictSpace[seq].topSpace.nm;
