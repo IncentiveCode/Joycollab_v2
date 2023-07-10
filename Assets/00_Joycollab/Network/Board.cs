@@ -56,7 +56,7 @@ namespace Joycollab.v2
         public string modifiedDate;
         public List<string> attachedFile;
         public List<string> originalFileName;
-	    public string space;
+	    public SpaceSeq space;
     }
 
 
