@@ -20,9 +20,9 @@ namespace Joycollab.v2
         GraphicUI, TextUI,
         Arrange, 
         Management,
-        Mobile,
         World, Square,
         Sample,
+        Mobile,
     }
 
 
@@ -180,6 +180,7 @@ namespace Joycollab.v2
     {
         UserInfo, Alarm,
 
+        FontSize,
         Test
     }
 

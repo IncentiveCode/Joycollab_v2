@@ -24,6 +24,8 @@ namespace Joycollab.v2
         private void Awake() 
         {
             InitSingleton();     
+
+            R.singleton.FontSizeOpt = 0;
         }
 
         private void Start() 
@@ -70,10 +72,17 @@ namespace Joycollab.v2
 
 
     #region Temp
+
+        public void SetFontOpt(int opt) 
+        {
+            R.singleton.FontSizeOpt = opt;
+        }
+
         public void Exit() 
         {
             SceneLoader.Load(eScenes.Login);
         }
+
     #endregion  // Temp
     }
 }

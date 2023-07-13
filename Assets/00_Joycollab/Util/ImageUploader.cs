@@ -59,16 +59,6 @@ namespace Joycollab.v2
     #endif
 
 
-    #region Unity functions
-
-        private void OnDestroy() 
-        {
-            Clear();
-        }
-
-    #endregion
-
-
     #region Public functions
 
         public void Init(int width=128, int height=128)

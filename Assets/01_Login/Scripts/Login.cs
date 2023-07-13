@@ -225,8 +225,8 @@ namespace Joycollab.v2
                 R.singleton.AddParam(Key.WORKSPACE_END_DATE, res.data.edtm);
 
         #if UNITY_WEBGL && !UNITY_EDITOR
-                string url = string.Format(URL.SUB_INDEX, domain);
-                JsLib.Redirection(url);
+                string redirectUrl = string.Format(URL.SUB_INDEX, domain);
+                JsLib.Redirection(redirectUrl);
         #else
                 ViewManager.singleton.Push(S.LoginScene_SubLogin);
         #endif

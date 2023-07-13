@@ -1,12 +1,13 @@
 ﻿/// <summary>
 /// PitchSolution - javascript library 
 /// @author         : HJ Lee
-/// @last update    : 2023. 03. 17 
-/// @version        : 1.2
+/// @last update    : 2023. 07. 13 
+/// @version        : 0.4
 /// @update
-///     - v1.0 (2023. 02. 22) : Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
-///     - v1.1 (2023. 02. 28) : unity 2021.3.13f1 으로 업그레이드 후, windows 에서 build 안되는 문제 해결. (한글 주석이 원인으로 보임)
-///     - v1.2 (2023. 03. 17) : Graphic UI 와 Text UI 전환시 unity-canvas 에 min-widht 값을 추가하는 함수 추가. 추후 고도화 예정.
+///     v0.1 (2023. 02. 22) : Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
+///     v0.2 (2023. 02. 28) : unity 2021.3.13f1 으로 업그레이드 후, windows 에서 build 안되는 문제 해결. (한글 주석이 원인으로 보임)
+///     v0.3 (2023. 03. 17) : Graphic UI 와 Text UI 전환시 unity-canvas 에 min-widht 값을 추가하는 함수 추가. 추후 고도화 예정.
+///     v0.4 (2023. 07. 13) : WebGL 이 아닌 곳에서 Alert 사용시 Popup builder 를 이용한 open alert 출력하게 수정.
 /// </summary>
 
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -63,7 +64,7 @@ namespace Joycollab.v2
     #endregion  // cookie
 
     #region simple functions
-        public static void psAlert(string message) { Debug.Log(message); }
+        public static void psAlert(string message) { PopupBuilder.singleton.OpenAlert(message); }
         public static void psLog(string message) { Debug.Log(message); }
         public static void psRedirection(string url) { }
         public static void psOpenWebview(string url, string id) { Application.OpenURL(url); }
@@ -102,6 +103,7 @@ namespace Joycollab.v2
     public class JsLib : MonoBehaviour
     {
     #region Cookie
+
         public static string GetCookie(string name) 
         {
             string cookie = string.Empty;
@@ -113,9 +115,11 @@ namespace Joycollab.v2
         {
             JsLibPlugin.psSetCookie(name, value);
         }
+
     #endregion  // cookie
 
     #region simple functions
+
         public static void Alert(string message) 
         {
             JsLibPlugin.psAlert(message);
@@ -135,9 +139,11 @@ namespace Joycollab.v2
         {
             JsLibPlugin.psOpenWebview(url, id);
         }
+
     #endregion  // simple functions
 
     #region check
+
         public static void CheckBrowser(string gameObjectName, string methodName)
         {
             JsLibPlugin.psCheckBrowser(gameObjectName, methodName);
@@ -147,20 +153,25 @@ namespace Joycollab.v2
         {
             JsLibPlugin.psCheckSystem(gameObjectName, methodName);
         }
+
     #endregion  // check
 
     #region scheme
+
         public static void RunScheme(string gameObjectName, string url, string methodName)
         {
             JsLibPlugin.psRunScheme(gameObjectName, url, methodName);
         }
+
     #endregion  // scheme
 
     #region change style
+
         public static void SetTextUI(bool isOn) 
         { 
             JsLibPlugin.psSetTextUI(isOn);
         }
+
     #endregion  // change style
     }
 }

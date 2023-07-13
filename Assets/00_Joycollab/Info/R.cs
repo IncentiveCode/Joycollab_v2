@@ -31,9 +31,11 @@ namespace Joycollab.v2
     
         private void Awake() 
         {
+            // ----- ----- -----
             list = new List<Tuple<iRepositoryObserver, eStorageKey>>();
             list.Clear();
 
+            // ----- ----- -----
             dictParams = new Dictionary<string, string>();
             dictParams.Clear();
 
@@ -133,6 +135,11 @@ namespace Joycollab.v2
                     observer.UpdateInfo(key);
                     break;
 
+                case eStorageKey.FontSize :
+                    // TODO. font size 관련 예외 처리... 할 게 있을까?
+                    observer.UpdateInfo(key);
+                    break;
+
                 default :
                     Debug.Log("R | 줄 수 있는 것이 없음.");
                     break;
@@ -187,6 +194,24 @@ namespace Joycollab.v2
         }
 
     #endregion  // Language, region
+
+
+    #region font setting
+
+        private int _fontSizeOpt;
+
+        public int FontSizeOpt 
+        {
+            get {
+                return Mathf.Clamp(_fontSizeOpt, 1, 3);
+            }
+            set {
+                _fontSizeOpt = value;
+                NotifyAll(eStorageKey.FontSize);
+            }
+        }
+
+    #endregion  // font setting
 
 
     #region Token & important information

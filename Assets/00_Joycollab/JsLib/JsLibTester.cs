@@ -2,10 +2,10 @@
 /// Custom JsLib 테스트를 위한 클래스
 /// @author         : HJ Lee
 /// @last update    : 2023. 03. 14
-/// @version        : 1.1
+/// @version        : 0.2
 /// @update
-///     v1.0 (2023. 02. 27) : 최초 생성, 간단 기능만 추가한 Tester 구현.
-///     v1.1 (2023. 03. 14) : WebGLSupport package 에 있는 Focus, Blur 테스트.
+///     v0.1 (2023. 02. 27) : 최초 생성, 간단 기능만 추가한 Tester 구현.
+///     v0.2 (2023. 03. 14) : WebGLSupport package 에 있는 Focus, Blur 테스트.
 /// </summary>
 
 using UnityEngine;

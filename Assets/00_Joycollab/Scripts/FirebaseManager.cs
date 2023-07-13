@@ -1,5 +1,14 @@
+/// <summary>
+/// Firebase 관련 매니저 클래스 
+/// @author         : HJ Lee
+/// @last update    : 2023. 06. 30
+/// @version        : 0.1
+/// @update
+///     v0.1 (2023. 06. 30) : 최초 작성.
+/// </summary>
+
 using UnityEngine;
-#if UNITY_ANDROID || UNITY_IOS
+#if (UNITY_ANDROID || UNITY_IOS) && UNITY_EDITOR
 using Firebase;
 #endif
 
@@ -7,6 +16,7 @@ namespace Joycollab.v2
 {
     public class FirebaseManager : MonoBehaviour
     {
+#if (UNITY_ANDROID || UNITY_IOS) && UNITY_EDITOR
         private FirebaseApp app;
 
     #region Unity functions
@@ -47,5 +57,6 @@ namespace Joycollab.v2
 
     #endregion  // for FCM
 
+#endif 
     }
 }
