@@ -1,13 +1,14 @@
 ﻿/// <summary>
 /// PitchSolution - javascript library 
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 13 
+/// @last update    : 2023. 07. 14 
 /// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 02. 22) : Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
 ///     v0.2 (2023. 02. 28) : unity 2021.3.13f1 으로 업그레이드 후, windows 에서 build 안되는 문제 해결. (한글 주석이 원인으로 보임)
 ///     v0.3 (2023. 03. 17) : Graphic UI 와 Text UI 전환시 unity-canvas 에 min-widht 값을 추가하는 함수 추가. 추후 고도화 예정.
-///     v0.4 (2023. 07. 13) : WebGL 이 아닌 곳에서 Alert 사용시 Popup builder 를 이용한 open alert 출력하게 수정.
+///     v0.4 (2023. 07. 14) : WebGL 이 아닌 곳에서 Alert 사용시 Popup builder 를 이용한 open alert 출력하게 수정.
+///                         copyToClipboard() 추가. 참고 : https://pudding-entertainment.medium.com/unity-webgl-add-a-share-button-93831b3555e9
 /// </summary>
 
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -56,6 +57,12 @@ namespace Joycollab.v2
         public static extern void psSetTextUI(bool isOn);
     #endregion  // change style
 
+    #region copy and paste
+        [DllImport("__Internal")] 
+        public static extern void psCopyToClipboard(string text);
+        // [DllImport("__Internal")] public static extern string psPasteText();
+    #endregion
+
 #else
 
     #region cookie
@@ -95,6 +102,23 @@ namespace Joycollab.v2
     #region change style
         public static void psSetTextUI(bool isOn) { }
     #endregion  // change style
+
+    #region copy and paste
+        private static TextEditor te = new TextEditor();
+        public static void psCopyToClipboard(string text)
+        { 
+            te.text = text;
+            te.SelectAll();
+            te.Copy();
+        }
+        /**
+        public static string psPasteText() 
+        {
+            te.Paste();
+            return te.text;
+        }
+         */
+    #endregion  // copy and paste
 
 #endif
     }
@@ -173,5 +197,22 @@ namespace Joycollab.v2
         }
 
     #endregion  // change style
+
+
+    #region copy and paste
+
+        public static void CopyToClipboard(string text) 
+        {
+            JsLibPlugin.psCopyToClipboard(text);
+        }
+
+        /**
+        public static string PasteText() 
+        {
+            return JsLibPlugin.psPasteText();
+        }
+         */
+
+    #endregion  // copy and paste
     }
 }

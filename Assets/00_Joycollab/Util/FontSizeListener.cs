@@ -7,11 +7,8 @@
 ///     v0.1 (2022. 07. 13) : 최초 생성
 /// </summary>
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
 
 namespace Joycollab.v2 
 {
@@ -44,6 +41,11 @@ namespace Joycollab.v2
             keyFontSize = eStorageKey.FontSize;
 
             R.singleton.RegisterObserver(this, keyFontSize);
+        }
+
+        private void OnEnable() 
+        {
+            UpdateInfo(keyFontSize);    
         }
 
         private void OnDestroy() 
@@ -83,18 +85,12 @@ namespace Joycollab.v2
                         break;
                 }
 
-                /**
-                // TODO. layout element size change
+                // TODO. layout element size change... 일단 임시로 조치
                 if (_layoutElement != null) 
                 {
-                    Canvas.ForceUpdateCanvases();
-                    float tmp = _text.GetComponent<RectTransform>().rect.height;
-                    Debug.Log("current text height : "+ tmp);
-                    Debug.Log("next element height : "+ (tmp+4));
-
-                    _layoutElement.preferredHeight = (tmp + 4);
+                    _layoutElement.flexibleHeight = 0;
+                    _layoutElement.flexibleHeight = 1;
                 }
-                 */
             }
         }
 
