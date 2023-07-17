@@ -89,12 +89,74 @@ namespace Joycollab.v2
 
         private void ChangeContent() 
         {
-            var arr = _inputContent.text.Split('\n');
-
             // variables
             string t, sub;
             int idx, endIdx; 
+            int spaceIdx, tabIdx, newLineIdx;
 
+
+            t = _inputContent.text; 
+            while (true) 
+            {
+                // 0. 더 이상 문장이 없다면 종료.
+                if (t.Length < 1)
+                {
+                    // Debug.Log("current string length < 1. break the loop");
+                    break;
+                }
+
+                // 1. 문자열에 HTTP, HTTPS 가 있는지 확인.
+                if (t.Contains(HTTP) || t.Contains(HTTPS)) 
+                {
+                    idx = t.IndexOf("http");
+                    // 1-1. 시작점에 http 가 있다면, white space char 를 체크해서 그 영역까지 link block 생성.
+                    if (idx == 0) 
+                    {
+                        // Debug.Log($" {t}");
+                        spaceIdx = t.IndexOf(" ");
+                        tabIdx = t.IndexOf("\t");
+                        newLineIdx = t.IndexOf("\n");
+
+                        endIdx = -1;
+                        // Debug.Log($" > {endIdx}");
+                        endIdx = spaceIdx != -1 ? spaceIdx : endIdx;
+                        // Debug.Log($" >> {endIdx}");
+                        endIdx = (tabIdx != -1 && tabIdx < endIdx) ? tabIdx : endIdx;
+                        // Debug.Log($" >>> {endIdx}");
+                        endIdx = (newLineIdx != -1 && newLineIdx < endIdx) ? newLineIdx : endIdx;
+                        // Debug.Log($" >>> {endIdx}");
+                        if (endIdx == -1)   sub = t;
+                        else                sub = t.Substring(0, endIdx);
+                        // Debug.Log($"link block : {sub}");
+                        CreateLinkBlock(sub);
+
+                        if (endIdx == -1) 
+                            break;
+                        else
+                            t = t.Substring(endIdx + 1);
+                    }
+                    // 1-2. 시작점에 없다면, 시작점부터 http 까지 content block 생성.
+                    else 
+                    {
+                        sub = t.Substring(0, idx-1);
+                        // Debug.Log($"content block : {sub}");
+                        CreateContentBlock(sub);
+
+                        t = t.Substring(idx);
+                    }
+                }
+                // 2. 링크 prefix 가 없다면 그냥 content block 을 출력하고 종료.
+                else 
+                {
+                    // Debug.Log($"content block : {t}, and break the loop");
+                    CreateContentBlock(t);
+                    break;
+                }
+            }
+
+
+            /**
+            var arr = _inputContent.text.Split('\n');
             foreach (string s in arr) 
             {
                 t = s;
@@ -141,6 +203,7 @@ namespace Joycollab.v2
                     }
                 }
             }
+             */
         }
 
     #endregion  // contents
