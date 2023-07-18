@@ -2,14 +2,19 @@
 /// [mobile] 
 /// Mobile 에서 Android 특화 기능을 사용하기 위한 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 06
-/// @version        : 0.2
+/// @last update    : 2023. 07. 18
+/// @version        : 0.3
 /// @update
 /// 	v0.1 (2023. 06. 13) : 이전 mobile 에서 작업했던 내용 분리 적용.
 ///     v0.2 (2023. 07. 06) : DatePicker, TimePicker 에 현재 값을 집어 넣는 테스트 중.
+///     v0.3 (2023. 07. 18) : Joycollab 의 MobilePermission 적용.
 /// </summary>
 
 using UnityEngine;
+using UnityEngine.Android;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
+using Cysharp.Threading.Tasks;
 
 namespace Joycollab.v2 
 {
@@ -17,6 +22,7 @@ namespace Joycollab.v2
     {
         public static AndroidLib singleton { get; private set; } 
         private const string TAG = "AndroidLib";
+
 
     #if UNITY_ANDROID // for android plugin
 
@@ -34,14 +40,13 @@ namespace Joycollab.v2
         private const string CustomClassStartServiceMethod = "startService";
         private const string CustomClassStopServiceMethod = "stopService";
 
-
+        // bridge class, object
         private AndroidJavaClass unityClass;
         private AndroidJavaObject unityActivity;
         private AndroidJavaObject customObject;
         private AndroidJavaClass versionInfo;
         private int sdk_int;
-        // private TMP_Text txtTarget;
-    
+
     #endif  // for android plugin
 
 
@@ -108,11 +113,10 @@ namespace Joycollab.v2
 
             string token = R.singleton.token;
             int memberSeq = R.singleton.memberSeq;
-            // double lat = (double) R.singleton.Lat;
-            // double lon = (double) R.singleton.Lng;
+            double lat = (double) R.singleton.myLat;
+            double lon = (double) R.singleton.myLon;
 
-            // customObject.Call(CustomClassSetInfo, token, memberSeq, lat, lon);
-            customObject.Call(CustomClassSetInfo, token, memberSeq, 0d, 0d);
+            customObject.Call(CustomClassSetInfo, token, memberSeq, lat, lon);
 
         #endif
         }
@@ -189,6 +193,7 @@ namespace Joycollab.v2
                 AndroidDateCallback.SelectedDate.Day
             ).Call("show");
         #endif
+        
         }
 
         public void ShowTimePicker(int viewID) 
@@ -216,5 +221,110 @@ namespace Joycollab.v2
         }
 
     #endregion  // android bridge functions
+
+
+    #region android permission check
+
+        public async UniTaskVoid CheckMeetingPermission(System.Action func) 
+        {
+            await UniTask.DelayFrame(1);
+
+            if (! Permission.HasUserAuthorizedPermission(Permission.Camera)) 
+            {
+                Permission.RequestUserPermission(Permission.Camera);
+                await UniTask.Delay(100);
+                await UniTask.WaitUntil(() => Application.isFocused == true);
+
+                if (! Permission.HasUserAuthorizedPermission(Permission.Camera)) 
+                {
+                    Locale currentLocale = LocalizationSettings.SelectedLocale;
+                    PopupBuilder.singleton.OpenConfirm(
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "카메라 권한 요청", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "허용", currentLocale),
+                        () => Debug.Log($"{TAG} | 카메라 권한 요청 승인"),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "거부", currentLocale),
+                        () => {
+                            PopupBuilder.singleton.OpenAlert(
+                                LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "카메라 권한 요청 거부", currentLocale)
+                            );
+                        }
+                    );
+                    return;
+                }
+            }
+            else 
+            {
+                Debug.Log($"{TAG} | 이미 승인된 권한 : 카메라 사용");
+            }
+
+            await UniTask.DelayFrame(1);
+
+            if (! Permission.HasUserAuthorizedPermission(Permission.Microphone)) 
+            {
+                Permission.RequestUserPermission(Permission.Microphone);
+                await UniTask.Delay(100);
+                await UniTask.WaitUntil(() => Application.isFocused == true);
+
+                if (! Permission.HasUserAuthorizedPermission(Permission.Microphone)) 
+                {
+                    Locale currentLocale = LocalizationSettings.SelectedLocale;
+                    PopupBuilder.singleton.OpenConfirm(
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "마이크 권한 요청", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "허용", currentLocale),
+                        () => Debug.Log($"{TAG} | 마이크 권한 요청 승인"),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "거부", currentLocale),
+                        () => {
+                            PopupBuilder.singleton.OpenAlert(
+                                LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "마이크 권한 요청 거부", currentLocale)
+                            );
+                        }
+                    );
+                    return;
+                }
+            }
+            else 
+            {
+                Debug.Log($"{TAG} | 이미 승인된 권한 : 마이크 사용");
+            }
+
+            func?.Invoke();
+        }
+
+        public async UniTaskVoid CheckVoicePermission(System.Action func) 
+        {
+            await UniTask.DelayFrame(1);
+
+            if (! Permission.HasUserAuthorizedPermission(Permission.Microphone)) 
+            {
+                Permission.RequestUserPermission(Permission.Microphone);
+                await UniTask.Delay(100);
+                await UniTask.WaitUntil(() => Application.isFocused == true);
+
+                if (! Permission.HasUserAuthorizedPermission(Permission.Microphone)) 
+                {
+                    Locale currentLocale = LocalizationSettings.SelectedLocale;
+                    PopupBuilder.singleton.OpenConfirm(
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "마이크 권한 요청", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "허용", currentLocale),
+                        () => Debug.Log($"{TAG} | 마이크 권한 요청 승인"),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "거부", currentLocale),
+                        () => {
+                            PopupBuilder.singleton.OpenAlert(
+                                LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "마이크 권한 요청 거부", currentLocale)
+                            );
+                        }
+                    );
+                    return;
+                }
+            }
+            else 
+            {
+                Debug.Log($"{TAG} | 이미 승인된 권한 : 마이크 사용");
+            }
+
+            func?.Invoke();
+        }
+
+    #endregion  // android permission check
     }
 }

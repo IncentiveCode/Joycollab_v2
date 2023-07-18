@@ -1,8 +1,8 @@
 /// <summary>
 /// 시스템 상 저장 공간 (Repository) 
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 07
-/// @version        : 0.7
+/// @last update    : 2023. 07. 18
+/// @version        : 0.8
 /// @update
 ///     v0.1 (2023. 03. 17) : 파일 생성, Joycollab 에서 사용하는 것들 정리 시작.
 ///     v0.2 (2023. 03. 31) : SimpleWorkspace, Alarm 관련 항목 정리 시작, Notify 에서 generic <T> 제거.
@@ -11,6 +11,7 @@
 ///     v0.5 (2023. 06. 16) : Locale 관련 코드 추가. (ChangeTextKorean, ChangeTextEnglish -> ChangeLocale)
 ///     v0.6 (2023. 07. 04) : Space Dictionary 관련 코드 추가.
 ///     v0.7 (2023. 07. 07) : To-Do, OKR 등 임시로 저장하는 항목은 Tmp 로 이동. Bookmark 저장소 추가.
+///     v0.8 (2023. 07. 18) : 기존에 사용했던 member state 관리 추가.
 /// </summary>
 
 using System;
@@ -24,7 +25,8 @@ namespace Joycollab.v2
 {
     public class R : Singleton<R>, iRepositoryController
     {
-        private List<Tuple<iRepositoryObserver, eStorageKey>> list;
+        private const string TAG = "R";
+        private List<Tuple<iRepositoryObserver, eStorageKey>> listObserver;
 
 
     #region Common functions
@@ -32,8 +34,8 @@ namespace Joycollab.v2
         private void Awake() 
         {
             // ----- ----- -----
-            list = new List<Tuple<iRepositoryObserver, eStorageKey>>();
-            list.Clear();
+            listObserver = new List<Tuple<iRepositoryObserver, eStorageKey>>();
+            listObserver.Clear();
 
             // ----- ----- -----
             dictParams = new Dictionary<string, string>();
@@ -46,6 +48,10 @@ namespace Joycollab.v2
             // for bookmark
             listBookmark = new List<Bookmark>();
             listBookmark.Clear(); 
+
+            // for member state
+            listMemberState = new List<TpsInfo>();
+            listMemberState.Clear();
 
             // for temp dictionary
             dictPhoto = new Dictionary<int, Texture2D>();
@@ -69,9 +75,12 @@ namespace Joycollab.v2
             // for bookmark
             ClearBookmark();
 
+            // for member state
+            ClearMemberState();
+
             // for temp dictionary
             ClearPhotoDict();
-            ClearSpaceNameDict();
+            ClearSpaceDict();
             ClearPartDict();
         }
 
@@ -85,7 +94,7 @@ namespace Joycollab.v2
             bool exist = isExist(observer, key);
             if (exist) return; 
 
-            list.Add(Tuple.Create(observer, key));
+            listObserver.Add(Tuple.Create(observer, key));
         }
 
         public void UnregisterObserver(iRepositoryObserver observer, eStorageKey key) 
@@ -93,7 +102,7 @@ namespace Joycollab.v2
             bool exist = isExist(observer, key);
             if (exist)
             {
-                list.Remove(Tuple.Create(observer, key));  
+                listObserver.Remove(Tuple.Create(observer, key));  
             }
         }
 
@@ -111,7 +120,7 @@ namespace Joycollab.v2
 
         public void NotifyAll(eStorageKey key) 
         {
-            foreach (Tuple<iRepositoryObserver, eStorageKey> t in list) 
+            foreach (Tuple<iRepositoryObserver, eStorageKey> t in listObserver)
             {
                 if (t.Item2 == key) Send(t.Item1, t.Item2);
             }
@@ -119,7 +128,7 @@ namespace Joycollab.v2
 
         private bool isExist(iRepositoryObserver observer, eStorageKey key) 
         {
-            return list.Any(i => i.Item1 == observer && i.Item2 == key);
+            return listObserver.Any(i => i.Item1 == observer && i.Item2 == key);
         }
 
         private void Send(iRepositoryObserver observer, eStorageKey key) 
@@ -317,7 +326,6 @@ namespace Joycollab.v2
             dictParams.Clear();
         }
 
-
     #endregion  // Param values
 
 
@@ -331,6 +339,9 @@ namespace Joycollab.v2
         public string myMemberType {
             get { return _memberInfo.memberType; }
             set { _memberInfo.memberType = value; }
+        }
+        public bool isGuest {
+            get { return _memberInfo.memberType.Equals(S.GUEST); }
         }
         public int mySpaceSeq {
             get { return _memberInfo.space.seq; }
@@ -502,6 +513,46 @@ namespace Joycollab.v2
     #endregion  // Bookmark Info
 
 
+    #region Member states
+
+        private List<TpsInfo> listMemberState;
+
+        public void AddMemberState(TpsInfo info) => listMemberState.Add(info);
+        public TpsInfo GetMemberState(int code)
+        {
+            TpsInfo result = null;
+
+            foreach (TpsInfo ti in listMemberState) 
+            {
+                if (ti.cd == code) 
+                {
+                    result = ti;
+                    break;
+                }
+            }
+
+            return result;
+        }
+        public int GetOnlineStateCode() 
+        {
+            int result = 0;
+
+            foreach (TpsInfo ti in listMemberState) 
+            {
+                if (ti.id.Equals(S.ONLINE)) 
+                {
+                    result = ti.cd;
+                    break;
+                }
+            }
+
+            return result;
+        }
+        public void ClearMemberState() => listMemberState.Clear();
+
+    #endregion  // Member states
+
+
     #region for temp dectionary
 
         private Dictionary<int, Texture2D> dictPhoto;
@@ -528,12 +579,35 @@ namespace Joycollab.v2
 
 
         private Dictionary<int, ResSpaceInfo> dictSpace;
+        public int LobbySeq { get; private set; }
+        public int LoungeSeq { get; private set; }
+        public int MeetingRoomSeq { get; private set; }
+
         public void AddSpace(int seq, ResSpaceInfo info)
         { 
             if (dictSpace.ContainsKey(seq))
                 dictSpace[seq] = info;
             else
                 dictSpace.Add(seq, info);
+
+            switch (info.spaceMng.spaceTp.id) 
+            {
+                case S.LOBBY :     
+                    LobbySeq = info.seq;
+                    break;
+
+                case S.LOUNGE :
+                    LoungeSeq = info.seq;
+                    break;
+
+                case S.MEETING_ROOM : 
+                    MeetingRoomSeq = info.seq;
+                    break;
+                
+                default : 
+                    // Debug.Log($"{TAG} | 사무실은 따로 저장하지 않습니다.");
+                    break;
+            }
 	    }
         public string GetSpaceName(int seq)
         { 
@@ -566,7 +640,11 @@ namespace Joycollab.v2
             else 
                 return string.Empty;
         }
-        private void ClearSpaceNameDict() => dictSpace.Clear();
+        private void ClearSpaceDict() 
+        {
+            dictSpace.Clear();
+            LobbySeq = LoungeSeq = MeetingRoomSeq = -1;
+        }
 
 
         private Dictionary<int, string> dictPart;

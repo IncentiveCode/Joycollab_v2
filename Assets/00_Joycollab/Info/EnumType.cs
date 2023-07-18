@@ -1,10 +1,11 @@
 /// <summary>
 /// 열거형 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 03. 17
-/// @version        : 0.1
+/// @last update    : 2023. 07. 18
+/// @version        : 0.2
 /// @update
-///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리. (정리 중)
+///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리.
+///     v0.2 (2023. 07. 18) : Xmpp type, Webview type 추가.
 /// </summary>
 
 namespace Joycollab.v2
@@ -65,7 +66,7 @@ namespace Joycollab.v2
 
 
     /// <summary>
-    /// Popup, Menu 형태 및 속성
+    /// Popup, Menu, Webview 형태 및 속성
     /// </summary>
     public enum ePopupType 
     {
@@ -83,9 +84,15 @@ namespace Joycollab.v2
     {
         Office, World, Mobile
     } 
+
     public enum eMenuTitle 
     {
         Detail = 0, Enter, Test
+    }
+
+    public enum eWebviewType 
+    {
+        Normal = 0, Chat, VoiceCall, Meeting
     }
     // -----
 
@@ -178,7 +185,7 @@ namespace Joycollab.v2
     /// </summary>
     public enum eStorageKey 
     {
-        UserInfo, Alarm,
+        UserInfo, Alarm, InstantAlarm, Chat,
 
         FontSize,
         Test
@@ -211,5 +218,21 @@ namespace Joycollab.v2
         Meeting, 
         SeminarMember, SeminarLecturer, 
         LobbyManager
+    }
+
+
+    /// <summary>
+    /// XMPP message type
+    /// </summary>
+    public enum eXmppType 
+    {
+        알림,
+        공간배치, 자리배치, 자리이동,
+        상태변경, 감정변경,
+        멤버변경, 멤버권한변경, 멤버추가, 멤버탈퇴,
+        회의시작, 회의예약, 회의멤버변경, 회의종료,
+        음성통화, 개인채팅, 그룹채팅, 개인및그룹채팅읽지않음총카운트,
+        시스템공지, 공지,
+        게스트알림, 휴게실방알림, 메세지,
     }
 }

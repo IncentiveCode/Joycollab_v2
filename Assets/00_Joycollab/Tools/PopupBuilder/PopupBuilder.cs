@@ -37,19 +37,6 @@ namespace Joycollab.v2
     #endregion
 
 
-    #region Public function
-
-        public void RequestClear() => Clear();
-
-        public int GetPopupCount() 
-        {
-            if (_transform == null) SetTransform();
-            return _transform.childCount;
-        }        
-
-    #endregion
-
-
     #region Private functions
 
         private void InitSingleton() 
@@ -101,8 +88,19 @@ namespace Joycollab.v2
 
     #endregion
 
+
+    #region Public function
+
+        public void RequestClear() => Clear();
+
+        public int GetPopupCount() 
+        {
+            if (_transform == null) SetTransform();
+            return _transform.childCount;
+        }        
+
     
-    #region Alert functions
+        #region Alert functions
 
         public void OpenAlert(string content) => OpenAlert(string.Empty, content, string.Empty, null);
         public void OpenAlert(string content, System.Action action) => OpenAlert(string.Empty, content, string.Empty, action);
@@ -128,13 +126,14 @@ namespace Joycollab.v2
             ctrl.Open();
         }
 
-    #endregion  // Alert functions
+        #endregion  // Alert functions
 
 
-    #region Confirm functions
+        #region Confirm functions
 
         public void OpenConfirm(string content, System.Action yesAction) => OpenConfirm(string.Empty, content, string.Empty, yesAction, string.Empty, null);
         public void OpenConfirm(string content, System.Action yesAction, System.Action noAction) => OpenConfirm(string.Empty, content, string.Empty, yesAction, string.Empty, noAction);
+        public void OpenConfirm(string content, string yesText, System.Action yesAction, string noText, System.Action noAction) => OpenConfirm(string.Empty, content, yesText, yesAction, noText, noAction);
         public void OpenConfirm(string title, string content, System.Action yesAction) => OpenConfirm(title, content, string.Empty, yesAction, string.Empty, null);
         public void OpenConfirm(string title, string content, System.Action yesAction, System.Action noAction) => OpenConfirm(title, content, string.Empty, yesAction, string.Empty, noAction);
         public void OpenConfirm(string title, string content, string yesText, System.Action yesAction) => OpenConfirm(title, content, yesText, yesAction, string.Empty, null);
@@ -162,10 +161,10 @@ namespace Joycollab.v2
             ctrl.Open();
         }
 
-    #endregion  // Confirm functions
+        #endregion  // Confirm functions
 
 
-    #region Slide popup 
+        #region Slide popup 
 
         public void OpenSlide(string title, string[] options, string[] extra, int viewID, bool cancelable=false) 
         {
@@ -185,6 +184,8 @@ namespace Joycollab.v2
             sc.transform.SetParent(_transform, false);
         }
 
-    #endregion  // Slide popup
+        #endregion  // Slide popup
+
+    #endregion  // public functions
     }
 }

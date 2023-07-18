@@ -1,12 +1,13 @@
 /// <summary>
 /// 자주 사용하는 string 값 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 28
-/// @version        : 0.3
+/// @last update    : 2023. 07. 18
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 03. 20) : 최초 생성. Scene 이름, LoginView, MobileView 이름 정리
 ///     v0.2 (2023. 04. 07) : Language, region 관련 상수 정리 
 ///     v0.3 (2023. 06. 28) : avatar state 값 정리
+///     v0.4 (2023. 07. 18) : mobile navigation 값 추가
 /// </summary>
 
 namespace Joycollab.v2
@@ -72,6 +73,13 @@ namespace Joycollab.v2
 
 
     #region MobileScene FixedView Name 
+
+        // ---------- ---------- ----------
+        // 00. navigation
+
+        public const string MobileScene_Top = "top_m";
+        public const string MobileScene_Bottom = "bottom_m";
+
 
         // ---------- ---------- ----------
         // 01. login
@@ -192,6 +200,8 @@ namespace Joycollab.v2
         public const string TRUE = "true";
         public const string FALSE = "false";
         public const string WORLD = "world";
+        public const string WORKSPACE = "workspace";
+        public const string WORKSPACE_MOBILE = "workspace_app";
 
     #endregion  // Value
 
@@ -273,5 +283,6 @@ namespace Joycollab.v2
         public const int TYPE_MONTHLY = 2;
 
     #endregion  // share, reminder option
+
     }
 }

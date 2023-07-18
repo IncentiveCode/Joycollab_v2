@@ -23,6 +23,10 @@ namespace Joycollab.v2
             nextScene = scene;
             SceneManager.LoadSceneAsync((int)eScenes.Loading);
         }
+        public static bool isGraphicUI() 
+        {
+            return (nextScene == eScenes.GraphicUI);
+        }
 
         [Header("UI")]
         [SerializeField] private Image _imgProgress;

@@ -31,13 +31,9 @@ namespace Joycollab.v2
         private void Start() 
         {
         #if UNITY_WEBGL && !UNITY_EDITOR 
-
             Application.targetFrameRate = -1;
-
         #else
-
             Application.targetFrameRate = 30;
-
         #endif
         }
     #endregion  // Unity functions

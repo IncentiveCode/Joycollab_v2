@@ -69,29 +69,7 @@ namespace Joycollab.v2
 
     #region Public functions
 
-        public void ShowMobileChat(string url) 
-        {
-            _goTop.SetActive(false);
-            _goPanel.SetActive(true);
-            webViewObject.transform.SetParent(_goPanel.transform);
-            webViewObject.LoadURL(url);
-
-            int bottom = 0;
-        #if UNITY_ANDROID
-            bottom = (int) (80 * (Screen.dpi / 160));
-        #elif UNITY_IOS
-
-        #else
-
-        #endif
-
-            webViewObject.SetMargins(0, 0, 0, bottom);
-            webViewObject.SetCameraAccess(false);
-            webViewObject.SetMicrophoneAccess(false);
-            webViewObject.SetVisibility(true);
-        }
-
-        public void ShowMobileWebview(string url) 
+        public void OpenMobileWeb(string url) 
         {
             _goTop.SetActive(true);
             _goPanel.SetActive(true);
@@ -103,13 +81,58 @@ namespace Joycollab.v2
             top = (int) (60 * (Screen.dpi / 160));
         #elif UNITY_IOS
 
-        #else
-
         #endif
 
             webViewObject.SetMargins(0, top, 0, 0);
             webViewObject.SetCameraAccess(false);
             webViewObject.SetMicrophoneAccess(false);
+            webViewObject.SetVisibility(true);
+        }
+
+
+        public void OpenMobileChat(string url) 
+        {
+            _goTop.SetActive(false);
+            _goPanel.SetActive(true);
+            webViewObject.transform.SetParent(_goPanel.transform);
+            webViewObject.LoadURL(url);
+
+            int bottom = 0;
+        #if UNITY_ANDROID
+            bottom = (int) (80 * (Screen.dpi / 160));
+        #elif UNITY_IOS
+
+        #endif
+
+            webViewObject.SetMargins(0, 0, 0, bottom);
+            webViewObject.SetCameraAccess(false);
+            webViewObject.SetMicrophoneAccess(false);
+            webViewObject.SetVisibility(true);
+        }
+
+        public void OpenMobileVoiceCall(string url) 
+        {
+            _goTop.SetActive(false);
+            _goPanel.SetActive(true);
+            webViewObject.transform.SetParent(_goPanel.transform);
+            webViewObject.LoadURL(url);
+
+            webViewObject.SetMargins(0, 0, 0, 0);
+            webViewObject.SetCameraAccess(false);
+            webViewObject.SetMicrophoneAccess(true);
+            webViewObject.SetVisibility(true);
+        }
+
+        public void OpenMobileMeeting(string url)
+        {
+            _goTop.SetActive(false);
+            _goPanel.SetActive(true);
+            webViewObject.transform.SetParent(_goPanel.transform);
+            webViewObject.LoadURL(url);
+
+            webViewObject.SetMargins(0, 0, 0, 0);
+            webViewObject.SetCameraAccess(true);
+            webViewObject.SetMicrophoneAccess(true);
             webViewObject.SetVisibility(true);
         }
 

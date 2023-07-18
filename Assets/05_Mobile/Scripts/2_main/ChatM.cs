@@ -2,10 +2,11 @@
 /// [mobile]
 /// 채팅 화면을 제어하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 16
-/// @version        : 0.1
+/// @last update    : 2023. 07. 18
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 06. 16) : 최초 생성, gpm webview 적용.
+///     v0.2 (2023. 07. 18) : webview 호출 방식 변경.
 /// </summary>
 
 using UnityEngine;
@@ -15,9 +16,6 @@ namespace Joycollab.v2
 {
     public class ChatM : FixedView
     {
-        private WebviewController ctrl;
-
-    
     #region Unity functions
 
         private void Awake() 
@@ -85,8 +83,7 @@ namespace Joycollab.v2
                 string.Format(URL.MOBILE_CHAT_LINK, memberSeq, region, token) :
                 string.Format(URL.MOBILE_CHATVIEW_LINK, memberSeq, opt, region, token);
 
-            ctrl = WebviewBuilder.singleton.Build();
-            ctrl.ShowMobileChat(url);
+            WebviewBuilder.singleton.OpenMobileWebview(url, eWebviewType.Chat);
 
             await UniTask.Yield();
             return 0;
@@ -99,7 +96,7 @@ namespace Joycollab.v2
 
             if (WebviewBuilder.singleton.Active()) 
             {
-                ctrl.GoBack();
+                // TODO. webview 에서 GoBack() 을 사용하려고 했으나, Vue 로 만든 화면에서 잘 통하지 않음. 방법 탐색 중.
             }
             else 
             {

@@ -382,7 +382,7 @@ namespace Joycollab.v2
         ///     {0} : top code
         /// </summary>
         /// <value></value>
-        public const string URL_GET_CODE = SERVER_PATH + "/code/getCode/{0}";
+        public const string GET_CODE = SERVER_PATH + "/code/getCode/{0}";
 
     #endregion  // AdminApi
 
@@ -717,6 +717,38 @@ namespace Joycollab.v2
         ///     {1} : ui type (text / graph)
         /// </summary>
         public const string SET_UI_TYPE = SERVER_PATH +"/api/member/uiType/{0}?uiType={1}";
+
+
+        // ---------- ---------- ----------
+        // 04. Call API
+
+        /// <summary>
+        /// desc : Voice call 수신을 위한 link (for WebGL)
+        /// param 
+        ///     {0} : workspace seq
+        ///     {1} : call seq
+        ///     {2} : member seq
+        ///     {3} : language code (ko / en)
+        /// </summary>
+        public const string CALL_LINK = PATH +"/meeting_service/{0}/{1}/{2}/call?lan={3}";
+
+        /// <summary>
+        /// desc : Voice call 수신을 위한 link (for mobile)
+        /// param 
+        ///     {0} : workspace seq
+        ///     {1} : call seq
+        ///     {2} : member seq
+        ///     {3} : language code (ko / en)
+        ///     {4} : access token
+        /// </summary>
+        public const string MOBILE_CALL_LINK = PATH + "/meeting_service/{0}/{1}/{2}/call?lan={3}&token={4}";
+
+        /// <summary>
+        /// desc : Voice call 발신을 위한 link
+        /// param 
+        ///     {0} : workspace seq
+        /// </summary>
+        public const string MAKE_CALL = SERVER_PATH + "/api/call/{0}";
 
 
         // ---------- ---------- ----------

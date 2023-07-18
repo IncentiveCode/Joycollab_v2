@@ -2,10 +2,11 @@
 /// [mobile]
 /// My Page 화면을 담당하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 16
-/// @version        : 0.1
+/// @last update    : 2023. 07. 18
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 06. 16) : 최초 생성.
+///     v0.2 (2023. 07. 18) : webview 호출 방식 변경.
 /// </summary>
 
 using UnityEngine;
@@ -34,9 +35,6 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnSystemNotice;
         [SerializeField] private Button _btnTutorial;
         [SerializeField] private Button _btnLogout;
-
-        // local variables
-        private WebviewController ctrl;
 
     
     #region Unity functions
@@ -83,10 +81,8 @@ namespace Joycollab.v2
             _btnTutorial.onClick.AddListener(() => {
                 string url = string.Format(URL.TUTORIAL_PATH, R.singleton.isKorean ? string.Empty : "_EN");
         #if UNITY_ANDROID || UNITY_IOS 
-                ctrl = WebviewBuilder.singleton.Build();
-                ctrl.ShowMobileWebview(url);
+                WebviewBuilder.singleton.OpenMobileWebview(url, eWebviewType.Normal);
         #else 
-                ctrl = null;
                 Application.OpenURL(url);
         #endif
             });
@@ -182,7 +178,7 @@ namespace Joycollab.v2
             }
             else if (WebviewBuilder.singleton.Active()) 
             {
-                ctrl.GoBack();
+                // TODO. webview 에서 GoBack() 을 사용하려고 했으나, Vue 로 만든 화면에서 잘 통하지 않음. 방법 탐색 중.
             }
             else 
             {

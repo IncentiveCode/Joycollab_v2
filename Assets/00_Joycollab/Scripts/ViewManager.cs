@@ -12,7 +12,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Joycollab.v2 
 {
@@ -68,7 +67,6 @@ namespace Joycollab.v2
         private void Awake()
         {
             singleton = this;
-
             isDone = false;
         }
 
@@ -84,14 +82,15 @@ namespace Joycollab.v2
             uiNavigation = new Stack();
             currentView = null;
 
-            isDone = true;
+            // TODO. init navigation bar
 
-            // test
         #if UNITY_ANDROID || UNITY_IOS
             Push(S.MobileScene_Login);
         #else
             Push(S.LoginScene_Login);
         #endif
+
+            isDone = true;
         }
 
         #if UNITY_ANDROID

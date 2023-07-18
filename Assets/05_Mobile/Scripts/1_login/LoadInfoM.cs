@@ -2,8 +2,8 @@
 /// [mobile]
 /// 로그인 성공 후 대기 화면을 관리하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 07
-/// @version        : 0.6
+/// @last update    : 2023. 07. 18
+/// @version        : 0.7
 /// @update         
 ///     v0.1 : 새 기획과 새 디자인 적용.
 ///     v0.2 (2022. 05. 25) : GetLobbyInfo() 추가.
@@ -11,6 +11,7 @@
 ///     v0.4 (2023. 03. 31) : Alarm, workspace info 관련해서도 Repository 에 저장하도록 로직 추가.
 ///     v0.5 (2023. 06. 12) : Legacy Text 대신 TMP Text 사용하도록 수정.
 ///     v0.6 (2023. 07. 07) : Space Info list, Bookmark list 추가 
+///     v0.7 (2023. 07. 18) : member state list 추가, function name 수정.
 /// </summary>
 
 using UnityEngine;
@@ -60,7 +61,7 @@ namespace Joycollab.v2
             await UniTask.Delay(1000);
 
             ViewManager.singleton.StartOnMySeat(true);
-            ViewManager.singleton.Push(S.MobileScene_MySeat);
+            // ViewManager.singleton.Push(S.MobileScene_MySeat);
 
             // ViewManager.singleton.Push(S.MobileScene_Office);
             // string state = JsLib.GetCookie(Key.MOBILE_FIRST_PAGE);
@@ -76,11 +77,12 @@ namespace Joycollab.v2
         {
             await UniTask.WhenAll(
                 GetLobbyInfoAsync(), 
-                GetMyInfo(),
-                GetOfficeInfo(),
-                GetAlarmList(),
-                GetSpaceList(),
-                GetBookmarkList()
+                GetMyInfoAsync(),
+                GetOfficeInfoAsync(),
+                GetAlarmListAsync(),
+                GetSpaceListAsync(),
+                GetBookmarkListAsync(),
+                GetStateListAsync()
             );
 
             // text 출력
@@ -92,9 +94,10 @@ namespace Joycollab.v2
             // MobileManager.singleton.SetInfo();
 
             // TODO. FCM 관련된 항목도 Bridge app 에서 처리할 것.
+
             // init xmpp manager
-            // XmppManager.Instance.Init();
-            // XmppManager.Instance.XmppLogin($"jc-user-{R.singleton.memberSeq}", R.singleton.myXmppPw);
+            XmppManager.singleton.Init();
+            XmppManager.singleton.XmppLogin($"jc-user-{R.singleton.memberSeq}", R.singleton.myXmppPw);
 
             // TODO. Ping Manager 도 추가할 것.
             // init ping 
@@ -124,7 +127,7 @@ namespace Joycollab.v2
         }
 
         // 2. get my info
-        private async UniTask<string> GetMyInfo() 
+        private async UniTask<string> GetMyInfoAsync() 
         {
             int memberSeq = R.singleton.memberSeq;
             string url = string.Format(URL.MEMBER_INFO, memberSeq);
@@ -150,7 +153,7 @@ namespace Joycollab.v2
         }
 
         // 3. get office info
-        private async UniTask<string> GetOfficeInfo() 
+        private async UniTask<string> GetOfficeInfoAsync() 
         {
             int workspaceSeq = R.singleton.workspaceSeq;
             string url = string.Format(URL.WORKSPACE_INFO, workspaceSeq);
@@ -171,7 +174,7 @@ namespace Joycollab.v2
         }
 
         // 4. get alarm count
-        private async UniTask<string> GetAlarmList() 
+        private async UniTask<string> GetAlarmListAsync() 
         {
             int memberSeq = R.singleton.memberSeq;
             string token = R.singleton.token;
@@ -201,7 +204,7 @@ namespace Joycollab.v2
         }
 
         // 5. get space info
-        private async UniTask<string> GetSpaceList()
+        private async UniTask<string> GetSpaceListAsync()
         {
 	        int workspaceSeq = R.singleton.workspaceSeq;
 	        string token = R.singleton.token;
@@ -227,7 +230,7 @@ namespace Joycollab.v2
 	    }
 
         // 6. get bookmark data
-        private async UniTask<string> GetBookmarkList() 
+        private async UniTask<string> GetBookmarkListAsync() 
         {
             int memberSeq = R.singleton.memberSeq;
             string token = R.singleton.token;
@@ -252,6 +255,32 @@ namespace Joycollab.v2
             else 
             {
                 Debug.Log($"{TAG} | GetBookmarkList() : {res.message}");
+                return res.message;
+            }
+
+            return string.Empty;
+        }
+
+        // 7. get member states
+        private async UniTask<string> GetStateListAsync() 
+        {
+            string token = R.singleton.token;
+            string topCode = "멤버 상태";
+            string url = string.Format(URL.GET_CODE, topCode);
+
+            PsResponse<TpsList> res = await NetworkTask.RequestAsync<TpsList>(url, eMethodType.GET, string.Empty, token);
+            if (string.IsNullOrEmpty(res.message)) 
+            {
+                // test 'R'
+                R.singleton.ClearMemberState();
+                foreach (var info in res.data.list)
+                {
+                    R.singleton.AddMemberState(info);
+                }
+            }
+            else 
+            {
+                Debug.LogError($"AvatarManager | GetStateListAsync(), error : {res.message}");
                 return res.message;
             }
 
