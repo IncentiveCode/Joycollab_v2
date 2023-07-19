@@ -284,5 +284,42 @@ namespace Joycollab.v2
 
     #endregion  // share, reminder option
 
+
+    #region alarm contents
+
+        // - 회의 관련 Alarm ID
+        public const string ALARM_ID_RESERVE_MEETING = "회의 생성/예약";
+        public const string ALARM_ID_START_MEETING = "회의 시작";
+        public const string ALARM_ID_DONE_MEETING = "회의 종료";
+
+        // - 음성 통화 관련 Alarm ID
+        public const string ALARM_ID_REQUEST_VOICE = "음성통화 요청";
+        public const string ALARM_ID_REJECT_VOICE = "음성통화 요청";
+
+        // - 배치, 정보 변경 관련 Alarm ID
+        public const string ALARM_ID_UPDATE_MEMBER = "멤버 정보 변경";
+        public const string ALARM_ID_ARRANGE_SPACE = "공간 배치 변경";
+        public const string ALARM_ID_ARRANGE_SEAT = "자리 배치 변경";
+
+
+        public const string ALARM_RESERVE_MEETING = "회의 예약";
+        public const string ALARM_UPDATE_MEETING = "회의 변경";
+        public const string ALARM_DELETE_MEETING = "회의 삭제";
+        public const string ALARM_INVITE_MEETING = "회의 초대";
+        public const string ALARM_INVITE_MEETING_CANCEL = "회의 초대 취소";
+        public const string ALARM_START_MEETING = "회의 시작";
+        public const string ALARM_DONE_MEETING = "회의 종료";
+
+        public const string ALARM_RESERVE_SEMINAR = "세미나 예약";
+        public const string ALARM_UPDATE_SEMINAR = "세미나 변경";
+        public const string ALARM_DELETE_SEMINAR = "세미나 삭제";
+
+        public const string ALARM_VOICE_CALL = "음성 통화";
+        public const string ALARM_REJECT_CALL = "음성 통화 거절";
+
+        public 
+
+    #endregion  // alarm contents
+
     }
 }

@@ -190,6 +190,89 @@ var JsLib = {
         }
 	},
 
+	psOpenVoiceCall : function(gameObjectNamePtr, urlPtr, receivedMethodNamePtr) {
+		var gameObjectName = UTF8ToString(gameObjectNamePtr);
+		var url = UTF8ToString(urlPtr);
+		var receivedMethodName = UTF8ToString(receivedMethodNamePtr);
+
+		var pop = window.open(url, "", "width=500,height=545,left=400,top=400,alwaysReised=yes");
+		window.funcStopRinging = function() {
+            SendMessage(gameObjectName, receivedMethodName);
+        }
+
+		if (pop) pop.focus();
+	},
+
+	psOpenPayment : function(gameObjectNamePtr, urlPtr, doneMethodNamePtr) {
+		var gameObjectName = UTF8ToString(gameObjectNamePtr);
+		var url = UTF8ToString(urlPtr);
+		var doneMethodName = UTF8ToString(doneMethodNamePtr);
+
+		var pop = window.open(url, "payment", "width=460,height=580,left=400,top=400,alwaysReised=yes");
+		window.PaymentDone = function() {
+            SendMessage(gameObjectName, doneMethodName);
+        }
+	},
+
+	psOpenAuth : function(gameObjectNamePtr, urlPtr, callbackMethodNamePtr) {
+		var gameObjectName = UTF8ToString(gameObjectNamePtr);
+		var url = UTF8ToString(urlPtr);
+		var callbackMethodName = UTF8ToString(callbackMethodNamePtr);
+
+		var pop = window.open(url, "", "width=1280,height=960,left=400,top=400,alwaysReised=yes");
+		window.funcRefreshing = function() {
+            SendMessage(gameObjectName, callbackMethodName);
+		}
+	},
+
+	psOpenChat : function(urlPtr, targetSeq) {
+		var url = UTF8ToString(urlPtr);
+
+		if (! this.chat) { 
+            this.chat = window.open(url, "chat", "width=650,height=700,left=400,top=400,alwaysReised=yes");
+            if (targetSeq != 0) {
+                this.chat.postMessage({ mseq: targetSeq }, url);
+            }
+        }
+        else {
+            if (this.chat.closed) {
+                this.chat = window.open(url, "chat", "width=650,height=700,left=400,top=400,alwaysReised=yes");
+                if (targetSeq != 0) {
+                    this.chat.postMessage({ mseq: targetSeq }, url);
+                }
+            }
+            else {
+                this.chat.postMessage({ mseq: targetSeq }, url);
+            }
+        }
+
+        this.chat.focus();
+	},
+
+	psCheckChat : function() {
+		if (! this.chat)
+			return false;
+		else 
+			return !this.chat.closed;
+	},
+
+	psConnectInnerWebview : function(string gameObjectNamePtr, string closeMethodNamePtr) {
+		var gameObjectName = UTF8ToString(gameObjectNamePtr);
+		var closeMethodName = UTF8ToString(closeMethodNamePtr);
+
+		var tempInput = document.getElementById('unity-webview-msg');
+        if (tempInput) {
+            document.body.removeChild(tempInput);
+        }
+
+        var tempInput = document.createElement('input');
+        tempInput.setAttribute('id', 'unity-webview-msg');
+        tempInput.setAttribute('type', 'hidden');
+        tempInput.onchange = function() {
+            SendMessage(gameObjectName, closeMethodName);
+        }
+        document.body.appendChild(tempInput);
+	},
 }
 
 mergeInto(LibraryManager.library, JsLib);

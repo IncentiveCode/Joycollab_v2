@@ -2,8 +2,8 @@
 /// [mobile]
 /// 로그인 성공 후 대기 화면을 관리하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 18
-/// @version        : 0.7
+/// @last update    : 2023. 07. 19
+/// @version        : 0.8
 /// @update         
 ///     v0.1 : 새 기획과 새 디자인 적용.
 ///     v0.2 (2022. 05. 25) : GetLobbyInfo() 추가.
@@ -12,6 +12,7 @@
 ///     v0.5 (2023. 06. 12) : Legacy Text 대신 TMP Text 사용하도록 수정.
 ///     v0.6 (2023. 07. 07) : Space Info list, Bookmark list 추가 
 ///     v0.7 (2023. 07. 18) : member state list 추가, function name 수정.
+///     v0.8 (2023. 07. 19) : unread chat count 추가.
 /// </summary>
 
 using UnityEngine;
@@ -82,7 +83,8 @@ namespace Joycollab.v2
                 GetAlarmListAsync(),
                 GetSpaceListAsync(),
                 GetBookmarkListAsync(),
-                GetStateListAsync()
+                GetStateListAsync(),
+                GetUnreadCountAsync()
             );
 
             // text 출력
@@ -266,12 +268,11 @@ namespace Joycollab.v2
         {
             string token = R.singleton.token;
             string topCode = "멤버 상태";
-            string url = string.Format(URL.GET_CODE, topCode);
 
+            string url = string.Format(URL.GET_CODE, topCode);
             PsResponse<TpsList> res = await NetworkTask.RequestAsync<TpsList>(url, eMethodType.GET, string.Empty, token);
             if (string.IsNullOrEmpty(res.message)) 
             {
-                // test 'R'
                 R.singleton.ClearMemberState();
                 foreach (var info in res.data.list)
                 {
@@ -280,7 +281,30 @@ namespace Joycollab.v2
             }
             else 
             {
-                Debug.LogError($"AvatarManager | GetStateListAsync(), error : {res.message}");
+                Debug.LogError($"{TAG} | GetStateListAsync(), error : {res.message}");
+                return res.message;
+            }
+
+            return string.Empty;
+        }
+
+        // 8. get unread chat count
+        private async UniTask<string> GetUnreadCountAsync() 
+        {
+            string token = R.singleton.token;
+            int memberSeq = R.singleton.memberSeq;
+
+            string url = string.Format(URL.UNREAD_CHAT_COUNT, memberSeq);
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.GET, string.Empty, token);
+            if (string.IsNullOrEmpty(res.message)) 
+            {
+                int temp = -1;
+                int.TryParse(res.stringData, out temp);
+                R.singleton.UnreadChatCount = temp;
+            }
+            else 
+            {
+                Debug.LogError($"{TAG} | GetUnreadCountAsync(), error : {res.message}");
                 return res.message;
             }
 

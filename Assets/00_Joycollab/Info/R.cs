@@ -1,8 +1,8 @@
 /// <summary>
 /// 시스템 상 저장 공간 (Repository) 
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 18
-/// @version        : 0.8
+/// @last update    : 2023. 07. 19
+/// @version        : 0.9
 /// @update
 ///     v0.1 (2023. 03. 17) : 파일 생성, Joycollab 에서 사용하는 것들 정리 시작.
 ///     v0.2 (2023. 03. 31) : SimpleWorkspace, Alarm 관련 항목 정리 시작, Notify 에서 generic <T> 제거.
@@ -12,6 +12,7 @@
 ///     v0.6 (2023. 07. 04) : Space Dictionary 관련 코드 추가.
 ///     v0.7 (2023. 07. 07) : To-Do, OKR 등 임시로 저장하는 항목은 Tmp 로 이동. Bookmark 저장소 추가.
 ///     v0.8 (2023. 07. 18) : 기존에 사용했던 member state 관리 추가.
+///     v0.9 (2023. 07. 19) : 읽지 않은 채팅 카운트를 위해 변수와 getter 추가.
 /// </summary>
 
 using System;
@@ -140,12 +141,9 @@ namespace Joycollab.v2
                     break;
 
                 case eStorageKey.Alarm :
-                    // TODO. alarm 정보 예외 처리 추가
-                    observer.UpdateInfo(key);
-                    break;
-
+                case eStorageKey.InstantAlarm :
+                case eStorageKey.Chat :
                 case eStorageKey.FontSize :
-                    // TODO. font size 관련 예외 처리... 할 게 있을까?
                     observer.UpdateInfo(key);
                     break;
 
@@ -376,6 +374,10 @@ namespace Joycollab.v2
         public string myEmotionId {
             get { return _memberInfo.emotion.id; }
         }
+        public SettingInfo myAlarmOpt
+        {
+            get { return _memberInfo.alarmOpt; }
+        }
         public float myLat {
             get { return _memberInfo.lat; }
         }
@@ -472,6 +474,7 @@ namespace Joycollab.v2
 
         private List<ResAlarmInfo> alarmList;
         private int unreadAlarmCount;
+        private int unreadChatCount;
 
         public void AddAlarmInfo(ResAlarmInfo info) => alarmList.Add(info);
         public int AlarmCount {
@@ -486,13 +489,19 @@ namespace Joycollab.v2
             }
         }
 
-        // TODO. 필요한 정보가 생길 때 마다 추가할 것.
-
+        public int UnreadChatCount {
+            get { return unreadChatCount; }
+            set {
+                unreadChatCount = Mathf.Clamp(value, 0, 100);
+                NotifyAll(eStorageKey.Chat);
+            }
+        }
 
         public void ClearAlarmInfo() 
         {
             alarmList.Clear();
-            unreadAlarmCount = -1;
+            unreadAlarmCount = 0;
+            unreadChatCount = 0;
         }
 
     #endregion  // Alarm Info

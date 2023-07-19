@@ -70,22 +70,28 @@ namespace Joycollab.v2
             _scrollView.AddSelectCallback(async (data) => {
                 AlarmData t = (AlarmData)data;
                 int seq = t.info.seq;
-                string res = await _module.ReadAlarm(seq);
-                if (string.IsNullOrEmpty(res)) 
-                {
-                    R.singleton.UnreadAlarmCount --;
-                    Locale currentLocale = LocalizationSettings.SelectedLocale;
-                    string form = LocalizationSettings.StringDatabase.GetLocalizedString("Sentences", "미확인 알림", currentLocale);
-                    string text = string.Format(form, R.singleton.UnreadAlarmCount);
-                    _txtCount.text = text;
 
-                    t.info.read = true; 
-                    _scrollView.UpdateData(data);
-                }
-                else
+                if (! t.info.read) 
                 {
-                    PopupBuilder.singleton.OpenAlert(res);
+                    string res = await _module.ReadAlarm(seq);
+                    if (string.IsNullOrEmpty(res)) 
+                    {
+                        R.singleton.UnreadAlarmCount --;
+                        Locale currentLocale = LocalizationSettings.SelectedLocale;
+                        string form = LocalizationSettings.StringDatabase.GetLocalizedString("Sentences", "미확인 알림", currentLocale);
+                        string text = string.Format(form, R.singleton.UnreadAlarmCount);
+                        _txtCount.text = text;
+
+                        t.info.read = true; 
+                        _scrollView.UpdateData(data);
+                    }
+                    else
+                    {
+                        PopupBuilder.singleton.OpenAlert(res);
+                    }
                 }
+
+                // TODO. 해당 아이템 상세 화면으로 이동.
             });
 
 
@@ -129,36 +135,21 @@ namespace Joycollab.v2
 
         private async UniTaskVoid GetList() 
         {
-            PsResponse<ResAlarmList> res = await _module.GetAlarmList();
-
-            _scrollView.Clear();
-            R.singleton.ClearAlarmInfo();
-
-            int unreadCnt = 0;
-            if (string.IsNullOrEmpty(res.message)) 
+            string res = await _module.GetAlarmList(_scrollView);
+            if (string.IsNullOrEmpty(res)) 
             {
-                AlarmData t;
-                foreach (var item in res.data.list) 
-                {
-                    t = new AlarmData(item);
-                    _scrollView.InsertData(t);
-
-                    R.singleton.AddAlarmInfo(item);
-                    if (! item.read) unreadCnt ++;
-                }
-
-                R.singleton.UnreadAlarmCount = unreadCnt;
-                _txtGuide.gameObject.SetActive(res.data.list.Count == 0);
-                _btnTruncate.gameObject.SetActive(res.data.list.Count > 0);
+                int cnt = _scrollView.GetDataCount();
+                _txtGuide.gameObject.SetActive(cnt == 0);
+                _btnTruncate.gameObject.SetActive(cnt > 0);
 
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
                 string form = LocalizationSettings.StringDatabase.GetLocalizedString("Sentences", "미확인 알림", currentLocale);
-                string text = string.Format(form, unreadCnt);
+                string text = string.Format(form, R.singleton.UnreadAlarmCount);
                 _txtCount.text = text;
             }
             else 
             {
-                PopupBuilder.singleton.OpenAlert(res.message);
+                PopupBuilder.singleton.OpenAlert(res);
             }
         }
 

@@ -1052,6 +1052,13 @@ namespace Joycollab.v2
         /// </summary>
         public const string MOBILE_CHATVIEW_LINK = PATH +"/chat_service/{0}/mobile?otherMemberSeq={1}&lan={2}&token={3}"; 
 
+        /// <summary>
+        /// desc : 미확인 채팅 카운트 조회
+        /// param
+        ///     {0} : member seq
+        /// </summary>
+        public const string UNREAD_CHAT_COUNT = SERVER_PATH +"/api/chatting/unReadCnt/{0}";
+
 
         // ---------- ---------- ----------
         // 10. Board API

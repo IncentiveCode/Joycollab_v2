@@ -256,7 +256,7 @@ namespace Joycollab.v2
 
         private void XmppClientOnPresence(object sender, Presence e)
         {
-            Debug.Log($"{TAG} | XmppClientOnPresence(), sender : {sender.ToString()}, Status : {e.Status}, Show : {e.Show}, priority : {e.Priority}");
+            // Debug.Log($"{TAG} | XmppClientOnPresence(), sender : {sender.ToString()}, Status : {e.Status}, Show : {e.Show}, priority : {e.Priority}");
         }
 
         private void XmppClientOnMessage(object sender, Message m)
@@ -410,7 +410,7 @@ namespace Joycollab.v2
                     Debug.Log($"{TAG} | HandleMessage(), seq : {seqForInstantAlarm}, type : {typeForInstantAlarm}, text : {txtForInstantAlarm}");
 
                     // alarm 처리
-                    // NotifyAlarm(tempSeq, xcMsg.tp, isGuest);
+                    NotifyAlarm(tempSeq, xcMsg.tp, isGuest);
                     break;
 
                 case eXmppType.공간배치 :
@@ -525,6 +525,9 @@ namespace Joycollab.v2
                 case eXmppType.개인채팅 :
                 case eXmppType.그룹채팅 :
                 case eXmppType.개인및그룹채팅읽지않음총카운트 :
+                    // TODO. 채팅 소리 출력
+
+                    R.singleton.UnreadChatCount = xcMsg.unReadCnt;
                     break;
 
                 case eXmppType.시스템공지 :
