@@ -12,6 +12,8 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.AddressableAssets;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Gpm.Ui;
 using TMPro;
@@ -20,6 +22,8 @@ namespace Joycollab.v2
 {
 	public class AlarmItemM : InfiniteScrollItem 
 	{
+		private const string TAG = "AlarmItemM";
+
 		[Header("image")]
 		[SerializeField] private RawImage _imgPhoto;
 		[SerializeField] private Image _imgMark;
@@ -32,10 +36,16 @@ namespace Joycollab.v2
 		[SerializeField] private TMP_Text _txtContent;
 		[SerializeField] private TMP_Text _txtDate;
 
+		[Header("for texture")]
+		[SerializeField] private Vector2 _v2PhotoSize;
+		[SerializeField] private Texture2D _texDefault;
+		[SerializeField] private Texture2D _texSeminar;
+
 		// local variables
 		private int seq;	
 		private bool isRead;
-		private XmppTaskInfo task;
+
+		private RectTransform rectPhoto;
 	    private AsyncOperationHandle<Texture2D> operationHandle;
 
 
@@ -43,6 +53,8 @@ namespace Joycollab.v2
 
 		private void Awake() 
 		{
+			rectPhoto = _imgPhoto.GetComponent<RectTransform>();
+
 			_btnItem.onClick.AddListener(OnSelect);
 		}
 
@@ -58,14 +70,13 @@ namespace Joycollab.v2
 			AlarmData data = (AlarmData) itemData;
 			this.seq = data.info.seq;
 			bool isArrange = false;
-			bool isMatched = false;
 
 			// 기본 정보 설정
 			_imgMark.gameObject.SetActive(! data.info.read);
 			_txtTitle.text = data.info.title;
 			_txtDate.text = data.info.dtm;
 
-			// TODO. set text
+            Locale currentLocale = LocalizationSettings.SelectedLocale;
 			switch (data.info.tp.id) 
 			{
 				case S.ALARM_RESERVE_MEETING :
@@ -73,72 +84,75 @@ namespace Joycollab.v2
 				case S.ALARM_DELETE_MEETING :
 				case S.ALARM_INVITE_MEETING :
 				case S.ALARM_INVITE_MEETING_CANCEL :
+				case S.ALARM_START_MEETING :
+				case S.ALARM_DONE_MEETING :
 
 				case S.ALARM_RESERVE_SEMINAR :
 				case S.ALARM_UPDATE_SEMINAR :
 				case S.ALARM_DELETE_SEMINAR :
-					foreach (var item in R.singleton.myAlarmOpt.alarmOptItems) 
-					{
-						if (item.tp.id.Equals(S.ALARM_ID_RESERVE_MEETING) && item.alarm)
-						{
-							_txtContent.text = data.info.content;
-							isMatched = true;
-							break;
-						}
-					}
-					break;
-
-				case S.ALARM_START_MEETING :
-					foreach (var item in R.singleton.myAlarmOpt.alarmOptItems) 
-					{
-						if (item.tp.id.Equals(S.ALARM_ID_START_MEETING) && item.alarm) 
-						{
-							_txtContent.text = data.info.content;
-							isMatched = true;
-							break;
-						}
-					}
-					break;
-
-				case S.ALARM_DONE_MEETING :
-					foreach (var item in R.singleton.myAlarmOpt.alarmOptItems) 
-					{
-						if (item.tp.id.Equals(S.ALARM_ID_DONE_MEETING) && item.alarm) 
-						{
-							_txtContent.text = data.info.content;
-							isMatched = true;
-							break;
-						}
-					}
-					break;
 
 				case S.ALARM_VOICE_CALL :
-					foreach (var item in R.singleton.myAlarmOpt.alarmOptItems) 
-					{
-						if (item.tp.id.Equals(S.ALARM_ID_REQUEST_VOICE) && item.alarm) 
-						{
-							_txtContent.text = data.info.content;
-							isMatched = true;
-							break;
-						}
-					}
+				case S.ALARM_REJECT_CALL :
+				case S.ALARM_TO_DO :
+					_txtContent.text = data.info.content;
 					break;
 
-				case S.ALARM_REJECT_CALL :
-					foreach (var item in R.singleton.myAlarmOpt.alarmOptItems) 
+				case S.ALARM_UPDATE_MEMBER :
+                    _txtContent.text = LocalizationSettings.StringDatabase.GetLocalizedString("Alarm", "Member.정보 변경 안내", currentLocale);
+					break;
+
+				case S.ALARM_UPDATE_SPACE :
+					isArrange = true;
+                    _txtContent.text = LocalizationSettings.StringDatabase.GetLocalizedString("Alarm", "Space.정보 변경 안내", currentLocale);
+					break;
+
+				case S.ALARM_UPDATE_SEAT :
+                    _txtContent.text = LocalizationSettings.StringDatabase.GetLocalizedString("Alarm", "Seat.정보 변경 안내", currentLocale);
+					break;
+				
+				case S.ALARM_TASK :
+					XmppTaskInfo task = JsonUtility.FromJson<XmppTaskInfo>(data.info.contentJson);
+	                string content = data.info.content.Replace(XmppManager.CONTENT_SPLITTER, "|");
+					var arrContent = content.Split('|');
+					string c0 = arrContent[0].Replace(XmppManager.TASK_SPLITTER, "|");
+                	var arr = c0.Split('|'); 
+
+					string res, key, value;
+					if (arr.Length > 1) 
 					{
-						if (item.tp.id.Equals(S.ALARM_ID_REJECT_VOICE) && item.alarm) 
-						{
-							_txtContent.text = data.info.content;
-							isMatched = true;
-							break;
-						}
+						key = "Kanban."+ arr[0];
+						value = LocalizationSettings.StringDatabase.GetLocalizedString("Alarm", key, currentLocale);
+						res = string.Format(value, arr[1]); 
 					}
+					else
+					{
+						key = "Kanban."+ content;
+						res = LocalizationSettings.StringDatabase.GetLocalizedString("Alarm", key, currentLocale);
+					}
+
+					if (arrContent.Length > 1) 
+					{
+						res += " ";
+
+						value = LocalizationSettings.StringDatabase.GetLocalizedString("Alarm", "Kanban.여러 항목 수정", currentLocale);
+						res += string.Format(value, (arrContent.Length - 1)); 
+					}
+					_txtContent.text = res;
+					break;
+				
+				default :
+					Debug.LogWarning($"{TAG} | 알 수 없는 알림 id : {data.info.tp.id}");
+					_txtContent.text = string.Empty;
 					break;
 			}
 			
 
 			// TODO. set texture
+			if (string.IsNullOrEmpty(data.info.img)) 
+			{
+				_imgPhoto.texture = _texDefault;
+				Util.ResizeRawImage(rectPhoto, _imgPhoto, _v2PhotoSize.x, _v2PhotoSize.y);
+			}
 
 
 		}

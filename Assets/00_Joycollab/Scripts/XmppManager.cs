@@ -29,6 +29,7 @@ namespace Joycollab.v2
         private const string TAG = "XmppManager";
         private const int XMPP_PORT = 5222;
         private const string MSG_PREFIX = "__HIDDEN__";
+        public const string CONTENT_SPLITTER = "_P__!__S_";
         public const string TASK_SPLITTER = "_P__!!!__S_";
 
         // singleton
@@ -372,42 +373,48 @@ namespace Joycollab.v2
             switch (type) 
             {
                 case eXmppType.알림 :
-                    isXmpp = true;
-
                     if (xcMsg.tp.Equals("일감")) 
                     {
                         XmppTaskInfo xcTask = JsonUtility.FromJson<XmppTaskInfo>(xcMsg.contentJson);
-                        string content = xcMsg.content.Replace(TASK_SPLITTER, "|");
-                        var arr = content.Split('|'); 
+                        string content = xcMsg.content.Replace(CONTENT_SPLITTER, "|");
+                        var arrContent = content.Split('|');
+                        string data = arrContent[0].Replace(TASK_SPLITTER, "|");
+                        var arr = data.Split('|');
 
                         string title, key, value;
                         if (arr.Length > 1) 
                         {
                             key = "Kanban."+ arr[0];
-                            value = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", key, currentLocale);
+                            value = LocalizationSettings.StringDatabase.GetLocalizedString("Alarm", key, currentLocale);
                             title = string.Format(value, arr[1]); 
                         }
                         else
                         {
                             key = "Kanban."+ content;
-                            title = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", key, currentLocale);
+                            title = LocalizationSettings.StringDatabase.GetLocalizedString("Alarm", key, currentLocale);
                         }
 
-                        seqForInstantAlarm = xcTask.proj;
-                        txtForInstantAlarm = title;
+                        if (arrContent.Length > 1) 
+                        {
+                            title += " ";
+
+                            value = LocalizationSettings.StringDatabase.GetLocalizedString("Alarm", "Kanban.여러 항목 수정", currentLocale);
+                            title += string.Format(value, (arrContent.Length - 1)); 
+                        }
                     }
                     else
                     {
+                        isXmpp = true;
+
                         tempSeq = -1;
                         int.TryParse(xcMsg.contentJson, out tempSeq);
                         tempStr = string.Format("{0} {1}", xcMsg.title, xcMsg.content);
 
                         seqForInstantAlarm = tempSeq;
                         txtForInstantAlarm = tempStr;
+                        typeForInstantAlarm = xcMsg.tp;
+                        Debug.Log($"{TAG} | HandleMessage(), seq : {seqForInstantAlarm}, type : {typeForInstantAlarm}, text : {txtForInstantAlarm}");
                     }
-                    typeForInstantAlarm = xcMsg.tp;
-
-                    Debug.Log($"{TAG} | HandleMessage(), seq : {seqForInstantAlarm}, type : {typeForInstantAlarm}, text : {txtForInstantAlarm}");
 
                     // alarm 처리
                     NotifyAlarm(tempSeq, xcMsg.tp, isGuest);

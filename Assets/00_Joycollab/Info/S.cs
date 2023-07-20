@@ -316,8 +316,14 @@ namespace Joycollab.v2
 
         public const string ALARM_VOICE_CALL = "음성 통화";
         public const string ALARM_REJECT_CALL = "음성 통화 거절";
+        
+        public const string ALARM_TO_DO = "TODO";
+        public const string ALARM_TASK = "일감";
 
-        public 
+        public const string ALARM_UPDATE_MEMBER = "멤버 정보 변경";
+        public const string ALARM_UPDATE_SPACE = "공간 배치 변경";
+        public const string ALARM_UPDATE_SEAT = "멤버 배치 변경";
+
 
     #endregion  // alarm contents
 
