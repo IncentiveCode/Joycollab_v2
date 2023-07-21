@@ -1,13 +1,15 @@
 /// <summary>
 /// To-Do 기능만 독립적으로 분리한 모듈
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 12
-/// @version        : 0.1
+/// @last update    : 2023. 07. 21
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 06. 12) : 최초 생성 
+///     v0.2 (2023. 07. 21) : GetList() 수정.
 /// </summary>
 
 using UnityEngine;
+using Gpm.Ui;
 using Cysharp.Threading.Tasks;
 
 namespace Joycollab.v2
@@ -19,13 +21,48 @@ namespace Joycollab.v2
 
     #region public functions
 
-        public async UniTask<PsResponse<ResToDoList>> GetList(string url)
+        public async UniTask<string> GetList(InfiniteScroll view, ReqToDoList req, bool refresh=true) 
         {
             string token = R.singleton.token;
             int memberSeq = R.singleton.memberSeq;
 
+            string url = req.url;
             PsResponse<ResToDoList> res = await NetworkTask.RequestAsync<ResToDoList>(url, eMethodType.GET, string.Empty, token);
-            return res;
+
+            if (string.IsNullOrEmpty(res.message)) 
+            {
+                if (refresh) 
+                {
+                    view.Clear();
+                    Tmp.singleton.ClearToDoList();
+                }
+
+                ToDoData t;
+                foreach (var item in res.data.content) 
+                {
+                    t = new ToDoData();
+                    t.info = item;
+                    t.loadMore = false;
+
+                    view.InsertData(t);
+                    Tmp.singleton.AddToDoInfo(item.seq, t);
+                }
+
+                if (res.data.hasNext) 
+                {
+                    t = new ToDoData();
+                    t.loadMore = true;
+
+                    view.InsertData(t);
+                }
+            }
+            else 
+            {
+                view.Clear();
+                Tmp.singleton.ClearToDoList();
+            }
+
+            return res.message;
         }
 
         public async UniTask<PsResponse<string>> CheckItem(int seq) 

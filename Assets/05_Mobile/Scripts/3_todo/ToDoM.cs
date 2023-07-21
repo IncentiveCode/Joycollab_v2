@@ -2,12 +2,13 @@
 /// [mobile]
 /// To-Do 리스트 화면을 담당하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 30
-/// @version        : 0.3
+/// @last update    : 2023. 07. 21
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 06. 13) : 최초 생성.
 ///     v0.2 (2023. 06. 29) : ToDoM 과 ToDoShareM 으로 분리. 분리하면서 filter 는 삭제.
 ///     v0.3 (2023. 06. 30) : date picker 처리 수정. share option 추가.
+///     v0.4 (2023. 07. 21) : 검색결과 창 추가.
 /// </summary>
 
 using System;
@@ -50,6 +51,7 @@ namespace Joycollab.v2
         [Header("contents")]
         [SerializeField] private bool _isShare;
         [SerializeField] private InfiniteScroll _scrollView;
+        [SerializeField] private InfiniteScroll _searchView;
 
         // local variables
         private int filterOpt;
@@ -59,6 +61,7 @@ namespace Joycollab.v2
         private int targetMemberSeq;
         private bool isMyInfo;
         private ReqToDoList req;
+        private ReqToDoList reqSearch;
         private bool firstRequest;
 
         // for date picker, time picker
@@ -92,7 +95,7 @@ namespace Joycollab.v2
                 selectDate = AndroidDateCallback.SelectedDate;
                 DisplayDate();
                 req.startDate = result;
-                GetList(req, true).Forget();
+                GetList(true).Forget();
 
                 AndroidDateCallback.isDateUpdated = false;
             }
@@ -123,6 +126,10 @@ namespace Joycollab.v2
                 Debug.Log($"{TAG} | Load More");
             });
 
+            _searchView.AddSelectCallback((data) => {
+                Debug.Log($"{TAG} | Search Result -> Load More");
+            });
+
 
             // set 'search' inputfiled listener
             SetInputFieldListener(_inputSearch);
@@ -144,7 +151,7 @@ namespace Joycollab.v2
                     Debug.Log($"{TAG} | filter changed. selected value : {value}"); 
                     filterOpt = value;
                     req.filterOpt = value;
-                    GetList(req, true).Forget();
+                    GetList(true).Forget();
                 });
             }
             _toggleDaily.onValueChanged.AddListener((on) => {
@@ -154,7 +161,7 @@ namespace Joycollab.v2
                     DisplayDate();
 
                     req.viewOpt = viewOpt;
-                    GetList(req, true).Forget();
+                    GetList(true).Forget();
                 }
             });
             _toggleWeekly.onValueChanged.AddListener((on) => {
@@ -164,7 +171,7 @@ namespace Joycollab.v2
                     DisplayDate();
 
                     req.viewOpt = viewOpt;
-                    GetList(req, true).Forget();
+                    GetList(true).Forget();
                 }
             });
             _toggleMonthly.onValueChanged.AddListener((on) => {
@@ -174,7 +181,7 @@ namespace Joycollab.v2
                     DisplayDate();
 
                     req.viewOpt = viewOpt;
-                    GetList(req, true).Forget();
+                    GetList(true).Forget();
                 }
             });
 
@@ -195,6 +202,7 @@ namespace Joycollab.v2
             targetMemberSeq = 0;
             isMyInfo = false;
             req = new ReqToDoList();
+            reqSearch = new ReqToDoList();
             firstRequest = true;
         }
 
@@ -205,17 +213,14 @@ namespace Joycollab.v2
             base.Appearing();
         }
 
-        public async override UniTaskVoid Show(string opt) 
+        public async override UniTaskVoid Show(int seq) 
         {
             base.Show().Forget();
 
-            int temp = -1;
-            int.TryParse(opt, out temp);
-
-            if (targetMemberSeq != temp)
+            if (targetMemberSeq != seq)
             {
-                Debug.Log($"{TAG} | Show(), targetMemberSeq : {targetMemberSeq}, temp : {temp}");
-                targetMemberSeq = temp;
+                Debug.Log($"{TAG} | Show(), targetMemberSeq : {targetMemberSeq}, temp : {seq}");
+                targetMemberSeq = seq;
                 selectDate = startDate = endDate = DateTime.Now;
                 viewOpt = 0;
                 firstRequest = true;
@@ -230,7 +235,7 @@ namespace Joycollab.v2
         public async override UniTaskVoid Show(bool refresh) 
         {
             base.Show().Forget();
-            GetList(req, refresh).Forget();
+            GetList(refresh).Forget();
             await UniTask.Yield();
             base.Appearing();
         }
@@ -240,8 +245,21 @@ namespace Joycollab.v2
 
     #region for list
 
-        private async UniTaskVoid GetList(ReqToDoList req, bool refresh=true) 
+        // private async UniTaskVoid GetList(ReqToDoList req, bool refresh=true) 
+        private async UniTaskVoid GetList(bool refresh=true) 
         {
+            string res = await _module.GetList(_scrollView, req, refresh); 
+            if (string.IsNullOrEmpty(res)) 
+            {
+                Debug.Log($"{TAG} | list 출력 완료.");
+            }
+            else 
+            {
+                PopupBuilder.singleton.OpenAlert(res);
+            }
+
+
+            /**
             string token = R.singleton.token;
             string url = req.url;
             PsResponse<ResToDoList> res = await _module.GetList(url);
@@ -284,6 +302,7 @@ namespace Joycollab.v2
 
                 PopupBuilder.singleton.OpenAlert(res.message);
             }
+             */
         }
 
     #endregion  // for list
@@ -347,7 +366,7 @@ namespace Joycollab.v2
             DisplayDate();
 
             req.startDate = selectDate.ToString("yyyy-MM-dd");
-            GetList(req, true).Forget();
+            GetList(true).Forget();
         }
 
     #endregion  // for date
@@ -381,8 +400,9 @@ namespace Joycollab.v2
                 if (! _toggleDaily.isOn)
                     _toggleDaily.isOn = true;
                 else 
-                    GetList(req, true).Forget();
+                    GetList(true).Forget();
 
+                _searchView.gameObject.SetActive(false);
                 firstRequest = false;
             }
             else

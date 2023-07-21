@@ -39,9 +39,10 @@ namespace Joycollab.v2
                 foreach (var item in res.data.list) 
                 {
                     t = new AlarmData(item);
-                    view.InsertData(t);
 
+                    view.InsertData(t);
                     R.singleton.AddAlarmInfo(item);
+
                     if (! item.read) unreadCnt ++;
                 }
 
@@ -80,6 +81,20 @@ namespace Joycollab.v2
             if (string.IsNullOrEmpty(res.message))
                 return string.Empty;
             else 
+                return res.message;
+        }
+
+        public async UniTask<string> DeleteAlarm(int alarmSeq) 
+        {
+            string token = R.singleton.token;
+            int memberSeq = R.singleton.memberSeq;
+
+            string url = string.Format(URL.DELETE_ALARM, memberSeq, alarmSeq);
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.DELETE, string.Empty, token);
+
+            if (string.IsNullOrEmpty(res.message))
+                return string.Empty;
+            else
                 return res.message;
         }
 

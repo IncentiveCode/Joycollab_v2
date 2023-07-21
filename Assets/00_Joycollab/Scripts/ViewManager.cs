@@ -1,12 +1,13 @@
 /// <summary>
 /// 각 Scene 에서 화면을 관리하는 manager class
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 13
-/// @version        : 0.3
+/// @last update    : 2023. 07. 21
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 05. 04) : 최초 작성, 기존 Manager 에서 View 관리 부분만 빼서 생성.
 ///     v0.2 (2023. 05. 11) : android 의 back button 처리 추가.
 ///     v0.3 (2023. 06. 13) : android part 는 AndroidLib 로 분리.
+///     v0.4 (2023. 07. 21) : int seq 를 넘기는 Push(), Pop() 함수 추가.
 /// </summary>
 
 using System.Collections;
@@ -138,6 +139,30 @@ namespace Joycollab.v2
                 currentView.Show(option).Forget();
         }
 
+        public void Push(string viewName, int seq) 
+        {
+            Debug.Log($"{TAG} | Push(), inserted view : {viewName}, seq : {seq}");
+
+            bool inDictionary = dictViews.ContainsKey(viewName);
+            if (! inDictionary) 
+            {
+                Debug.Log($"{TAG} | Push(), 잘못된 View 이름 : {viewName}");
+                return;
+            }
+
+            if (currentView != null) 
+            {
+                uiNavigation.Push(currentView);
+                currentView.Hide();
+            }
+
+            currentView = dictViews[viewName];
+            if (seq == 0)
+                currentView.Show().Forget();
+            else
+                currentView.Show(seq).Forget();
+        }
+
         public void PushTest(string viewName) 
         {
             Debug.Log($"{TAG} | PushTest(), inserted view : {viewName}");
@@ -184,6 +209,33 @@ namespace Joycollab.v2
                 currentView.Show().Forget();
             else
                 currentView.Show(option).Forget();
+        }
+
+        public void Pop(int seq) 
+        {
+            if (uiNavigation.Count <= 0) 
+            {
+                Debug.Log($"{TAG} | Pop(), uiNavigation count is zero. return.");
+                return;
+            }
+
+            FixedView previous = uiNavigation.Pop() as FixedView;
+            if (previous == null) 
+            {
+                Debug.Log($"{TAG} | Pop(), previous view is null. return.");
+                return;
+            }
+
+            if (currentView != null) 
+            {
+                currentView.Hide(); 
+            }
+
+            currentView = previous;
+            if (seq == 0)
+                currentView.Show().Forget();
+            else
+                currentView.Show(seq).Forget();
         }
 
         public void Pop(bool refresh) 

@@ -565,7 +565,38 @@ namespace Joycollab.v2
 
         private void NotifyAlarm(int seq, string tp, bool isGuest=false) 
         {
+            bool ringtoneOn = true;
 
+            switch (tp) 
+            {
+                case "공간 배치 변경" :
+                case "자리 배치 변경" :
+                case "멤버 배치 변경" :
+                case "멤버 정보 변경" :
+                case "음성 통화" :
+                case "일감" :
+                    if (isGuest) ringtoneOn = false;
+                    break;
+                
+                case "회의시작"  :
+                    if (R.singleton.CheckHasAuth(R.singleton.MeetingRoomSeq, S.AUTH_READ_MEETING) || isGuest) 
+                    {
+                        // TODO. 미팅 시작 알림.
+                    }
+                    else 
+                    {
+                        Debug.Log($"{TAG} | 회의 조회 권한이 없기에, 회의 시작 알림을 전달 하지 않습니다.");
+                        ringtoneOn = false;
+                    }
+                    break;
+            }
+
+            // event 처리
+            if (ringtoneOn)
+            {
+                R.singleton.UnreadAlarmCount ++;
+                // TODO. 알림창 알림음 소리 출력
+            }
         }
 
     #endregion  // message execute

@@ -202,6 +202,7 @@ namespace Joycollab.v2
         public const string WORLD = "world";
         public const string WORKSPACE = "workspace";
         public const string WORKSPACE_MOBILE = "workspace_app";
+        public const string SEMINAR = "세미나";
 
     #endregion  // Value
 

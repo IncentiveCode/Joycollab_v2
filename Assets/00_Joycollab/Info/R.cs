@@ -43,8 +43,8 @@ namespace Joycollab.v2
             dictParams.Clear();
 
             // for alarm
-            alarmList = new List<ResAlarmInfo>();
-            alarmList.Clear();
+            listAlarm = new List<ResAlarmInfo>();
+            listAlarm.Clear();
 
             // for bookmark
             listBookmark = new List<Bookmark>();
@@ -472,13 +472,13 @@ namespace Joycollab.v2
 
     #region Alarm Info 
 
-        private List<ResAlarmInfo> alarmList;
+        private List<ResAlarmInfo> listAlarm;
         private int unreadAlarmCount;
         private int unreadChatCount;
 
-        public void AddAlarmInfo(ResAlarmInfo info) => alarmList.Add(info);
+        public void AddAlarmInfo(ResAlarmInfo info) => listAlarm.Add(info);
         public int AlarmCount {
-            get { return alarmList.Count; }
+            get { return listAlarm.Count; }
         }
 
         public int UnreadAlarmCount {
@@ -497,9 +497,15 @@ namespace Joycollab.v2
             }
         }
 
+        public int GetIndex(int seq) 
+        {
+            int index = listAlarm.FindIndex(item => item.seq == seq);    
+            return index;
+        }
+
         public void ClearAlarmInfo() 
         {
-            alarmList.Clear();
+            listAlarm.Clear();
             unreadAlarmCount = 0;
             unreadChatCount = 0;
         }

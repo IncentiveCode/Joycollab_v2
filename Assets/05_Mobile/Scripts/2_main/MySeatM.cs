@@ -71,10 +71,10 @@ namespace Joycollab.v2
             viewID = ID.MobileScene_MySeat;
 
             // set button listener
-            _btnTodo.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_ToDo, R.singleton.memberSeq.ToString()));
+            _btnTodo.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_ToDo, R.singleton.memberSeq));
             _btnShareTodo.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_ShareToDo));
             _btnOkr.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Okr));
-            _btnBoard.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Board, spaceSeq.ToString()));
+            _btnBoard.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Board, spaceSeq));
             _btnBookmark.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Bookmark));
             _btnContact.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_Contact));
         }

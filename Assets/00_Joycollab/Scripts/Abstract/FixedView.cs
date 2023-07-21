@@ -1,14 +1,15 @@
 /// <summary>
 /// 고정 위치를 가지는 창의 속성을 관리하기 위한 추상 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 30
-/// @version        : 0.5
+/// @last update    : 2023. 07. 21
+/// @version        : 0.6
 /// @update
 ///     v0.1 (2023. 03. 20) : 최초 생성
 ///     v0.2 (2023. 03. 21) : Show() 를 async 로 변경
 ///     v0.3 (2023. 05. 25) : DOTween test
 ///     v0.4 (2023. 06. 12) : softkeyboard 출력상태에서 back button 입력시 내용 사라지는 오류 수정.
 ///     v0.5 (2023. 06. 30) : softkeyboard 관련 listener 정리.
+///     v0.6 (2023. 07. 21) : int seq 를 넘기는 Show() 함수 추가.
 /// </summary>
 
 using UnityEngine;
@@ -96,6 +97,15 @@ namespace Joycollab.v2
         }
 
         public async virtual UniTaskVoid Show(string opt="") 
+        {
+            visibleState = eVisibleState.Appearing;
+
+            // TODO. add 'Mobile Progress'
+
+            await UniTask.Yield();
+        }
+
+        public async virtual UniTaskVoid Show(int seq) 
         {
             visibleState = eVisibleState.Appearing;
 
