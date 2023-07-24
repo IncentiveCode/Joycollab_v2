@@ -21,6 +21,7 @@ namespace Joycollab.v2
 
 
     #region Unity functions
+
         private void Awake() 
         {
             InitSingleton();     
@@ -36,6 +37,7 @@ namespace Joycollab.v2
             Application.targetFrameRate = 30;
         #endif
         }
+
     #endregion  // Unity functions
 
 

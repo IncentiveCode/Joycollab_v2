@@ -125,7 +125,10 @@ namespace Joycollab.v2
 
                 // 상세 화면으로 이동.
                 int targetSeq = 0;
-                int.TryParse(t.info.contentJson, out targetSeq);
+                if (id.Equals(S.ALARM_TO_DO))
+                    int.TryParse(t.info.content, out targetSeq);
+                else
+                    int.TryParse(t.info.contentJson, out targetSeq);
                 OnDetail(id, targetSeq);
             });
 
@@ -211,7 +214,9 @@ namespace Joycollab.v2
                     break;
 
                 case S.ALARM_TO_DO :
-                    ViewManager.singleton.Push(S.MobileScene_ToDoDetail, targetSeq);
+                    // TODO. API 연결 후 아래 주석 다시 해제할 것.
+                    // ViewManager.singleton.Push(S.MobileScene_ToDoDetail, targetSeq);
+                    PopupBuilder.singleton.OpenAlert("개별 TO-DO 조회 API 준비 중.");
                     break;
 
 				case S.ALARM_VOICE_CALL :

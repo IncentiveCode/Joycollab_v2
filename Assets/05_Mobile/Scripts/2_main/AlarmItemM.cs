@@ -45,6 +45,7 @@ namespace Joycollab.v2
 		[SerializeField] private Vector2 _v2PhotoSize;
 		[SerializeField] private Texture2D _texDefault;
 		[SerializeField] private Texture2D _texSeminar;
+		[SerializeField] private Texture2D _texToDo;
 
 		// local variables
 		private AlarmData data;
@@ -86,8 +87,9 @@ namespace Joycollab.v2
 			// 기본 정보 정리
 			_imgMark.gameObject.SetActive(! data.info.read);
 
-			if (id.Equals("일감"))	_txtTitle.text = R.singleton.isKorean ? "일감" : "Task";
-			else					_txtTitle.text = data.info.title;
+			if (id.Equals(S.ALARM_TASK))		_txtTitle.text = R.singleton.isKorean ? "일감" : "Task";
+			else if (id.Equals(S.ALARM_TO_DO))	_txtTitle.text = R.singleton.isKorean ? "미리알림" : "Reminder";
+			else								_txtTitle.text = data.info.title;
 
 			_txtName.text = data.info.sender;
 
@@ -135,8 +137,11 @@ namespace Joycollab.v2
 
 				case S.ALARM_VOICE_CALL :
 				case S.ALARM_REJECT_CALL :
-				case S.ALARM_TO_DO :
 					_txtContent.text = data.info.content;
+					break;
+
+				case S.ALARM_TO_DO :
+					_txtContent.text = data.info.contentJson;
 					break;
 
 				case S.ALARM_UPDATE_MEMBER :
@@ -213,6 +218,11 @@ namespace Joycollab.v2
                     _imgPhoto.texture = _texSeminar;
                     Util.ResizeRawImage(rectPhoto, _imgPhoto, _v2PhotoSize.x, _v2PhotoSize.y);
                 }
+				else if (photoUrl.Equals(URL.SERVER_PATH +"/icon/todo.png"))
+				{
+                    _imgPhoto.texture = _texToDo;
+                    Util.ResizeRawImage(rectPhoto, _imgPhoto, _v2PhotoSize.x, _v2PhotoSize.y);
+				}
                 else
                 {
 					GetTexture(photoUrl).Forget();

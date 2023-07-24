@@ -108,15 +108,13 @@ namespace Joycollab.v2
             isDone = false;
         }
 
-        public async override UniTaskVoid Show(string opt) 
+        public async override UniTaskVoid Show(int seq) 
         {
             base.Show().Forget();
 
-            int temp = -1;
-            int.TryParse(opt, out temp);
-
-            seq = temp;
+            // TODO. 상세 조회 API 추가 예정.
             data = Tmp.singleton.GetToDoInfo(seq);
+
             if (data == null) 
             {
                 // TODO. error 처리

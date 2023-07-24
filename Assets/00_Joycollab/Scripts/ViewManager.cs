@@ -1,18 +1,20 @@
 /// <summary>
 /// 각 Scene 에서 화면을 관리하는 manager class
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 21
-/// @version        : 0.4
+/// @last update    : 2023. 07. 24
+/// @version        : 0.5
 /// @update
 ///     v0.1 (2023. 05. 04) : 최초 작성, 기존 Manager 에서 View 관리 부분만 빼서 생성.
 ///     v0.2 (2023. 05. 11) : android 의 back button 처리 추가.
 ///     v0.3 (2023. 06. 13) : android part 는 AndroidLib 로 분리.
 ///     v0.4 (2023. 07. 21) : int seq 를 넘기는 Push(), Pop() 함수 추가.
+///     v0.5 (2023. 07. 24) : 화면 초기화를 async 로 구성.
 /// </summary>
 
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
 
 namespace Joycollab.v2 
 {
@@ -71,19 +73,14 @@ namespace Joycollab.v2
             isDone = false;
         }
 
-        private void Start() 
+        private async UniTaskVoid Start() 
         {
-            // init UI Stack
-            dictViews = new Dictionary<string, FixedView>();
-            arrViews = GameObject.FindGameObjectsWithTag(viewTag);
-            foreach (GameObject obj in arrViews) 
+            int res = await Init();
+            if (res == -1 || _goTop == null || _goBottom == null) 
             {
-                dictViews.Add(obj.name, obj.GetComponent<FixedView>());
+                PopupBuilder.singleton.OpenAlert("ViewManager 초기화 실패.");
+                return;
             }
-            uiNavigation = new Stack();
-            currentView = null;
-
-            // TODO. init navigation bar
 
         #if UNITY_ANDROID || UNITY_IOS
             Push(S.MobileScene_Login);
@@ -114,6 +111,30 @@ namespace Joycollab.v2
         private GameObject[] arrViews;
         private Stack uiNavigation;
         private FixedView currentView;
+
+        private async UniTask<int> Init() 
+        {
+            int res = 0;
+
+            // 0. init navigation
+            if (_goTop == null)     _goTop = GameObject.FindGameObjectWithTag("MobileNavigation").GetComponent<TopM>();
+            if (_goBottom == null)  _goBottom = GameObject.FindGameObjectWithTag("MobileNavigation").GetComponent<BottomM>();
+
+            await UniTask.WaitUntil(() => _goTop != null && _goBottom != null);
+
+            // 1. init ui stack
+            dictViews = new Dictionary<string, FixedView>();
+            arrViews = GameObject.FindGameObjectsWithTag(viewTag);
+            foreach (GameObject obj in arrViews) 
+            {
+                dictViews.Add(obj.name, obj.GetComponent<FixedView>());
+            }
+            uiNavigation = new Stack();
+            currentView = null;
+
+            if (dictViews.Count == 0) res = -1;
+            return res;
+        }
 
         public void Push(string viewName, string option="") 
         {
