@@ -2,20 +2,18 @@
 /// [mobile]
 /// 할 일 생성 화면을 담당하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 30
-/// @version        : 0.1
+/// @last update    : 2023. 07. 25
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 06. 30) : 최초 생성
+///     v0.2 (2023. 07. 25) : 기한 설정 예외처리 추가, 종료 시간 예외처리 추가, 제목 또는 상세 input 이 선택되면 스크롤 위치 변경 기능 추가.
 /// </summary>
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
-using Gpm.Ui;
 using TMPro;
 
 namespace Joycollab.v2
@@ -40,19 +38,23 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnBack;
         [SerializeField] private Button _btnSave;
         [SerializeField] private Button _btnStartDate;
-        [SerializeField] private Button _btnDueDate;
         [SerializeField] private Button _btnStartTime;
+        [SerializeField] private Button _btnDueDate;
         [SerializeField] private Button _btnDueTime;
 
         [Header("text")]
         [SerializeField] private TMP_Text _txtStartDate;
-        [SerializeField] private TMP_Text _txtDueDate;
         [SerializeField] private TMP_Text _txtStartTime;
+        [SerializeField] private TMP_Text _txtDueDate;
         [SerializeField] private TMP_Text _txtDueTime;
+
+        [Header("others")]
+        [SerializeField] private Scrollbar _scrollBar;
 
         // local variables
         private int seq;
         private ToDoData data;
+        private Locale currentLocale; 
 
         // temp
         private TMP_Text txtTarget;
@@ -78,7 +80,40 @@ namespace Joycollab.v2
                 string result = AndroidDateCallback.SelectedDate.ToString("yyyy-MM-dd");
                 if (txtTarget != null)
                 {
-                    txtTarget.text = result;
+                    string strStart;
+                    System.DateTime start, end;
+
+                    // 시작일
+                    if (txtTarget == _txtStartDate)
+                    {
+                        txtTarget.text = result;
+
+                        // 시작일 정리
+                        strStart = string.Format("{0} {1}", result, _txtStartTime.text);
+                        start = System.Convert.ToDateTime(strStart);
+
+                        // 마감일 정리
+                        end = start.AddMinutes(30);
+                        _txtDueDate.text = end.ToString("yyyy-MM-dd");
+                        _txtDueTime.text = end.ToString("HH:mm");
+                    }
+                    // 기한의 경우, 시작보다 빠르게 설정되면 시작과 동일하게 변경함.
+                    else 
+                    {
+                        start = System.Convert.ToDateTime(_txtStartDate.text);
+                        System.TimeSpan diff = AndroidDateCallback.SelectedDate - start;
+                        if (diff.TotalDays < 0)
+                        {
+                            string message = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "날짜 선택.마감일은 시작일보다 빠를 수 없음", currentLocale);
+                            PopupBuilder.singleton.OpenAlert(message);
+
+                            txtTarget.text = _txtStartDate.text;
+                        }
+                        else 
+                        {
+                            txtTarget.text = result;
+                        }
+                    }
                 }
                 AndroidDateCallback.isDateUpdated = false;
             }
@@ -86,20 +121,59 @@ namespace Joycollab.v2
             // time picker 처리
             if (AndroidTimeCallback.isTimeUpdated && AndroidTimeCallback.viewID == this.viewID) 
             {
+                int hour = AndroidTimeCallback.SelectedHour;
+                int minute = AndroidTimeCallback.SelectedMinute;
+
+                if (minute > 30) hour ++;
+                if (hour >= 24) hour = 0;
+                minute = (minute > 0 && minute <= 30) ? 30 : 0;
+                string result = string.Format("{0:00}:{1:00}", hour, minute);
+
                 if (txtTarget != null) 
                 {
-                    int hour = AndroidTimeCallback.SelectedHour;
-                    int minute = AndroidTimeCallback.SelectedMinute;
+                    string strStart, strEnd;
+                    System.DateTime start, end;
 
-                    if (minute > 30) hour ++;
-                    if (hour >= 24) hour = 0;
-                    minute = (minute <= 30) ? 30 : 0;
+                    // 시작시간
+                    if (txtTarget == _txtStartTime) 
+                    {
+                        txtTarget.text = result;
 
-                    txtTarget.text = string.Format("{0:00}:{1:00}", hour, minute);
+                        // 시작일 정리.
+                        strStart = string.Format("{0} {1}", _txtStartDate.text, result);
+                        start = System.Convert.ToDateTime(strStart);
 
-                    Locale currentLocale = LocalizationSettings.SelectedLocale;
-                    string message = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "할 일 시간 설정 안내", currentLocale);
-                    PopupBuilder.singleton.OpenAlert(message);
+                        // 마감일 정리
+                        end = start.AddMinutes(30);
+                        _txtDueDate.text = end.ToString("yyyy-MM-dd");
+                        _txtDueTime.text = end.ToString("HH:mm");
+                    }
+                    // 종료시간
+                    else 
+                    {
+                        // 시작일 정리.
+                        strStart = string.Format("{0} {1}", _txtStartDate.text, _txtStartTime.text);
+                        start = System.Convert.ToDateTime(strStart);
+
+                        // 마감일 정리.
+                        strEnd = string.Format("{0} {1}", _txtDueDate.text, result);
+                        end = System.Convert.ToDateTime(strEnd);
+
+                        System.TimeSpan diff = end - start;
+                        if (diff.TotalMinutes < 0)
+                        {
+                            string message = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "시간 선택.종료 시간은 시작 시간보다 빠를 수 없음", currentLocale);
+                            PopupBuilder.singleton.OpenAlert(message);
+
+                            end = start.AddMinutes(30);
+                            _txtDueDate.text = end.ToString("yyyy-MM-dd");
+                            _txtDueTime.text = end.ToString("HH:mm");
+                        }
+                        else 
+                        {
+                            txtTarget.text = result;
+                        }
+                    }
                 }
                 AndroidTimeCallback.isTimeUpdated = false;
             }
@@ -133,7 +207,10 @@ namespace Joycollab.v2
             _btnClearTitle.onClick.AddListener(() => {
                 _inputTitle.text = string.Empty;
             });
+            _inputTitle.onSelect.AddListener((value) => _scrollBar.value = 1);
+
             SetInputFieldListener(_inputDetail);
+            _inputDetail.onSelect.AddListener((value) => _scrollBar.value = 0);
 
 
             // set button listener
@@ -141,19 +218,19 @@ namespace Joycollab.v2
             _btnSave.onClick.AddListener(() => SaveToDo().Forget());
             _btnStartDate.onClick.AddListener(() => {
                 txtTarget = _txtStartDate;
-                AndroidLib.singleton.ShowDatepicker(viewID);
+                AndroidLib.singleton.ShowDatepicker(viewID, _txtStartDate.text);
             });
             _btnDueDate.onClick.AddListener(() => {
                 txtTarget = _txtDueDate;
-                AndroidLib.singleton.ShowDatepicker(viewID);
+                AndroidLib.singleton.ShowDatepicker(viewID, _txtDueDate.text);
             });
             _btnStartTime.onClick.AddListener(() => {
                 txtTarget = _txtStartTime;
-                AndroidLib.singleton.ShowTimePicker(viewID);
+                AndroidLib.singleton.ShowTimePicker(viewID, _txtStartTime.text);
             });
             _btnDueTime.onClick.AddListener(() => {
                 txtTarget = _txtDueTime;
-                AndroidLib.singleton.ShowTimePicker(viewID);
+                AndroidLib.singleton.ShowTimePicker(viewID, _txtDueTime.text);
             });
 
 
@@ -177,22 +254,17 @@ namespace Joycollab.v2
         /// <summary>
         /// 기존 할 일 수정.
         /// </summary>
-        public async override UniTaskVoid Show(string opt) 
+        public async override UniTaskVoid Show(int seq) 
         {
             base.Show().Forget();
 
-            int temp = -1;
-            int.TryParse(opt, out temp);
-            if (temp == -1)
-            {
-                // TODO. 예외처리
-            }
+            currentLocale = LocalizationSettings.SelectedLocale;
 
-            seq = temp;
+            this.seq = seq;
             data = Tmp.singleton.GetToDoInfo(seq);
             if (data == null)
             {
-                // TODO. 예외처리
+                PopupBuilder.singleton.OpenAlert("오류가 발생했습니다.", () => BackProcess());
             }
 
             await Refresh();
@@ -237,7 +309,6 @@ namespace Joycollab.v2
 
             if (string.IsNullOrEmpty(res.message)) 
             {
-                Locale currentLocale = LocalizationSettings.SelectedLocale;
                 string message = (this.seq == -1) ? 
                     LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "등록 완료", currentLocale) :
                     LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "수정 완료", currentLocale);
@@ -258,7 +329,7 @@ namespace Joycollab.v2
                         data.info.title = req.title;
                         Tmp.singleton.AddToDoInfo(this.seq, data);
 
-                        ViewManager.singleton.Pop(this.seq.ToString());
+                        ViewManager.singleton.Pop(this.seq);
                     }
                 });
             }
@@ -384,17 +455,16 @@ namespace Joycollab.v2
 
             if (isChanged) 
             {
-                Locale currentLocale = LocalizationSettings.SelectedLocale;
                 string message = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "작성 취소 확인", currentLocale);
                 PopupBuilder.singleton.OpenConfirm(message, () => {
                     if (data == null)   ViewManager.singleton.Pop();
-                    else                ViewManager.singleton.Pop(this.seq.ToString());
+                    else                ViewManager.singleton.Pop(this.seq);
                 });
             }
             else 
             {
                 if (data == null)   ViewManager.singleton.Pop();
-                else                ViewManager.singleton.Pop(this.seq.ToString());
+                else                ViewManager.singleton.Pop(this.seq);
             }
         }
 

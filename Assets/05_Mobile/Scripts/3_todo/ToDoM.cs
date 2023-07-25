@@ -2,13 +2,14 @@
 /// [mobile]
 /// To-Do 리스트 화면을 담당하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 21
-/// @version        : 0.4
+/// @last update    : 2023. 07. 25
+/// @version        : 0.5
 /// @update
 ///     v0.1 (2023. 06. 13) : 최초 생성.
 ///     v0.2 (2023. 06. 29) : ToDoM 과 ToDoShareM 으로 분리. 분리하면서 filter 는 삭제.
 ///     v0.3 (2023. 06. 30) : date picker 처리 수정. share option 추가.
 ///     v0.4 (2023. 07. 21) : 검색결과 창 추가.
+///     v0.5 (2023. 07. 25) : 검색 기능 추가.
 /// </summary>
 
 using System;
@@ -51,7 +52,11 @@ namespace Joycollab.v2
         [Header("contents")]
         [SerializeField] private bool _isShare;
         [SerializeField] private InfiniteScroll _scrollView;
+
+        [Header("search result")]
         [SerializeField] private InfiniteScroll _searchView;
+        [SerializeField] private Button _btnCloseSearch;
+        [SerializeField] private GameObject _goSearchGuide;
 
         // local variables
         private int filterOpt;
@@ -123,11 +128,15 @@ namespace Joycollab.v2
 
             // set infinite scrollview
             _scrollView.AddSelectCallback((data) => {
-                Debug.Log($"{TAG} | Load More");
+                _scrollView.RemoveData(data);
+                req.pageNo ++;
+                GetList(false).Forget();
             });
 
             _searchView.AddSelectCallback((data) => {
-                Debug.Log($"{TAG} | Search Result -> Load More");
+                _searchView.RemoveData(data);
+                reqSearch.pageNo ++;
+                GetSearch(false).Forget();
             });
 
 
@@ -136,12 +145,25 @@ namespace Joycollab.v2
             _inputSearch.onValueChanged.AddListener((value) => {
                 _btnClear.gameObject.SetActive(! string.IsNullOrEmpty(value));
             });
-            _inputSearch.onSubmit.AddListener((value) => Debug.Log($"{TAG} | search, {value}"));
+            _inputSearch.onSubmit.AddListener((value) => {
+                reqSearch = req;
+                reqSearch.pageNo = 1;
+                reqSearch.keyword = value;
+                GetSearch(true).Forget();
+            });
             _btnClear.onClick.AddListener(() => {
+                _searchView.gameObject.SetActive(false);
+                Tmp.singleton.ClearToDoSearchList();
+
                 _inputSearch.text = string.Empty;
                 _inputSearch.Select();
             });
-            _btnSearch.onClick.AddListener(() => Debug.Log($"{TAG} | search, {_inputSearch.text}"));
+            _btnSearch.onClick.AddListener(() => {
+                reqSearch = req;
+                reqSearch.pageNo = 1;
+                reqSearch.keyword = _inputSearch.text;
+                GetSearch(true).Forget();
+            });
 
 
             // set 'filter, toggle' listener
@@ -195,6 +217,7 @@ namespace Joycollab.v2
             _btnPrev.onClick.AddListener(() => ChangeDate(true));
             _btnNext.onClick.AddListener(() => ChangeDate(false));
             _btnCreate.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_CreateTodo));
+            _btnCloseSearch.onClick.AddListener(() => _searchView.gameObject.SetActive(false));
 
 
             // init local variables
@@ -245,64 +268,31 @@ namespace Joycollab.v2
 
     #region for list
 
-        // private async UniTaskVoid GetList(ReqToDoList req, bool refresh=true) 
         private async UniTaskVoid GetList(bool refresh=true) 
         {
-            string res = await _module.GetList(_scrollView, req, refresh); 
+            string res = await _module.Get(_scrollView, req, refresh); 
             if (string.IsNullOrEmpty(res)) 
             {
-                Debug.Log($"{TAG} | list 출력 완료.");
+                // nothing...
             }
             else 
             {
                 PopupBuilder.singleton.OpenAlert(res);
             }
+        }
 
-
-            /**
-            string token = R.singleton.token;
-            string url = req.url;
-            PsResponse<ResToDoList> res = await _module.GetList(url);
-            if (string.IsNullOrEmpty(res.message)) 
+        private async UniTaskVoid GetSearch(bool refresh=true) 
+        {
+            string res = await _module.Search(_searchView, reqSearch, refresh);
+            if (string.IsNullOrEmpty(res)) 
             {
-                if (refresh)
-                {
-                    // dataList.Clear();
-                    _scrollView.Clear();
-                    Tmp.singleton.ClearToDoList();
-                }
-
-                ToDoData t;
-                foreach (var item in res.data.content) 
-                {
-                    t = new ToDoData();
-                    t.info = item;
-                    t.loadMore = false;
-
-                    // dataList.Add(t);
-                    _scrollView.InsertData(t);
-                    Tmp.singleton.AddToDoInfo(item.seq, t);
-                }
-
-                if (res.data.hasNext) 
-                {
-                    t = new ToDoData();
-                    t.loadMore = true;
-
-                    // dataList.Add(t);
-                    _scrollView.InsertData(t);
-                    Tmp.singleton.AddToDoInfo(-1, t);
-                }
+                _searchView.gameObject.SetActive(true);
+                _goSearchGuide.SetActive(_searchView.GetDataCount() == 0);
             }
             else 
             {
-                // dataList.Clear();
-                _scrollView.Clear();
-                Tmp.singleton.ClearToDoList();
-
-                PopupBuilder.singleton.OpenAlert(res.message);
+                PopupBuilder.singleton.OpenAlert(res);
             }
-             */
         }
 
     #endregion  // for list
@@ -403,12 +393,18 @@ namespace Joycollab.v2
                     GetList(true).Forget();
 
                 _searchView.gameObject.SetActive(false);
+                Tmp.singleton.ClearToDoSearchList();
+
                 firstRequest = false;
             }
             else
             {
-                Debug.Log($"{TAG} | update all data");
                 _scrollView.UpdateAllData();
+
+                if (_searchView.gameObject.activeSelf) 
+                    _searchView.UpdateAllData();
+                else
+                    Tmp.singleton.ClearToDoSearchList();
             }
 
             _btnClear.gameObject.SetActive(! string.IsNullOrEmpty(_inputSearch.text));

@@ -2,10 +2,11 @@
 /// [mobile]
 /// To-Do 상세 화면을 담당하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 29
-/// @version        : 0.1
+/// @last update    : 2023. 07. 25
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 06. 29) : 최초 생성.
+///     v0.2 (2023. 07. 25) : Remind option 출력 추가. Show() 매개변수 변경  [string 형 opt -> int 형 seq], period 에 시간값도 출력.
 /// </summary>
 
 using System;
@@ -41,6 +42,7 @@ namespace Joycollab.v2
         [SerializeField] private TMP_Text _txtPeriod;
         [SerializeField] private TMP_Text _txtDoneDate;
         [SerializeField] private TMP_Text _txtShareOpt;
+        [SerializeField] private TMP_Text _txtRemindOpt;
         [SerializeField] private TMP_Text _txtDetail;
 
         // local variables
@@ -81,7 +83,7 @@ namespace Joycollab.v2
 
             // set 'button' listener
             _btnBack.onClick.AddListener(() => BackProcess());
-            _btnEdit.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_CreateTodo, seq.ToString()));
+            _btnEdit.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_CreateTodo, seq));
             _btnDelete.onClick.AddListener(() => {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
                 string message = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "삭제 안내", currentLocale);
@@ -114,10 +116,10 @@ namespace Joycollab.v2
 
             // TODO. 상세 조회 API 추가 예정.
             data = Tmp.singleton.GetToDoInfo(seq);
-
+            if (data == null) data = Tmp.singleton.GetSearchToDo(seq);
             if (data == null) 
             {
-                // TODO. error 처리
+                PopupBuilder.singleton.OpenAlert("오류가 발생했습니다.", () => BackProcess());
             }
 
             await Refresh();
@@ -141,11 +143,13 @@ namespace Joycollab.v2
             _txtTitle.text = data.info.title;
             _txtCreator.text = string.Format("{0} ({1})", data.info.createMember.nickNm, data.info.space.nm);
             _txtCreateDate.text = data.info.createdDate;
-            _txtPeriod.text = string.Format("{0} - {1}", data.info.sd, data.info.ed);
+            _txtPeriod.text = string.Format("{0} {1} - {2} {3}", data.info.sd, data.info.st, data.info.ed, data.info.et);
             _txtDoneDate.text = data.info.completeTime;
             _txtDetail.text = data.info.content;
 
             Locale currentLocale = LocalizationSettings.SelectedLocale;
+
+            // share option
             switch (data.info.shereType) 
             {
                 case S.SHARE_DEPARTMENT :
@@ -161,6 +165,22 @@ namespace Joycollab.v2
                 default :
                     _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (개인)", currentLocale);
                     break;
+            }
+
+            // remind option
+            if (string.IsNullOrEmpty(data.info.alarm))
+            {
+                _txtRemindOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "미리 알림 없음", currentLocale);
+            }
+            else 
+            {
+                string sdt = string.Format("{0} {1}", data.info.sd, data.info.st);
+                System.DateTime convertSdt = System.Convert.ToDateTime(sdt);
+                System.DateTime convertAlarm = System.Convert.ToDateTime(data.info.alarm);
+                System.TimeSpan diff = convertSdt - convertAlarm;
+
+                string key = string.Format("미리 알림 {0}분 전", diff.Minutes);
+                _txtRemindOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", key, currentLocale);
             }
 
             // 내 정보인 경우에만 버튼 출력

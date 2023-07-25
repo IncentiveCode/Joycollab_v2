@@ -10,6 +10,7 @@
 ///     v0.3 (2023. 07. 06) : TimePicker 에 현재 값을 넣을 수 있도록 수정.
 /// </summary>
 
+using System;
 using UnityEngine;
 
 namespace Joycollab.v2
@@ -25,8 +26,8 @@ namespace Joycollab.v2
 
         public AndroidTimeCallback(int hour, int minute) : base("android.app.TimePickerDialog$OnTimeSetListener") 
         {
-            SelectedHour = hour;
-            SelectedMinute = minute;
+            SelectedHour = hour == -1 ? DateTime.Now.Hour : hour;
+            SelectedMinute = minute == -1 ? DateTime.Now.Minute : minute;
         }
 
         public void onTimeSet(AndroidJavaObject view, int hour, int minute) 

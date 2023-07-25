@@ -6,6 +6,7 @@
 /// @update
 ///     v0.1 (2023. 06. 12) : 최초 생성 
 ///     v0.2 (2023. 07. 21) : GetList() 수정.
+///     v0.3 (2023. 07. 25) : GetList() -> Get(), Search() 검색 기능 추가.
 /// </summary>
 
 using UnityEngine;
@@ -21,7 +22,7 @@ namespace Joycollab.v2
 
     #region public functions
 
-        public async UniTask<string> GetList(InfiniteScroll view, ReqToDoList req, bool refresh=true) 
+        public async UniTask<string> Get(InfiniteScroll view, ReqToDoList req, bool refresh=true) 
         {
             string token = R.singleton.token;
             int memberSeq = R.singleton.memberSeq;
@@ -60,6 +61,49 @@ namespace Joycollab.v2
             {
                 view.Clear();
                 Tmp.singleton.ClearToDoList();
+            }
+
+            return res.message;
+        }
+
+        public async UniTask<string> Search(InfiniteScroll view, ReqToDoList req, bool refresh=true) 
+        {
+            string token = R.singleton.token;
+            int memberSeq = R.singleton.memberSeq;
+
+            string url = req.url;
+            PsResponse<ResToDoList> res = await NetworkTask.RequestAsync<ResToDoList>(url, eMethodType.GET, string.Empty, token);
+
+            if (string.IsNullOrEmpty(res.message)) 
+            {
+                if (refresh)
+                {
+                    view.Clear();
+                    Tmp.singleton.ClearToDoSearchList();
+                }
+
+                ToDoData t;
+                foreach (var item in res.data.content) 
+                {
+                    t = new ToDoData();
+                    t.info = item;
+                    t.loadMore = false;
+
+                    view.InsertData(t);
+                    Tmp.singleton.AddSearchToDo(item.seq, t);
+                }
+
+                if (res.data.hasNext)
+                {
+                    t = new ToDoData();
+                    t.loadMore = true;
+                    view.InsertData(t);
+                }
+            }
+            else 
+            {
+                view.Clear();
+                Tmp.singleton.ClearToDoSearchList();
             }
 
             return res.message;

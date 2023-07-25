@@ -2,10 +2,11 @@
 /// [mobile]
 /// To-Do Item Script
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 14
-/// @version        : 0.1
+/// @last update    : 2023. 07. 25
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2022. 06. 14) : 최초 생성
+///     v0.2 (2022. 07. 25) : detail 로 넘어갈 때, string 이 아니라 int 형 인자를 넘기도록 수정.
 /// </summary>
 
 using System;
@@ -47,6 +48,7 @@ namespace Joycollab.v2
         private RectTransform rect;
         private int seq;
         private bool isDone;
+        private bool isLoadMore;
 
         // data
         private ToDoData data;
@@ -75,15 +77,37 @@ namespace Joycollab.v2
 
             _imgLoadMore.gameObject.SetActive(data.loadMore);
             _btnLoadMore.gameObject.SetActive(data.loadMore);
-            if (! data.loadMore) 
+
+            _txtTitle.gameObject.SetActive(! data.loadMore);
+            _txtCreator.gameObject.SetActive(! data.loadMore);
+            _txtCreateDate.gameObject.SetActive(! data.loadMore);
+            _txtPeriod.gameObject.SetActive(! data.loadMore);
+            _txtShareOpt.gameObject.SetActive(! data.loadMore);
+            _goDetailArea.SetActive(! data.loadMore);
+
+            if (data.loadMore) 
+            {
+                Vector2 size = rect.sizeDelta;
+                size.y = 70f;
+                SetSize(size);
+                OnUpdateItemSize();
+
+                this.seq = 0;
+                this.isDone = false;
+                this.isLoadMore = true;
+
+                _txtTitle.text = _txtCreator.text = _txtCreateDate.text = _txtPeriod.text = _txtDoneDate.text = _txtShareOpt.text = _txtDetail.text = string.Empty;
+            }
+            else
             {
                 this.seq = data.info.seq;
                 this.isDone = data.info.completeYn.Equals("Y");
+                this.isLoadMore = false;
 
                 _txtTitle.text = data.info.title;
                 _txtCreator.text = string.Format("{0} ({1})", data.info.createMember.nickNm, data.info.space.nm);
                 _txtCreateDate.text = data.info.createdDate;
-                _txtPeriod.text = string.Format("{0} - {1}", data.info.sd, data.info.ed);
+                _txtPeriod.text = string.Format("{0} {1} - {2} {3}", data.info.sd, data.info.st, data.info.ed, data.info.et);
                 _txtDoneDate.text = data.info.completeTime;
                 _txtDetail.text = data.info.content;
 
@@ -91,7 +115,7 @@ namespace Joycollab.v2
                 _goDetailArea.SetActive(! smaller);
 
                 Vector2 size = rect.sizeDelta;
-                size.y = smaller ? 100f : 142f;
+                size.y = smaller ? 120f : 170f;
                 SetSize(size);
                 OnUpdateItemSize();
 
@@ -129,11 +153,15 @@ namespace Joycollab.v2
 
         public void OnClick()
         {
-            ViewManager.singleton.Push(S.MobileScene_ToDoDetail, seq.ToString());
+            if (isLoadMore) return;
+
+            ViewManager.singleton.Push(S.MobileScene_ToDoDetail, seq);
         } 
 
         public async UniTaskVoid OnDoneClick() 
         {
+            if (isLoadMore) return;
+
             PsResponse<string> res = await _module.CheckItem(this.seq);
             if (string.IsNullOrEmpty(res.message)) 
             {
@@ -149,6 +177,7 @@ namespace Joycollab.v2
         public void OnLoadMoreClick() => OnSelect();
 
     #endregion  // GPM functions
+
 
         private void DoneProcess(bool done) 
         {

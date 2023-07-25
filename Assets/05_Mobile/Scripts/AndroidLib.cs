@@ -2,12 +2,13 @@
 /// [mobile] 
 /// Mobile 에서 Android 특화 기능을 사용하기 위한 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 18
-/// @version        : 0.3
+/// @last update    : 2023. 07. 25
+/// @version        : 0.4
 /// @update
 /// 	v0.1 (2023. 06. 13) : 이전 mobile 에서 작업했던 내용 분리 적용.
-///     v0.2 (2023. 07. 06) : DatePicker, TimePicker 에 현재 값을 집어 넣는 테스트 중.
+///     v0.2 (2023. 07. 06) : DatePicker, TimePicker 에 현재 값을 집어 넣는 테스트 
 ///     v0.3 (2023. 07. 18) : Joycollab 의 MobilePermission 적용.
+///     v0.4 (2023. 07. 25) : TimePicker 현재 값 설정이 이상해서 추가 작업.
 /// </summary>
 
 using UnityEngine;
@@ -196,25 +197,31 @@ namespace Joycollab.v2
         
         }
 
-        public void ShowTimePicker(int viewID) 
+        public void ShowTimePicker(int viewID, string time="") 
         {
-        #if UNITY_ANDROID && !UNITY_EDITOR
             AndroidTimeCallback.viewID = viewID;
+            var arr = time.Split(':');
+            int hour = -1, minute = -1;
 
-            unityActivity.Call("runOnUiThread", new AndroidJavaRunnable(() => PickTime()));
+            if (arr.Length > 1)
+            {
+                int.TryParse(arr[0], out hour);
+                int.TryParse(arr[1], out minute);
+            }
+
+        #if UNITY_ANDROID && !UNITY_EDITOR
+            unityActivity.Call("runOnUiThread", new AndroidJavaRunnable(() => PickTime(hour, minute)));
         #endif
         }
 
-        private void PickTime() 
+        private void PickTime(int h=-1, int m=-1) 
         {
         #if UNITY_ANDROID && !UNITY_EDITOR
-            int hour = System.DateTime.Now.Hour;
-            int minute = System.DateTime.Now.Minute;
             new AndroidJavaObject("android.app.TimePickerDialog", 
                 unityActivity, 
-                new AndroidTimeCallback(), 
-                hour, 
-                minute, 
+                new AndroidTimeCallback(h, m), 
+                AndroidTimeCallback.SelectedHour, 
+                AndroidTimeCallback.SelectedMinute, 
                 true
             ).Call("show");
         #endif
