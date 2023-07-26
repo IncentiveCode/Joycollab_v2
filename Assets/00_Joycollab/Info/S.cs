@@ -77,6 +77,7 @@ namespace Joycollab.v2
         // ---------- ---------- ----------
         // 00. navigation
 
+        public const string MobileNaviTag = "MobileNavigation";
         public const string MobileScene_Top = "top_m";
         public const string MobileScene_Bottom = "bottom_m";
 

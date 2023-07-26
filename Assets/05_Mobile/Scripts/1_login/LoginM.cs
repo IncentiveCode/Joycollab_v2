@@ -137,8 +137,8 @@ namespace Joycollab.v2
             _btnVersion.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_PatchNote));
 
             _btnTest.onClick.AddListener(() => {
-                _inputId.text = "hjlee@pitchsolution.co.kr";
-                // _inputId.text = "incentivecode@gmail.com";
+                // _inputId.text = "hjlee@pitchsolution.co.kr";
+                _inputId.text = "incentivecode@gmail.com";
                 _inputPw.text = "123123123";
                 Request().Forget();
             });

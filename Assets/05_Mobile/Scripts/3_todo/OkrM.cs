@@ -2,17 +2,19 @@
 /// [mobile]
 /// OKR 리스트 화면을 담당하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 05
-/// @version        : 0.2
+/// @last update    : 2023. 07. 26
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 07. 03) : 최초 생성.
 ///     v0.2 (2023. 07. 05) : OKR 출력, 상세 화면 이동, 생성 화면 이동 등의 기능 추가
+///     v0.3 (2023. 07. 26) : 검색 결과 창 추가, 검색 기능 추가.
 /// </summary>
 
 using System;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
 using Gpm.Ui;
 using TMPro;
@@ -50,14 +52,21 @@ namespace Joycollab.v2
         [Header("contents")]
         [SerializeField] private InfiniteScroll _scrollView;
 
+        [Header("search result")]
+        [SerializeField] private InfiniteScroll _searchView;
+        [SerializeField] private Button _btnCloseSearch;
+        [SerializeField] private GameObject _goSearchGuide;
+
+
         // local variables
         private int filterOpt, viewOpt;
         private bool shareOpt;
         private DateTime selectDate, startDate, endDate;
 
         private ReqOkrList req;
+        private ReqOkrList reqSearch;
         private bool firstRequest;
-        private List<int> listKeyResult;
+        private Locale currentLocale;
 
         // for date picker, time picker
         private TMP_Text txtTarget;
@@ -89,8 +98,10 @@ namespace Joycollab.v2
                 // 후속 조치
                 selectDate = AndroidDateCallback.SelectedDate;
                 DisplayDate();
+
                 req.startDate = result;
-                GetList(req, true).Forget();
+                reqSearch.startDate = result;
+                GetList(true).Forget();
 
                 AndroidDateCallback.isDateUpdated = false;
             }
@@ -118,11 +129,15 @@ namespace Joycollab.v2
 
             // set infinite scrollview
             _scrollView.AddSelectCallback((data) => {
-                // selectedData = (OkrData) data;
-                // int seq = selectedData.info.seq;
-                // ViewManager.singleton.Push(S.MobileScene_OkrDetail, seq.ToString());
+                _scrollView.RemoveData(data);
+                req.pageNo ++;
+                GetList(false).Forget();
+            });
 
-                Debug.Log($"{TAG} | Load More");
+            _searchView.AddSelectCallback((data) => {
+                _searchView.RemoveData(data);
+                reqSearch.pageNo ++;
+                GetSearch(false).Forget();
             });
 
 
@@ -131,10 +146,29 @@ namespace Joycollab.v2
             _inputSearch.onValueChanged.AddListener((value) => {
                 _btnClear.gameObject.SetActive(! string.IsNullOrEmpty(value));
             });
-            _inputSearch.onSubmit.AddListener((value) => Debug.Log($"{TAG} | search, {value}"));
+            _inputSearch.onSubmit.AddListener((value) => {
+                if (string.IsNullOrEmpty(value)) 
+                {
+                    PopupBuilder.singleton.OpenAlert(LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "검색어 없음", currentLocale));
+                    return;
+                }
+
+                reqSearch.keyword = value;
+                GetSearch(true).Forget();
+            });
             _btnClear.onClick.AddListener(() => {
                 _inputSearch.text = string.Empty;
                 _inputSearch.Select();
+            });
+            _btnSearch.onClick.AddListener(() => {
+                if (string.IsNullOrEmpty(_inputSearch.text)) 
+                {
+                    PopupBuilder.singleton.OpenAlert(LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "검색어 없음", currentLocale));
+                    return;
+                }
+
+                reqSearch.keyword = _inputSearch.text;
+                GetSearch(true).Forget();
             });
 
 
@@ -142,14 +176,14 @@ namespace Joycollab.v2
             if (_dropdownFilter != null) 
             {
                 _dropdownFilter.onValueChanged.AddListener((value) => {
-                    Debug.Log($"{TAG} | filter changed. selected value : {value}"); 
-
                     shareOpt = (value != 3);
                     filterOpt = (value == 3) ? -1 : value;
 
                     req.share = shareOpt;
                     req.filterOpt = value;
-                    GetList(req, true).Forget();
+                    reqSearch.share = shareOpt;
+                    reqSearch.filterOpt = value;
+                    GetList(true).Forget();
                 });
             }
             _toggleDaily.onValueChanged.AddListener((on) => {
@@ -159,7 +193,8 @@ namespace Joycollab.v2
                     DisplayDate();
 
                     req.viewOpt = viewOpt;
-                    GetList(req, true).Forget();
+                    reqSearch.viewOpt = viewOpt;
+                    GetList(true).Forget();
                 }
             });
             _toggleWeekly.onValueChanged.AddListener((on) => {
@@ -169,7 +204,8 @@ namespace Joycollab.v2
                     DisplayDate();
 
                     req.viewOpt = viewOpt;
-                    GetList(req, true).Forget();
+                    reqSearch.viewOpt = viewOpt;
+                    GetList(true).Forget();
                 }
             });
             _toggleMonthly.onValueChanged.AddListener((on) => {
@@ -179,14 +215,14 @@ namespace Joycollab.v2
                     DisplayDate();
 
                     req.viewOpt = viewOpt;
-                    GetList(req, true).Forget();
+                    reqSearch.viewOpt = viewOpt;
+                    GetList(true).Forget();
                 }
             });
 
 
             // set button listener
             _btnBack.onClick.AddListener(() => ViewManager.singleton.Pop());
-            _btnSearch.onClick.AddListener(() => Debug.Log($"{TAG} | search, {_inputSearch.text}"));
             _btnDate.onClick.AddListener(() => {
                 txtTarget = _txtDate;
                 AndroidLib.singleton.ShowDatepicker(viewID, selectDate.ToString("yyyy-MM-dd"));
@@ -194,25 +230,26 @@ namespace Joycollab.v2
             _btnPrev.onClick.AddListener(() => ChangeDate(true));
             _btnNext.onClick.AddListener(() => ChangeDate(false));
             _btnCreate.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_CreateOkr));
+            _btnCloseSearch.onClick.AddListener(() => {
+                _inputSearch.text = string.Empty;
+                _searchView.gameObject.SetActive(false);
+            });
 
 
             // init local variables
-            selectDate = startDate = endDate = DateTime.Now;
-            req = new ReqOkrList();
-            firstRequest = true;
-
-            listKeyResult = new List<int>();
-        }
-
-        public async override UniTaskVoid Show() 
-        {
-            base.Show().Forget();
-
             selectDate = startDate = endDate = DateTime.Now;
             filterOpt = viewOpt = 0;
             shareOpt = true;
             firstRequest = true;
 
+            req = new ReqOkrList();
+            reqSearch = new ReqOkrList();
+        }
+
+        public async override UniTaskVoid Show() 
+        {
+            base.Show().Forget();
+            Debug.Log($"{TAG} | Show()");
             await Refresh();
             base.Appearing();
         }
@@ -220,7 +257,8 @@ namespace Joycollab.v2
         public async override UniTaskVoid Show(bool refresh) 
         {
             base.Show().Forget();
-            GetList(req, refresh).Forget();
+            Debug.Log($"{TAG} | Show({refresh})");
+            if (refresh) GetList().Forget();
             await UniTask.Yield();
             base.Appearing();
         }
@@ -230,121 +268,34 @@ namespace Joycollab.v2
 
     #region for list
 
-        private async UniTaskVoid GetList(ReqOkrList req, bool refresh=true) 
+        private async UniTaskVoid GetList(bool refresh=true) 
         {
-            string url = req.url;
-            PsResponse<ResOkrList> res = await _module.GetList(url);
-            if (string.IsNullOrEmpty(res.message)) 
+            if (refresh) req.pageNo = 1;
+
+            string res = await _module.Get(_scrollView, req, refresh);
+            if (string.IsNullOrEmpty(res)) 
             {
-                if (refresh)
-                {
-                    _scrollView.Clear();
-                    Tmp.singleton.ClearOkrList();
-
-                    listKeyResult.Clear();
-                }
-
-                int index = 0;
-                OkrData t;
-
-                // 공유 OKR
-                if (req.share)
-                {
-                    // key result 정리
-                    foreach (var item in res.data.content)
-                    {
-                        if (! string.IsNullOrEmpty(item.topOkr.title))
-                            listKeyResult.Add(item.seq);
-                    }
-
-                    // objective 출력 
-                    foreach (var item in res.data.content) 
-                    {
-                        if (! string.IsNullOrEmpty(item.topOkr.title)) continue;
-
-                        t = new OkrData(item);
-                        // Debug.Log($"{TAG} | share objective, title : {item.title}, share type : {t.shareType}");
-                        Tmp.singleton.AddOkrInfo(item.seq, t);
-                        _scrollView.InsertData(t);
-
-                        // key result 출력
-                        foreach (var subItem in res.data.content) 
-                        {
-                            if (item.seq == subItem.topOkr.seq && listKeyResult.Contains(subItem.seq))
-                            {
-                                t = new OkrData(subItem, true);
-                                // Debug.Log($"{TAG} | share key result, title : {subItem.title}, share type : {t.shareType}");
-                                Tmp.singleton.AddOkrInfo(subItem.seq, t);
-                                _scrollView.InsertData(t);
-
-                                listKeyResult.Remove(subItem.seq);
-                            } 
-                        }                        
-                    }
-                }
-                // 개인 OKR
-                else 
-                {
-                    // key result 정리
-                    foreach (var item in res.data.content) 
-                    {
-                        if (item.shereType == 0) 
-                            listKeyResult.Add(item.seq);
-                    }
-
-                    // objective 출력
-                    foreach (var item in res.data.content) 
-                    {
-                        if (item.shereType == 0) continue;
-
-                        t = new OkrData(item);
-                        Debug.Log($"{TAG} | personal objective, title : {item.title}, share type : {t.shareType}");
-                        Tmp.singleton.AddOkrInfo(item.seq, t);
-                        _scrollView.InsertData(t);
-
-                        // key result 출력
-                        foreach (var subItem in item.subOkr) 
-                        {
-                            t = new OkrData(subItem, item.shereType, item.title);
-                            Debug.Log($"{TAG} | personal key result, title : {subItem.title}, share type : {t.shareType}");
-                            index = Tmp.singleton.AddOkrInfo(subItem.seq, t);
-                            _scrollView.InsertData(t);
-
-                            listKeyResult.Remove(subItem.seq);
-                        }
-                    }
-                }
-
-                // 남은 key result 출력
-                if (listKeyResult.Count > 0) 
-                {
-                    foreach (var subItem in res.data.content) 
-                    {
-                        if (listKeyResult.Contains(subItem.seq))
-                        {
-                            t = new OkrData(subItem, true);
-                            Debug.Log($"{TAG} | other key result, title : {subItem.title}, share type : {t.shareType}");
-                            Tmp.singleton.AddOkrInfo(subItem.seq, t);
-                            _scrollView.InsertData(t);
-
-                            listKeyResult.Remove(subItem.seq);
-                        } 
-                    }
-                }
-
-                if (res.data.hasNext) 
-                {
-                    t = new OkrData();
-                    Tmp.singleton.AddOkrInfo(-1, t);
-                    _scrollView.InsertData(t);
-                }
+                // nothing...
             }
             else 
             {
-                _scrollView.Clear();
-                Tmp.singleton.ClearOkrList();
+                PopupBuilder.singleton.OpenAlert(res);
+            }
+        }
 
-                PopupBuilder.singleton.OpenAlert(res.message);
+        private async UniTaskVoid GetSearch(bool refresh=true) 
+        {
+            if (refresh) reqSearch.pageNo = 1;
+
+            string res = await _module.Search(_searchView, reqSearch, refresh);
+            if (string.IsNullOrEmpty(res)) 
+            {
+                _searchView.gameObject.SetActive(true);
+                _goSearchGuide.SetActive(_searchView.GetDataCount() == 0);
+            }
+            else 
+            {
+                PopupBuilder.singleton.OpenAlert(res);
             }
         }
 
@@ -408,8 +359,10 @@ namespace Joycollab.v2
 
             DisplayDate();
 
-            req.startDate = selectDate.ToString("yyyy-MM-dd");
-            GetList(req, true).Forget();
+            string date = selectDate.ToString("yyyy-MM-dd");
+            req.startDate = date;
+            reqSearch.startDate = date;
+            GetList(true).Forget();
         }
 
     #endregion  // for date
@@ -421,6 +374,9 @@ namespace Joycollab.v2
         {
             // view control
             ViewManager.singleton.ShowNavigation(false);
+
+            // language
+            currentLocale = LocalizationSettings.SelectedLocale;
 
             // date
             DisplayDate();
@@ -438,19 +394,35 @@ namespace Joycollab.v2
                 req.sortDescending = true;
                 req.sortProperty = "sd";
 
+                reqSearch.share = true;
+                reqSearch.startDate = selectDate.ToString("yyyy-MM-dd");
+                reqSearch.viewOpt = viewOpt;
+                reqSearch.filterOpt = filterOpt;
+                reqSearch.keyword = string.Empty;
+                reqSearch.pageNo = 1; 
+                reqSearch.pageSize = 20;
+                reqSearch.sortDescending = true;
+                reqSearch.sortProperty = "sd";
+
                 // 기본값은 daily 로 출력.
                 if (! _toggleDaily.isOn)
                     _toggleDaily.isOn = true;
                 else 
-                    GetList(req, true).Forget();
+                    GetList(true).Forget();
+
+                _searchView.gameObject.SetActive(false);
+                Tmp.singleton.ClearOkrSearchList();
 
                 firstRequest = false;
             }
             else
             {
-                Debug.Log($"{TAG} | update all data");
                 _scrollView.UpdateAllData();
-                // _scrollView.MoveTo(selectedData, (InfiniteScroll.MoveToType) 0);
+
+                if (_searchView.gameObject.activeSelf)
+                    _searchView.UpdateAllData();
+                else
+                    Tmp.singleton.ClearOkrSearchList();
             }
 
             _btnClear.gameObject.SetActive(! string.IsNullOrEmpty(_inputSearch.text));

@@ -2,20 +2,20 @@
 /// [mobile]
 /// OKR 생성 화면을 담당하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 05
-/// @version        : 0.1
+/// @last update    : 2023. 07. 26
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 07. 05) : 최초 생성
+///     v0.2 (2023. 07. 26) : 기간 설정 예외처리 추가. 제목 또는 상세 input 이 선택되면 스크롤 위치 변경 기능 추가.
+///                           Show(string opt) -> Show(int seq) 로 변경.
 /// </summary>
 
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
-using Gpm.Ui;
 using TMPro;
 
 namespace Joycollab.v2
@@ -48,10 +48,14 @@ namespace Joycollab.v2
         [SerializeField] private TMP_Text _txtStartDate;
         [SerializeField] private TMP_Text _txtDueDate;
 
+        [Header("others")]
+        [SerializeField] private Scrollbar _scrollBar;
+
         // local variables
         private int seq;
         private OkrData data;
         private bool sub;
+        private Locale currentLocale; 
 
         // temp
         private TMP_Text txtTarget;
@@ -78,14 +82,49 @@ namespace Joycollab.v2
                 string result = AndroidDateCallback.SelectedDate.ToString("yyyy-MM-dd");
                 if (txtTarget != null)
                 {
-                    txtTarget.text = result;
-                    if (txtTarget == _txtStartDate)
+                    System.DateTime start, end;
+
+                    // 시작일 
+                    if (txtTarget == _txtStartDate) 
                     {
-                        System.DateTime date = AndroidDateCallback.SelectedDate.AddMonths(3).AddDays(-1);
-                        _txtDueDate.text = date.ToString("yyyy-MM-dd");
+                        // 시작일 정리
+                        start = System.Convert.ToDateTime(result);
+                        System.TimeSpan diff = start - System.DateTime.Now;
+                        if (diff.TotalDays < 0) 
+                        {
+                            string message = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "날짜 선택.OKR 시작일은 오늘보다 빠를 수 없음", currentLocale);
+                            PopupBuilder.singleton.OpenAlert(message);
+
+                            txtTarget.text = System.DateTime.Now.ToString("yyyy-MM-dd");    
+                        }
+                        else 
+                        {
+                            txtTarget.text = result;
+                        }
+
+                        // 마감일 정리
+                        end = start.AddMonths(3).AddDays(-1);
+                        _txtDueDate.text = end.ToString("yyyy-MM-dd");
+                    }
+                    // 마감일, 시작보다 빠르게 설정되면 기존 룰대로 3개월을 설정.
+                    else if (txtTarget == _txtDueDate) 
+                    {
+                        start = System.Convert.ToDateTime(_txtStartDate.text);
+                        System.TimeSpan diff = AndroidDateCallback.SelectedDate - start;
+                        if (diff.TotalDays < 0) 
+                        {
+                            string message = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "날짜 선택.마감일은 시작일보다 빠를 수 없음", currentLocale);
+                            PopupBuilder.singleton.OpenAlert(message);
+
+                            end = start.AddMonths(3).AddDays(-1);
+                            _txtDueDate.text = end.ToString("yyyy-MM-dd");
+                        }
+                        else 
+                        {
+                            txtTarget.text = result;
+                        }
                     }
                 }
-
                 AndroidDateCallback.isDateUpdated = false;
             }
         }
@@ -118,7 +157,10 @@ namespace Joycollab.v2
             _btnClearTitle.onClick.AddListener(() => {
                 _inputTitle.text = string.Empty;
             });
+            _inputTitle.onSelect.AddListener((value) => _scrollBar.value = 1);
+
             SetInputFieldListener(_inputDetail);
+            _inputDetail.onSelect.AddListener((value) => _scrollBar.value = 0);
 
 
             // set dropdown listener
@@ -161,7 +203,7 @@ namespace Joycollab.v2
 
             // init local variables
             data = null;
-            seq = 0;
+            seq = -1;
             sub = false;
             listObjective = new List<TopOkrInfo>();
             listObjective.Clear();
@@ -182,22 +224,15 @@ namespace Joycollab.v2
         /// <summary>
         /// 기존 OKR 수정.
         /// </summary>
-        public async override UniTaskVoid Show(string opt) 
+        public async override UniTaskVoid Show(int seq) 
         {
             base.Show().Forget();
 
-            int temp = -1;
-            int.TryParse(opt, out temp);
-            if (temp == -1)
-            {
-                // TODO. 예외처리
-            }
-
-            seq = temp;
+            this.seq = seq;
             data = Tmp.singleton.GetOkrInfo(seq);
             if (data == null)
             {
-                // TODO. 예외처리
+                PopupBuilder.singleton.OpenAlert("오류가 발생했습니다.", () => BackProcess());
             }
 
             await Refresh();
@@ -221,7 +256,7 @@ namespace Joycollab.v2
 
             PsResponse<string> res;
             string body = JsonUtility.ToJson(req);
-            if (this.seq == 0) 
+            if (this.seq == -1) 
             {
                 if (_dropdownCategory.value == 0)
                 {
@@ -249,12 +284,12 @@ namespace Joycollab.v2
             if (string.IsNullOrEmpty(res.message)) 
             {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
-                string message = (this.seq == 0) ? 
+                string message = (this.seq == -1) ? 
                     LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "등록 완료", currentLocale) :
                     LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "수정 완료", currentLocale);
 
                 PopupBuilder.singleton.OpenAlert(message, () => {
-                    if (this.seq == 0)
+                    if (this.seq == -1)
                     {
                         ViewManager.singleton.Pop(true);
                     }
@@ -276,8 +311,9 @@ namespace Joycollab.v2
                         }
 
                         Tmp.singleton.AddOkrInfo(this.seq, data);
+                        Tmp.singleton.AddSearchOkr(this.seq, data);
 
-                        ViewManager.singleton.Pop(this.seq.ToString());
+                        ViewManager.singleton.Pop(this.seq);
                     }
                 });
             }
@@ -332,6 +368,7 @@ namespace Joycollab.v2
         {
             // view control
             ViewManager.singleton.ShowNavigation(false);
+            _scrollBar.value = 1;
 
             _dropdownCategory.interactable = (data == null);
             _dropdownShare.interactable = (data == null);
@@ -374,9 +411,7 @@ namespace Joycollab.v2
                 // set dropdown value;
                 _dropdownCategory.value = data.isKeyResult ? 1 : 0;
                 int shareOpt = data.shareType;
-                _dropdownShare.value = shareOpt;
-                Debug.Log($"{TAG} | share option : {_dropdownShare.value}");
-                Debug.Log($"{TAG} | data value : {shareOpt}");
+                _dropdownShare.value = shareOpt - 1;
 
                 // get objective list
                 if (this.data.isKeyResult) GetObjectives(shareOpt).Forget();    
@@ -437,14 +472,14 @@ namespace Joycollab.v2
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
                 string message = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "작성 취소 확인", currentLocale);
                 PopupBuilder.singleton.OpenConfirm(message, () => {
-                    if (data == null)   ViewManager.singleton.Pop();
-                    else                ViewManager.singleton.Pop(this.seq.ToString());
+                    if (data == null)   ViewManager.singleton.Pop(false);
+                    else                ViewManager.singleton.Pop(this.seq);
                 });
             }
             else 
             {
-                if (data == null)   ViewManager.singleton.Pop();
-                else                ViewManager.singleton.Pop(this.seq.ToString());
+                if (data == null)   ViewManager.singleton.Pop(false);
+                else                ViewManager.singleton.Pop(this.seq);
             }
         }
 

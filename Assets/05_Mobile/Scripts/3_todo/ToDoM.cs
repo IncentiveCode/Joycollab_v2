@@ -2,19 +2,22 @@
 /// [mobile]
 /// To-Do 리스트 화면을 담당하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 25
-/// @version        : 0.5
+/// @last update    : 2023. 07. 26
+/// @version        : 0.6
 /// @update
 ///     v0.1 (2023. 06. 13) : 최초 생성.
 ///     v0.2 (2023. 06. 29) : ToDoM 과 ToDoShareM 으로 분리. 분리하면서 filter 는 삭제.
 ///     v0.3 (2023. 06. 30) : date picker 처리 수정. share option 추가.
 ///     v0.4 (2023. 07. 21) : 검색결과 창 추가.
 ///     v0.5 (2023. 07. 25) : 검색 기능 추가.
+///     v0.6 (2023. 07. 26) : 검색 이후 keyword 값이 남아 있어서 조회가 이상하게 되는 오류 수정.
 /// </summary>
 
 using System;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
 using Gpm.Ui;
 using TMPro;
@@ -68,6 +71,7 @@ namespace Joycollab.v2
         private ReqToDoList req;
         private ReqToDoList reqSearch;
         private bool firstRequest;
+        private Locale currentLocale;
 
         // for date picker, time picker
         private TMP_Text txtTarget;
@@ -99,7 +103,9 @@ namespace Joycollab.v2
                 // 후속 조치
                 selectDate = AndroidDateCallback.SelectedDate;
                 DisplayDate();
+
                 req.startDate = result;
+                reqSearch.startDate = result;
                 GetList(true).Forget();
 
                 AndroidDateCallback.isDateUpdated = false;
@@ -146,21 +152,26 @@ namespace Joycollab.v2
                 _btnClear.gameObject.SetActive(! string.IsNullOrEmpty(value));
             });
             _inputSearch.onSubmit.AddListener((value) => {
-                reqSearch = req;
-                reqSearch.pageNo = 1;
+                if (string.IsNullOrEmpty(value)) 
+                {
+                    PopupBuilder.singleton.OpenAlert(LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "검색어 없음", currentLocale));
+                    return;
+                }
+
                 reqSearch.keyword = value;
                 GetSearch(true).Forget();
             });
             _btnClear.onClick.AddListener(() => {
-                _searchView.gameObject.SetActive(false);
-                Tmp.singleton.ClearToDoSearchList();
-
                 _inputSearch.text = string.Empty;
                 _inputSearch.Select();
             });
             _btnSearch.onClick.AddListener(() => {
-                reqSearch = req;
-                reqSearch.pageNo = 1;
+                if (string.IsNullOrEmpty(_inputSearch.text)) 
+                {
+                    PopupBuilder.singleton.OpenAlert(LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "검색어 없음", currentLocale));
+                    return;
+                }
+
                 reqSearch.keyword = _inputSearch.text;
                 GetSearch(true).Forget();
             });
@@ -170,9 +181,10 @@ namespace Joycollab.v2
             if (_dropdownFilter != null) 
             {
                 _dropdownFilter.onValueChanged.AddListener((value) => {
-                    Debug.Log($"{TAG} | filter changed. selected value : {value}"); 
                     filterOpt = value;
+
                     req.filterOpt = value;
+                    reqSearch.filterOpt = value;
                     GetList(true).Forget();
                 });
             }
@@ -181,8 +193,9 @@ namespace Joycollab.v2
                 {
                     viewOpt = 0;
                     DisplayDate();
-
+                    
                     req.viewOpt = viewOpt;
+                    reqSearch.viewOpt = viewOpt;
                     GetList(true).Forget();
                 }
             });
@@ -191,8 +204,9 @@ namespace Joycollab.v2
                 {
                     viewOpt = 1;
                     DisplayDate();
-
+                    
                     req.viewOpt = viewOpt;
+                    reqSearch.viewOpt = viewOpt;
                     GetList(true).Forget();
                 }
             });
@@ -203,6 +217,7 @@ namespace Joycollab.v2
                     DisplayDate();
 
                     req.viewOpt = viewOpt;
+                    reqSearch.viewOpt = viewOpt;
                     GetList(true).Forget();
                 }
             });
@@ -217,7 +232,10 @@ namespace Joycollab.v2
             _btnPrev.onClick.AddListener(() => ChangeDate(true));
             _btnNext.onClick.AddListener(() => ChangeDate(false));
             _btnCreate.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_CreateTodo));
-            _btnCloseSearch.onClick.AddListener(() => _searchView.gameObject.SetActive(false));
+            _btnCloseSearch.onClick.AddListener(() => {
+                _inputSearch.text = string.Empty; 
+                _searchView.gameObject.SetActive(false);
+            });
 
 
             // init local variables
@@ -232,6 +250,7 @@ namespace Joycollab.v2
         public async override UniTaskVoid Show() 
         {
             base.Show().Forget();
+            Debug.Log($"{TAG} | Show()");
             await Refresh();
             base.Appearing();
         }
@@ -239,6 +258,7 @@ namespace Joycollab.v2
         public async override UniTaskVoid Show(int seq) 
         {
             base.Show().Forget();
+            Debug.Log($"{TAG} | Show({seq})");
 
             if (targetMemberSeq != seq)
             {
@@ -258,7 +278,9 @@ namespace Joycollab.v2
         public async override UniTaskVoid Show(bool refresh) 
         {
             base.Show().Forget();
-            GetList(refresh).Forget();
+            Debug.Log($"{TAG} | Show({refresh})");
+
+            if (refresh) GetList().Forget();
             await UniTask.Yield();
             base.Appearing();
         }
@@ -270,6 +292,8 @@ namespace Joycollab.v2
 
         private async UniTaskVoid GetList(bool refresh=true) 
         {
+            if (refresh) req.pageNo = 1;
+
             string res = await _module.Get(_scrollView, req, refresh); 
             if (string.IsNullOrEmpty(res)) 
             {
@@ -283,6 +307,8 @@ namespace Joycollab.v2
 
         private async UniTaskVoid GetSearch(bool refresh=true) 
         {
+            if (refresh) reqSearch.pageNo = 1;
+
             string res = await _module.Search(_searchView, reqSearch, refresh);
             if (string.IsNullOrEmpty(res)) 
             {
@@ -355,7 +381,9 @@ namespace Joycollab.v2
 
             DisplayDate();
 
-            req.startDate = selectDate.ToString("yyyy-MM-dd");
+            string date = selectDate.ToString("yyyy-MM-dd");
+            req.startDate = date;
+            reqSearch.startDate = date;
             GetList(true).Forget();
         }
 
@@ -368,6 +396,9 @@ namespace Joycollab.v2
         {
             // view control
             ViewManager.singleton.ShowNavigation(false);
+
+            // language
+            currentLocale = LocalizationSettings.SelectedLocale;
 
             // date
             DisplayDate();
@@ -385,6 +416,17 @@ namespace Joycollab.v2
                 req.pageSize = 20;
                 req.sortDescending = true;
                 req.sortProperty = "sd";
+
+                reqSearch.share = _isShare;
+                reqSearch.startDate = selectDate.ToString("yyyy-MM-dd");
+                reqSearch.targetMemberSeq = targetMemberSeq;
+                reqSearch.viewOpt = viewOpt;
+                reqSearch.filterOpt = filterOpt;
+                reqSearch.keyword = string.Empty;
+                reqSearch.pageNo = 1; 
+                reqSearch.pageSize = 20;
+                reqSearch.sortDescending = true;
+                reqSearch.sortProperty = "sd";
 
                 // 기본값은 daily 로 출력.
                 if (! _toggleDaily.isOn)

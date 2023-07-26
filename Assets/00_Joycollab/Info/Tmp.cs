@@ -1,11 +1,12 @@
 /// <summary>
 /// 임시로 저장하는 저장 공간. 지속적으로 가지고 있지 않아도 되는 현재 게시글 목록 등을 담아둔다. 
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 25
-/// @version        : 0.2
+/// @last update    : 2023. 07. 26
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 07. 07) : 최초 생성
 ///     v0.2 (2023. 07. 25) : To-Do 검색 목록도 추가.
+///     v0.3 (2023. 07. 26) : Okr 검색 목록도 추가.
 /// </summary>
 
 using System.Collections.Generic;
@@ -28,6 +29,8 @@ namespace Joycollab.v2
 
             listOkr = new List<OkrData>();
             listOkr.Clear();
+            listOkrSearch = new List<OkrData>();
+            listOkrSearch.Clear();
 
             // for board, notice
             listBoard = new List<BoardData>();
@@ -37,7 +40,9 @@ namespace Joycollab.v2
         {
             //for to-do, OKR
             ClearToDoList();
+            ClearToDoSearchList();
             ClearOkrList();
+            ClearOkrSearchList();
 
             // for board, notice
             ClearBoardList();
@@ -49,7 +54,6 @@ namespace Joycollab.v2
     #region To-Do, OKR Info
 
         private List<ToDoData> listToDo;
-        private List<ToDoData> listToDoSearch;
 
         public void AddToDoInfo(int seq, ToDoData todo)
         {
@@ -65,6 +69,9 @@ namespace Joycollab.v2
             return listToDo[index];
         }
         public void ClearToDoList() => listToDo.Clear(); 
+
+
+        private List<ToDoData> listToDoSearch;
 
         public void AddSearchToDo(int seq, ToDoData todo) 
         {
@@ -84,15 +91,11 @@ namespace Joycollab.v2
 
         private List<OkrData> listOkr;
 
-        public int AddOkrInfo(int seq, OkrData data)
+        public void AddOkrInfo(int seq, OkrData data)
         { 
             int index = listOkr.FindIndex(item => item.seq == seq);
-            if (index == -1)
-                listOkr.Add(data);
-            else
-                listOkr[index].info = data.info;
-
-            return index;
+            if (index == -1)    listOkr.Add(data);
+            else                listOkr[index].info = data.info;
 	    }
         public OkrData GetOkrInfo(int seq)
         { 
@@ -102,6 +105,24 @@ namespace Joycollab.v2
 			return listOkr[index];
 	    }
         public void ClearOkrList() => listOkr.Clear();
+
+
+        private List<OkrData> listOkrSearch;
+
+        public void AddSearchOkr(int seq, OkrData data) 
+        {
+            int index = listOkrSearch.FindIndex(item => item.info.seq == seq);
+            if (index == -1)    listOkrSearch.Add(data);
+            else                listOkrSearch[index].info = data.info;
+        }
+        public OkrData GetSearchOkr(int seq) 
+        {
+            int index = listOkrSearch.FindIndex(item => item.info.seq == seq);
+            if (index == -1) return null;
+
+            return listOkrSearch[index];
+        }
+        public void ClearOkrSearchList() => listOkrSearch.Clear();
         
     #endregion  // To-Do, OKR Info
 

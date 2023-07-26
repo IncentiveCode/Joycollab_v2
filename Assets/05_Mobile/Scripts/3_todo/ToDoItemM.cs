@@ -95,8 +95,6 @@ namespace Joycollab.v2
                 this.seq = 0;
                 this.isDone = false;
                 this.isLoadMore = true;
-
-                _txtTitle.text = _txtCreator.text = _txtCreateDate.text = _txtPeriod.text = _txtDoneDate.text = _txtShareOpt.text = _txtDetail.text = string.Empty;
             }
             else
             {

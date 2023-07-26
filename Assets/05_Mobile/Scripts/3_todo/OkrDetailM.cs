@@ -2,13 +2,13 @@
 /// [mobile]
 /// OKR 상세 화면을 담당하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 05
-/// @version        : 0.1
+/// @last update    : 2023. 07. 26
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 07. 05) : 최초 생성.
+///     v0.2 (2023. 07. 26) : Show() 매개변수 변경  [string 형 opt -> int 형 seq], period 에 시간값도 출력.
 /// </summary>
 
-using System;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Localization;
@@ -81,7 +81,7 @@ namespace Joycollab.v2
 
             // set 'button' listener
             _btnBack.onClick.AddListener(() => BackProcess());
-            _btnEdit.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_CreateOkr, seq.ToString()));
+            _btnEdit.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_CreateOkr, seq));
             _btnDelete.onClick.AddListener(() => {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
                 string message = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "삭제 안내", currentLocale);
@@ -96,18 +96,15 @@ namespace Joycollab.v2
             isKeyResult = sub = false;
         }
 
-        public async override UniTaskVoid Show(string opt) 
+        public async override UniTaskVoid Show(int seq) 
         {
             base.Show().Forget();
 
-            int temp = -1;
-            int.TryParse(opt, out temp);
-
-            seq = temp;
             data = Tmp.singleton.GetOkrInfo(seq);
+            if (data == null) data = Tmp.singleton.GetSearchOkr(seq);
             if (data == null) 
             {
-                // TODO. error 처리
+                PopupBuilder.singleton.OpenAlert("오류가 발생했습니다.", () => BackProcess());
             }
 
             await Refresh();
@@ -141,30 +138,24 @@ namespace Joycollab.v2
                                     string.Format("{0} - {1}", data.info.sd, data.info.ed);
             _txtDetail.text = sub ? data.subInfo.content : data.info.content;
 
-            if (! isKeyResult) 
+            // 공유 옵션
+            Locale currentLocale = LocalizationSettings.SelectedLocale;
+            switch (data.shareType - 1) 
             {
-                Locale currentLocale = LocalizationSettings.SelectedLocale;
-                switch (data.shareType - 1) 
-                {
-                    case S.SHARE_DEPARTMENT :
-                        string t = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (부서)", currentLocale);
-                        bool isTop = string.IsNullOrEmpty(data.info.topSpace.nm);
-                        _txtShareOpt.text = string.Format(t, isTop ? data.info.topSpace.nm : data.info.space.nm);
-                        break;
+                case S.SHARE_DEPARTMENT :
+                    string t = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (부서)", currentLocale);
+                    bool isTop = string.IsNullOrEmpty(data.info.topSpace.nm);
+                    _txtShareOpt.text = string.Format(t, isTop ? data.info.topSpace.nm : data.info.space.nm);
+                    break;
 
-                    case S.SHARE_COMPANY :
-                        _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (전사)", currentLocale);
-                        break;
+                case S.SHARE_COMPANY :
+                    _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (전사)", currentLocale);
+                    break;
 
-                    case S.SHARE_NONE :
-                    default :
-                        _txtShareOpt.text = string.Empty;
-                        break;
-                }
-            }
-            else 
-            {
-                _txtShareOpt.text = string.Empty;
+                case S.SHARE_NONE :
+                default :
+                    _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (개인)", currentLocale);
+                    break;
             }
 
             // 내 정보인 경우에만 버튼 출력
@@ -210,7 +201,7 @@ namespace Joycollab.v2
 
         private void BackProcess() 
         {
-            ViewManager.singleton.Pop(true);
+            ViewManager.singleton.Pop();
         }
 
     #endregion  // event handling

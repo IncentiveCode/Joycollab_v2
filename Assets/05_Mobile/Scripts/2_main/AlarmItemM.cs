@@ -79,7 +79,7 @@ namespace Joycollab.v2
 
 			data = (AlarmData) itemData;
 			this.seq = data.info.seq;
-			this.id = data.info.tp.id;
+			this.id = string.IsNullOrEmpty(data.info.tp.id) ? string.Empty : data.info.tp.id;	// 간혹 tp 값이 null 인 데이터가 있음.
 			bool isArrange = false;
 
             Locale currentLocale = LocalizationSettings.SelectedLocale;

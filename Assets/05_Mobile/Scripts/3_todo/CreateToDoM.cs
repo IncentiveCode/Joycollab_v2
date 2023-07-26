@@ -262,6 +262,7 @@ namespace Joycollab.v2
 
             this.seq = seq;
             data = Tmp.singleton.GetToDoInfo(seq);
+            if (data == null) data = Tmp.singleton.GetSearchToDo(seq);
             if (data == null)
             {
                 PopupBuilder.singleton.OpenAlert("오류가 발생했습니다.", () => BackProcess());
@@ -328,6 +329,7 @@ namespace Joycollab.v2
                         data.info.et = req.et;
                         data.info.title = req.title;
                         Tmp.singleton.AddToDoInfo(this.seq, data);
+                        Tmp.singleton.AddSearchToDo(this.seq, data);
 
                         ViewManager.singleton.Pop(this.seq);
                     }
@@ -348,6 +350,7 @@ namespace Joycollab.v2
         {
             // view control
             ViewManager.singleton.ShowNavigation(false);
+            _scrollBar.value = 1;
 
             // ready for new content
             if (data == null) 
