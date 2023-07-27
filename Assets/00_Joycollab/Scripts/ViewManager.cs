@@ -1,8 +1,8 @@
 /// <summary>
 /// 각 Scene 에서 화면을 관리하는 manager class
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 26
-/// @version        : 0.6
+/// @last update    : 2023. 07. 27
+/// @version        : 0.7
 /// @update
 ///     v0.1 (2023. 05. 04) : 최초 작성, 기존 Manager 에서 View 관리 부분만 빼서 생성.
 ///     v0.2 (2023. 05. 11) : android 의 back button 처리 추가.
@@ -10,6 +10,7 @@
 ///     v0.4 (2023. 07. 21) : int seq 를 넘기는 Push(), Pop() 함수 추가.
 ///     v0.5 (2023. 07. 24) : 화면 초기화 [ Init() ]를 async 로 구성.
 ///     v0.6 (2023. 07. 26) : Push(bool refresh) 추가. Init() 에서 top/bottom navigation 찾는 기능 수정.
+///     v0.7 (2023. 07. 27) : top, bottom navigation 을 WebGL 에서는 사용하지 않기 때문에, 일부 예외처리 추가.
 /// </summary>
 
 using System.Collections;
@@ -58,9 +59,9 @@ namespace Joycollab.v2
     
     #else
 
-        public void ShowNavigation(bool on) { }
+        public void ShowNavigation(bool _) { }
         public void ShowBottomNavigation() { }
-        public void StartOnMySeat(bool on) { }
+        public void StartOnMySeat(bool _) { }
 
     #endif  // for navigation bar
 
@@ -77,7 +78,11 @@ namespace Joycollab.v2
         private async UniTaskVoid Start() 
         {
             int res = await Init();
-            if (res == -1 || _goTop == null || _goBottom == null) 
+        #if UNITY_ANDROID
+            if (res == -1 || _goTop == null || _goBottom == null)
+        #else
+            if (res == -1)
+        #endif
             {
                 PopupBuilder.singleton.OpenAlert("ViewManager 초기화 실패.");
                 return;
@@ -114,6 +119,7 @@ namespace Joycollab.v2
 
         private async UniTask<int> Init() 
         {
+        #if UNITY_ANDROID
             // 0. init navigation
             GameObject[] navigations = GameObject.FindGameObjectsWithTag(S.MobileNaviTag);
             foreach (GameObject o in navigations) 
@@ -128,6 +134,7 @@ namespace Joycollab.v2
                 }
             }
             await UniTask.WaitUntil(() => _goTop != null && _goBottom != null);
+        #endif
 
             // 1. init ui stack
             dictViews = new Dictionary<string, FixedView>();
@@ -139,6 +146,7 @@ namespace Joycollab.v2
             uiNavigation = new Stack();
             currentView = null;
 
+            await UniTask.Yield();
             return (dictViews.Count == 0) ? -1 : 0;
         }
 

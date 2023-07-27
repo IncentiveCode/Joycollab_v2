@@ -14,7 +14,6 @@ using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 
-// for xmpp
 using Xmpp;
 using Xmpp.Net;
 using Xmpp.Sasl;

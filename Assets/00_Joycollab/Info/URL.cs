@@ -15,8 +15,8 @@
 ///     v0.9 (2023. 07. 07) : Joycollab 에서 사용하던 URL 정리. (UserApi - Bookmark)
 /// </summary>
 
-// #define DEV // Dev Server
-#define RELEASE // Live Server
+#define DEV // Dev Server
+// #define RELEASE // Live Server
 
 namespace Joycollab.v2
 {

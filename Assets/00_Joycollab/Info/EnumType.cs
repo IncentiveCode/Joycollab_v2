@@ -235,4 +235,13 @@ namespace Joycollab.v2
         시스템공지, 공지,
         게스트알림, 휴게실방알림, 메세지,
     }
+
+
+    /// <summary>
+    /// sorting type (sprite, image, mesh, and etc)
+    /// </summary>
+    public enum eSortingType
+    {
+        Static, Update
+    }
 }
