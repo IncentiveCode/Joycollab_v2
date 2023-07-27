@@ -1,8 +1,8 @@
 ﻿/// <summary>
 /// PitchSolution - javascript library 
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 19 
-/// @version        : 0.5
+/// @last update    : 2023. 07. 27 
+/// @version        : 0.6
 /// @update
 ///     v0.1 (2023. 02. 22) : Joycollab 에서 사용하던 클래스 정리 및 통합.
 ///     v0.2 (2023. 02. 28) : unity 2021.3.13f1 으로 업그레이드 후, windows 에서 build 안되는 문제 해결. (한글 주석이 원인으로 보임)
@@ -10,6 +10,7 @@
 ///     v0.4 (2023. 07. 14) : WebGL 이 아닌 곳에서 Alert 사용시 Popup builder 를 이용한 open alert 출력하게 수정.
 ///                         copyToClipboard() 추가. 참고 : https://pudding-entertainment.medium.com/unity-webgl-add-a-share-button-93831b3555e9
 ///     v0.5 (2023. 07. 19) : Joycollab 에서 사용하던 popup 관련 클래스 정리 및 통합.
+///     v0.6 (2023. 07. 26) : ConnectInnerWebview() 의 오류로 인해 빌드 실패하는 문제 해결.
 /// </summary>
 
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -249,7 +250,6 @@ namespace Joycollab.v2
     #region copy and paste
 
         public static void CopyToClipboard(string text) => JsLibPlugin.psCopyToClipboard(text);
-
         /**
         public static string PasteText() 
         {

@@ -60,7 +60,7 @@ var JsLib = {
 		}
 
 		var userAgent = navigator.userAgent.toLowerCase();
-		if (userAgent.indexOf('chrome') !== -1) {
+		if (userAgent.indexOf("chrome") !== -1) {
 			var result = "true|"+ language;
 		}
 		else {
@@ -108,7 +108,7 @@ var JsLib = {
 			}
 		}
 		if (os.indexOf("Windows") != -1) {
-			if (navigator.userAgent.indexOf('WOW64') > -1 || navigator.userAgent.indexOf('Win64') > -1) {
+			if (navigator.userAgent.indexOf("WOW64") > -1 || navigator.userAgent.indexOf("Win64") > -1) {
 				os += " 64bit";
 			} else {
 				os += " 32bit";
@@ -147,12 +147,12 @@ var JsLib = {
 	},
 
 	psSetTextUI : function(isOn) {
-		var instance = document.getElementById('unity-canvas');
+		var instance = document.getElementById("unity-canvas");
 		if (isOn) {
-			instance.style.minWidth = '1800px';
+			instance.style.minWidth = "1800px";
 		}
 		else {
-			instance.style.minWidth = '';
+			instance.style.minWidth = "";
 		}
 	},
 
@@ -179,11 +179,11 @@ var JsLib = {
             textArea.select();
 
             try {
-                const successful = document.execCommand('copy');
-                const msg = successful ? 'successful' : 'unsuccessful';
-                console.debug('Fallback: Copying text command was ' + msg);
+                const successful = document.execCommand("copy");
+                const msg = successful ? "successful" : "unsuccessful";
+                console.debug("Fallback: Copying text command was ", msg);
             } catch (err) {
-                console.error('Fallback: Unable to copy', err);
+                console.error("Fallback: Unable to copy", err);
             }
 
             document.body.removeChild(textArea);
@@ -212,6 +212,8 @@ var JsLib = {
 		window.PaymentDone = function() {
             SendMessage(gameObjectName, doneMethodName);
         }
+
+		if (pop) pop.focus();
 	},
 
 	psOpenAuth : function(gameObjectNamePtr, urlPtr, callbackMethodNamePtr) {
@@ -223,6 +225,8 @@ var JsLib = {
 		window.funcRefreshing = function() {
             SendMessage(gameObjectName, callbackMethodName);
 		}
+
+		if (pop) pop.focus();
 	},
 
 	psOpenChat : function(urlPtr, targetSeq) {
@@ -256,18 +260,18 @@ var JsLib = {
 			return !this.chat.closed;
 	},
 
-	psConnectInnerWebview : function(string gameObjectNamePtr, string closeMethodNamePtr) {
+	psConnectInnerWebview : function(gameObjectNamePtr, closeMethodNamePtr) {
 		var gameObjectName = UTF8ToString(gameObjectNamePtr);
 		var closeMethodName = UTF8ToString(closeMethodNamePtr);
 
-		var tempInput = document.getElementById('unity-webview-msg');
+		var tempInput = document.getElementById("unity-webview-msg");
         if (tempInput) {
             document.body.removeChild(tempInput);
         }
 
-        var tempInput = document.createElement('input');
-        tempInput.setAttribute('id', 'unity-webview-msg');
-        tempInput.setAttribute('type', 'hidden');
+        var tempInput = document.createElement("input");
+        tempInput.setAttribute("id", "unity-webview-msg");
+        tempInput.setAttribute("type", "hidden");
         tempInput.onchange = function() {
             SendMessage(gameObjectName, closeMethodName);
         }

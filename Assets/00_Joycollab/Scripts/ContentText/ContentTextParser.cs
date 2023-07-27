@@ -52,6 +52,7 @@ namespace Joycollab.v2
             _inputContent.text = "- 월드 코지 모임방 바닥 수정 / 이미지 저장 / 기타 전반적인 UI 구성 수정 / UX 는 사용자 측면에서 보다 쓰기 좋게 작업할 필요가 있다고 생각함. \n- 월드 UI 수정 작업\n피그마 URL https://www.figma.com/file/Sbsk76Qnv1F51VOnlzxIwK/%EC%9B%94%EB%93%9CUI?type=design&node-id=0-1&mode=design&t=d6CSa33YcPmMEBIi-0 링크 확인 요망.\nhttps://www.naver.com 와 https://www.google.com 을 이용해보자.";
 
             _btnCopyContent.onClick.AddListener(() => {
+                Debug.Log($"{TAG} | copy contents.");
                 JsLib.CopyToClipboard(originContent);
             });
 
