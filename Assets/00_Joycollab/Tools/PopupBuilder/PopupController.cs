@@ -11,7 +11,7 @@
 
 using UnityEngine;
 using UnityEngine.UI;
-// using Assets.SimpleLocalization;
+using TMPro;
 
 namespace Joycollab.v2
 {
@@ -23,7 +23,7 @@ namespace Joycollab.v2
         [SerializeField] private Text _txtContent;
 
         [Header("add prompt")]
-        [SerializeField] private InputField _inputPrompt;
+        [SerializeField] private TMP_InputField _inputPrompt;
         [SerializeField] private Button _btnClearPrompt;
         
         [Header("add option")]
@@ -43,6 +43,11 @@ namespace Joycollab.v2
         private float displayTime;
         private float timer;
 
+        // local variables - input field 예외처리
+        private bool keepOldTextInField;
+        private string oldText;
+        private string editText;
+
 
     #region Unity functions
         private void Awake() 
@@ -50,9 +55,32 @@ namespace Joycollab.v2
             Init();
 
             // set event listener
+        #if UNITY_ANDROID && !UNITY_EDITOR
+            _inputPrompt.onSelect.AddListener((value) => oldText = value);
+            _inputPrompt.onValueChanged.AddListener((value) => {
+                _btnClearPrompt.gameObject.SetActive(! string.IsNullOrEmpty(value));
+
+                oldText = editText;
+                editText = value;
+            });
+            _inputPrompt.onTouchScreenKeyboardStatusChanged.AddListener((value) => {
+                if (value == TouchScreenKeyboard.Status.Canceled)
+                {
+                    keepOldTextInField = true;
+                }
+            });
+            _inputPrompt.onDeselect.AddListener((value) => {
+                if (keepOldTextInField) 
+                {
+                    _inputPrompt.text = oldText;
+                    keepOldTextInField = false;
+                }
+            });
+        #else
             _inputPrompt.onValueChanged.AddListener((value) => {
                 _btnClearPrompt.gameObject.SetActive(! string.IsNullOrEmpty(value));
             });
+        #endif
             _btnClearPrompt.onClick.AddListener(() => _inputPrompt.text = string.Empty);
         }
 
