@@ -1,16 +1,19 @@
 /// <summary>
 /// 여기저기 떨어져 있는 팝업 제어 함수를 하나로 묶기 위한 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 04. 13
+/// @last update    : 2023. 07.29 
 /// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 02. 09) : TP 에서 작업했던 내용을 가지고 와서 편집. (작업중)
 ///     v0.2 (2023. 03. 30) : UI 최적화 (TMP 제거)
 ///     v0.3 (2023. 04. 13) : position 변경을 위한 rect panel 추가.
+///     v0.4 (2023. 07. 29) : Title setter 수정.
 /// </summary>
 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Settings;
 using TMPro;
 
 namespace Joycollab.v2
@@ -144,8 +147,16 @@ namespace Joycollab.v2
                 return _txtTitle.text;
             }
             set { 
-                // _txtTitle.text = string.IsNullOrEmpty(value) ? LocalizationManager.Localize("Alert.알림") : value;
-                _txtTitle.text = string.IsNullOrEmpty(value) ? "알림" : value;
+                if (string.IsNullOrEmpty(value))
+                {
+                    Locale currentLocale = LocalizationSettings.SelectedLocale;
+                    string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "알림", currentLocale);
+                    _txtTitle.text = notice;
+                }
+                else 
+                {
+                    _txtTitle.text = value;
+                }
             }
         }
         

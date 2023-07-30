@@ -1,8 +1,8 @@
 /// <summary>
 /// 여기저기 떨어져 있는 팝업 생성 함수를 하나로 묶기 위한 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 12
-/// @version        : 0.6
+/// @last update    : 2023. 07.29 
+/// @version        : 0.7
 /// @update
 ///     v0.1 (2023. 02. 09) : TP 에서 작업했던 내용을 가지고 와서 편집.
 ///     v0.2 (2023. 03. 30) : 추가 정리 및 예시 기술.
@@ -10,6 +10,7 @@
 ///     v0.4 (2023. 04. 13) : singleton pattern 수정.
 ///     v0.5 (2023. 04. 17) : public function (for alert, confirm) 추가.
 ///     v0.6 (2023. 06. 12) : GetPopupCount, Clear function 에서 transform 을 못 찾는 부분이 있어서 함수 수정.
+///     v0.7 (2023. 07. 29) : OpenConfirm() 의 기본 버튼을 확인/취소 에서 예/아니오 로 변경.
 /// </summary>
 
 using UnityEngine;
@@ -110,7 +111,7 @@ namespace Joycollab.v2
         public void OpenAlert(string title, string content, string btnText, System.Action action) 
         {
             Locale currentLocale = LocalizationSettings.SelectedLocale;
-            string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "알림", currentLocale);
+            string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "알림", currentLocale);
             string confirm = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "확인", currentLocale);
 
             PopupController ctrl = Build();
@@ -141,9 +142,9 @@ namespace Joycollab.v2
         public void OpenConfirm(string title, string content, string yesText, System.Action yesAction, string noText, System.Action noAction) 
         {
             Locale currentLocale = LocalizationSettings.SelectedLocale;
-            string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "알림", currentLocale);
-            string confirm = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "확인", currentLocale);
-            string cancel = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "취소", currentLocale);
+            string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "알림", currentLocale);
+            string confirm = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "예", currentLocale);
+            string cancel = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "아니오", currentLocale);
 
             PopupController ctrl = Build();
             ctrl.Type = ePopupType.Confirm;
