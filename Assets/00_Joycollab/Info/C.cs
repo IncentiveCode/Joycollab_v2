@@ -116,5 +116,30 @@ namespace Joycollab.v2
         public static readonly Color WORLD_WARNING_ON = new Color(0.7960784f, 0.7568628f, 0.8235294f, 1f);
 
 	#endregion	// button color
+
+
+	#region plan color 
+
+		/// <summary>
+		/// Plan - Free - icon and select area color
+		/// </summary>
+		public static readonly Color FREE = new Color(0.8509805f, 0.8509805f, 0.8509805f, 1f);
+
+		/// <summary>
+		/// Plan - Basic - icon and select area color
+		/// </summary>
+		public static readonly Color BASIC = new Color(0.9921569f, 0.4901961f, 0f, 1f);
+
+		/// <summary>
+		/// Plan - Standard - icon and select area color
+		/// </summary>
+		public static readonly Color STANDARD = new Color(0.3294118f, 0.4941177f, 0.8078432f, 1f);
+
+		/// <summary>
+		/// Plan - Premium - icon and select area color
+		/// </summary>
+		public static readonly Color PREMIUM = new Color(0.0509804f, 0.6117647f, 0.6431373f, 1f);
+
+	#endregion	// plan color 
 	}
 }

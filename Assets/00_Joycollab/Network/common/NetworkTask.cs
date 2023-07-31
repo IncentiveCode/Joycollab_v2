@@ -1,14 +1,15 @@
 /// <summary>
 /// Network 통신 라이브러리  
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 19
-/// @version        : 0.5
+/// @last update    : 2023. 07. 31
+/// @version        : 0.6
 /// @update
 ///     v0.1 (2023. 02. 20) : UniTask 사용해서 최초 생성.
 ///     v0.2 (2023. 03. 31) : int 형태로 리턴되는 결과를 처리하기 위해, PsResponse 안에 int 형 data 추가.
 ///     v0.3 (2023. 04. 03) : Token refresh logic 추가. API 호출시 항상 체크 > 만료시에만 체크.
 ///     v0.4 (2023. 05. 10) : extra field 추가.
 ///     v0.5 (2023. 06. 19) : multipart form post method 추가.
+///     v0.6 (2023. 07. 31) : return 앞에 req.Dispose() 추가.
 /// </summary>
 
 using System;
@@ -194,14 +195,13 @@ namespace Joycollab.v2
             form.AddField(SCOPE, R.singleton.tokenScope);
             form.AddField(USERNAME, R.singleton.ID);
 
-            PsResponse<ResToken> res = await NetworkTask.PostAsync<ResToken>(URL.REQUEST_TOKEN, form, string.Empty, 
+            PsResponse<ResToken> res = await PostAsync<ResToken>(URL.REQUEST_TOKEN, form, string.Empty, 
                 R.singleton.tokenScope.Equals(SCOPE_ADM) ? NetworkTask.BASIC_TOKEN : NetworkTask.BASIC_TOKEN_M);
 
             if (string.IsNullOrEmpty(res.message)) 
             {
                 Debug.Log("토큰 재발행 성공.");
                 R.singleton.TokenInfo = res.data;
-
                 return string.Empty;
             }
             else 
@@ -253,6 +253,7 @@ namespace Joycollab.v2
 
                 if (data.Length == 0)
                 {
+                    req.Dispose();
                     return new PsResponse<T>(code, string.Empty);
                 }
 
@@ -260,6 +261,7 @@ namespace Joycollab.v2
                 string first = data.Substring(0, 1);
                 if (! first.Equals("[") && ! first.Equals("{")) 
                 {
+                    req.Dispose();
                     return new PsResponse<T>(code, string.Empty, data);
                 }
 
@@ -269,6 +271,7 @@ namespace Joycollab.v2
                     data = "{\"list\":" + data + "}";
                 }
 
+                req.Dispose();
                 T result = JsonUtility.FromJson<T>(data);
                 return new PsResponse<T>(code, result);
             }
@@ -279,6 +282,7 @@ namespace Joycollab.v2
                     Debug.LogError("NetworkTask | PostAsync() timeout exception : "+ ce.Message);
 
                     // re-try
+                    req.Dispose();
                     return await PostAsync<T>(url, body, contentType, token);
                 }
             }
@@ -295,6 +299,7 @@ namespace Joycollab.v2
                     string t = await RefreshToken();
                     if (string.IsNullOrEmpty(t))
                     {
+                        req.Dispose();
                         return await PostAsync<T>(url, body, contentType, R.singleton.token);
                     }
                 }
@@ -304,13 +309,16 @@ namespace Joycollab.v2
                     string message = HandleError(req.responseCode, req.downloadHandler.text);
                     if (message.Length == 0)
                     {
+                        req.Dispose();
                         return new PsResponse<T>(code, e.Message);
                     }
 
+                    req.Dispose();
                     return new PsResponse<T>(code, message);
                 }
             }
 
+            req.Dispose();
             return new PsResponse<T>(HTTP_EXCEPTION, "알 수 없는 오류");
         }
 
@@ -358,6 +366,7 @@ namespace Joycollab.v2
 
                 if (data.Length == 0)
                 {
+                    req.Dispose();
                     return new PsResponse<T>(code, string.Empty);
                 }
 
@@ -365,6 +374,7 @@ namespace Joycollab.v2
                 string first = data.Substring(0, 1);
                 if (! first.Equals("[") && ! first.Equals("{")) 
                 {
+                    req.Dispose();
                     return new PsResponse<T>(code, string.Empty, data);
                 }
 
@@ -374,6 +384,7 @@ namespace Joycollab.v2
                     data = "{\"list\":" + data + "}";
                 }
 
+                req.Dispose();
                 T result = JsonUtility.FromJson<T>(data);
                 return new PsResponse<T>(code, result);
             }
@@ -384,6 +395,7 @@ namespace Joycollab.v2
                     Debug.LogError("NetworkTask | PostMultipartAsync() timeout exception : "+ ce.Message);
 
                     // re-try
+                    req.Dispose();
                     return await PostMultipartAsync<T>(url, body, token);
                 }
             }
@@ -400,6 +412,7 @@ namespace Joycollab.v2
                     string t = await RefreshToken();
                     if (string.IsNullOrEmpty(t))
                     {
+                        req.Dispose();
                         return await PostMultipartAsync<T>(url, body, R.singleton.token);
                     }
                 }
@@ -409,13 +422,16 @@ namespace Joycollab.v2
                     string message = HandleError(req.responseCode, req.downloadHandler.text);
                     if (message.Length == 0)
                     {
+                        req.Dispose();
                         return new PsResponse<T>(code, e.Message);
                     }
 
+                    req.Dispose();
                     return new PsResponse<T>(code, message);
                 }
             }
 
+            req.Dispose();
             return new PsResponse<T>(HTTP_EXCEPTION, "알 수 없는 오류");
         }
 
@@ -447,6 +463,7 @@ namespace Joycollab.v2
                 long code = req.responseCode;
 
                 Texture2D texture = DownloadHandlerTexture.GetContent(req);
+                req.Dispose();
                 return texture;
             }
             catch (OperationCanceledException ce) 
@@ -456,6 +473,7 @@ namespace Joycollab.v2
                     Debug.LogError("NetworkTask | GetTextureAsync() timeout exception : "+ ce.Message);
 
                     // re-try
+                    req.Dispose();
                     return await GetTextureAsync(url);
                 }
             }
@@ -471,15 +489,18 @@ namespace Joycollab.v2
                     string t = await RefreshToken();
                     if (string.IsNullOrEmpty(t)) 
                     {
+                        req.Dispose();
                         return await GetTextureAsync(url);
                     }
                 }
                 else 
                 {
+                    req.Dispose();
                     return null;
                 }
             }
 
+            req.Dispose();
             return null;
         }
     #endregion  // File, Image and ETC
@@ -535,6 +556,7 @@ namespace Joycollab.v2
 
                 if (data.Length == 0)
                 {
+                    req.Dispose();
                     return new PsResponse<T>(code, string.Empty);
                 }
 
@@ -542,6 +564,7 @@ namespace Joycollab.v2
                 string first = data.Substring(0, 1);
                 if (! first.Equals("[") && ! first.Equals("{")) 
                 {
+                    req.Dispose();
                     return new PsResponse<T>(code, string.Empty, data);
                 }
 
@@ -551,6 +574,7 @@ namespace Joycollab.v2
                     data = "{\"list\":" + data + "}";
                 }
 
+                req.Dispose();
                 T result = JsonUtility.FromJson<T>(data);
                 return new PsResponse<T>(code, result);
             }
@@ -561,6 +585,7 @@ namespace Joycollab.v2
                     Debug.LogError("NetworkTask | RequestAsync() timeout exception : "+ ce.Message);
 
                     // re-try
+                    req.Dispose();
                     return await RequestAsync<T>(url, type, bodyRaw, token);
                 }
             }
@@ -577,6 +602,7 @@ namespace Joycollab.v2
                     string t = await RefreshToken();
                     if (string.IsNullOrEmpty(t)) 
                     {
+                        req.Dispose();
                         return await RequestAsync<T>(url, type, bodyRaw, R.singleton.token);
                     }
                 }
@@ -586,13 +612,16 @@ namespace Joycollab.v2
                     string message = HandleError(req.responseCode, req.downloadHandler.text);
                     if (message.Length == 0)
                     {
+                        req.Dispose();
                         return new PsResponse<T>(code, e.Message);
                     }
 
+                    req.Dispose();
                     return new PsResponse<T>(code, message);
                 }
             }
 
+            req.Dispose();
             return new PsResponse<T>(HTTP_EXCEPTION, "알 수 없는 오류");
         }
 

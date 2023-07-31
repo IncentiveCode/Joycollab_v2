@@ -1,10 +1,11 @@
 /// <summary>
 /// Xmpp 관련 매니저 클래스 
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 18
-/// @version        : 0.1
+/// @last update    : 2023. 07. 31
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 07. 18) : Joycollab 에서 사용하던 것, 일부 수정해서 작성.
+///     v0.2 (2023. 07. 31) : public variables (isXmpp, isWebView, isArrange) 주석 처리.
 /// </summary>
 
 using System;
@@ -43,9 +44,9 @@ namespace Joycollab.v2
         private Queue<Action> queue;
 
         // handling variables
-        public bool isXmpp = false;
-        public bool isWebView = false;
-        public bool isArrange = false;
+        // public bool isXmpp = false;
+        // public bool isWebView = false;
+        // public bool isArrange = false;
 
 
     #region Unity functions
@@ -403,7 +404,7 @@ namespace Joycollab.v2
                     }
                     else
                     {
-                        isXmpp = true;
+                        // isXmpp = true;
 
                         tempSeq = -1;
                         int.TryParse(xcMsg.contentJson, out tempSeq);
@@ -420,7 +421,7 @@ namespace Joycollab.v2
                     break;
 
                 case eXmppType.공간배치 :
-                    if (isWebView) isArrange = true;
+                    // if (isWebView) isArrange = true;
                     break;
 
                 case eXmppType.자리배치 :

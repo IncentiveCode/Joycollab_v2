@@ -46,9 +46,10 @@ namespace Joycollab.v2
         private AndroidJavaObject unityActivity;
         private AndroidJavaObject customObject;
         private AndroidJavaClass versionInfo;
-        private int sdk_int;
 
     #endif  // for android plugin
+
+        private int sdk_int;
 
 
     #region Unity functions
@@ -86,6 +87,10 @@ namespace Joycollab.v2
             versionInfo = new AndroidJavaClass("android.os.Build$VERSION");
             sdk_int = versionInfo.GetStatic<int>("SDK_INT");
             Debug.Log("current sdk_int : "+ sdk_int);
+
+        #else
+
+            sdk_int = 33;
 
         #endif
         }        
@@ -313,7 +318,10 @@ namespace Joycollab.v2
                     PopupBuilder.singleton.OpenConfirm(
                         LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "마이크 권한 요청", currentLocale),
                         LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "허용", currentLocale),
-                        () => Debug.Log($"{TAG} | 마이크 권한 요청 승인"),
+                        () => {
+                            Debug.Log($"{TAG} | 마이크 권한 요청 승인");
+                            func?.Invoke();
+                        },
                         LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "거부", currentLocale),
                         () => {
                             PopupBuilder.singleton.OpenAlert(
@@ -327,9 +335,156 @@ namespace Joycollab.v2
             else 
             {
                 Debug.Log($"{TAG} | 이미 승인된 권한 : 마이크 사용");
+                func?.Invoke();
             }
+        }
 
-            func?.Invoke();
+        public bool CheckReadStorageAsync() 
+        {
+            if (sdk_int >= 33) 
+            {
+                string[] permissions = {
+                    "android.permission.READ_MEDIA_AUDIO", 
+                    "android.permission.READ_MEDIA_IMAGES",
+                    "android.permission.READ_MEDIA_VIDEO"
+                };
+
+                bool hasAll = true;
+                foreach (string p in permissions) 
+                {
+                    if (! Permission.HasUserAuthorizedPermission(p)) 
+                    {
+                        hasAll = false;
+                        break;
+                    }
+                }
+
+                if (! hasAll) 
+                {
+                    Locale currentLocale = LocalizationSettings.SelectedLocale;
+                    PopupBuilder.singleton.OpenConfirm(
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "파일읽기 권한 요청", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "허용", currentLocale),
+                        () => {
+                            Debug.Log($"{TAG} | 파일 읽기 권한 요청 승인");
+                            Permission.RequestUserPermissions(permissions);
+                        },
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "거부", currentLocale),
+                        () => {
+                            PopupBuilder.singleton.OpenAlert(
+                                LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "파일읽기 권한 요청 거부", currentLocale)
+                            );
+                        }
+                    );
+
+                    return false;
+                }
+                else 
+                {
+                    Debug.Log($"{TAG} | sdk version ( >= 33 ), 파일 읽기 권한 모두를 허용함.");
+                    return true;
+                }
+            }
+            else 
+            {
+                if (! Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead))
+                {
+                    Locale currentLocale = LocalizationSettings.SelectedLocale;
+                    PopupBuilder.singleton.OpenConfirm(
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "파일읽기 권한 요청", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "허용", currentLocale),
+                        () => {
+                            Debug.Log($"{TAG} | 파일 읽기 권한 요청 승인");
+                            Permission.RequestUserPermission(Permission.ExternalStorageRead);
+                        },
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "거부", currentLocale),
+                        () => {
+                            PopupBuilder.singleton.OpenAlert(
+                                LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "파일읽기 권한 요청 거부", currentLocale)
+                            );
+                        }
+                    );
+
+                    return false;
+                }
+                else 
+                {
+                    Debug.Log($"{TAG} | sdk version ( < 33 ), 파일 읽기 권한 모두를 허용함.");
+                    return true;
+                }
+            }
+        }
+
+        public async UniTaskVoid CheckReadStorageAsync(System.Action func) 
+        {
+            await UniTask.DelayFrame(1);
+
+            if (! Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead))
+            {
+                Permission.RequestUserPermission(Permission.ExternalStorageRead);
+                await UniTask.Delay(100);
+                await UniTask.WaitUntil(() => Application.isFocused == true);
+
+                if (! Permission.HasUserAuthorizedPermission(Permission.ExternalStorageRead))
+                {
+                    Locale currentLocale = LocalizationSettings.SelectedLocale;
+                    PopupBuilder.singleton.OpenConfirm(
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "파일읽기 권한 요청", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "허용", currentLocale),
+                        () => {
+                            Debug.Log($"{TAG} | 파일 읽기 권한 요청 승인");
+                            func?.Invoke();
+                        },
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "거부", currentLocale),
+                        () => {
+                            PopupBuilder.singleton.OpenAlert(
+                                LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "파일읽기 권한 요청 거부", currentLocale)
+                            );
+                        }
+                    );
+                    return;
+                }                
+            }
+            else 
+            {
+                func?.Invoke();
+            }
+        }
+
+        public async UniTaskVoid CheckWriteStorageAsync(System.Action func) 
+        {
+            await UniTask.DelayFrame(1);
+
+            if (! Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
+            {
+                Permission.RequestUserPermission(Permission.ExternalStorageWrite);
+                await UniTask.Delay(100);
+                await UniTask.WaitUntil(() => Application.isFocused == true);
+
+                if (! Permission.HasUserAuthorizedPermission(Permission.ExternalStorageWrite))
+                {
+                    Locale currentLocale = LocalizationSettings.SelectedLocale;
+                    PopupBuilder.singleton.OpenConfirm(
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "파일쓰기 권한 요청", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "허용", currentLocale),
+                        () => {
+                            Debug.Log($"{TAG} | 파일 쓰기 권한 요청 승인");
+                            func?.Invoke();
+                        },
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "거부", currentLocale),
+                        () => {
+                            PopupBuilder.singleton.OpenAlert(
+                                LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "파일쓰기 권한 요청 거부", currentLocale)
+                            );
+                        }
+                    );
+                    return;
+                }                
+            }
+            else 
+            {
+                func?.Invoke();
+            }
         }
 
     #endregion  // android permission check

@@ -13,7 +13,7 @@ using TMPro;
 namespace Joycollab.v2 
 {
     [RequireComponent(typeof(TMP_InputField))]
-    public class ContentText: MonoBehaviour
+    public class ContentText : MonoBehaviour
     {
         private const string TAG = "ContentText";
         private const string HTTP = "http://";

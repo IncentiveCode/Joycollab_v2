@@ -1,13 +1,14 @@
 /// <summary>
 /// 자주 사용하는 string 값 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 18
-/// @version        : 0.4
+/// @last update    : 2023. 07. 31
+/// @version        : 0.5
 /// @update
 ///     v0.1 (2023. 03. 20) : 최초 생성. Scene 이름, LoginView, MobileView 이름 정리
 ///     v0.2 (2023. 04. 07) : Language, region 관련 상수 정리 
 ///     v0.3 (2023. 06. 28) : avatar state 값 정리
 ///     v0.4 (2023. 07. 18) : mobile navigation 값 추가
+///     v0.5 (2023. 07. 31) : subscription plan 값 추가
 /// </summary>
 
 namespace Joycollab.v2
@@ -326,8 +327,16 @@ namespace Joycollab.v2
         public const string ALARM_UPDATE_SPACE = "공간 배치 변경";
         public const string ALARM_UPDATE_SEAT = "멤버 배치 변경";
 
-
     #endregion  // alarm contents
 
+
+    #region plan
+
+        public const string PLAN_FREE = "무료 플랜";
+        public const string PLAN_BASIC = "베이직";
+        public const string PLAN_STANDARD = "스탠다드";
+        public const string PLAN_PREMIUM = "프리미엄";
+
+    #endregion  // plan
     }
 }

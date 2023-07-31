@@ -28,7 +28,8 @@ namespace Joycollab.v2
 
         private void Awake() 
         {
-            InitSingleton();
+            Debug.Log($"{TAG} | FCM 은 잠시 멈춤...");
+            // InitSingleton();
         }
 
         private void Start() 

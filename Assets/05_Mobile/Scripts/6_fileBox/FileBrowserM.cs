@@ -105,7 +105,7 @@ namespace Joycollab.v2
             _btnSearch.onClick.AddListener(() => Debug.Log($"{TAG} | search, {_inputSearch.text}"));
             _btnNewFolder.onClick.AddListener(() => Debug.Log($"{TAG} | create new folder."));
             _btnUpload.onClick.AddListener(() => Upload().Forget());
-            _btnPaste.onClick.AddListener(() => Debug.Log($"{TAG} | copy - paste."));
+            _btnPaste.onClick.AddListener(() => Paste().Forget());
 
 
             // set scroll view listener
@@ -309,37 +309,91 @@ namespace Joycollab.v2
             string section = "file";
             string[] fileTypes = new string[] { "*/*" };
 
-        #if UNITY_ANDROID || UNITY_IOS
+        #if UNITY_ANDROID
 
-            NativeFilePicker.Permission picker = NativeFilePicker.PickFile(
-                async (path) => { 
-                    if (! string.IsNullOrEmpty(path)) 
-                    {
-                        // string[] split = path.Split(Path.DirectorySeparatorChar);
-                        string[] split = path.Split('/');
-                        Debug.Log($"{TAG} | file name : {split[split.Length-1]}"); 
+            /**
+            bool hasAuth = AndroidLib.singleton.CheckReadStorageAsync();
+            if (hasAuth)
+            {
+                if (NativeFilePicker.IsFilePickerBusy()) 
+                {
+                    Debug.Log($"{TAG} | file picker is busy...");
+                    return;
+                }
 
-                        byte[] fileData = File.ReadAllBytes(path);
-                        form.Add(new MultipartFormFileSection(section, fileData, split[split.Length-1], fileTypes[0]));
-
-                        string token = R.singleton.token;
-                        int workspaceSeq = R.singleton.workspaceSeq;
-                        string url = string.Format(URL.FILE_LIST, workspaceSeq, currentSpaceSeq, currentPath);
-                        if (currentPath == "/") url = url.Replace("?folder=/", "");
-
-                        PsResponse<string> res = await NetworkTask.PostMultipartAsync<string>(url, form, token);
-                        if (string.IsNullOrEmpty(res.message)) 
+                NativeFilePicker.Permission picker = NativeFilePicker.PickFile(
+                    async (path) => { 
+                        if (! string.IsNullOrEmpty(path)) 
                         {
-                            OpenPath(currentSpaceSeq, currentPath).Forget();
+                            // string[] split = path.Split(Path.DirectorySeparatorChar);
+                            string[] split = path.Split('/');
+                            Debug.Log($"{TAG} | file name : {split[split.Length-1]}"); 
+
+                            byte[] fileData = File.ReadAllBytes(path);
+                            form.Add(new MultipartFormFileSection(section, fileData, split[split.Length-1], fileTypes[0]));
+
+                            string token = R.singleton.token;
+                            int workspaceSeq = R.singleton.workspaceSeq;
+                            string url = string.Format(URL.FILE_LIST, workspaceSeq, currentSpaceSeq, currentPath);
+                            if (currentPath == "/") url = url.Replace("?folder=/", "");
+
+                            PsResponse<string> res = await NetworkTask.PostMultipartAsync<string>(url, form, token);
+                            if (string.IsNullOrEmpty(res.message)) 
+                            {
+                                OpenPath(currentSpaceSeq, currentPath).Forget();
+                            }
+                            else 
+                            {
+                                PopupBuilder.singleton.OpenAlert(res.message);
+                            }
                         }
-                        else 
+                    },
+                    fileTypes
+                );
+            }
+             */
+
+            AndroidLib.singleton.CheckReadStorageAsync(async () => {
+                if (NativeFilePicker.IsFilePickerBusy()) 
+                {
+                    Debug.Log($"{TAG} | file picker is busy...");
+                    return;
+                }
+
+                NativeFilePicker.Permission permission = await NativeFilePicker.RequestPermissionAsync(false);
+                Debug.Log($"{TAG} | Permission result : "+ permission);
+
+                NativeFilePicker.Permission picker = NativeFilePicker.PickFile(
+                    async (path) => { 
+                        if (! string.IsNullOrEmpty(path)) 
                         {
-                            PopupBuilder.singleton.OpenAlert(res.message);
+                            // string[] split = path.Split(Path.DirectorySeparatorChar);
+                            string[] split = path.Split('/');
+                            Debug.Log($"{TAG} | file name : {split[split.Length-1]}"); 
+
+                            byte[] fileData = File.ReadAllBytes(path);
+                            form.Add(new MultipartFormFileSection(section, fileData, split[split.Length-1], fileTypes[0]));
+
+                            string token = R.singleton.token;
+                            int workspaceSeq = R.singleton.workspaceSeq;
+                            string url = string.Format(URL.FILE_LIST, workspaceSeq, currentSpaceSeq, currentPath);
+                            if (currentPath == "/") url = url.Replace("?folder=/", "");
+
+                            PsResponse<string> res = await NetworkTask.PostMultipartAsync<string>(url, form, token);
+                            if (string.IsNullOrEmpty(res.message)) 
+                            {
+                                OpenPath(currentSpaceSeq, currentPath).Forget();
+                            }
+                            else 
+                            {
+                                PopupBuilder.singleton.OpenAlert(res.message);
+                            }
                         }
-                    }
-                },
-                fileTypes
-            );
+                    },
+                    fileTypes
+                );
+
+            }).Forget();
 
         #elif UNITY_EDITOR
 
@@ -370,6 +424,69 @@ namespace Joycollab.v2
             }
         
         #endif
+        }
+
+        // 실험용 함수
+        private async UniTaskVoid Paste()
+        {
+            // 권한 체크
+            bool privateFolder = (currentSpaceSeq == -1);
+            bool auth = privateFolder ? true : R.singleton.CheckHasAuth(currentSpaceSeq, S.AUTH_UPLOAD_FILE);
+            if (! auth) 
+            {
+                Locale currentLocale = LocalizationSettings.SelectedLocale;
+                PopupBuilder.singleton.OpenAlert(
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "권한오류 (파일 업로드)", currentLocale)
+                );
+
+                await UniTask.Yield();
+                return;
+            }
+
+            List<IMultipartFormSection> form = new List<IMultipartFormSection>();
+            string section = "file";
+            string[] fileTypes = new string[] { "*/*" };
+
+            AndroidLib.singleton.CheckWriteStorageAsync(async () => {
+                if (NativeFilePicker.IsFilePickerBusy()) 
+                {
+                    Debug.Log($"{TAG} | file picker is busy...");
+                    return;
+                }
+
+                NativeFilePicker.Permission permission = await NativeFilePicker.RequestPermissionAsync(false);
+                Debug.Log($"{TAG} | Permission result : "+ permission);
+
+                NativeFilePicker.Permission picker = NativeFilePicker.PickFile(
+                    async (path) => { 
+                        if (! string.IsNullOrEmpty(path)) 
+                        {
+                            // string[] split = path.Split(Path.DirectorySeparatorChar);
+                            string[] split = path.Split('/');
+                            Debug.Log($"{TAG} | file name : {split[split.Length-1]}"); 
+
+                            byte[] fileData = File.ReadAllBytes(path);
+                            form.Add(new MultipartFormFileSection(section, fileData, split[split.Length-1], fileTypes[0]));
+
+                            string token = R.singleton.token;
+                            int workspaceSeq = R.singleton.workspaceSeq;
+                            string url = string.Format(URL.FILE_LIST, workspaceSeq, currentSpaceSeq, currentPath);
+                            if (currentPath == "/") url = url.Replace("?folder=/", "");
+
+                            PsResponse<string> res = await NetworkTask.PostMultipartAsync<string>(url, form, token);
+                            if (string.IsNullOrEmpty(res.message)) 
+                            {
+                                OpenPath(currentSpaceSeq, currentPath).Forget();
+                            }
+                            else 
+                            {
+                                PopupBuilder.singleton.OpenAlert(res.message);
+                            }
+                        }
+                    },
+                    fileTypes
+                );
+            }).Forget();
         }
 
     #endregion  // for list 
