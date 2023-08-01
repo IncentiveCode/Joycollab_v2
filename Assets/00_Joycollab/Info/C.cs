@@ -1,10 +1,11 @@
 /// <summary>
 /// 자주 사용하는 color 값 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 04. 14
-/// @version        : 0.1
+/// @last update    : 2023. 07. 31 
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 04. 14) : 최초 생성. 상태 색상, 버튼 색상 정리  
+///     v0.2 (2023. 07. 31) : Plan 색상 추가.
 /// </summary>
 
 using UnityEngine;
