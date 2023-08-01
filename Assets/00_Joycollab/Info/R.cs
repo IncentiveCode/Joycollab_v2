@@ -63,6 +63,12 @@ namespace Joycollab.v2
             dictPart.Clear();
         }
 
+        public void Init() 
+        {
+            Debug.Log($"{TAG} | Init() call.");
+            Clear();
+        }
+
         public void Clear() 
         {
             // cookie delete

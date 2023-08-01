@@ -1,11 +1,12 @@
 /// <summary>
 /// View ID 값 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 16
-/// @version        : 0.2
+/// @last update    : 2023. 08. 01
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 04. 19) : 최초 생성. 기존 Joycollab 에서 사용하는 ID 와 Mobile View ID 정리
 ///     v0.2 (2023. 06. 16) : Mobile Seminar 관련 ID 추가
+///     v0.3 (2023. 08. 01) : 언어 ID 추가
 /// </summary>
 
 namespace Joycollab.v2
@@ -81,6 +82,15 @@ namespace Joycollab.v2
 		// ---------- ---------- ----------
 		// UI Window List - Multi Window, ID 는 그 때 그 때 추가 배정.
 		public const int LOBBY_WAITING = 40;
+
+
+	#region Language ID
+
+		public const int LANGUAGE_KOREAN = 0;
+		public const int LANGUAGE_ENGLISH = 1;
+		public const int LANGUAGE_JAPANESE = 2;
+
+	#endregion	// Language ID
 
 
 	#region MobileScene ID
