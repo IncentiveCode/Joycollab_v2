@@ -202,6 +202,8 @@ namespace Joycollab.v2
         public const string TRUE = "true";
         public const string FALSE = "false";
         public const string WORLD = "world";
+        public const string EDITOR = "editor";
+        public const string SYSTEM_UPDATE_CODE = "gansini88";
         public const string WORKSPACE = "workspace";
         public const string WORKSPACE_MOBILE = "workspace_app";
         public const string SEMINAR = "세미나";

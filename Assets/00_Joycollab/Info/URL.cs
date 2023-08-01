@@ -1,8 +1,8 @@
 /// <summary>
 /// NetworkTask 를 위한 API URL 정리 문서 
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 07
-/// @version        : 0.9
+/// @last update    : 2023. 08. 01
+/// @version        : 1.0
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리
 ///     v0.2 (2023. 03. 20) : Tray app 관련 URL 추가
@@ -13,6 +13,7 @@
 ///     v0.7 (2023. 07. 03) : Joycollab 에서 사용하던 URL 정리. (UserApi - OKR)
 ///     v0.8 (2023. 07. 06) : Joycollab 에서 사용하던 URL 정리. (UserApi - Board)
 ///     v0.9 (2023. 07. 07) : Joycollab 에서 사용하던 URL 정리. (UserApi - Bookmark)
+///     v1.0 (2023. 08. 01) : Joycollab 에서 사용하던 URL 정리. (UserApi - Attendance)
 /// </summary>
 
 #define DEV // Dev Server
@@ -1255,6 +1256,67 @@ namespace Joycollab.v2
         ///     {1} : filter type (1. 개인, 2. 부서, 3. 전사) 
         /// </summary>
         public const string REGIST_OBJECTIVE = SERVER_PATH +"/api/okr/o/{0}/{1}";
+
+
+        // ---------- ---------- ----------
+        // 16. Attendance API
+
+        /// <summary>
+        /// desc : 특정 근태 기록 삭제
+        /// method : delete
+        /// param 
+        ///     {0} : member seq
+        ///     {1} : attendance seq
+        /// </summary>
+        public const string DELETE_ATTENDANCE = SERVER_PATH +"/api/attendance/{0}/{1}";
+
+        /// <summary>
+        /// desc : 근태 기록 조회
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : search range
+        ///     {2} : space seq
+        ///     {3} : target member seq
+        ///     {4} : start date
+        ///     {5} : end date
+        /// </summary>
+        public const string GET_ATTENDANCE_LIST = SERVER_PATH +"/api/attendance/{0}/{1}/{2}/{3}/{4}/{5}";
+
+        /// <summary>
+        /// desc : 근태 기록 입력 
+        /// method : post
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : target member seq
+        /// </summary>
+        public const string CREATE_ATTENDANCE = SERVER_PATH +"/api/attendance/{0}/{1}";  
+
+        /// <summary>
+        /// desc : 근태 기록 수정
+        /// method : patch
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : target member seq
+        ///     {2} : attendance seq
+        /// </summary>
+        public const string MODIFY_ATTENDANCE = SERVER_PATH +"/api/attendance/{0}/{1}/{2}";
+
+        /// <summary>
+        /// desc : 출근 체크
+        /// method : post
+        /// param
+        ///     {0} : workspace seq
+        /// </summary>
+        public const string ENTER_WORK = SERVER_PATH +"/api/attendance/goToWork/{0}";
+
+        /// <summary>
+        /// desc : 퇴근 체크
+        /// method : patch
+        /// param
+        ///     {0} : workspace seq
+        /// </summary>
+        public const string LEAVE_WORK = SERVER_PATH +"/api/attendance/leaveWork/{0}";
 
     #endregion
     }

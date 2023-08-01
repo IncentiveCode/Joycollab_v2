@@ -1,11 +1,12 @@
 /// <summary>
 /// Button 을 꾸미는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 03. 23
-/// @version        : 0.2
+/// @last update    : 2023. 08. 01
+/// @version        : 0.3
 /// @update         :
 ///     v0.1 : 최초 생성.
 /// 	v0.2 (2023. 03. 23) : TMP 대신 Legacy Text 를 사용하도록 수정.
+/// 	v0.3 (2023. 08. 01) : 기존에 사용하던 Tooltip, WorldTooltip 관련 정보 적용.
 /// </summary>
 
 using System;
@@ -39,6 +40,7 @@ namespace Joycollab.v2
 	[RequireComponent(typeof(Button))]
 	public class Decoratable : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler
 	{
+		private const string TAG = "Decoratable";
 		private Button btn;
 
         [SerializeField] private eDecoratableType _type;
@@ -48,17 +50,21 @@ namespace Joycollab.v2
 
 	 	[Header("tooltip")]
 		[SerializeField] private GameObject _goTooltip;
+		[SerializeField] private GameObject _goWorldTooltip;
 		[SerializeField] private eTooltipAnchor _anchor;
 		[SerializeField] private string _strKey;
 		[SerializeField] private bool _isOverride;
 		private GameObject instTooltip;
 		// private Tooltip csTooltip;
+		private GameObject instWorldTooltip;
+		// private Tooltip csWorldTooltip;
 
 	 	[Header("type : Swap Text style")]
 		[SerializeField] private SwapTextProperty[] _textProperties;
 
 
 	#region Unity functions
+
 		private void Awake() 
 		{
 			btn = GetComponent<Button>();
@@ -89,17 +95,25 @@ namespace Joycollab.v2
 
 				case eDecoratableType.TooltipOnly :
 					MakeTooltip(_strKey, _anchor);
+					SetTooltip(false);
+					break;
+
+				case eDecoratableType.WorldTooltip :
+					MakeWorldTooltip(_anchor);
+					SetWorldTooltip(false);
 					break;
 
 				default :
-                    Debug.LogWarning("Decoratable | Start() - 타입이 지정되지 않은 Object. name : "+ gameObject.name);
+                    Debug.LogWarning($"{TAG} | Start() - 타입이 지정되지 않은 Object. name : {gameObject.name}");
 					break;
 			}
 		}
+
 	#endregion
 
 
 	#region Private functions
+
 		private void SetImage(bool isEnter) 
 		{
 			if (_properties.Length == 0) return;
@@ -159,10 +173,44 @@ namespace Joycollab.v2
 				txt.fontStyle = isEnter ? styleOn : style;
 			}
 		}
+
+		private void MakeWorldTooltip(eTooltipAnchor anchor) 
+		{
+			/**
+			if (instWorldTooltip == null || csTooltip == null) 
+			{
+				instWorldTooltip = Instantiate(_goWorldTooltip, Vector3.zero, Quaternion.identity);
+				instWorldTooltip.transform.SetParent(this.transform, false);
+				csWorldTooltip = instWorldTooltip.GetComponent<Tooltip>();
+			}
+
+			csWorldTooltip.Init(anchor, _isOverride);
+			csWorldTooltip.Active(false);
+			 */
+		}
+
+		private void SetWorldTooltip(bool isEnter) 
+		{
+			/**
+			csWorldTooltip.Active(isEnter);
+			 */
+		}
+
+		public void SetKey(string key) 
+		{
+			if (string.IsNullOrEmpty(key)) return;
+
+			/**
+			_strKey = $"Mobile.{key}";
+			csWorldTooltip.SetKey(_strKey);
+			 */
+		}
+
 	#endregion
 		
 
 	#region Interface functions implementation
+
 		public void OnPointerEnter(PointerEventData data) 
 		{
 			switch (_type) 
@@ -198,12 +246,15 @@ namespace Joycollab.v2
 					break;
 
 				case eDecoratableType.TooltipOnly :
-					if (btn.interactable) 
-						SetTooltip(true);
+					if (btn.interactable) SetTooltip(true);
+					break;
+
+				case eDecoratableType.WorldTooltip :
+					if (btn.interactable) SetWorldTooltip(true);
 					break;
 
 				default :
-                    Debug.LogWarning("Decoratable | OnPointerEnter() - 타입이 지정되지 않은 Object. name : "+ gameObject.name);
+                    Debug.LogWarning($"{TAG} | OnPointerEnter(), 타입이 지정되지 않은 Object. name : {gameObject.name}");
 					break;
 			}
 		}
@@ -234,11 +285,16 @@ namespace Joycollab.v2
 					SetTooltip(false);
 					break;
 
+				case eDecoratableType.WorldTooltip :
+					SetWorldTooltip(false);
+					break;
+
 				default :
-                    Debug.LogWarning("Decoratable | OnPointerExit() - 타입이 지정되지 않은 Object. name : "+ gameObject.name);
+                    Debug.LogWarning($"{TAG} | OnPointerExit(), 타입이 지정되지 않은 Object. name : {gameObject.name}");
 					break;
 			}
 		}
+
 	#endregion
 	}
 }

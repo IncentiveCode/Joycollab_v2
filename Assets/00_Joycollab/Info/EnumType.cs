@@ -131,6 +131,7 @@ namespace Joycollab.v2
         ChangeTextStyle,        // 텍스트만 변경할 때.
         Both,                   // 두 가지 다 변경할 때.
         TooltipOnly,            // 툴팁만.
+        WorldTooltip,           // 월드 캔버스에서 툴팁.
     }
 
 
