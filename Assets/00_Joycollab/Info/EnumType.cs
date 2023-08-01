@@ -1,11 +1,12 @@
 /// <summary>
 /// 열거형 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 18
-/// @version        : 0.2
+/// @last update    : 2023. 08. 01
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리.
 ///     v0.2 (2023. 07. 18) : Xmpp type, Webview type 추가.
+///     v0.3 (2023. 08. 01) : Plan type 추가.
 /// </summary>
 
 namespace Joycollab.v2
@@ -243,5 +244,14 @@ namespace Joycollab.v2
     public enum eSortingType
     {
         Static, Update
+    }
+
+
+    /// <summary>
+    /// subscription plan type
+    /// </summary>
+    public enum ePlanType 
+    {
+        Free, Basic, Standard, Premium, Trial, Custom
     }
 }

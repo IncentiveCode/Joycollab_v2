@@ -1,16 +1,15 @@
 /// <summary>
 /// Plan data 를 받아서 출력하는 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 31
-/// @version        : 0.1
+/// @last update    : 2023. 08. 01
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 07. 31) : 최초 생성
+///     v0.2 (2023. 08. 01) : Init() 할 때, localize string key 를 전달하는 형태로 변경.
 /// </summary>
 
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Localization;
-using UnityEngine.Localization.Settings;
 
 namespace Joycollab.v2
 {
@@ -35,7 +34,6 @@ namespace Joycollab.v2
         [SerializeField] private GameObject _goContent;
 
         // local variable
-        private Locale currentLocale;
         private Color color;
 
 
@@ -76,7 +74,7 @@ namespace Joycollab.v2
             });
         }
 
-        private void Start() 
+        private void OnEnable() 
         {
             Parse(_planFree);
         }
@@ -88,7 +86,6 @@ namespace Joycollab.v2
 
         public void Parse(PlanData data) 
         {
-            currentLocale = LocalizationSettings.SelectedLocale;
             color = data.PlanColor;
 
             ClearContent();
@@ -103,8 +100,7 @@ namespace Joycollab.v2
         private void CreateContentBlock(string key) 
         {
             GameObject c = Instantiate(_goContent, Vector3.zero, Quaternion.identity);
-            string text = LocalizationSettings.StringDatabase.GetLocalizedString("Sentences", key, currentLocale);
-            c.GetComponent<PlanContent>().Init(color, text);
+            c.GetComponent<PlanContent>().Init(color, key);
             c.transform.SetParent(_transform, false);
         }
 
