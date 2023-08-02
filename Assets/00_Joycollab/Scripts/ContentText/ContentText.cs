@@ -1,10 +1,12 @@
 /// <summary>
 /// 게시판, 공지사항 등의 텍스트를 제어하는 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 14
-/// @version        : 0.1
+/// @last update    : 2023. 08. 02 
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 07. 14) : 최초 생성
+///     v0.2 (2023. 08. 02) : unity webgl input library 업데이트 되어서, copy & paste 기능 적용됨.
+///                           기존 Update() 제거.
 /// </summary>
 
 using UnityEngine;
@@ -25,6 +27,7 @@ namespace Joycollab.v2
     
     #region Unity functions
 
+        /**
         private void Update() 
         {
             if (string.IsNullOrEmpty(selectedString)) return;
@@ -46,6 +49,7 @@ namespace Joycollab.v2
                 }
             }
         }
+         */
 
     #endregion  // Unity functions
 
