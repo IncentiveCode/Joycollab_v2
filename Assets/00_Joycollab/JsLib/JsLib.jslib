@@ -1,8 +1,8 @@
 var JsLib = {
 
 	psGetCookie : function(namePtr) {
-		var ret = "";
-		var name = UTF8ToString(namePtr) + "=";
+		var ret = '';
+		var name = UTF8ToString(namePtr) + '=';
 		var decodedCookie = decodeURIComponent(document.cookie);
 		var ca = decodedCookie.split(';');
 		
@@ -26,8 +26,8 @@ var JsLib = {
 	psSetCookie : function(namePtr, valuePtr) {
 		var d = new Date();
 		d.setTime(d.getTime() + (360 * 24 * 60 * 60 * 1000));
-		var expires = "expires="+ d.toUTCString();
-		document.cookie = UTF8ToString(namePtr) +"="+ UTF8ToString(valuePtr) +";"+ expires +"; path=/";
+		var expires = 'expires='+ d.toUTCString();
+		document.cookie = UTF8ToString(namePtr) +'='+ UTF8ToString(valuePtr) +';'+ expires +'; path=/';
 	},
 
 	psAlert : function(messagePtr) {
@@ -53,18 +53,18 @@ var JsLib = {
 		var language = navigator.language;
 		if (language != null) {
 			language = language.toLowerCase().substring(0, 2);
-			if (language != "ko") language = "en";
+			if (language != 'ko') language = 'en';
 		}
 		else {
-			language = "ko";
+			language = 'ko';
 		}
 
 		var userAgent = navigator.userAgent.toLowerCase();
-		if (userAgent.indexOf("chrome") !== -1) {
-			var result = "true|"+ language;
+		if (userAgent.indexOf('chrome') !== -1) {
+			var result = 'true|'+ language;
 		}
 		else {
-			var result = "false|"+ language;
+			var result = 'false|'+ language;
 		}
 
 		SendMessage(gameObjectName, methodName, result);
@@ -77,41 +77,41 @@ var JsLib = {
 		// os, user agent check
 		var os, ua = navigator.userAgent;
 		if (ua.match(/Win(dows )?NT 6\.0/)) {
-        	os = "Windows Vista";
+        	os = 'Windows Vista';
     	} else if (ua.match(/Win(dows )?(NT 5\.1|XP)/)) {
-        	os = "Windows XP";
+        	os = 'Windows XP';
     	} else {
-			if ((ua.indexOf("Windows NT 5.1") != -1) || (ua.indexOf("Windows XP") != -1)) {
-				os = "Windows XP";
-			} else if ((ua.indexOf("Windows NT 7.0") != -1) || (ua.indexOf("Windows NT 6.1") != -1)) {
-				os = "Windows 7";
-			} else if ((ua.indexOf("Windows NT 8.0") != -1) || (ua.indexOf("Windows NT 6.2") != -1)) {
-				os = "Windows 8";
-			} else if ((ua.indexOf("Windows NT 8.1") != -1) || (ua.indexOf("Windows NT 6.3") != -1)) {
-				os = "Windows 8.1";
-			} else if ((ua.indexOf("Windows NT 10.0") != -1) || (ua.indexOf("Windows NT 6.4") != -1)) {
-				os = "Windows 10";
-			} else if ((ua.indexOf("iPad") != -1) || (ua.indexOf("iPhone") != -1) || (ua.indexOf("iPod") != -1)) {
-				os = "Apple iOS";
-			} else if (ua.indexOf("Android") != -1) {
-				os = "Android OS";
+			if ((ua.indexOf('Windows NT 5.1') != -1) || (ua.indexOf('Windows XP') != -1)) {
+				os = 'Windows XP';
+			} else if ((ua.indexOf('Windows NT 7.0') != -1) || (ua.indexOf('Windows NT 6.1') != -1)) {
+				os = 'Windows 7';
+			} else if ((ua.indexOf('Windows NT 8.0') != -1) || (ua.indexOf('Windows NT 6.2') != -1)) {
+				os = 'Windows 8';
+			} else if ((ua.indexOf('Windows NT 8.1') != -1) || (ua.indexOf('Windows NT 6.3') != -1)) {
+				os = 'Windows 8.1';
+			} else if ((ua.indexOf('Windows NT 10.0') != -1) || (ua.indexOf('Windows NT 6.4') != -1)) {
+				os = 'Windows 10';
+			} else if ((ua.indexOf('iPad') != -1) || (ua.indexOf('iPhone') != -1) || (ua.indexOf('iPod') != -1)) {
+				os = 'Apple iOS';
+			} else if (ua.indexOf('Android') != -1) {
+				os = 'Android OS';
 			} else if (ua.match(/Win(dows )?NT( 4\.0)?/)) {
-				os = "Windows NT";
+				os = 'Windows NT';
 			} else if (ua.match(/Mac|PPC/)) {
-				os = "Mac OS";
+				os = 'Mac OS';
 			} else if (ua.match(/Linux/)) {
-				os = "Linux";
+				os = 'Linux';
 			} else if (ua.match(/(Free|Net|Open)BSD/)) {
-				os = RegExp.$1 + "BSD";
+				os = RegExp.$1 + 'BSD';
 			} else if (ua.match(/SunOS/)) {
-				os = "Solaris";
+				os = 'Solaris';
 			}
 		}
-		if (os.indexOf("Windows") != -1) {
-			if (navigator.userAgent.indexOf("WOW64") > -1 || navigator.userAgent.indexOf("Win64") > -1) {
-				os += " 64bit";
+		if (os.indexOf('Windows') != -1) {
+			if (navigator.userAgent.indexOf('WOW64') > -1 || navigator.userAgent.indexOf('Win64') > -1) {
+				os += ' 64bit';
 			} else {
-				os += " 32bit";
+				os += ' 32bit';
 			}
 		}	
 
@@ -138,21 +138,23 @@ var JsLib = {
 			}
 
 			if (chk500 && chk1000) {
-				SendMessage(gameObjectName, methodName, "false");
+				SendMessage(gameObjectName, methodName, 'false');
 			}
 			else {
-				SendMessage(gameObjectName, methodName, "true");
+				SendMessage(gameObjectName, methodName, 'true');
 			}
 		}, 1000);
 	},
 
 	psSetTextUI : function(isOn) {
-		var instance = document.getElementById("unity-canvas");
+		var instance = document.getElementById('unity-canvas');
 		if (isOn) {
-			instance.style.minWidth = "1800px";
+			window.addEventListener('resize', setMinWidth)
+			instance.style.minWidth = '1800px';
 		}
 		else {
-			instance.style.minWidth = "";
+			window.removeEventListener('resize', setMinWidth)
+			instance.style.minWidth = '';
 		}
 	},
 
@@ -161,29 +163,29 @@ var JsLib = {
 
 		if (navigator.clipboard && navigator.clipboard.writeText) {
             navigator.clipboard.writeText(toCopy).then(function () {
-                console.debug("Copied to clipboard navigator: " + toCopy);
+                console.debug('Copied to clipboard navigator: ' + toCopy);
             }, function (error) {
-                console.error("Failed to copy to clipboard navigator", error);
+                console.error('Failed to copy to clipboard navigator', error);
             });
         } else {
-            const textArea = document.createElement("textarea");
+            const textArea = document.createElement('textarea');
             textArea.value = toCopy;
 
             // Avoid scrolling to bottom
-            textArea.style.top = "0";
-            textArea.style.left = "0";
-            textArea.style.position = "fixed";
+            textArea.style.top = '0';
+            textArea.style.left = '0';
+            textArea.style.position = 'fixed';
 
             document.body.appendChild(textArea);
             textArea.focus();
             textArea.select();
 
             try {
-                const successful = document.execCommand("copy");
-                const msg = successful ? "successful" : "unsuccessful";
-                console.debug("Fallback: Copying text command was ", msg);
+                const successful = document.execCommand('copy');
+                const msg = successful ? 'successful' : 'unsuccessful';
+                console.debug('Fallback: Copying text command was ', msg);
             } catch (err) {
-                console.error("Fallback: Unable to copy", err);
+                console.error('Fallback: Unable to copy', err);
             }
 
             document.body.removeChild(textArea);
@@ -195,7 +197,7 @@ var JsLib = {
 		var url = UTF8ToString(urlPtr);
 		var receivedMethodName = UTF8ToString(receivedMethodNamePtr);
 
-		var pop = window.open(url, "", "width=500,height=545,left=400,top=400,alwaysReised=yes");
+		var pop = window.open(url, '', 'width=500,height=545,left=400,top=400,alwaysReised=yes');
 		window.funcStopRinging = function() {
             SendMessage(gameObjectName, receivedMethodName);
         }
@@ -208,7 +210,7 @@ var JsLib = {
 		var url = UTF8ToString(urlPtr);
 		var doneMethodName = UTF8ToString(doneMethodNamePtr);
 
-		var pop = window.open(url, "payment", "width=460,height=580,left=400,top=400,alwaysReised=yes");
+		var pop = window.open(url, 'payment', 'width=460,height=580,left=400,top=400,alwaysReised=yes');
 		window.PaymentDone = function() {
             SendMessage(gameObjectName, doneMethodName);
         }
@@ -221,7 +223,7 @@ var JsLib = {
 		var url = UTF8ToString(urlPtr);
 		var callbackMethodName = UTF8ToString(callbackMethodNamePtr);
 
-		var pop = window.open(url, "", "width=1280,height=960,left=400,top=400,alwaysReised=yes");
+		var pop = window.open(url, '', 'width=1280,height=960,left=400,top=400,alwaysReised=yes');
 		window.funcRefreshing = function() {
             SendMessage(gameObjectName, callbackMethodName);
 		}
@@ -233,14 +235,14 @@ var JsLib = {
 		var url = UTF8ToString(urlPtr);
 
 		if (! this.chat) { 
-            this.chat = window.open(url, "chat", "width=650,height=700,left=400,top=400,alwaysReised=yes");
+            this.chat = window.open(url, 'chat', 'width=650,height=700,left=400,top=400,alwaysReised=yes');
             if (targetSeq != 0) {
                 this.chat.postMessage({ mseq: targetSeq }, url);
             }
         }
         else {
             if (this.chat.closed) {
-                this.chat = window.open(url, "chat", "width=650,height=700,left=400,top=400,alwaysReised=yes");
+                this.chat = window.open(url, 'chat', 'width=650,height=700,left=400,top=400,alwaysReised=yes');
                 if (targetSeq != 0) {
                     this.chat.postMessage({ mseq: targetSeq }, url);
                 }
@@ -264,14 +266,14 @@ var JsLib = {
 		var gameObjectName = UTF8ToString(gameObjectNamePtr);
 		var closeMethodName = UTF8ToString(closeMethodNamePtr);
 
-		var tempInput = document.getElementById("unity-webview-msg");
+		var tempInput = document.getElementById('unity-webview-msg');
         if (tempInput) {
             document.body.removeChild(tempInput);
         }
 
-        var tempInput = document.createElement("input");
-        tempInput.setAttribute("id", "unity-webview-msg");
-        tempInput.setAttribute("type", "hidden");
+        var tempInput = document.createElement('input');
+        tempInput.setAttribute('id', 'unity-webview-msg');
+        tempInput.setAttribute('type', 'hidden');
         tempInput.onchange = function() {
             SendMessage(gameObjectName, closeMethodName);
         }
