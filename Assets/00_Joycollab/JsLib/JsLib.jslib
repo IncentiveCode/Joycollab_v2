@@ -279,6 +279,21 @@ var JsLib = {
         }
         document.body.appendChild(tempInput);
 	},
+
+	psGetLocation : function(gameObjectNamePtr, callbackMethodNamePtr) {
+		var gameObjectName = UTF8ToString(gameObjectNamePtr);
+		var callbackMethodName = UTF8ToString(callbackMethodNamePtr);
+
+		navigator.geolocation.getCurrentPosition(
+			function(position) {
+				var data = position.coords.latitude +'|'+ position.coords.longitude;
+				SendMessage(gameObjectName, callbackMethodName, data);
+			},
+			function(error) {
+				SendMessage(gameObjectName, callbackMethodName, error.toString());
+			}
+		);
+	},
 }
 
 mergeInto(LibraryManager.library, JsLib);

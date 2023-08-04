@@ -1,8 +1,8 @@
 ﻿/// <summary>
 /// PitchSolution - javascript library 
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 27 
-/// @version        : 0.6
+/// @last update    : 2023. 08. 04 
+/// @version        : 0.7
 /// @update
 ///     v0.1 (2023. 02. 22) : Joycollab 에서 사용하던 클래스 정리 및 통합.
 ///     v0.2 (2023. 02. 28) : unity 2021.3.13f1 으로 업그레이드 후, windows 에서 build 안되는 문제 해결. (한글 주석이 원인으로 보임)
@@ -11,6 +11,7 @@
 ///                         copyToClipboard() 추가. 참고 : https://pudding-entertainment.medium.com/unity-webgl-add-a-share-button-93831b3555e9
 ///     v0.5 (2023. 07. 19) : Joycollab 에서 사용하던 popup 관련 클래스 정리 및 통합.
 ///     v0.6 (2023. 07. 26) : ConnectInnerWebview() 의 오류로 인해 빌드 실패하는 문제 해결.
+///     v0.7 (2023. 08. 04) : 
 /// </summary>
 
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -99,6 +100,14 @@ namespace Joycollab.v2
         public static extern void psConnectInnerWebview(string gameObjectName, string closeMethodName);
 
     #endregion  // popup, webview
+
+
+    #region location
+
+        [DllImport("__Internal")] 
+        public static extern void psGetLocation(string gameObjectName, string callbackMethodName);
+
+    #endregion  // location
 
 #else
 
@@ -197,6 +206,17 @@ namespace Joycollab.v2
 
     #endregion  // popup, webview
 
+
+    #region location
+
+        public static void psGetLocation(string gameObjectName, string callbackMethodName)
+        {
+            string result = $"editor|위치 정보를 가지고 오지 못함.";
+            GameObject.Find(gameObjectName).SendMessage(callbackMethodName, result);
+        }
+
+    #endregion  // location
+
 #endif
     }
 
@@ -273,5 +293,12 @@ namespace Joycollab.v2
         public static void ConnectInnerWebview(string gameObjectName, string closeMethodName) => JsLibPlugin.psConnectInnerWebview(gameObjectName, closeMethodName);
 
     #endregion  // popup, webview
+
+
+    #region location
+
+        public static void GetLocation(string gameObjectName, string callbackMethodName) => JsLibPlugin.psGetLocation(gameObjectName, callbackMethodName);
+
+    #endregion  // location
     }
 }
