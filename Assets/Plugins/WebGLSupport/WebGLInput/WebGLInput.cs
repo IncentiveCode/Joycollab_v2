@@ -177,7 +177,8 @@ namespace WebGLSupport
             var rect = GetElemetRect();
             bool isPassword = input.contentType == ContentType.Password;
 
-            var fontSize = Mathf.Max(14, input.fontSize); // limit font size : 14 !!
+            // var fontSize = Mathf.Max(14, input.fontSize); // limit font size : 14 !!
+            var fontSize = input.fontSize; 
 
             // モバイルの場合、強制表示する
             var isHidden = !(showHtmlElement || Application.isMobilePlatform);

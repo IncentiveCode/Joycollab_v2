@@ -50,12 +50,19 @@ var WebGLInput = {
 			input.style.fontSize = fontsize + "px";
 		}
 
-		input.style.outlineWidth = 1 + 'px';
-		input.style.opacity = isHidden?0:1;
+		// input.style.outlineWidth = 1 + 'px';
+		input.style.opacity = isHidden ? 0 : 1;
 		input.style.resize = 'none'; // for textarea
-		input.style.padding = '0px 1px';
+		// input.style.padding = '0px 1px';
 		input.style.cursor = "default";
 		input.style.touchAction = 'manipulation'; // for mobile
+
+		// HJ Lee. option added.
+		input.style.outlineWidth = 0 + 'px';
+		input.style.padding = '5px 8px 4px 8px';
+		input.style.fontFamily = 'Pretendard';
+		input.style.border = 0 + 'px';
+		input.style.background = '#F5F5F5';
 
 		input.spellcheck = false;
 		input.value = UTF8ToString(text);
