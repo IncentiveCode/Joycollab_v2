@@ -2,8 +2,8 @@
 /// [PC Web]
 /// 특정 회사 사용자 Login 화면
 /// @author         : HJ Lee
-/// @last update    : 2023. 05. 10
-/// @version        : 0.6
+/// @last update    : 2023. 08. 09
+/// @version        : 0.7
 /// @update
 ///     v0.1 : UI Canvas 최적화 (static canvas, active canvas 분리)
 ///     v0.2 (2023. 02. 02) : Unitask 적용.
@@ -12,6 +12,7 @@
 ///     v0.5 (2023. 04. 14) : Popup Builder 적용
 ///                 Strings class 에 몰아넣은 문자열들도 필요한 부분에서 사용할 수 있도록 분리. (S, Key, NetworkTask class, and etc) 
 ///     v0.6 (2023. 05. 10) : FixedView 적용
+///     v0.7 (2023. 08. 04) : InputSubmitDetector -> TmpInputField 로 변경. 
 /// </summary>
 
 using UnityEngine;
@@ -19,6 +20,7 @@ using UnityEngine.UI;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
+using TMPro;
 
 namespace Joycollab.v2
 {
@@ -37,8 +39,8 @@ namespace Joycollab.v2
         [SerializeField] private Text _txtGreetings;
 
         [Header("InputField")] 
-        [SerializeField] private InputSubmitDetector _inputId;
-        [SerializeField] private InputSubmitDetector _inputPw;
+        [SerializeField] private TMP_InputField _inputId;
+        [SerializeField] private TMP_InputField _inputPw;
 
         [Header("Button, Toggle")] 
         [SerializeField] private Button _btnBack;
@@ -66,6 +68,9 @@ namespace Joycollab.v2
 
         private void Update() 
         {
+            /**
+            // HJ Lee. 2023. 08. 04. 업그레이드 된 webgl input 은 복사 붙여넣기가 가능.
+
             // ctrl-c + ctrl-v
             if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) ||
                 Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightCommand))
@@ -91,6 +96,7 @@ namespace Joycollab.v2
                     else if (_inputPw.isFocused) return;
                 }
             }
+             */
         }
 
         private void OnDestroy() 
@@ -161,6 +167,10 @@ namespace Joycollab.v2
         {
             base.Show().Forget();
             await Refresh();
+
+            _inputId.gameObject.SetActive(true);
+            _inputPw.gameObject.SetActive(true);
+
             base.Appearing();
         }
 
@@ -169,6 +179,9 @@ namespace Joycollab.v2
             base.Hide();
 
             _imgOfficeLogo.texture = null;
+
+            _inputId.gameObject.SetActive(false);
+            _inputPw.gameObject.SetActive(false);
         }
 
     #endregion  // FixedView functions

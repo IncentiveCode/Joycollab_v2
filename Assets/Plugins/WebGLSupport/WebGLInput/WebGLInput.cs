@@ -332,6 +332,10 @@ namespace WebGLSupport
         [MonoPInvokeCallback(typeof(Action<int, int>))]
         static void OnTab(int id, int value)
         {
+            foreach (KeyValuePair<int, WebGLInput> pair in instances) 
+            {
+                Debug.Log($"WebGLInput | OnTab() - id : {pair.Key}, input : {pair.Value}");
+            }
             WebGLInputTabFocus.OnTab(instances[id], value);
         }
 

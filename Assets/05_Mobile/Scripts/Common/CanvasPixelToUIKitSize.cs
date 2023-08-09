@@ -59,6 +59,15 @@ namespace Joycollab.v2
         #elif UNITY_IOS
 
             // _canvasScaler.scaleFactor = ApplePlugin.GetNativeScaleFactor();
+        
+        #elif UNITY_WEBGL
+
+            float w = Screen.width / 16;
+            float h = Screen.height / 9;
+            float dpi = (w + h) / 2;
+
+            scaler.scaleFactor = dpi / scaler.referencePixelsPerUnit;
+            Debug.Log($"CanvasPixelToUIKitSize | Resize(), scale factor : {dpi / scaler.referencePixelsPerUnit}");
 
         #endif
         }

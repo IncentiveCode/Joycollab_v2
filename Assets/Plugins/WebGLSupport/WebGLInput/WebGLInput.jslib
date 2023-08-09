@@ -61,8 +61,10 @@ var WebGLInput = {
 		input.style.outlineWidth = 0 + 'px';
 		input.style.padding = '5px 8px 4px 8px';
 		input.style.fontFamily = 'Pretendard';
+		input.style.fontWeight = '400';
 		input.style.border = 0 + 'px';
 		input.style.background = '#F5F5F5';
+		// -----
 
 		input.spellcheck = false;
 		input.value = UTF8ToString(text);

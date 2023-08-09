@@ -49,6 +49,8 @@
 			const buildUrl = "/workspace2/Build";
       		const loaderUrl = buildUrl + "/{{{ LOADER_FILENAME }}}?ver={{{ PRODUCT_VERSION }}}";
       		const config = {
+				devicePixelRatio: window.devicePixelRatio,
+
         		dataUrl: buildUrl + "/{{{ DATA_FILENAME }}}?ver={{{ PRODUCT_VERSION }}}",
         		frameworkUrl: buildUrl + "/{{{ FRAMEWORK_FILENAME }}}?ver={{{ PRODUCT_VERSION }}}",
         		codeUrl: buildUrl + "/{{{ CODE_FILENAME }}}?ver={{{ PRODUCT_VERSION }}}",

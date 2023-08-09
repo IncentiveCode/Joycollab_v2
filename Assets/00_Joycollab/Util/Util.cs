@@ -1,10 +1,11 @@
 /// <summary>
 /// Utility functions 집합 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 03. 15
-/// @version        : 1.0
+/// @last update    : 2023. 08. 09
+/// @version        : 0.2
 /// @update
-///     v1.0 (2023. 03. 15) : 최초 생성, Joycollab & TechnoPark 등 작업을 하면서 작성한 것들을 수정 및 적용 (진행 중)
+///     v0.1 (2023. 03. 15) : 최초 생성, Joycollab & TechnoPark 등 작업을 하면서 작성한 것들을 수정 및 적용 (진행 중)
+///     v0.2 (2023. 08. 09) : CalculateScalerRatio() 수정. constant pixel size 타입의 경우, scaleFactor 를 리턴.
 /// </summary>
 
 using System;
@@ -35,6 +36,10 @@ namespace Joycollab.v2
                 float ratio = Mathf.Lerp(widthRatio, heightRatio, scaler.matchWidthOrHeight);
 
                 return ratio;
+            }
+            else if (scaler.uiScaleMode == CanvasScaler.ScaleMode.ConstantPixelSize) 
+            {
+                return scaler.scaleFactor;
             }
             else 
             {
