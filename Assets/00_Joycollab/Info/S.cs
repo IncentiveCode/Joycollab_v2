@@ -193,6 +193,7 @@ namespace Joycollab.v2
 
         public const string REGION_KOREAN = "ko";
         public const string REGION_ENGLISH = "en";
+        public const string REGION_JAPANESE = "jp";
 
     #endregion  // Language
 

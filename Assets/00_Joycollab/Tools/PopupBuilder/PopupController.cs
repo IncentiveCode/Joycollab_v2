@@ -1,13 +1,14 @@
 /// <summary>
 /// 여기저기 떨어져 있는 팝업 제어 함수를 하나로 묶기 위한 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 07.29 
-/// @version        : 0.4
+/// @last update    : 2023. 08. 10 
+/// @version        : 0.5
 /// @update
 ///     v0.1 (2023. 02. 09) : TP 에서 작업했던 내용을 가지고 와서 편집. (작업중)
 ///     v0.2 (2023. 03. 30) : UI 최적화 (TMP 제거)
 ///     v0.3 (2023. 04. 13) : position 변경을 위한 rect panel 추가.
 ///     v0.4 (2023. 07. 29) : Title setter 수정.
+///     v0.5 (2023. 08. 10) : prompt 를 사용할 때, text 와 prompt clear button 초기화 추가.
 /// </summary>
 
 using UnityEngine;
@@ -53,6 +54,7 @@ namespace Joycollab.v2
 
 
     #region Unity functions
+
         private void Awake() 
         {
             Init();
@@ -109,10 +111,12 @@ namespace Joycollab.v2
                 }
             }
         }
+
     #endregion
 
 
     #region Public functions
+
         public ePopupType Type
         {
             get {
@@ -180,6 +184,13 @@ namespace Joycollab.v2
             }
         }
 
+        public bool Password 
+        {
+            set {
+                _inputPrompt.inputType = value ? TMP_InputField.InputType.Password : TMP_InputField.InputType.Standard;
+            }
+        }
+
         public void AddButton(ePopupButtonType type, string text, System.Action func=null) 
         {
             var btn = Instantiate(_goButton, Vector3.zero, Quaternion.identity);
@@ -228,6 +239,13 @@ namespace Joycollab.v2
                 displayTime = autoClose ? 3f : 0f;
                 timer = 0f;
             }
+            else if (type == ePopupType.Prompt) 
+            {
+                _inputPrompt.text = string.Empty;
+                _btnClearPrompt.gameObject.SetActive(false);
+            }
+
+            _txtContent.gameObject.SetActive(! string.IsNullOrEmpty(_txtContent.text));
 
             Canvas.ForceUpdateCanvases();
 
@@ -260,10 +278,12 @@ namespace Joycollab.v2
         }
 
         public void RequestClose() => Close();
+
     #endregion
 
 
     #region Private functions - on & off
+
         private void Init() 
         {
         #if UNITY_ANDROID || UNITY_IOS
@@ -327,6 +347,7 @@ namespace Joycollab.v2
             _rectPanel.anchoredPosition = temp;
         #endif
         }
+
     #endregion  // on & off
     }
 }

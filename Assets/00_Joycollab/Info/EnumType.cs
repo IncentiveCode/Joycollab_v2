@@ -1,12 +1,13 @@
 /// <summary>
 /// 열거형 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 01
-/// @version        : 0.3
+/// @last update    : 2023. 08. 10
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리.
 ///     v0.2 (2023. 07. 18) : Xmpp type, Webview type 추가.
 ///     v0.3 (2023. 08. 01) : Plan type 추가.
+///     v0.4 (2023. 08. 10) : Scene type 수정. (Init, Map 추가. 순서 변경.)
 /// </summary>
 
 namespace Joycollab.v2
@@ -16,13 +17,14 @@ namespace Joycollab.v2
     /// </summary>
     public enum eScenes
     {
-        Login = 0,
+        Init = 0,
         Loading, 
+        Login,
         LoadInfo,
         GraphicUI, TextUI,
         Arrange, 
         Management,
-        World, Square,
+        World, Map, Square,
         Sample,
         Mobile,
     }

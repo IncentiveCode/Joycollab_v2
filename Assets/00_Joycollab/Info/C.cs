@@ -1,11 +1,12 @@
 /// <summary>
 /// 자주 사용하는 color 값 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 31 
-/// @version        : 0.2
+/// @last update    : 2023. 08. 10 
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 04. 14) : 최초 생성. 상태 색상, 버튼 색상 정리  
 ///     v0.2 (2023. 07. 31) : Plan 색상 추가.
+///     v0.3 (2023. 08. 10) : World 에서 사용하는 색상 추가.
 /// </summary>
 
 using UnityEngine;
@@ -97,24 +98,24 @@ namespace Joycollab.v2
         public static readonly Color WARNING_BORDER = new Color(0.8509804f, 0.8509804f, 0.8509804f, 1f);
 
 		/// <summary>
-		/// world - normal - #6E5184
+		/// world - normal - #6E5184 >> #373737
 		/// </summary>
-        public static readonly Color WORLD_NORMAL = new Color(0.4313726f, 0.3176471f, 0.5176471f, 1f);
+        public static readonly Color WORLD_NORMAL = new Color(0.2156863f, 0.2156863f, 0.2156863f, 1f);
 
 		/// <summary>
-		/// world - normal - mouse over & click - #64477A
+		/// world - normal - mouse over & click - #64477A >> #000
 		/// </summary>
-        public static readonly Color WORLD_NORMAL_ON = new Color(0.3921569f, 0.2784314f, 0.4784314f, 1f);
+        public static readonly Color WORLD_NORMAL_ON = new Color(0f, 0f, 0f, 1f);
 
 		/// <summary>
-		/// world - warning - #D5CBDC
+		/// world - warning - #D5CBDC >> #EEEEEE
 		/// </summary>
-        public static readonly Color WORLD_WARNING = new Color(0.8352941f, 0.7960784f, 0.8627451f, 1f);
+        public static readonly Color WORLD_WARNING = new Color(0.9333333f, 0.9333333f, 0.9333333f, 1f);
 
 		/// <summary>
-		/// world - warning - mouse over & click - #CBC1D2
+		/// world - warning - mouse over & click - #CBC1D2 >> #C0D8DD
 		/// </summary>
-        public static readonly Color WORLD_WARNING_ON = new Color(0.7960784f, 0.7568628f, 0.8235294f, 1f);
+        public static readonly Color WORLD_WARNING_ON = new Color(0.7529412f, 0.8470588f, 0.8666667f, 1f);
 
 	#endregion	// button color
 

@@ -1,8 +1,8 @@
 /// <summary>
 /// 시스템 상 저장 공간 (Repository) 
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 19
-/// @version        : 0.9
+/// @last update    : 2023. 08. 10
+/// @version        : 1.0
 /// @update
 ///     v0.1 (2023. 03. 17) : 파일 생성, Joycollab 에서 사용하는 것들 정리 시작.
 ///     v0.2 (2023. 03. 31) : SimpleWorkspace, Alarm 관련 항목 정리 시작, Notify 에서 generic <T> 제거.
@@ -13,6 +13,7 @@
 ///     v0.7 (2023. 07. 07) : To-Do, OKR 등 임시로 저장하는 항목은 Tmp 로 이동. Bookmark 저장소 추가.
 ///     v0.8 (2023. 07. 18) : 기존에 사용했던 member state 관리 추가.
 ///     v0.9 (2023. 07. 19) : 읽지 않은 채팅 카운트를 위해 변수와 getter 추가.
+///     v1.0 (2023. 08. 10) : Localization Init 을 위해 Init() 을 async 로 변경.
 /// </summary>
 
 using System;
@@ -21,6 +22,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
+using UnityEngine.ResourceManagement.AsyncOperations;
+using Cysharp.Threading.Tasks;
 
 namespace Joycollab.v2
 {
@@ -34,11 +37,10 @@ namespace Joycollab.v2
     
         private void Awake() 
         {
-            // ----- ----- -----
+            // for common 
             listObserver = new List<Tuple<iRepositoryObserver, eStorageKey>>();
             listObserver.Clear();
 
-            // ----- ----- -----
             dictParams = new Dictionary<string, string>();
             dictParams.Clear();
 
@@ -63,10 +65,16 @@ namespace Joycollab.v2
             dictPart.Clear();
         }
 
-        public void Init() 
+        public async UniTask<bool> Init() 
         {
-            Debug.Log($"{TAG} | Init() call.");
             Clear();
+
+            _fontSizeOpt = 1;
+            while (LocalizationSettings.InitializationOperation.Status != AsyncOperationStatus.Succeeded) 
+                await UniTask.Yield();
+
+            Debug.Log($"{TAG} | Init() done.");
+            return true;
         }
 
         public void Clear() 

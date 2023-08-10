@@ -2,60 +2,52 @@
 /// Joycollab 통합 매니저 클래스 
 /// - singleton 남용을 막고, 기존 manager 클래스들에서 중복되어 있는 내용들을 수정/정리/최적화 하기 위해 작성.
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 01
-/// @version        : 0.3
+/// @last update    : 2023. 08. 10
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 04. 07) : 최초 작성.
 ///     v0.2 (2023. 04. 19) : singleton pattern 수정
 ///     v0.3 (2023. 08. 01) : language, text 관련 초기화 추가
+///     v0.4 (2023. 08. 10) : 공지사항 확인, URL parsing 기능 추가. (v1 에서 사용하던 항목들)
 /// </summary>
 
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
+using Cysharp.Threading.Tasks;
 
 namespace Joycollab.v2
 {
     public class SystemManager : MonoBehaviour
     {
+        private const string TAG = "SystemManager";
+
         public static SystemManager singleton { get; private set; }
+
+        [Header("guide popup")]
+        [SerializeField] private Transform _transform;
+        [SerializeField] private GameObject _goUpdateGuide;
 
 
     #region Unity functions
 
         private void Awake() 
         {
-            InitSingleton();     
-
-            // language, text 관련된 것만 정리.
-            R.singleton.Init();
-
-            Debug.Log("current language : "+ Application.systemLanguage);
-            switch (Application.systemLanguage) 
-            {
-                case SystemLanguage.English :
-                    R.singleton.ChangeLocale(ID.LANGUAGE_ENGLISH);
-                    break;
-
-                case SystemLanguage.Japanese :
-                    R.singleton.ChangeLocale(ID.LANGUAGE_JAPANESE);
-                    break;
-
-                case SystemLanguage.Korean :
-                default :
-                    R.singleton.ChangeLocale(ID.LANGUAGE_KOREAN);
-                    break;
-            }
-            SetFontOpt(0);
+            InitSingleton();
+            SetTransform();
         }
 
-        private void Start() 
+        private async UniTaskVoid Start() 
         {
         #if UNITY_WEBGL && !UNITY_EDITOR 
             Application.targetFrameRate = -1;
         #else
             Application.targetFrameRate = 30;
         #endif
+
+            await R.singleton.Init();
+            GetSystemNotice().Forget();
         }
 
     #endregion  // Unity functions
@@ -76,14 +68,166 @@ namespace Joycollab.v2
             DontDestroyOnLoad(gameObject);
         }
 
+        private void SetTransform() 
+        {
+        #if UNITY_ANDROID || UNITY_IOS
+            _transform = GameObject.Find(S.Canvas_Popup_M).GetComponent<Transform>();
+        #else
+            _transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
+        #endif
+        }
+
     #endregion  // Initialize
 
 
     #region First Act (공지사항 확인 후 URL parsing)
 
-        // TODO. 
+        private async UniTaskVoid GetSystemNotice() 
+        {
+            PsResponse<UpdateNoticeList> res = await NetworkTask.RequestAsync<UpdateNoticeList>(URL.SYSTEM_NOTICE_PATH, eMethodType.GET);
+
+            if (res.message.Equals(string.Empty)) 
+            {
+                if (res.data.list.Count >= 1) 
+                {
+                    string checkNode = JsLib.GetCookie(Key.SYSTEM_UPDATE_FLAG);
+                    if (checkNode.Equals(S.TRUE))
+                    {
+                        JsLib.CheckBrowser(gameObject.name, "PostCheckBrowser");
+                    }
+                    else 
+                    {
+                        string title = res.data.list[0].title;
+                        string message = string.Format("{0}\n\n점검시간 : {1} ~ {2}", 
+                            res.data.list[0].content,
+                            res.data.list[0].sdtm, 
+                            res.data.list[0].edtm
+                        );
+                    
+                        ShowSystemUpdate(title, message);
+                    }
+                }
+                else 
+                {
+                    JsLib.SetCookie(Key.SYSTEM_UPDATE_FLAG, S.FALSE);
+                    JsLib.CheckBrowser(gameObject.name, "PostCheckBrowser");
+                }
+            }
+            else 
+            {
+                Debug.Log($"{TAG} | code : "+ res.code +", error : " + res.message);
+            }
+        }
+
+        private void ShowSystemUpdate(string title, string content) 
+        {
+            var popup = Instantiate(_goUpdateGuide, Vector3.zero, Quaternion.identity);
+            SystemUpdateGuide script = popup.GetComponent<SystemUpdateGuide>();
+            script.Init(title, content); 
+            popup.transform.SetParent(_transform, false);            
+        }
+
+        public void PostCheckBrowser(string result) 
+        {
+            Debug.Log($"{TAG} | Check browser result : {result}");
+            string[] arrResult = result.Split('|');
+            string browserType = arrResult[0];
+            string defaultLanguage = arrResult[1];
+
+            Debug.Log($"{TAG} | browser language : {defaultLanguage}");
+            switch (defaultLanguage) 
+            {
+                case S.REGION_ENGLISH :
+                    R.singleton.ChangeLocale(ID.LANGUAGE_ENGLISH);
+                    break;
+
+                case S.REGION_JAPANESE :
+                    // TODO. 일본어 추가 후 주석 해제.
+                    // R.singleton.ChangeLocale(ID.LANGUAGE_JAPANESE);
+                    R.singleton.ChangeLocale(ID.LANGUAGE_KOREAN);
+                    break;
+
+                case S.REGION_KOREAN :
+                default :
+                    R.singleton.ChangeLocale(ID.LANGUAGE_KOREAN);
+                    break;
+            }
+            
+            if (browserType.Contains(S.TRUE)) 
+            {
+                CheckUrlParams();
+            }
+            else 
+            {
+                Locale currentLocale = LocalizationSettings.SelectedLocale;
+                string content = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "브라우저 안내", currentLocale);
+                PopupBuilder.singleton.OpenAlert(
+                    content,
+                    () => CheckUrlParams()
+                );
+            }
+        }
+
+        private void CheckUrlParams() 
+        {
+            R.singleton.ClearParamValues();
+            string testURL = string.Empty;
+            // if (string.IsNullOrEmpty(testURL)) testURL = URL.INDEX;
+            if (string.IsNullOrEmpty(testURL)) testURL = URL.WORLD_INDEX;
+
+            string absURL = Application.isEditor ? testURL : Application.absoluteURL; 
+            string nextScene = ParseUrl(absURL);
+            SceneLoader.Load(nextScene.Contains(S.WORLD) ? eScenes.World : eScenes.Login);
+        }
 
     #endregion  // First Act (공지사항 확인 후 URL parsing)
+
+
+    #region URL parsing 
+
+        private string ParseUrl(string url) 
+        {
+            string domain, scene, param;
+            domain = scene = param = string.Empty;
+
+            // step 1. URL split
+            var arr = url.Split('/');
+            switch (arr.Length) 
+            {
+                case 5 :    // sub domain 없이 입장한 경우
+                    scene = arr[3];
+                    param = arr[4];
+                    break;
+
+                case 6 :    // sub domain 과 함께 입장한 경우
+                    domain = arr[3];
+                    scene = arr[4];
+                    param = arr[5];
+                    break;
+                
+                default :   
+                    // 기타 케이스, WebGL 이라면 주소를 바꿔서 다시 접속하도록 유도한다.
+                    Debug.Log($"{TAG} | ParseUrl(), 잘못된 주소 : {url}");
+                    break;
+            }
+            // Debug.Log($"{TAG} | Url split result - sub domain : {domain}, scene : {scene}, param : {param}");
+            R.singleton.AddParam(Key.DOMAIN, domain);
+
+
+            // step 2. parameter check
+            bool isJoin = param.Contains(Key.JOIN);
+            int index = param.Contains("?") ? param.IndexOf("?") : -1;
+            string[] arrParam = (index == -1) ? new string[]{ } : param.Substring(index + 1).Split('&');
+            foreach (string s in arrParam)
+            {
+                string[] pair = s.Split('=');
+                R.singleton.AddParam(pair[0], pair[1]);
+            }
+
+            return scene;
+        }
+
+    #endregion  // URL parsing 
 
 
     #region Temp

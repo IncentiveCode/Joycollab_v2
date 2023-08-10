@@ -47,16 +47,16 @@ namespace Joycollab.v2
             "dev.jcollab.com" :
             "chat.jcollab.com";
 
-        public const string INDEX = PATH +"/workspace/";
+        public const string INDEX = PATH +"/workspace2/";
 
         /// <summary>
         /// desc : 특정 domain 으로 바로 이동할 수 있는 INDEX
         /// param
         ///     {0} : sub domain
         /// </summary>
-        public const string SUB_INDEX = PATH +"/{0}/workspace/";
+        public const string SUB_INDEX = PATH +"/{0}/workspace2/";
 
-        public const string WORLD_INDEX = PATH +"/world/";
+        public const string WORLD_INDEX = PATH +"/world2/";
 
         public const string SERVER_PATH = PATH +"/serv";
 

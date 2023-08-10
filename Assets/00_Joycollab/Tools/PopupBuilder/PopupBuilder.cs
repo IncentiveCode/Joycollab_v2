@@ -1,7 +1,7 @@
 /// <summary>
 /// 여기저기 떨어져 있는 팝업 생성 함수를 하나로 묶기 위한 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 07.29 
+/// @last update    : 2023. 07. 29 
 /// @version        : 0.7
 /// @update
 ///     v0.1 (2023. 02. 09) : TP 에서 작업했던 내용을 가지고 와서 편집.
@@ -163,6 +163,37 @@ namespace Joycollab.v2
         }
 
         #endregion  // Confirm functions
+
+
+        #region Prompt functions
+
+        public void OpenPrompt(string content, System.Action<string> yesAction, bool isPassword) => OpenPrompt(string.Empty, content, string.Empty, yesAction, string.Empty, null, isPassword);
+        public void OpenPrompt(string title, string content, System.Action<string> yesAction, bool isPassword) => OpenPrompt(title, content, string.Empty, yesAction, string.Empty, null, isPassword);
+        public void OpenPrompt(string title, string content, string yesText, System.Action<string> yesAction, string noText, System.Action noAction, bool isPassword=false) 
+        {
+            Locale currentLocale = LocalizationSettings.SelectedLocale;
+            string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "알림", currentLocale);
+            string confirm = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "예", currentLocale);
+            string cancel = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "아니오", currentLocale);
+
+            PopupController ctrl = Build();
+            ctrl.Type = ePopupType.Prompt;
+
+            string t = string.IsNullOrEmpty(title) ? notice : title;
+            ctrl.Title = t;
+            ctrl.Content = content;
+            ctrl.Password = isPassword;
+
+            t = string.IsNullOrEmpty(yesText) ? confirm : yesText;
+            ctrl.AddButtonWithPrompt(ePopupButtonType.Normal, t, (value) => yesAction?.Invoke(value));
+
+            t = string.IsNullOrEmpty(noText) ? cancel : noText;
+            ctrl.AddButton(ePopupButtonType.Warning, t, () => noAction?.Invoke());
+
+            ctrl.Open();
+        }
+
+        #endregion  // Prompt functions
 
 
         #region Slide popup 
