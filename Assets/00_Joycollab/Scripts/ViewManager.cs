@@ -1,8 +1,8 @@
 /// <summary>
 /// 각 Scene 에서 화면을 관리하는 manager class
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 27
-/// @version        : 0.7
+/// @last update    : 2023. 08. 11
+/// @version        : 0.8
 /// @update
 ///     v0.1 (2023. 05. 04) : 최초 작성, 기존 Manager 에서 View 관리 부분만 빼서 생성.
 ///     v0.2 (2023. 05. 11) : android 의 back button 처리 추가.
@@ -11,6 +11,7 @@
 ///     v0.5 (2023. 07. 24) : 화면 초기화 [ Init() ]를 async 로 구성.
 ///     v0.6 (2023. 07. 26) : Push(bool refresh) 추가. Init() 에서 top/bottom navigation 찾는 기능 수정.
 ///     v0.7 (2023. 07. 27) : top, bottom navigation 을 WebGL 에서는 사용하지 않기 때문에, 일부 예외처리 추가.
+///     v0.8 (2023. 08. 11) : tag 에 따라 login scene / world scene 분기점 추가.
 /// </summary>
 
 using System.Collections;
@@ -91,7 +92,16 @@ namespace Joycollab.v2
         #if UNITY_ANDROID || UNITY_IOS
             Push(S.MobileScene_Login);
         #else
-            Push(S.LoginScene_Login);
+            switch (viewTag) 
+            {
+                case S.WorldScene_ViewTag :
+                    Push(S.WorldScene_SignIn);
+                    break;
+
+                default :
+                    Push(S.LoginScene_Login);
+                    break;
+            }
         #endif
 
             isDone = true;

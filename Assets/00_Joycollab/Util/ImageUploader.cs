@@ -1,12 +1,13 @@
 /// <summary>
 /// 이미지 업로드 담당 클래스 
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 04
-/// @version        : 0.3
+/// @last update    : 2023. 08. 11
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 03. 21) : 최초 생성, login scene 에 적용 실험.
 ///     v0.2 (2023. 06. 28) : mobile scene 적용 실험. 
 ///     v0.3 (2023. 07. 04) : file name 을 획득할 수 있도록 기능 수정.
+///     v0.4 (2023. 08. 11) : Android 에서도 사용할 수 있도록 OnPointerDown() 수정.
 /// </summary>
 
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -81,7 +82,7 @@ namespace Joycollab.v2
 
         public void OnImageUpload(string data) 
         {
-            Debug.Log($"{TAG} | OnImageUpload(), data : "+ data);
+            Debug.Log($"{TAG} | OnImageUpload(), data : {data}");
             string[] arr = data.Split('|');
             string url = arr[0];
             string name = arr[1];
@@ -165,7 +166,23 @@ namespace Joycollab.v2
         #if UNITY_WEBGL && !UNITY_EDITOR
 
             Debug.Log($"{TAG} | OnPointerDown() call. object name : {gameObject.name}");
-            UploadFile(gameObject.name, "OnImageUpload", ".png, .jpg", false);
+            UploadFile(gameObject.name, "OnImageUpload", "image/*", false);
+
+        #elif UNITY_ANDROID 
+
+            Debug.Log($"{TAG} | OnPointerDown() call. object name : {gameObject.name}");
+
+            string[] fileTypes = new string[] { "image/*" };
+            NativeFilePicker.Permission permission = NativeFilePicker.PickFile((path) => {
+                if (! path.Equals(""))
+                {
+                    Debug.Log($"{TAG} android file path : "+ path);
+                    string[] temp = path.Split('/');
+                    _imageName = temp[temp.Length - 1];
+                    GetImageTexture(path, _imageName).Forget();
+                }
+            },
+            fileTypes);
 
         #elif UNITY_EDITOR
 

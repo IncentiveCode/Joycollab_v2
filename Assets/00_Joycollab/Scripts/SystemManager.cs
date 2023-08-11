@@ -172,8 +172,8 @@ namespace Joycollab.v2
         {
             R.singleton.ClearParamValues();
             string testURL = string.Empty;
-            // if (string.IsNullOrEmpty(testURL)) testURL = URL.INDEX;
-            if (string.IsNullOrEmpty(testURL)) testURL = URL.WORLD_INDEX;
+            if (string.IsNullOrEmpty(testURL)) testURL = URL.INDEX;
+            // if (string.IsNullOrEmpty(testURL)) testURL = URL.WORLD_INDEX;
 
             string absURL = Application.isEditor ? testURL : Application.absoluteURL; 
             string nextScene = ParseUrl(absURL);

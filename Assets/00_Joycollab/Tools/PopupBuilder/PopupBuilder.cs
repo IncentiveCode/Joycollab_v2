@@ -1,8 +1,8 @@
 /// <summary>
 /// 여기저기 떨어져 있는 팝업 생성 함수를 하나로 묶기 위한 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 29 
-/// @version        : 0.7
+/// @last update    : 2023. 08. 11 
+/// @version        : 0.8
 /// @update
 ///     v0.1 (2023. 02. 09) : TP 에서 작업했던 내용을 가지고 와서 편집.
 ///     v0.2 (2023. 03. 30) : 추가 정리 및 예시 기술.
@@ -11,6 +11,7 @@
 ///     v0.5 (2023. 04. 17) : public function (for alert, confirm) 추가.
 ///     v0.6 (2023. 06. 12) : GetPopupCount, Clear function 에서 transform 을 못 찾는 부분이 있어서 함수 수정.
 ///     v0.7 (2023. 07. 29) : OpenConfirm() 의 기본 버튼을 확인/취소 에서 예/아니오 로 변경.
+///     v0.8 (2023. 08. 11) : 버튼 생성시 tag 에 따라 login / world 스타일 분기점 추가.
 /// </summary>
 
 using UnityEngine;
@@ -21,9 +22,14 @@ namespace Joycollab.v2
 {
     public class PopupBuilder : MonoBehaviour
     {
+        [Header("object")]
         [SerializeField] private GameObject _goPopup;
         [SerializeField] private GameObject _goSlidePopup;
         [SerializeField] private Transform _transform;
+
+        [Header("tag")]
+        [TagSelector]
+        [SerializeField] private string viewTag;
 
         public static PopupBuilder singleton { get; private set; }
 
@@ -122,7 +128,16 @@ namespace Joycollab.v2
             ctrl.Content = content;
 
             t = string.IsNullOrEmpty(btnText) ? confirm : btnText;
-            ctrl.AddButton(ePopupButtonType.Normal, t, () => action?.Invoke());
+            switch (viewTag)
+            {
+                case S.WorldScene_ViewTag :
+                    ctrl.AddButton(ePopupButtonType.worldNormal, t, () => action?.Invoke());
+                    break;
+
+                default :
+                    ctrl.AddButton(ePopupButtonType.Normal, t, () => action?.Invoke());
+                    break;
+            }
 
             ctrl.Open();
         }
@@ -153,11 +168,20 @@ namespace Joycollab.v2
             ctrl.Title = t;
             ctrl.Content = content;
 
-            t = string.IsNullOrEmpty(yesText) ? confirm : yesText;
-            ctrl.AddButton(ePopupButtonType.Normal, t, () => yesAction?.Invoke());
+            string y = string.IsNullOrEmpty(yesText) ? confirm : yesText;
+            string n = string.IsNullOrEmpty(noText) ? cancel : noText;
+            switch (viewTag)
+            {
+                case S.WorldScene_ViewTag :
+                    ctrl.AddButton(ePopupButtonType.worldNormal, y, () => yesAction?.Invoke());
+                    ctrl.AddButton(ePopupButtonType.worldWarning, n, () => noAction?.Invoke());
+                    break;
 
-            t = string.IsNullOrEmpty(noText) ? cancel : noText;
-            ctrl.AddButton(ePopupButtonType.Warning, t, () => noAction?.Invoke());
+                default :
+                    ctrl.AddButton(ePopupButtonType.Normal, y, () => yesAction?.Invoke());
+                    ctrl.AddButton(ePopupButtonType.Warning, n, () => noAction?.Invoke());
+                    break;
+            }
 
             ctrl.Open();
         }
@@ -184,11 +208,20 @@ namespace Joycollab.v2
             ctrl.Content = content;
             ctrl.Password = isPassword;
 
-            t = string.IsNullOrEmpty(yesText) ? confirm : yesText;
-            ctrl.AddButtonWithPrompt(ePopupButtonType.Normal, t, (value) => yesAction?.Invoke(value));
+            string y = string.IsNullOrEmpty(yesText) ? confirm : yesText;
+            string n = string.IsNullOrEmpty(noText) ? cancel : noText;
+            switch (viewTag)
+            {
+                case S.WorldScene_ViewTag :
+                    ctrl.AddButtonWithPrompt(ePopupButtonType.worldNormal, y, (value) => yesAction?.Invoke(value));
+                    ctrl.AddButton(ePopupButtonType.worldWarning, n, () => noAction?.Invoke());
+                    break;
 
-            t = string.IsNullOrEmpty(noText) ? cancel : noText;
-            ctrl.AddButton(ePopupButtonType.Warning, t, () => noAction?.Invoke());
+                default :
+                    ctrl.AddButtonWithPrompt(ePopupButtonType.Normal, y, (value) => yesAction?.Invoke(value));
+                    ctrl.AddButton(ePopupButtonType.Warning, n, () => noAction?.Invoke());
+                    break;
+            }
 
             ctrl.Open();
         }

@@ -46,6 +46,9 @@ namespace Joycollab.v2
 	 	public const string SAVED_LOGIN_ID = "_sli";
 		public const string TOGGLE_SUB_ID_SAVED = "_tsis";
 		public const string SAVED_SUB_LOGIN_ID = "_ssli";
+		public const string TOGGLE_WORLD_ID_SAVED = "_twis";
+		public const string SAVED_WORLD_LOGIN_ID = "_swli";
+		public const string TOGGLE_GO_TO_CENTER = "_tgtc";
 
 		public const string WORKSPACE_DOMAIN = "_wd";
 		public const string WORKSPACE_NAME = "_wn";

@@ -1,13 +1,14 @@
 /// <summary>
 /// Network 통신 - 워크스페이스 관련 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 19
-/// @version        : 0.4
+/// @last update    : 2023. 08. 11
+/// @version        : 0.5
 /// @update
-///     v0.1 (2023. 02. 22) : Joycollab 에서 사용하던 클래스 정리 및 통합 진행 (SimpleWorkspace, ResWorkspaceList, ResWorkspaceInfo)
-///     v0.2 (2023. 03. 22) : Joycollab 에서 사용하던 클래스 정리 및 통합 진행 (LobbyInfo)
+///     v0.1 (2023. 02. 22) : v1 에서 사용하던 클래스 정리 및 통합 진행 (SimpleWorkspace, ResWorkspaceList, ResWorkspaceInfo)
+///     v0.2 (2023. 03. 22) : v1 에서 사용하던 클래스 정리 및 통합 진행 (LobbyInfo)
 ///     v0.3 (2023. 06. 15) : array 를 list 로 변경 
 ///     v0.4 (2023. 06. 19) : WorkspaceStatus 클래스 추가
+///     v0.5 (2023. 08. 11) : v1 에서 사용하던 클래스 정리 및 통합 진행 (ReqWorkspaceSeq)
 /// </summary>
 
 using System;
@@ -76,6 +77,16 @@ namespace Joycollab.v2
         public string uiType;
     }
 
+    [Serializable]
+    public class ReqWorkspaceSeq 
+    {
+        public int workspaceSeq;
+
+        public ReqWorkspaceSeq(int seq) 
+        {
+            workspaceSeq = seq;
+        }
+    }
 
     [Serializable]
     public class LobbyInfo

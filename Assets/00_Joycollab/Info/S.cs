@@ -1,14 +1,15 @@
 /// <summary>
 /// 자주 사용하는 string 값 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 31
-/// @version        : 0.5
+/// @last update    : 2023. 08. 11
+/// @version        : 0.6
 /// @update
 ///     v0.1 (2023. 03. 20) : 최초 생성. Scene 이름, LoginView, MobileView 이름 정리
 ///     v0.2 (2023. 04. 07) : Language, region 관련 상수 정리 
 ///     v0.3 (2023. 06. 28) : avatar state 값 정리
 ///     v0.4 (2023. 07. 18) : mobile navigation 값 추가
 ///     v0.5 (2023. 07. 31) : subscription plan 값 추가
+///     v0.6 (2023. 08. 11) : view tag 추가, WorldScene FixedView Name 추가, 이용약관 관련 값 추가.
 /// </summary>
 
 namespace Joycollab.v2
@@ -44,7 +45,9 @@ namespace Joycollab.v2
 
     #region LoginScene FixedView Name 
 
-        // workspace login -> 추후 변경 예정
+        public const string LoginScene_ViewTag = "LoginView";
+
+        // TODO. workspace login -> 추후 변경 예정
         public const string LoginScene_Login = "login";
         public const string LoginScene_SubLogin = "sub login";
         public const string LoginScene_GuestLogin = "guest login";
@@ -59,21 +62,12 @@ namespace Joycollab.v2
         public const string LoginScene_JoinDone = "UIView_JoinDone"; // "JoinDone";
         public const string LoginScene_CreateOffice = "UIView_CreateOffice"; // "CreateOffice";
 
-        // world login view
-        public const string LoginScene_World_Login = "WorldView_Login"; // "Login_w";
-        public const string LoginScene_World_SubLogin = "SubLogin_w";
-        public const string LoginScene_World_GuestLogin = "WorldView_GuestLogin"; // "GuestLogin_w";
-        public const string LoginScene_World_Reset = "WorldView_Reset"; // "Reset_w";
-        public const string LoginScene_World_Restore = "WorldView_Restore"; // "Restore_w";
-        public const string LoginScene_World_Agreement = "WorldView_Agreement"; // "Agreement_w";
-        public const string LoginScene_World_Terms = "WorldView_Terms"; // "Terms_w";
-        public const string LoginScene_World_Join = "WorldView_Join"; // "Join_w";
-        public const string LoginScene_World_Info = "WorldView_Info"; // "Info_w";
-
     #endregion  // LoginScene FixedView Name 
 
 
     #region MobileScene FixedView Name 
+
+        public const string MobileScene_ViewTag = "MobileView";
 
         // ---------- ---------- ----------
         // 00. navigation
@@ -186,6 +180,23 @@ namespace Joycollab.v2
     #endregion  // MobileScene FixedView Name 
 
 
+    #region World FixedView Name
+
+        public const string WorldScene_ViewTag = "WorldView";
+
+        public const string WorldScene_SignIn = "SignIn_w";
+        public const string WorldScene_SubLogin = "SubLogin_w";
+        public const string WorldScene_GuestLogin = "WorldView_GuestLogin"; // "GuestLogin_w";
+        public const string WorldScene_Reset = "WorldView_Reset"; // "Reset_w";
+        public const string WorldScene_Restore = "WorldView_Restore"; // "Restore_w";
+        public const string WorldScene_Agreement = "Agreement_w";
+        public const string WorldScene_Terms = "Terms_w";
+        public const string WorldScene_Join = "WorldView_Join"; // "Join_w";
+        public const string WorldScene_Info = "WorldView_Info"; // "Info_w";
+
+    #endregion  // World FixedView Name
+
+
     #region Language
 
         public const string LANGUAGE_KOREAN = "Korean";
@@ -210,6 +221,16 @@ namespace Joycollab.v2
         public const string SEMINAR = "세미나";
 
     #endregion  // Value
+
+
+    #region Terms
+
+        public const string TERMS_OF_USAGE = "이용약관";
+        public const string TERMS_OF_PRIVACY = "개인정보취급방침";
+        public const string TERMS_OF_MARKETING = "3자 정보 제공 동의";
+        public const string CURRENT_AGREEMENT = "current_agreement_check_state";
+
+    #endregion  // Terms
 
 
     #region Member type
