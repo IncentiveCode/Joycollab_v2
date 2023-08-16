@@ -2,16 +2,16 @@
 /// Joycollab 통합 매니저 클래스 
 /// - singleton 남용을 막고, 기존 manager 클래스들에서 중복되어 있는 내용들을 수정/정리/최적화 하기 위해 작성.
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 10
-/// @version        : 0.4
+/// @last update    : 2023. 08. 16
+/// @version        : 0.5
 /// @update
 ///     v0.1 (2023. 04. 07) : 최초 작성.
 ///     v0.2 (2023. 04. 19) : singleton pattern 수정
 ///     v0.3 (2023. 08. 01) : language, text 관련 초기화 추가
 ///     v0.4 (2023. 08. 10) : 공지사항 확인, URL parsing 기능 추가. (v1 에서 사용하던 항목들)
+///     v0.5 (2023. 08. 16) : 일본어 적용 (진행 중)
 /// </summary>
 
-using System.Collections;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
@@ -142,9 +142,7 @@ namespace Joycollab.v2
                     break;
 
                 case S.REGION_JAPANESE :
-                    // TODO. 일본어 추가 후 주석 해제.
-                    // R.singleton.ChangeLocale(ID.LANGUAGE_JAPANESE);
-                    R.singleton.ChangeLocale(ID.LANGUAGE_KOREAN);
+                    R.singleton.ChangeLocale(ID.LANGUAGE_JAPANESE);
                     break;
 
                 case S.REGION_KOREAN :
@@ -171,11 +169,13 @@ namespace Joycollab.v2
         private void CheckUrlParams() 
         {
             R.singleton.ClearParamValues();
+
             string testURL = string.Empty;
-            if (string.IsNullOrEmpty(testURL)) testURL = URL.INDEX;
-            // if (string.IsNullOrEmpty(testURL)) testURL = URL.WORLD_INDEX;
+            // testURL = URL.INDEX;
+            // testURL = URL.WORLD_INDEX;
 
             string absURL = Application.isEditor ? testURL : Application.absoluteURL; 
+            if (string.IsNullOrEmpty(absURL)) absURL = URL.INDEX;
             string nextScene = ParseUrl(absURL);
             SceneLoader.Load(nextScene.Contains(S.WORLD) ? eScenes.World : eScenes.Login);
         }
@@ -210,7 +210,7 @@ namespace Joycollab.v2
                     Debug.Log($"{TAG} | ParseUrl(), 잘못된 주소 : {url}");
                     break;
             }
-            // Debug.Log($"{TAG} | Url split result - sub domain : {domain}, scene : {scene}, param : {param}");
+            Debug.Log($"{TAG} | Url split result - sub domain : {domain}, scene : {scene}, param : {param}");
             R.singleton.AddParam(Key.DOMAIN, domain);
 
 

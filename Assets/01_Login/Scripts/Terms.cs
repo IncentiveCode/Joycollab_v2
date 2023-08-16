@@ -5,7 +5,7 @@
 /// @last update    : 2023. 08. 11.
 /// @version        : 0.1
 /// @update
-///     v0.1 : v1 에서 만들었던 Terms 수정 후 적용.
+///     v0.1 (2023. 08. 11) : v1 에서 만들었던 Terms 수정 후 적용.
 /// </summary>
 
 using System;

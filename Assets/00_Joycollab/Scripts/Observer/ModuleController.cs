@@ -1,13 +1,14 @@
 /// <summary>
 /// Module 테스트를 위한 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 01
-/// @version        : 0.3
+/// @last update    : 2023. 08. 16
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 03. 14) : 최초 생성, observer pattern 을 이용한 Tester 구현.
 ///     v0.2 (2023. 07. 13) : font size change, scene load 등의 테스트 버튼 연결.
 ///     v0.3 (2023. 08. 01) : 통합 게시판 추가. '미팅' 만 있는 메뉴와 '미팅+세미나' 가 있는 메뉴 분리.
 ///                           구독 플랜에 따라 모듈 설정되는 기능 추가.
+///     v0.4 (2023. 08. 16) : 일본어 테스트 추가.
 /// </summary>
 
 using System.Collections.Generic;
@@ -32,6 +33,7 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnFontLarge;
         [SerializeField] private Button _btnKorean;
         [SerializeField] private Button _btnEnglish;
+        [SerializeField] private Button _btnJapanese;
 
         [Header("module list")]
         [SerializeField] private Toggle _toggleFileBox;
@@ -66,6 +68,7 @@ namespace Joycollab.v2
             _btnFontLarge.onClick.AddListener(() => SystemManager.singleton.SetFontOpt(3));
             _btnKorean.onClick.AddListener(() => R.singleton.ChangeLocale(ID.LANGUAGE_KOREAN));
             _btnEnglish.onClick.AddListener(() => R.singleton.ChangeLocale(ID.LANGUAGE_ENGLISH));
+            _btnJapanese.onClick.AddListener(() => R.singleton.ChangeLocale(ID.LANGUAGE_JAPANESE));
 
 
             // set 'plan toggle' listener

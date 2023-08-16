@@ -16,6 +16,7 @@ MonoBehaviour:
   m_Tables:
   - {fileID: 11400000, guid: 0c9155a99e8dec048a138de2f467b821, type: 2}
   - {fileID: 11400000, guid: ea070e7fe0f93954185dd903b61fa4a0, type: 2}
+  - {fileID: 11400000, guid: d9159b47341b6b34b9c6f1d816f52176, type: 2}
   m_Extensions:
   - rid: 30721704749170704
   m_Group: String Table
@@ -33,6 +34,7 @@ MonoBehaviour:
         - rid: 30721704749170705
         - rid: 30721704749170706
         - rid: 30721704749170707
+        - rid: 2795221704812265482
         m_RemoveMissingPulledKeys: 1
     - rid: 30721704749170705
       type: {class: KeyColumn, ns: UnityEditor.Localization.Plugins.Google.Columns, asm: Unity.Localization.Editor}
@@ -51,4 +53,11 @@ MonoBehaviour:
         m_Column: C
         m_LocaleIdentifier:
           m_Code: en-US
+        m_IncludeComments: 0
+    - rid: 2795221704812265482
+      type: {class: LocaleColumn, ns: UnityEditor.Localization.Plugins.Google.Columns, asm: Unity.Localization.Editor}
+      data:
+        m_Column: D
+        m_LocaleIdentifier:
+          m_Code: ja-JP
         m_IncludeComments: 0

@@ -1,8 +1,8 @@
 /// <summary>
 /// 여기저기 떨어져 있는 팝업 생성 함수를 하나로 묶기 위한 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 11 
-/// @version        : 0.8
+/// @last update    : 2023. 08. 16 
+/// @version        : 0.9
 /// @update
 ///     v0.1 (2023. 02. 09) : TP 에서 작업했던 내용을 가지고 와서 편집.
 ///     v0.2 (2023. 03. 30) : 추가 정리 및 예시 기술.
@@ -12,6 +12,7 @@
 ///     v0.6 (2023. 06. 12) : GetPopupCount, Clear function 에서 transform 을 못 찾는 부분이 있어서 함수 수정.
 ///     v0.7 (2023. 07. 29) : OpenConfirm() 의 기본 버튼을 확인/취소 에서 예/아니오 로 변경.
 ///     v0.8 (2023. 08. 11) : 버튼 생성시 tag 에 따라 login / world 스타일 분기점 추가.
+///     v0.9 (2023. 08. 16) : Scene 마다 다르게 동작시키기 위해서, DontDestroyOnLoad() 제거.
 /// </summary>
 
 using UnityEngine;
@@ -38,7 +39,8 @@ namespace Joycollab.v2
 
         private void Awake() 
         {
-            InitSingleton();
+            // InitSingleton();
+            singleton = this;
         }
 
     #endregion
@@ -46,6 +48,7 @@ namespace Joycollab.v2
 
     #region Private functions
 
+        /**
         private void InitSingleton() 
         {
             if (singleton != null && singleton == this) return;
@@ -58,6 +61,7 @@ namespace Joycollab.v2
             singleton = this;
             DontDestroyOnLoad(gameObject);
         }
+         */
 
         private void SetTransform() 
         {

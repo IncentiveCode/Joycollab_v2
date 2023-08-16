@@ -16,12 +16,20 @@ MonoBehaviour:
   m_Tables:
   - {fileID: 11400000, guid: 0ba697db338cc422e904c0c161934629, type: 2}
   - {fileID: 11400000, guid: b941b1c21e7f649cb9cb04ae0a705ea7, type: 2}
+  - {fileID: 11400000, guid: e3ff0fe3984b48c4e9459e51a098db1b, type: 2}
   m_Extensions:
   - rid: 7810338605843873792
   m_Group: String Table
   references:
     version: 2
     RefIds:
+    - rid: 2795221704812265481
+      type: {class: LocaleColumn, ns: UnityEditor.Localization.Plugins.Google.Columns, asm: Unity.Localization.Editor}
+      data:
+        m_Column: D
+        m_LocaleIdentifier:
+          m_Code: ja-JP
+        m_IncludeComments: 0
     - rid: 7810338605843873792
       type: {class: GoogleSheetsExtension, ns: UnityEditor.Localization.Plugins.Google, asm: Unity.Localization.Editor}
       data:
@@ -33,6 +41,7 @@ MonoBehaviour:
         - rid: 7810338605843873813
         - rid: 7810338605843873814
         - rid: 7810338605843873815
+        - rid: 2795221704812265481
         m_RemoveMissingPulledKeys: 1
     - rid: 7810338605843873813
       type: {class: KeyColumn, ns: UnityEditor.Localization.Plugins.Google.Columns, asm: Unity.Localization.Editor}

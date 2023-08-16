@@ -1,8 +1,8 @@
 /// <summary>
 /// 자주 사용하는 string 값 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 11
-/// @version        : 0.6
+/// @last update    : 2023. 08. 16
+/// @version        : 0.7
 /// @update
 ///     v0.1 (2023. 03. 20) : 최초 생성. Scene 이름, LoginView, MobileView 이름 정리
 ///     v0.2 (2023. 04. 07) : Language, region 관련 상수 정리 
@@ -10,6 +10,7 @@
 ///     v0.4 (2023. 07. 18) : mobile navigation 값 추가
 ///     v0.5 (2023. 07. 31) : subscription plan 값 추가
 ///     v0.6 (2023. 08. 11) : view tag 추가, WorldScene FixedView Name 추가, 이용약관 관련 값 추가.
+///     v0.7 (2023. 08. 16) : WorldScene view name 수정.
 /// </summary>
 
 namespace Joycollab.v2
@@ -186,13 +187,13 @@ namespace Joycollab.v2
 
         public const string WorldScene_SignIn = "SignIn_w";
         public const string WorldScene_SubLogin = "SubLogin_w";
-        public const string WorldScene_GuestLogin = "WorldView_GuestLogin"; // "GuestLogin_w";
-        public const string WorldScene_Reset = "WorldView_Reset"; // "Reset_w";
-        public const string WorldScene_Restore = "WorldView_Restore"; // "Restore_w";
+        public const string WorldScene_GuestLogin = "GuestLogin_w";
+        public const string WorldScene_Reset = "Reset_w";
+        public const string WorldScene_Restore = "Restore_w";
         public const string WorldScene_Agreement = "Agreement_w";
         public const string WorldScene_Terms = "Terms_w";
-        public const string WorldScene_Join = "WorldView_Join"; // "Join_w";
-        public const string WorldScene_Info = "WorldView_Info"; // "Info_w";
+        public const string WorldScene_Join = "Join_w";
+        public const string WorldScene_Info = "Info_w";
 
     #endregion  // World FixedView Name
 
@@ -213,6 +214,8 @@ namespace Joycollab.v2
 
         public const string TRUE = "true";
         public const string FALSE = "false";
+        public const string ID = "id";
+        public const string PW = "pw";
         public const string WORLD = "world";
         public const string EDITOR = "editor";
         public const string SYSTEM_UPDATE_CODE = "gansini88";

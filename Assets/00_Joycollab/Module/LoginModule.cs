@@ -1,12 +1,13 @@
 /// <summary>
 /// Login 기능만 독립적으로 분리한 모듈
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 11
-/// @version        : 0.3
+/// @last update    : 2023. 08. 16
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 05. 09) : 최초 생성
 ///     v0.2 (2023. 05. 10) : LoginScene 에서 사용하던 Login 관련 기능 정리.
 ///     v0.3 (2023. 08. 11) : WorldScene 에서 사용하는 Login 관련 기능 정리.
+///     v0.4 (2023. 08. 16) : Module 기능 추가 정리 (진행 중)
 /// </summary>
 
 using UnityEngine;
@@ -19,7 +20,7 @@ namespace Joycollab.v2
         private const string TAG = "LoginModule";
 
 
-    #region workspace functions
+    #region common functions
 
         /// <summary>
         /// 현재 cookie 에 있는 Token 유효성을 확인
@@ -83,9 +84,28 @@ namespace Joycollab.v2
             return res;
         }
 
-        // TODO. GUEST LOGIN 추가
 
-    #endregion  // workspace functions
+        // TODO. GUEST LOGIN 추가
+        // -----
+
+
+        /// <summary>
+        /// 회원 가입
+        /// </summary>
+        /// <param name="id">사용자 id (e-mail)</param>
+        /// <param name="pw">사용자 password</param>
+        /// <returns>NetworkTask request 결과로 얻은 message</returns>
+        public async UniTask<string> JoinAsync(string id, string pw) 
+        {
+            WWWForm form = new WWWForm();
+            form.AddField(S.ID, id);
+            form.AddField(S.PW, pw);
+
+            PsResponse<string> res = await NetworkTask.PostAsync<string>(URL.REQUEST_JOIN, form);
+            return res.message;
+        }
+
+    #endregion  // common functions
 
 
     #region world functions

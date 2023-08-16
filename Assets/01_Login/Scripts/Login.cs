@@ -2,8 +2,8 @@
 /// [PC Web]
 /// 사용자 Login 화면
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 04.
-/// @version        : 1.0
+/// @last update    : 2023. 08. 16.
+/// @version        : 1.1
 /// @update
 ///     v0.1 : UI Canvas 최적화 (static canvas, active canvas 분리)
 ///     v0.2 : Tab key 로 input field 이동할 수 있게 수정.
@@ -16,6 +16,7 @@
 ///     v0.8 (2023. 04. 22) : FixedView 적용
 ///     v0.9 (2023. 05. 10) : LoginModule 분리 및 적용
 ///     v1.0 (2023. 08. 04) : InputSubmitDetector -> TmpInputField 로 변경. 
+///     v1.1 (2023. 08. 16) : tab key 처리 수정.
 /// </summary>
 
 using UnityEngine;
@@ -29,6 +30,8 @@ namespace Joycollab.v2
 {
     public class Login : FixedView
     {
+        private const string TAG = "Login";
+
         [Header("Module")]
         [SerializeField] private LoginModule _module;
 
@@ -56,42 +59,25 @@ namespace Joycollab.v2
             base.Reset();
         }
 
+        #if UNITY_EDITOR
         private void Update() 
         {
-            /**
-            // HJ Lee. 2023. 08. 04. 업그레이드 된 webgl input 은 복사 붙여넣기가 가능.
-
-            // ctrl-c + ctrl-v
-            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl) ||
-                Input.GetKey(KeyCode.LeftCommand) || Input.GetKey(KeyCode.RightCommand))
-            {
-                if (Input.GetKeyDown(KeyCode.V)) 
-                {
-                    if (_inputId.isFocused) _inputId.text = ClipBoard.singleton.contents;
-                    if (_inputPw.isFocused) _inputPw.text = ClipBoard.singleton.contents;
-                    if (_inputDomain.isFocused) _inputDomain.text = ClipBoard.singleton.contents;
-                }
-            }
-
             // tab key process
             if (Input.GetKeyDown(KeyCode.Tab)) 
             {
-                Debug.Log("tab");
                 if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) 
                 {
-                    Debug.Log("with shift");
                     if (_inputId.isFocused) return;
                     else if (_inputPw.isFocused) _inputId.Select();
                 }
                 else 
                 {
-                    Debug.Log("without shift");
                     if (_inputId.isFocused) _inputPw.Select();
                     else if (_inputPw.isFocused) return;
                 }
             }
-             */
         }
+        #endif
 
     #endregion  // Unity functions
 
@@ -117,12 +103,12 @@ namespace Joycollab.v2
 
             // set button listener
             _btnSignIn.onClick.AddListener(() => Request().Forget());
-            _btnResetPw.onClick.AddListener(() => Debug.Log("TODO. LoginManager 생성 후, Reset 화면으로 이동"));
+            _btnResetPw.onClick.AddListener(() => Debug.Log("TODO. Reset 화면으로 이동"));
             _btnSignUp.onClick.AddListener(() => {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
                 PopupBuilder.singleton.OpenConfirm(
                     LocalizationSettings.StringDatabase.GetLocalizedString("Sentences", "회원가입 안내", currentLocale),
-                    () => Debug.Log("TODO. LoginManager 생성 후, 확인 누르면 약관 동의로 이동.")
+                    () => Debug.Log("TODO. 확인 누르면 약관 동의로 이동.")
                 );
             });
 
@@ -138,7 +124,7 @@ namespace Joycollab.v2
         #if UNITY_WEBGL && !UNITY_EDITOR
                 JsLib.Redirection(URL.WORLD_INDEX);
         #else
-                Debug.Log("TODO. ViewManager 생성 후, World Login 화면으로 이동.");
+                SceneLoader.Load(eScenes.World);
         #endif
             });
             _btnWorld.gameObject.SetActive(URL.DEV);
