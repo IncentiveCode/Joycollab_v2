@@ -126,18 +126,17 @@ namespace Joycollab.v2
                     switch (data.info.shereType - 1) 
                     {
                         case S.SHARE_DEPARTMENT :
-                            string t = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (부서)", currentLocale);
                             bool isTop = string.IsNullOrEmpty(data.info.topSpace.nm);
-                            _txtShareOpt.text = string.Format(t, isTop ? data.info.topSpace.nm : data.info.space.nm);
+                            _txtShareOpt.text = isTop ? data.info.topSpace.nm : data.info.space.nm;
                             break;
 
                         case S.SHARE_COMPANY :
-                            _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (전사)", currentLocale);
+                            _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "전사", currentLocale);
                             break;
 
                         case S.SHARE_NONE :
                         default :
-                            _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "공유 (개인)", currentLocale);
+                            _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "없음", currentLocale);
                             break;
                     }
 
