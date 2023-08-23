@@ -21,6 +21,10 @@ namespace Joycollab.v2
     {
         private const string TAG = "Agreement";
 
+        [Header("tag")]
+        [TagSelector]
+        [SerializeField] private string viewTag;
+
         [Header("Agree to All")]
         [SerializeField] private Toggle _toggleAll;
 
@@ -43,10 +47,6 @@ namespace Joycollab.v2
         [Header("Button")] 
         [SerializeField] private Button _btnBack;
         [SerializeField] private Button _btnNext;
-
-        [Header("tag")]
-        [TagSelector]
-        [SerializeField] private string viewTag;
 
         // local variables
         private bool isWorld;
