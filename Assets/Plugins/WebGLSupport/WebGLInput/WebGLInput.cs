@@ -179,6 +179,17 @@ namespace WebGLSupport
 
             // var fontSize = Mathf.Max(14, input.fontSize); // limit font size : 14 !!
             var fontSize = input.fontSize; 
+            Debug.Log($"WebGLInput | OnSelect(), origin font size : {fontSize}");
+
+            // test
+            Vector2 referencesResolution = new Vector2(1920f, 1080f);
+            Vector2 currentResolution = new Vector2(Screen.width, Screen.height);
+            float widthRatio = currentResolution.x / referencesResolution.x;
+            float heightRatio = currentResolution.y / referencesResolution.y;
+            float ratio = Mathf.Lerp(widthRatio, heightRatio, 0.5f);
+            float temp = fontSize * ratio;
+            fontSize = (Int32) temp;
+            Debug.Log($"WebGLInput | OnSelect(), modified font size : {fontSize}");
 
             // モバイルの場合、強制表示する
             var isHidden = !(showHtmlElement || Application.isMobilePlatform);

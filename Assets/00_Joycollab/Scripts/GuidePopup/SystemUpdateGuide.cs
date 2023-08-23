@@ -38,7 +38,7 @@ namespace Joycollab.v2
                         {
                             Debug.Log($"{TAG} | 테스트를 진행합니다.");
                             JsLib.SetCookie(Key.SYSTEM_UPDATE_FLAG, S.TRUE);
-                            SceneLoader.Load(eScenes.Login);
+                            SceneLoader.Load(eScenes.SignIn);
                         }
                         else 
                         {

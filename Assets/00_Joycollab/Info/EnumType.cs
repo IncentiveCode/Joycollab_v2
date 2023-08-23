@@ -19,7 +19,7 @@ namespace Joycollab.v2
     {
         Init = 0,
         Loading, 
-        Login,
+        SignIn,
         LoadInfo,
         GraphicUI, TextUI,
         Arrange, 

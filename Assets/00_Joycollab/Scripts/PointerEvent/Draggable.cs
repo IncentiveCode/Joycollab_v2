@@ -28,6 +28,7 @@ namespace Joycollab.v2
 
 
     #region Unity functions
+
         private void Awake() 
         {
             // set rect transform
@@ -50,10 +51,12 @@ namespace Joycollab.v2
                 Debug.Log($"{TAG} | CanvasScaler 설정이 누락되었습니다.");
             }
         }
+
     #endregion  // Unity functions
 
 
     #region Interface implementations
+
         public void OnPointerDown(PointerEventData data) 
         {
             if (rect == null || scaler == null) return;
@@ -93,6 +96,7 @@ namespace Joycollab.v2
         {
             // TODO. 대기 중. 추후 카메라 이동과 연결지을 예정.
         }
+
     #endregion  // Interface implementations
     }
 }

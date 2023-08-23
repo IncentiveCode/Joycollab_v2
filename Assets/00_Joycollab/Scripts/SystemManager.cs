@@ -177,7 +177,7 @@ namespace Joycollab.v2
             string absURL = Application.isEditor ? testURL : Application.absoluteURL; 
             if (string.IsNullOrEmpty(absURL)) absURL = URL.INDEX;
             string nextScene = ParseUrl(absURL);
-            SceneLoader.Load(nextScene.Contains(S.WORLD) ? eScenes.World : eScenes.Login);
+            SceneLoader.Load(nextScene.Contains(S.WORLD) ? eScenes.World : eScenes.SignIn);
         }
 
     #endregion  // First Act (공지사항 확인 후 URL parsing)
@@ -239,7 +239,7 @@ namespace Joycollab.v2
 
         public void Exit() 
         {
-            SceneLoader.Load(eScenes.Login);
+            SceneLoader.Load(eScenes.SignIn);
         }
 
     #endregion  // Temp
