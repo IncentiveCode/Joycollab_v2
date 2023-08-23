@@ -187,9 +187,12 @@ namespace WebGLSupport
             float widthRatio = currentResolution.x / referencesResolution.x;
             float heightRatio = currentResolution.y / referencesResolution.y;
             float ratio = Mathf.Lerp(widthRatio, heightRatio, 0.5f);
-            float temp = fontSize * ratio;
-            fontSize = (Int32) temp;
-            Debug.Log($"WebGLInput | OnSelect(), modified font size : {fontSize}");
+            if (ratio != 0)
+            {
+                float temp = fontSize / ratio;
+                fontSize = (Int32) temp;
+                Debug.Log($"WebGLInput | OnSelect(), modified font size : {fontSize}");
+            }
 
             // モバイルの場合、強制表示する
             var isHidden = !(showHtmlElement || Application.isMobilePlatform);
