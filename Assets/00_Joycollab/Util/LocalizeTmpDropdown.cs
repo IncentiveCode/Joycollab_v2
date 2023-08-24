@@ -2,25 +2,24 @@
 /// Unity Localization - dropdown 적용 
 /// @author         : UVH, HJ Lee
 /// @reference      : https://sonsazang.tistory.com/18
-/// @last update    : 2023. 08. 24
-/// @version        : 0.2
+/// @last update    : 2023. 06. 13
+/// @version        : 0.1
 /// @update
 ///     v0.1 (2023. 06. 13) : 검색 후 TMP 형태로 변경해서 적용
-///     v0.2 (2023. 08. 24) : Legacy 형태도 추가
 /// </summary>
 
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
+using TMPro;
 
 namespace Joycollab.v2
 {
-    [RequireComponent(typeof(Dropdown))]
-    [AddComponentMenu("Localization/Localize Dropdown")]
-    public class LocalizeDropdown : MonoBehaviour
+    [RequireComponent(typeof(TMP_Dropdown))]
+    [AddComponentMenu("Localization/Localize Tmp Dropdown")]
+    public class LocalizeTmpDropdown : MonoBehaviour
     {
         [Serializable]
         public class LocalizedDropdownOption
@@ -31,7 +30,7 @@ namespace Joycollab.v2
         public List<LocalizedDropdownOption> options;
         public int selectedOptionIndex = 0;
         private Locale currentLocale = null;
-        private Dropdown Dropdown => GetComponent<Dropdown>();
+        private TMP_Dropdown Dropdown => GetComponent<TMP_Dropdown>();
 
 
     #region Unity functions
@@ -67,7 +66,7 @@ namespace Joycollab.v2
             for (int i = 0; i < options.Count; i++)
             {
                 String localizedText = options[i].text.GetLocalizedString();
-                Dropdown.options.Add(new Dropdown.OptionData(localizedText));
+                Dropdown.options.Add(new TMP_Dropdown.OptionData(localizedText));
             }
 
             Dropdown.value = selectedOptionIndex;

@@ -1,8 +1,8 @@
 /// <summary>
 /// 자주 사용하는 string 값 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 23
-/// @version        : 0.8
+/// @last update    : 2023. 08. 24
+/// @version        : 0.9
 /// @update
 ///     v0.1 (2023. 03. 20) : 최초 생성. Scene 이름, LoginView, MobileView 이름 정리
 ///     v0.2 (2023. 04. 07) : Language, region 관련 상수 정리 
@@ -12,6 +12,7 @@
 ///     v0.6 (2023. 08. 11) : view tag 추가, WorldScene FixedView Name 추가, 이용약관 관련 값 추가.
 ///     v0.7 (2023. 08. 16) : WorldScene view name 수정.
 ///     v0.8 (2023. 08. 23) : 일부 클래스 이름 변경으로 인해 상수값 수정.
+///     v0.9 (2023. 08. 24) : Management Scene 상수값 추가.
 /// </summary>
 
 namespace Joycollab.v2
@@ -49,7 +50,6 @@ namespace Joycollab.v2
 
         public const string SignInScene_ViewTag = "SignInView";
 
-        // TODO. workspace login -> 추후 변경 예정
         public const string SignInScene_SignIn = "sign in";
         public const string SignInScene_SubSignIn = "sub sign in";
         public const string SignInScene_Guest = "guest";
@@ -65,6 +65,18 @@ namespace Joycollab.v2
         public const string SignInScene_CreateOffice = "UIView_CreateOffice"; // "CreateOffice";
 
     #endregion  // SignInScene FixedView Name 
+
+
+    #region ManagementScene FixedView Name
+
+        public const string ManagementScene_ViewTag = "ManagementView";
+
+        public const string ManagementScene_MyInfo = "my info";
+        public const string ManagementScene_CreateWorkspace = "create workspace";
+        public const string ManagementScene_WorkspaceInfo = "workspace info";
+        public const string ManagementScene_Plan = "plan";
+
+    #endregion  // ManagementScene FixedView Name
 
 
     #region MobileScene FixedView Name 
