@@ -113,12 +113,14 @@ namespace Joycollab.v2
     
         #region Alert functions
 
-        public void OpenAlert(string content) => OpenAlert(string.Empty, content, string.Empty, null);
-        public void OpenAlert(string content, System.Action action) => OpenAlert(string.Empty, content, string.Empty, action);
-        public void OpenAlert(string title, string content) => OpenAlert(title, content, string.Empty, null);
-        public void OpenAlert(string title, string content, System.Action action) => OpenAlert(title, content, string.Empty, action);
-        public void OpenAlert(string title, string content, string btnText) => OpenAlert(title, content, btnText, null);
-        public void OpenAlert(string title, string content, string btnText, System.Action action) 
+        // - center 에 출력.
+        public void OpenAlert(string content) => OpenAlert(string.Empty, content, string.Empty, null, 0, 0, false);
+        public void OpenAlert(string content, int posX, int posY) => OpenAlert(string.Empty, content, string.Empty, null, posX, posY, false);
+        public void OpenAlert(string content, System.Action action) => OpenAlert(string.Empty, content, string.Empty, action, 0, 0, false);
+        public void OpenAlert(string title, string content) => OpenAlert(title, content, string.Empty, null, 0, 0, false);
+        public void OpenAlert(string title, string content, System.Action action) => OpenAlert(title, content, string.Empty, action, 0, 0, false);
+        public void OpenAlert(string title, string content, string btnText) => OpenAlert(title, content, btnText, null, 0, 0, false);
+        public void OpenAlert(string title, string content, string btnText, System.Action action, int posX, int posY, bool autoClose) 
         {
             Locale currentLocale = LocalizationSettings.SelectedLocale;
             string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "알림", currentLocale);
@@ -143,7 +145,7 @@ namespace Joycollab.v2
                     break;
             }
 
-            ctrl.Open();
+            ctrl.Open(posX, posY, autoClose);
         }
 
         #endregion  // Alert functions

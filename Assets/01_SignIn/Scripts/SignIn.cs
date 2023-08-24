@@ -34,7 +34,7 @@ namespace Joycollab.v2
         private const string TAG = "SignIn";
 
         [Header("Module")]
-        [SerializeField] private LoginModule _module;
+        [SerializeField] private SignInModule _module;
 
         [Header("InputField")] 
         [SerializeField] private TMP_InputField _inputId;

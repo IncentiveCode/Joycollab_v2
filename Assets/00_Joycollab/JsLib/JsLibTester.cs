@@ -1,22 +1,25 @@
 /// <summary>
 /// Custom JsLib 테스트를 위한 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 03. 14
-/// @version        : 0.2
+/// @last update    : 2023. 08. 23
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 02. 27) : 최초 생성, 간단 기능만 추가한 Tester 구현.
 ///     v0.2 (2023. 03. 14) : WebGLSupport package 에 있는 Focus, Blur 테스트.
+///     v0.3 (2023. 08. 24) : OnFocus(), OnBlur() SystemManager 로 이관.
 /// </summary>
 
 using UnityEngine;
 using UnityEngine.UI;
-using WebGLSupport;
+using TMPro;
 
 namespace Joycollab.v2
 {
     public class JsLibTester : MonoBehaviour
     {
         [Header("Simple Test")]
+        [SerializeField] private TMP_InputField _inputAlertX;
+        [SerializeField] private TMP_InputField _inputAlertY;
         [SerializeField] private Button _btnAlert;
         [SerializeField] private Button _btnLog;
         [SerializeField] private Button _btnRedirect;
@@ -25,7 +28,7 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnCheckSystem;
 
         [Header("Cookie Test")]
-        [SerializeField] private InputField _inputValue;
+        [SerializeField] private TMP_InputField _inputValue;
         [SerializeField] private Button _btnWriteCookie;
         [SerializeField] private Button _btnReadCookie;
 
@@ -38,7 +41,13 @@ namespace Joycollab.v2
         private void Awake()
         {
             // set button listener
-            _btnAlert.onClick.AddListener(() => JsLib.Alert("Joycollab JsLib tester."));
+            // _btnAlert.onClick.AddListener(() => JsLib.Alert("Joycollab JsLib tester."));
+            _btnAlert.onClick.AddListener(() => {
+                int x = 0, y = 0;
+                int.TryParse(_inputAlertX.text, out x);
+                int.TryParse(_inputAlertY.text, out y);
+                PopupBuilder.singleton.OpenAlert("Joycollab JsLib tester.", x, y);
+            });
             _btnLog.onClick.AddListener(() => JsLib.Log("Console.log"));
             _btnRedirect.onClick.AddListener(() => JsLib.Redirection("https://jcollab.com"));
             _btnOpenWebview.onClick.AddListener(() => JsLib.OpenWebview("https://jcollab.com", "Home"));
@@ -51,20 +60,9 @@ namespace Joycollab.v2
                 JsLib.Alert($"Read cookie. \nkey : 'ps', value : {cookie}");
             });
 
+
             // set local variables
             objectName = gameObject.name;
-        }
-
-        private void OnEnable() 
-        {
-            WebGLWindow.OnFocusEvent += OnFocus;
-            WebGLWindow.OnBlurEvent += OnBlur;
-        }
-
-        private void OnDisable() 
-        {
-            WebGLWindow.OnFocusEvent -= OnFocus;
-            WebGLWindow.OnBlurEvent -= OnBlur;
         }
 
     #endregion
@@ -81,21 +79,6 @@ namespace Joycollab.v2
         public void PostCheckSystem(string result) 
         {
             JsLib.Alert($"System check result : {result}");
-        }
-
-    #endregion
-
-
-    #region focus Callback functions
-
-        private void OnFocus() 
-        {
-            JsLib.Log("on focus");
-        }
-
-        private void OnBlur() 
-        {
-            JsLib.Log("on blur");
         }
 
     #endregion

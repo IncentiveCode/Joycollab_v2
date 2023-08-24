@@ -32,7 +32,7 @@ namespace Joycollab.v2
 
 
         [Header("Module")]
-        [SerializeField] private LoginModule _module;
+        [SerializeField] private SignInModule _module;
 
         [Header("RawImage controller")]
         [SerializeField] private RawImage _imgOfficeLogo;

@@ -28,7 +28,7 @@ namespace Joycollab.v2
     public class LoginM : FixedView
     {
         [Header("Module")]
-        [SerializeField] private LoginModule _module;
+        [SerializeField] private SignInModule _module;
 
         [Header("Input e-mail")]
         [SerializeField] private TMP_InputField _inputId;

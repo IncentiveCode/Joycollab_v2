@@ -89,6 +89,11 @@ namespace Joycollab.v2
             _btnClearPrompt.onClick.AddListener(() => _inputPrompt.text = string.Empty);
         }
 
+        private void Start() 
+        {
+            // scaler setting
+        }
+
         private void Update() 
         {
             timer += Time.deltaTime;

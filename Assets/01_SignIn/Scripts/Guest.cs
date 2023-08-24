@@ -28,7 +28,7 @@ namespace Joycollab.v2
         [SerializeField] private string viewTag;
 
         [Header("module")]
-        [SerializeField] private LoginModule _module;
+        [SerializeField] private SignInModule _module;
 
         [Header("guest photo")]
         [SerializeField] private Button _btnPhoto;

@@ -1,13 +1,14 @@
 /// <summary>
-/// Login 기능만 독립적으로 분리한 모듈
+/// Sign In 기능만 독립적으로 분리한 모듈
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 16
-/// @version        : 0.4
+/// @last update    : 2023. 08. 23
+/// @version        : 0.5
 /// @update
 ///     v0.1 (2023. 05. 09) : 최초 생성
 ///     v0.2 (2023. 05. 10) : LoginScene 에서 사용하던 Login 관련 기능 정리.
 ///     v0.3 (2023. 08. 11) : WorldScene 에서 사용하는 Login 관련 기능 정리.
 ///     v0.4 (2023. 08. 16) : Module 기능 추가 정리 (진행 중)
+///     v0.5 (2023. 08. 23) : class name 변경. Module 기능 추가 정리 (진행 중)
 /// </summary>
 
 using UnityEngine;
@@ -15,9 +16,9 @@ using Cysharp.Threading.Tasks;
 
 namespace Joycollab.v2
 {
-    public class LoginModule : MonoBehaviour
+    public class SignInModule : MonoBehaviour
     {
-        private const string TAG = "LoginModule";
+        private const string TAG = "SignInModule";
 
 
     #region common functions

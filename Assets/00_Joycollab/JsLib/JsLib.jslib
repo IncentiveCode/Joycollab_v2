@@ -147,14 +147,14 @@ var JsLib = {
 	},
 
 	psSetTextUI : function(isOn) {
-		var instance = document.getElementById('unity-canvas');
+		var instance = document.getElementById('unity-container');
 		if (isOn) {
 			window.addEventListener('resize', setMinWidth)
 			instance.style.minWidth = '1800px';
 		}
 		else {
 			window.removeEventListener('resize', setMinWidth)
-			instance.style.minWidth = '';
+			instance.style.minWidth = '1100px';
 		}
 	},
 
