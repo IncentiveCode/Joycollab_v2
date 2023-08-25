@@ -98,24 +98,24 @@ namespace Joycollab.v2
         public static readonly Color WARNING_BORDER = new Color(0.8509804f, 0.8509804f, 0.8509804f, 1f);
 
 		/// <summary>
-		/// world - normal - #6E5184 >> #373737 >> #FD7D00
+		/// world - normal - #FD7D00
 		/// </summary>
         public static readonly Color WORLD_NORMAL = new Color(0.9921569f, 0.4901961f, 0f, 1f);
 
 		/// <summary>
-		/// world - normal - mouse over & click - #64477A >> #000 >> #E85A0B
+		/// world - normal - mouse over & click - #E85A0B
 		/// </summary>
         public static readonly Color WORLD_NORMAL_ON = new Color(0.9098039f, 0.3529412f, 0.04313726f, 1f);
 
 		/// <summary>
-		/// world - warning - #D5CBDC >> #EEEEEE >> #FFEAC5
+		/// world - warning - #FFEAC5
 		/// </summary>
         public static readonly Color WORLD_WARNING = new Color(1f, 0.9176471f, 0.772549f, 1f);
 
 		/// <summary>
-		/// world - warning - mouse over & click - #CBC1D2 >> #C0D8DD >> 미정 : #EAC7D0
+		/// world - warning - mouse over & click - #FFBF81
 		/// </summary>
-        public static readonly Color WORLD_WARNING_ON = new Color(0.9176471f, 0.7803922f, 0.8156863f, 1f);
+        public static readonly Color WORLD_WARNING_ON = new Color(1f, 0.7490196f, 0.5058824f, 1f);
 
 	#endregion	// button color
 
