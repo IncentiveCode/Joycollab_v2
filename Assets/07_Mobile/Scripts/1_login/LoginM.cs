@@ -129,7 +129,7 @@ namespace Joycollab.v2
             _btnSignUp.onClick.AddListener(() => {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Sentences", "회원가입 안내", currentLocale),
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "회원가입 안내", currentLocale),
                     () => Debug.Log("준비 중 입니다.")
                 );
             });

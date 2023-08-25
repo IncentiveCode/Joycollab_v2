@@ -1,8 +1,8 @@
 /// <summary>
 /// 자주 사용하는 string 값 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 24
-/// @version        : 0.9
+/// @last update    : 2023. 08. 25
+/// @version        : 1.0
 /// @update
 ///     v0.1 (2023. 03. 20) : 최초 생성. Scene 이름, LoginView, MobileView 이름 정리
 ///     v0.2 (2023. 04. 07) : Language, region 관련 상수 정리 
@@ -13,6 +13,7 @@
 ///     v0.7 (2023. 08. 16) : WorldScene view name 수정.
 ///     v0.8 (2023. 08. 23) : 일부 클래스 이름 변경으로 인해 상수값 수정.
 ///     v0.9 (2023. 08. 24) : Management Scene 상수값 추가.
+///     v1.0 (2023. 08. 25) : URL.GET_CODE 에서 사용하는 Top Code 상수값 추가. 
 /// </summary>
 
 namespace Joycollab.v2
@@ -247,6 +248,14 @@ namespace Joycollab.v2
         public const string CURRENT_AGREEMENT = "current_agreement_check_state";
 
     #endregion  // Terms
+
+
+    #region Top code
+
+        public const string TC_MEMBER_STATUS = "멤버 상태";
+        public const string TC_ALARM_SOUND = "알림음 구분"; 
+
+    #endregion  // Top code
 
 
     #region Member type

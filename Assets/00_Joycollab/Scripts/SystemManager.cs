@@ -167,7 +167,7 @@ namespace Joycollab.v2
                     break;
             }
             
-            if (browserType.Contains(S.TRUE)) 
+            if (browserType.Contains(S.TRUE) || browserType.Equals(S.EDITOR)) 
             {
                 CheckUrlParams();
             }

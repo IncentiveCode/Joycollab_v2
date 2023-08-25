@@ -123,8 +123,8 @@ namespace Joycollab.v2
         public void OpenAlert(string title, string content, string btnText, System.Action action, int posX, int posY, bool autoClose) 
         {
             Locale currentLocale = LocalizationSettings.SelectedLocale;
-            string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "알림", currentLocale);
-            string confirm = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "확인", currentLocale);
+            string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "알림", currentLocale);
+            string confirm = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "확인", currentLocale);
 
             PopupController ctrl = Build();
             ctrl.Type = ePopupType.Alert;
@@ -163,9 +163,9 @@ namespace Joycollab.v2
         public void OpenConfirm(string title, string content, string yesText, System.Action yesAction, string noText, System.Action noAction) 
         {
             Locale currentLocale = LocalizationSettings.SelectedLocale;
-            string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "알림", currentLocale);
-            string confirm = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "예", currentLocale);
-            string cancel = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "아니오", currentLocale);
+            string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "알림", currentLocale);
+            string confirm = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "예", currentLocale);
+            string cancel = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "아니오", currentLocale);
 
             PopupController ctrl = Build();
             ctrl.Type = ePopupType.Confirm;
@@ -202,9 +202,9 @@ namespace Joycollab.v2
         public void OpenPrompt(string title, string content, string yesText, System.Action<string> yesAction, string noText, System.Action noAction, bool isPassword=false) 
         {
             Locale currentLocale = LocalizationSettings.SelectedLocale;
-            string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "알림", currentLocale);
-            string confirm = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "예", currentLocale);
-            string cancel = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "아니오", currentLocale);
+            string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "알림", currentLocale);
+            string confirm = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "예", currentLocale);
+            string cancel = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "아니오", currentLocale);
 
             PopupController ctrl = Build();
             ctrl.Type = ePopupType.Prompt;

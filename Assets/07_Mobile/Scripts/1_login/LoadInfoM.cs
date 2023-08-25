@@ -267,9 +267,8 @@ namespace Joycollab.v2
         private async UniTask<string> GetStateListAsync() 
         {
             string token = R.singleton.token;
-            string topCode = "멤버 상태";
 
-            string url = string.Format(URL.GET_CODE, topCode);
+            string url = string.Format(URL.GET_CODE, S.TC_MEMBER_STATUS);
             PsResponse<TpsList> res = await NetworkTask.RequestAsync<TpsList>(url, eMethodType.GET, string.Empty, token);
             if (string.IsNullOrEmpty(res.message)) 
             {
