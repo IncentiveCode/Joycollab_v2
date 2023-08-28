@@ -2,8 +2,8 @@
 /// [PC Web]
 /// 사용자 Sign In 화면
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 16.
-/// @version        : 1.2
+/// @last update    : 2023. 08. 28.
+/// @version        : 1.3
 /// @update
 ///     v0.1 : UI Canvas 최적화 (static canvas, active canvas 분리)
 ///     v0.2 : Tab key 로 input field 이동할 수 있게 수정.
@@ -18,11 +18,11 @@
 ///     v1.0 (2023. 08. 04) : InputSubmitDetector -> TmpInputField 로 변경. 
 ///     v1.1 (2023. 08. 16) : tab key 처리 수정.
 ///     v1.2 (2023. 08. 23) : file name, class name 변경. (Login -> SignIn)
+///     v1.3 (2023. 08. 28) : SignInW, v1 에서 만들었던 world login 과 통합.
 /// </summary>
 
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
 using TMPro;
@@ -41,11 +41,15 @@ namespace Joycollab.v2
         [SerializeField] private TMP_InputField _inputPw;
         [SerializeField] private TMP_InputField _inputDomain;
 
-        [Header("Button, Toggle")] 
-        [SerializeField] private Button _btnSignIn;
+        [Header("Toggle")]
         [SerializeField] private Toggle _toggleRemember;
-        [SerializeField] private Button _btnResetPw;
+        [SerializeField] private Toggle _toggleGoToCenter;
+
+        [Header("Button")] 
+        [SerializeField] private Button _btnSignIn;
         [SerializeField] private Button _btnSignUp;
+        [SerializeField] private Button _btnGuest;
+        [SerializeField] private Button _btnResetPw;
         [SerializeField] private Button _btnNext;
         [SerializeField] private Button _btnVersion;
         [SerializeField] private Button _btnSample;
@@ -90,45 +94,69 @@ namespace Joycollab.v2
             base.Init();
 
 
+            // check scene opt
+            if (! isOffice && ! isWorld && ! isMobile) 
+            {
+                Debug.Log($"{TAG} | view tag 설정이 잘못 되었습니다. office : {isOffice}, world : {isWorld}, mobile : {isMobile}");
+                return;
+            }
+
+
             // set inputfield listener
             _inputId.onSubmit.AddListener((value) => {
                 if (_inputId.isFocused) _inputPw.Select();
             });
             _inputPw.onSubmit.AddListener((value) => {
-                if (_inputPw.isFocused) Request().Forget();
+                if (_inputPw.isFocused) SignInAsync().Forget();
             });
-            _inputDomain.onSubmit.AddListener((value) => {
-                MoveToSubSignInAsync(value).Forget();
-            });
+            if (isOffice)
+            {
+                _inputDomain.onSubmit.AddListener((value) => {
+                    MoveToSubSignInAsync(value).Forget();
+                });
+            }
 
 
             // set button listener
-            _btnSignIn.onClick.AddListener(() => Request().Forget());
-            _btnResetPw.onClick.AddListener(() => Debug.Log("TODO. Reset 화면으로 이동"));
+            _btnSignIn.onClick.AddListener(() => SignInAsync().Forget());
             _btnSignUp.onClick.AddListener(() => {
-                Locale currentLocale = LocalizationSettings.SelectedLocale;
-                PopupBuilder.singleton.OpenConfirm(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "회원가입 안내", currentLocale),
-                    () => Debug.Log("TODO. 확인 누르면 약관 동의로 이동.")
-                );
+                if (isOffice)
+                {
+                    PopupBuilder.singleton.OpenConfirm(
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "회원가입 안내", R.singleton.CurrentLocale),
+                        () => Debug.Log("TODO. 확인 누르면 약관 동의로 이동.")
+                    );
+                }
+                else if (isWorld) 
+                {
+                    ViewManager.singleton.Push(S.WorldScene_Agreement);
+                }
             });
+            _btnResetPw.onClick.AddListener(() => Debug.Log("TODO. Reset 화면으로 이동"));
 
-            _btnNext.onClick.AddListener(() => MoveToSubSignInAsync(_inputDomain.text).Forget());
-            _btnVersion.onClick.AddListener(() => Debug.Log("TODO. ViewManager 생성 후, 패치 노트 화면으로 이동"));
+            if (isOffice) 
+            {
+                _btnNext.onClick.AddListener(() => MoveToSubSignInAsync(_inputDomain.text).Forget());
+                _btnVersion.onClick.AddListener(() => Debug.Log("TODO. ViewManager 생성 후, 패치 노트 화면으로 이동"));
 
-            _btnSample.onClick.AddListener(() => {
-                SceneLoader.Load(eScenes.Sample);
-            });
-            _btnSample.gameObject.SetActive(URL.DEV);
+                _btnSample.onClick.AddListener(() => {
+                    SceneLoader.Load(eScenes.Sample);
+                });
+                _btnSample.gameObject.SetActive(URL.DEV);
 
-            _btnWorld.onClick.AddListener(() => {
-        #if UNITY_WEBGL && !UNITY_EDITOR
-                JsLib.Redirection(URL.WORLD_INDEX);
-        #else
-                SceneLoader.Load(eScenes.World);
-        #endif
-            });
-            _btnWorld.gameObject.SetActive(URL.DEV);
+                _btnWorld.onClick.AddListener(() => {
+                #if UNITY_WEBGL && !UNITY_EDITOR
+                    JsLib.Redirection(URL.WORLD_INDEX);
+                #else
+                    SceneLoader.Load(eScenes.World);
+                #endif
+                });
+                _btnWorld.gameObject.SetActive(URL.DEV);
+            }
+            else if (isWorld) 
+            {
+                _btnGuest.onClick.AddListener(() => ViewManager.singleton.Push(S.WorldScene_Guest));
+            }
         }
 
         public async override UniTaskVoid Show() 
@@ -138,7 +166,10 @@ namespace Joycollab.v2
 
             _inputId.gameObject.SetActive(true);
             _inputPw.gameObject.SetActive(true);
-            _inputDomain.gameObject.SetActive(true);
+            if (isOffice) 
+            {
+                _inputDomain.gameObject.SetActive(true);
+            }
 
             base.Appearing();
         }
@@ -149,7 +180,10 @@ namespace Joycollab.v2
 
             _inputId.gameObject.SetActive(false);
             _inputPw.gameObject.SetActive(false);
-            _inputDomain.gameObject.SetActive(false);
+            if (isOffice)
+            {
+                _inputDomain.gameObject.SetActive(false);
+            }
         }
 
     #endregion  // FixedView functions
@@ -162,10 +196,19 @@ namespace Joycollab.v2
             string toggleValue = JsLib.GetCookie(Key.TOGGLE_ID_SAVED);
             bool isOn = toggleValue.Equals(S.TRUE);
             _toggleRemember.isOn = isOn;
+            if (isWorld) 
+            {
+                toggleValue = JsLib.GetCookie(Key.TOGGLE_GO_TO_CENTER);
+                isOn = toggleValue.Equals(S.TRUE);
+                _toggleGoToCenter.isOn = isOn;
+            }
 
             _inputId.text = isOn ? JsLib.GetCookie(Key.SAVED_LOGIN_ID) : string.Empty;
             _inputPw.text = string.Empty;
-            _inputDomain.text = string.Empty;
+            if (isOffice) 
+            {
+                _inputDomain.text = string.Empty;
+            }
 
             await UniTask.Yield();
             return 0;    
@@ -174,24 +217,22 @@ namespace Joycollab.v2
     #endregion  // event handling
 
 
-    #region login
+    #region Sign-in
 
-        private async UniTaskVoid Request() 
+        private async UniTaskVoid SignInAsync() 
         {
             if (string.IsNullOrEmpty(_inputId.text)) 
             {
-                Locale currentLocale = LocalizationSettings.SelectedLocale;
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "이메일 없음", currentLocale)
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "이메일 없음", R.singleton.CurrentLocale)
                 );
                 return;
             }
 
             if (string.IsNullOrEmpty(_inputPw.text)) 
             {
-                Locale currentLocale = LocalizationSettings.SelectedLocale;
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호 없음", currentLocale)
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호 없음", R.singleton.CurrentLocale)
                 );
                 return;
             }
@@ -199,25 +240,66 @@ namespace Joycollab.v2
             string id = _inputId.text;
             string pw = _inputPw.text;
 
-            PsResponse<ResToken> res = await _module.LoginAsync(id, pw);
-            if (string.IsNullOrEmpty(res.message)) 
+            PsResponse<ResToken> res = await _module.SignInAsync(id, pw);
+            if (! string.IsNullOrEmpty(res.message)) 
+            {
+                PopupBuilder.singleton.OpenAlert(
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "로그인 실패", R.singleton.CurrentLocale)
+                );
+            }
+
+            // save info
+            R.singleton.ID = id;
+            R.singleton.TokenInfo = res.data;
+
+            if (isOffice)
             {
                 JsLib.SetCookie(Key.TOGGLE_ID_SAVED, _toggleRemember.isOn ? S.TRUE : S.FALSE);
                 JsLib.SetCookie(Key.SAVED_LOGIN_ID, _toggleRemember.isOn ? _inputId.text : string.Empty);
                 JsLib.SetCookie(Key.TOKEN_TYPE, res.data.token_type);
                 JsLib.SetCookie(Key.ACCESS_TOKEN, res.data.access_token);
 
-                R.singleton.ID = id;
-                R.singleton.TokenInfo = res.data;
-
-                // TODO. LoginManager 생성 후, SpaceSelector 추가
+                // TODO. Add space selecter
             }
-            else 
+            else if (isWorld) 
             {
-                Locale currentLocale = LocalizationSettings.SelectedLocale;
-                PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "로그인 실패", currentLocale)
-                );
+                JsLib.SetCookie(Key.TOGGLE_WORLD_ID_SAVED, _toggleRemember.isOn ? S.TRUE : S.FALSE);
+                JsLib.SetCookie(Key.SAVED_WORLD_LOGIN_ID, _toggleRemember.isOn ? _inputId.text : string.Empty);
+                JsLib.SetCookie(Key.TOGGLE_GO_TO_CENTER, _toggleGoToCenter.isOn ? S.TRUE : S.FALSE);
+                JsLib.SetCookie(Key.TOKEN_TYPE, res.data.token_type);
+                JsLib.SetCookie(Key.ACCESS_TOKEN, res.data.access_token);
+
+                WorldSignInAsync().Forget();
+            }
+        }
+
+        private async UniTaskVoid WorldSignInAsync() 
+        {
+            PsResponse<ResWorkspaceInfo> res = await _module.WorldSignInAsync();
+            if (! string.IsNullOrEmpty(res.message)) 
+            {
+                PopupBuilder.singleton.OpenAlert(res.message);
+                return;
+            }
+
+            WorldAvatarInfo info = new WorldAvatarInfo();
+            info.seq = res.data.seq;
+            info.nickNm = res.data.nickNm;
+            info.photo = res.data.photo;
+
+            // TODO. set world avatar info
+            // WorldAvatar.localPlayerInfo = info;
+            // WorldChatView.localPlayerInfo = info;
+
+            if (_toggleGoToCenter.isOn)
+            {
+                Debug.Log($"{TAG} | Square scene 으로 이동.");
+                SceneLoader.Load(eScenes.Square);
+            }
+            else
+            {
+                Debug.Log($"{TAG} | Map scene 으로 이동.");
+                SceneLoader.Load(eScenes.Map);
             }
         }
 
@@ -225,27 +307,26 @@ namespace Joycollab.v2
         {
             string url = string.Format(URL.CHECK_DOMAIN, domain);
             PsResponse<SimpleWorkspace> res = await NetworkTask.RequestAsync<SimpleWorkspace>(url, eMethodType.GET);
-            if (string.IsNullOrEmpty(res.message)) 
+            if (! string.IsNullOrEmpty(res.message)) 
             {
-                R.singleton.AddParam(Key.WORKSPACE_SEQ, res.data.seq.ToString()); 
-                R.singleton.AddParam(Key.WORKSPACE_NAME, res.data.nm);
-                R.singleton.AddParam(Key.WORKSPACE_LOGO, res.data.logo);
-                R.singleton.AddParam(Key.WORKSPACE_END_DATE, res.data.edtm);
+                PopupBuilder.singleton.OpenAlert(
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "도메인 탐색 실패", R.singleton.CurrentLocale)
+                );
+                return;
+            }
+
+            R.singleton.AddParam(Key.WORKSPACE_SEQ, res.data.seq.ToString()); 
+            R.singleton.AddParam(Key.WORKSPACE_NAME, res.data.nm);
+            R.singleton.AddParam(Key.WORKSPACE_LOGO, res.data.logo);
+            R.singleton.AddParam(Key.WORKSPACE_END_DATE, res.data.edtm);
 
         #if UNITY_WEBGL && !UNITY_EDITOR
-                string redirectUrl = string.Format(URL.SUB_INDEX, domain);
-                JsLib.Redirection(redirectUrl);
+            string redirectUrl = string.Format(URL.SUB_INDEX, domain);
+            JsLib.Redirection(redirectUrl);
         #else
-                ViewManager.singleton.Push(S.SignInScene_SubSignIn);
+            JsLib.ClearTokenCookie();
+            ViewManager.singleton.Push(S.SignInScene_SubSignIn);
         #endif
-            }
-            else 
-            {
-                Locale currentLocale = LocalizationSettings.SelectedLocale;
-                PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "도메인 탐색 실패", currentLocale)
-                );
-            }
         }
 
     #endregion  // login

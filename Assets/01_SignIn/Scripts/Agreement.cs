@@ -2,17 +2,16 @@
 /// [PC Web]
 /// 약관 동의 화면
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 11.
-/// @version        : 0.1
+/// @last update    : 2023. 08. 28.
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 08. 11) : v1 에서 만들었던 Agreement 수정 후 적용.
+///     v0.2 (2023. 08. 28) : World 에서 추가된 나이 관련 옵션 추가.
 /// </summary>
 
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Localization;
-using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
 
 namespace Joycollab.v2
@@ -20,10 +19,6 @@ namespace Joycollab.v2
     public class Agreement : FixedView
     {
         private const string TAG = "Agreement";
-
-        [Header("tag")]
-        [TagSelector]
-        [SerializeField] private string viewTag;
 
         [Header("Agree to All")]
         [SerializeField] private Toggle _toggleAll;
@@ -35,6 +30,9 @@ namespace Joycollab.v2
         [Header("Agree to Privacy")]
         [SerializeField] private Button _btnPrivacy;
         [SerializeField] private Toggle _togglePrivacy;
+
+        [Header("Agree to Age limit")]
+        [SerializeField] private Toggle _toggleAgeLimit;
 
         [Header("Agree to Marketing")]
         [SerializeField] private Button _btnMarketing;
@@ -49,10 +47,8 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnNext;
 
         // local variables
-        private bool isWorld;
         private bool isInvite;
         private bool isFreetrial;
-        private Locale currentLocale;
         private AgreementData currentData;
 
 
@@ -74,16 +70,32 @@ namespace Joycollab.v2
             base.Init();
 
 
+            // check scene opt
+            if (! isOffice && ! isWorld && ! isMobile) 
+            {
+                Debug.Log($"{TAG} | view tag 설정이 잘못 되었습니다.");
+                return;
+            }
+
+
             // set toggle listener
             _toggleAll.onValueChanged.AddListener((isOn) => {
                 _toggleTerms.isOn = isOn;
                 _togglePrivacy.isOn = isOn;
+                if (isWorld)
+                {
+                    _toggleAgeLimit.isOn = isOn;
+                }
                 _toggleMarketing.isOn = isOn;
                 _btnNext.interactable = isOn;
             });
 
             _toggleTerms.onValueChanged.AddListener((isOn) => CheckState());
             _togglePrivacy.onValueChanged.AddListener((isOn) => CheckState());
+            if (isWorld)
+            {
+                _toggleAgeLimit.onValueChanged.AddListener((isOn) => CheckState());
+            }
             _toggleMarketing.onValueChanged.AddListener((isOn) => {
                 _toggleMail.isOn = isOn;
                 _toggleMail.interactable = isOn;
@@ -159,6 +171,10 @@ namespace Joycollab.v2
             _toggleAll.isOn = currentData.agreeToAll;
             _toggleTerms.isOn = currentData.agreeToTerms;
             _togglePrivacy.isOn = currentData.agreeToPrivacy;
+            if (isWorld)
+            {
+                _toggleAgeLimit.isOn = currentData.agreeToAgeLimit;
+            }
             _toggleMarketing.isOn = currentData.agreeToMarketing;
             _toggleMail.interactable = currentData.agreeToMarketing;;
             _toggleMail.isOn = currentData.agreeToReceiveMail;
@@ -166,24 +182,17 @@ namespace Joycollab.v2
             _toggleSms.isOn = currentData.agreeToReceiveSMS;
             CheckState();
 
-
-            // world 의 경우, 뒤로가기 버튼 오픈.
-            isWorld = viewTag.Equals(S.WorldScene_ViewTag);
-            if (isWorld) 
+            if (isOffice)
             {
-                _btnBack.gameObject.SetActive(true);
-            }
-            // invite 의 경우, 하단 로그인 버튼 가림.
-            else
-            {
+                // set local variables
                 isInvite = R.singleton.GetParam(Key.INVITED).Equals(S.TRUE);
                 isFreetrial = R.singleton.GetParam(Key.FREETRIAL).Equals(S.TRUE);
                 _btnBack.gameObject.SetActive(! isInvite && ! isFreetrial);
             }
-
-
-            // set local variables
-            currentLocale = LocalizationSettings.SelectedLocale;
+            else if (isWorld) 
+            {
+                _btnBack.gameObject.SetActive(true);
+            }
 
             await UniTask.Yield();
             return 0;    
@@ -193,7 +202,16 @@ namespace Joycollab.v2
         {
             bool terms = _toggleTerms.isOn;
             bool privacy = _togglePrivacy.isOn;
-            _btnNext.interactable = (terms && privacy) ? true : false;
+
+            if (isOffice) 
+            {
+                _btnNext.interactable = terms && privacy;
+            }
+            else if (isWorld) 
+            {
+                bool ageLimit = _toggleAgeLimit.isOn;
+                _btnNext.interactable = terms && privacy && ageLimit;
+            }
         }
 
         private void SaveState(AgreementData data) 
@@ -201,6 +219,7 @@ namespace Joycollab.v2
             data.agreeToAll = _toggleAll.isOn;
             data.agreeToTerms = _toggleTerms.isOn;
             data.agreeToPrivacy = _togglePrivacy.isOn;
+            data.agreeToAgeLimit = isWorld ? false : _toggleAgeLimit.isOn;
             data.agreeToMarketing = _toggleMarketing.isOn;
             data.agreeToReceiveSMS = _toggleSms.isOn;
             data.agreeToReceiveMail = _toggleMail.isOn;
@@ -210,16 +229,16 @@ namespace Joycollab.v2
 
         private void Next()
         {
-            if (isWorld) 
-            {
-                ViewManager.singleton.Push(S.WorldScene_SignUp);
-            }
-            else 
+            if (isOffice) 
             {
                 if (isInvite || isFreetrial) 
                     ViewManager.singleton.Push(S.SignInScene_Greetings);
                 else 
                     ViewManager.singleton.Push(S.SignInScene_SignUp);
+            }
+            else if (isWorld) 
+            {
+                ViewManager.singleton.Push(S.WorldScene_SignUp);
             }
         }
 
@@ -233,6 +252,7 @@ namespace Joycollab.v2
         public bool agreeToAll;
         public bool agreeToTerms;
         public bool agreeToPrivacy;
+        public bool agreeToAgeLimit;
         public bool agreeToMarketing;
         public bool agreeToReceiveSMS;
         public bool agreeToReceiveMail;
@@ -241,7 +261,7 @@ namespace Joycollab.v2
 
         public void Init() 
         {
-            agreeToAll = agreeToTerms = agreeToPrivacy = agreeToMarketing = agreeToReceiveSMS = agreeToReceiveMail = false;
+            agreeToAll = agreeToTerms = agreeToPrivacy = agreeToAgeLimit = agreeToMarketing = agreeToReceiveSMS = agreeToReceiveMail = false;
         }
 
         public string ToJson() 

@@ -64,7 +64,7 @@ namespace Joycollab.v2
         /// <param name="id">사용자 id (e-mail)</param>
         /// <param name="pw">사용자 password</param>
         /// <returns>NetworkTask request 결과물 : PsResponse<ResToken></returns>
-        public async UniTask<PsResponse<ResToken>> LoginAsync(string id, string pw) 
+        public async UniTask<PsResponse<ResToken>> SignInAsync(string id, string pw) 
         {
             string token = string.Empty;
 
@@ -86,8 +86,19 @@ namespace Joycollab.v2
         }
 
 
-        // TODO. GUEST LOGIN 추가
-        // -----
+        /// <summary>
+        /// 게스트 로그인
+        /// </summary>
+        /// <param name="workspaceSeq">들어가고자 하는 workspace 의 seq</param>
+        /// <param name="name">게스트가 사용하려고 하는 이름</param>
+        /// <param name="photoInfo">게스트가 사용하려고 하는 사진 정보</param>
+        /// <returns>NetworkTask request 결과물 : PsResponse</returns>
+        public async UniTask<PsResponse<ResGuest>> GuestSignInAsync(int workspaceSeq, string name, string photoInfo) 
+        {
+            string url = string.Format(URL.GUEST_LOGIN, name, workspaceSeq);
+            PsResponse<ResGuest> res = await NetworkTask.RequestAsync<ResGuest>(url, eMethodType.POST, photoInfo, NetworkTask.BASIC_TOKEN);
+            return res;
+        }
 
 
         /// <summary>
@@ -96,14 +107,33 @@ namespace Joycollab.v2
         /// <param name="id">사용자 id (e-mail)</param>
         /// <param name="pw">사용자 password</param>
         /// <returns>NetworkTask request 결과로 얻은 message</returns>
-        public async UniTask<string> JoinAsync(string id, string pw) 
+        public async UniTask<PsResponse<string>> SignUpAsync(string id, string pw) 
         {
             WWWForm form = new WWWForm();
             form.AddField(S.ID, id);
             form.AddField(S.PW, pw);
 
+            PsResponse<string> res = await NetworkTask.PostAsync<string>(URL.REGISTER, form);
+            return res;
+        }
+
+
+        /// <summary>
+        /// 회원 가입 with CKEY
+        /// </summary>
+        /// <param name="id">사용자 id (e-mail)</param>
+        /// <param name="pw">사용자 password</param>
+        /// <param name="ckey">인증키</param>
+        /// <returns>NetworkTask request 결과로 얻은 message</returns>
+        public async UniTask<PsResponse<string>> SignUpAsync(string id, string pw, string ckey) 
+        {
+            WWWForm form = new WWWForm();
+            form.AddField(S.ID, id);
+            form.AddField(S.PW, pw);
+            form.AddField(Key.CKEY, ckey);
+
             PsResponse<string> res = await NetworkTask.PostAsync<string>(URL.REQUEST_JOIN, form);
-            return res.message;
+            return res;
         }
 
     #endregion  // common functions

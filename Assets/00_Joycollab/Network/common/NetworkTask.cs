@@ -196,17 +196,22 @@ namespace Joycollab.v2
             form.AddField(USERNAME, R.singleton.ID);
 
             PsResponse<ResToken> res = await PostAsync<ResToken>(URL.REQUEST_TOKEN, form, string.Empty, 
-                R.singleton.tokenScope.Equals(SCOPE_ADM) ? NetworkTask.BASIC_TOKEN : NetworkTask.BASIC_TOKEN_M);
+                R.singleton.tokenScope.Equals(SCOPE_ADM) ? NetworkTask.BASIC_TOKEN : NetworkTask.BASIC_TOKEN_M
+            );
 
             if (string.IsNullOrEmpty(res.message)) 
             {
                 Debug.Log("토큰 재발행 성공.");
                 R.singleton.TokenInfo = res.data;
+                JsLib.SetCookie(Key.TOKEN_TYPE, res.data.token_type);
+                JsLib.SetCookie(Key.ACCESS_TOKEN, res.data.access_token);
+
                 return string.Empty;
             }
             else 
             {
                 Debug.LogError("토큰 재발행 실패.");
+
                 return res.message;
             }
         }

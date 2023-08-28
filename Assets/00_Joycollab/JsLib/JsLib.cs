@@ -1,7 +1,7 @@
 ﻿/// <summary>
 /// PitchSolution - javascript library 
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 04 
+/// @last update    : 2023. 08. 28 
 /// @version        : 0.7
 /// @update
 ///     v0.1 (2023. 02. 22) : Joycollab 에서 사용하던 클래스 정리 및 통합.
@@ -11,7 +11,7 @@
 ///                         copyToClipboard() 추가. 참고 : https://pudding-entertainment.medium.com/unity-webgl-add-a-share-button-93831b3555e9
 ///     v0.5 (2023. 07. 19) : Joycollab 에서 사용하던 popup 관련 클래스 정리 및 통합.
 ///     v0.6 (2023. 07. 26) : ConnectInnerWebview() 의 오류로 인해 빌드 실패하는 문제 해결.
-///     v0.7 (2023. 08. 04) : 
+///     v0.7 (2023. 08. 28) : ClearTokenCookie() 추가.
 /// </summary>
 
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -231,6 +231,15 @@ namespace Joycollab.v2
             return cookie;
         }
         public static void SetCookie(string name, string value) => JsLibPlugin.psSetCookie(name, value);
+        public static void ClearTokenCookie() 
+        {
+            SetCookie(Key.TOKEN_TYPE, string.Empty);
+            SetCookie(Key.ACCESS_TOKEN, string.Empty);
+            SetCookie(Key.WORKSPACE_SEQ, string.Empty);
+            SetCookie(Key.MEMBER_SEQ, string.Empty);
+            SetCookie(Key.GUEST_ID, string.Empty);
+            SetCookie(Key.GUEST_PASSWORD, string.Empty);
+        }
 
     #endregion  // cookie
 

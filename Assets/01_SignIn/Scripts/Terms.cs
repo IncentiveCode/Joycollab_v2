@@ -2,16 +2,16 @@
 /// [PC Web]
 /// 약관 상세 화면
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 11.
-/// @version        : 0.1
+/// @last update    : 2023. 08. 28.
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 08. 11) : v1 에서 만들었던 Terms 수정 후 적용.
+///     v0.2 (2023. 08. 28) : Localization 사용 방식 변경.
 /// </summary>
 
 using System;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
 
@@ -28,9 +28,6 @@ namespace Joycollab.v2
 
         [Header("Button")] 
         [SerializeField] private Button _btnBack;
-
-        // local variables
-        private Locale currentLocale;
 
 
     #region Unity functions
@@ -74,15 +71,15 @@ namespace Joycollab.v2
             switch (opt) 
             {
                 case S.TERMS_OF_USAGE :
-                    _txtTitle.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "이용약관", currentLocale);
+                    _txtTitle.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "이용약관", R.singleton.CurrentLocale);
                     break;
 
                 case S.TERMS_OF_PRIVACY :
-                    _txtTitle.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "개인정보 수집 및 이용", currentLocale);
+                    _txtTitle.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "개인정보 수집 및 이용", R.singleton.CurrentLocale);
                     break;
 
                 case S.TERMS_OF_MARKETING :
-                    _txtTitle.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "마케팅 정보 수신", currentLocale);
+                    _txtTitle.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "마케팅 정보 수신", R.singleton.CurrentLocale);
                     break;
 
                 default :
@@ -94,7 +91,7 @@ namespace Joycollab.v2
             {
                 _txtTitle.text = _txtContent.text = string.Empty;
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "잘못된 접근", currentLocale),
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "잘못된 접근", R.singleton.CurrentLocale),
                     () => ViewManager.singleton.Pop()
                 );
                 await UniTask.Yield();
@@ -112,15 +109,13 @@ namespace Joycollab.v2
                 {
                     _txtTitle.text = _txtContent.text = string.Empty;
                     PopupBuilder.singleton.OpenAlert(
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "정보 갱신 실패", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "정보 갱신 실패", R.singleton.CurrentLocale),
                         () => ViewManager.singleton.Pop()
                     );
                 }
             }
 
-
-            // set local variables
-            currentLocale = LocalizationSettings.SelectedLocale;
+            await UniTask.Yield();
             return 0;
         }    
 

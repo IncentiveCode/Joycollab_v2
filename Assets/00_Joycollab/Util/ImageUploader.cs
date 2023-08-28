@@ -1,13 +1,14 @@
 /// <summary>
 /// 이미지 업로드 담당 클래스 
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 11
-/// @version        : 0.4
+/// @last update    : 2023. 08. 28
+/// @version        : 0.5
 /// @update
 ///     v0.1 (2023. 03. 21) : 최초 생성, login scene 에 적용 실험.
 ///     v0.2 (2023. 06. 28) : mobile scene 적용 실험. 
 ///     v0.3 (2023. 07. 04) : file name 을 획득할 수 있도록 기능 수정.
 ///     v0.4 (2023. 08. 11) : Android 에서도 사용할 수 있도록 OnPointerDown() 수정.
+///     v0.5 (2023. 08. 28) : vector2 size 변수, default texture 추가.
 /// </summary>
 
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -27,7 +28,9 @@ namespace Joycollab.v2
         private const string TAG = "ImageUploader";
 
         [SerializeField] private TMP_InputField _inputName;
+        [SerializeField] private Vector2 _v2Size;
         [SerializeField] private RawImage _imgUpload;
+        [SerializeField] private Texture2D _texDefault;
 
         // local variables
         public bool Interactable { get; set; }
@@ -62,22 +65,26 @@ namespace Joycollab.v2
 
     #region Public functions
 
-        public void Init(int width=128, int height=128)
+        public void Init() 
         {
             Interactable = true;
 
-            this.width = width;
-            this.height = height;
+            this.width = (int) _v2Size.x;
+            this.height = (int) _v2Size.y;
 
             rect = _imgUpload.GetComponent<RectTransform>();
+            _imgUpload.texture = _texDefault;
+            Util.ResizeRawImage(rect, _imgUpload, width, height);
         }
 
         public void Clear() 
         {
             rect.sizeDelta = new Vector2(width, height);
-
             _base64Header = _encodedString = string.Empty;
             _imageUrl = _imageName = string.Empty;
+
+            _imgUpload.texture = _texDefault;
+            Util.ResizeRawImage(rect, _imgUpload, width, height);
         }
 
         public void OnImageUpload(string data) 
@@ -125,6 +132,8 @@ namespace Joycollab.v2
             if (res == null) 
             {
                 Debug.LogError($"{TAG} | 이미지 로딩 실패.");
+                _imgUpload.texture = _texDefault;
+                Util.ResizeRawImage(rect, _imgUpload, width, height);
                 return;
             }
 
@@ -139,7 +148,7 @@ namespace Joycollab.v2
 
             Debug.Log($"{TAG} | ResizeTest() - path : {path}, ext : {ext}, width : {width}, height : {height}");
             _imgUpload.texture = res;
-            Util.ResizeRawImage(rect, _imgUpload, this.width, this.height);
+            Util.ResizeRawImage(rect, _imgUpload, width, height);
             
             byte[] bytes; 
             if (ext.Equals(".png"))

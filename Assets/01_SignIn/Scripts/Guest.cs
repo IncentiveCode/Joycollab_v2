@@ -8,11 +8,8 @@
 ///     v0.1 (2023. 08. 23) : v1 에서 만들었던 GuestLogin 수정 후 적용.
 /// </summary>
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
 using TMPro;
@@ -23,21 +20,13 @@ namespace Joycollab.v2
     {
         private const string TAG = "Guest";
         
-        [Header("tag")]
-        [TagSelector]
-        [SerializeField] private string viewTag;
-
         [Header("module")]
         [SerializeField] private SignInModule _module;
 
-        [Header("guest photo")]
+        [Header("guest photo, office logo")]
         [SerializeField] private Button _btnPhoto;
         [SerializeField] private RawImage _imgUploadPhoto;
-        [SerializeField] private Vector2 _v2PhotoSize;
-
-        [Header("office logo")]
         [SerializeField] private RawImage _imgOfficeLogo;
-        [SerializeField] private Vector2 _v2LogoSize;
 
         [Header("greetings")]
         [SerializeField] private Text _txtDesc;
@@ -50,15 +39,9 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnSignIn;
         [SerializeField] private Button _btnSignUp;
 
-        [Header("default texture")]
-        [SerializeField] private Texture2D _texDefaultUser;
-        [SerializeField] private Texture2D _texDefaultLogo;
-
         // local variables
-        private ImageUploader _handler;
-        private RectTransform _rectLogo;
-        private bool isWorld;
-        private Locale currentLocale;
+        private ImageUploader uploader;
+        private ImageLoader imageLoader;
 
 
     #region Unity functions
@@ -79,33 +62,41 @@ namespace Joycollab.v2
             base.Init();
 
 
-            // set 'image uploader'
-            _handler = _btnPhoto.GetComponent<ImageUploader>();
-            _handler.Init((int) _v2PhotoSize.x, (int) _v2PhotoSize.y);
+            // check scene opt
+            if (! isOffice && ! isWorld && ! isMobile) 
+            {
+                Debug.Log($"{TAG} | view tag 설정이 잘못 되었습니다. office : {isOffice}, world : {isWorld}, mobile : {isMobile}");
+                return;
+            }
+
+
+            // set 'image uploader' & 'image loader'
+            uploader = _btnPhoto.GetComponent<ImageUploader>();
+            uploader.Init();
+
+            if (isOffice)
+            {
+                imageLoader = _imgOfficeLogo.GetComponent<ImageLoader>();
+            }
 
 
             // set input field listener
             _inputName.onSubmit.AddListener((value) => {
-                if (_inputName.isFocused) 
-                {
-
-                }
+                if (_inputName.isFocused) GuestSignInAsync().Forget();
             });
 
 
             // set button listener
             _btnEnter.onClick.AddListener(() => {
-                // TODO. Guest Process 추가.
-                /**
-                if (isWorld) 
-                {
-                    Debug.Log($"{TAG} | 광장으로 로그인.");
-                } 
-                else 
+                if (isOffice) 
                 {
                     Debug.Log($"{TAG} | 남의 사무실로 로그인.");
                 }
-                 */
+                else if (isWorld) 
+                {
+
+                    Debug.Log($"{TAG} | 광장으로 로그인.");
+                }
             });
             _btnSignIn.onClick.AddListener(() => {
                 if (ViewManager.singleton.GetStackCount() >= 1) 
@@ -114,11 +105,7 @@ namespace Joycollab.v2
                 }
                 else 
                 {
-                    if (isWorld) 
-                    {
-                        ViewManager.singleton.Push(S.WorldScene_SignIn);
-                    }
-                    else 
+                    if (isOffice) 
                     {
                 #if UNITY_WEBGL && !UNITY_EDITOR
                         JsLib.Redirection(URL.INDEX);
@@ -128,13 +115,24 @@ namespace Joycollab.v2
                         ViewManager.singleton.Push(S.SignInScene_SignIn);
                 #endif
                     }
+                    else if (isWorld) 
+                    {
+                        ViewManager.singleton.Push(S.WorldScene_SignIn);
+                    }
                 }
             });
             _btnSignUp.onClick.AddListener(() => {
-                PopupBuilder.singleton.OpenConfirm(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "회원가입 안내", currentLocale),
-                    () => ViewManager.singleton.Push(isWorld ? S.WorldScene_SignUp : S.SignInScene_SignUp)
-                );
+                if (isOffice) 
+                {
+                    PopupBuilder.singleton.OpenConfirm(
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "회원가입 안내", R.singleton.CurrentLocale),
+                        () => ViewManager.singleton.Push(isWorld ? S.WorldScene_SignUp : S.SignInScene_SignUp)
+                    );
+                }
+                else if (isWorld)
+                {
+                    ViewManager.singleton.Push(S.WorldScene_Agreement);
+                }
             });
         }
 
@@ -162,17 +160,31 @@ namespace Joycollab.v2
 
         private async UniTask<int> Refresh() 
         {
-            // set local variables
-            currentLocale = LocalizationSettings.SelectedLocale;
-            isWorld = viewTag.Equals(S.WorldScene_ViewTag);
-
-            if (isWorld) 
+            // set text
+            if (isOffice) 
             {
-
+                string t = LocalizationSettings.StringDatabase.GetLocalizedString("Sentences", "환영인사 게스트", R.singleton.CurrentLocale);
+                _txtDesc.text = string.Format(t, R.singleton.GetParam(Key.WORKSPACE_NAME));
             }
-            else 
+            else if (isWorld)
             {
+                _txtDesc.text = LocalizationSettings.StringDatabase.GetLocalizedString("Sentences", "환영인사 게스트 w", R.singleton.CurrentLocale);
+            }
 
+            // set inputfield
+            string userName = R.singleton.GetParam(Key.USER_NAME);
+            _inputName.text = userName;
+            _inputName.interactable = string.IsNullOrEmpty(userName); 
+
+            // reset uploader
+            uploader.Clear(); 
+
+            // set office logo
+            if (isOffice) 
+            {
+                string logoPath = R.singleton.GetParam(Key.WORKSPACE_LOGO);
+                string url = $"{URL.SERVER_PATH}{logoPath}";
+                imageLoader.LoadOfficeLogo(url).Forget();
             }
 
             await UniTask.Yield();
@@ -180,5 +192,71 @@ namespace Joycollab.v2
         }
 
     #endregion  // event handling 
+
+
+    #region guest sign-in
+
+        private async UniTaskVoid GuestSignInAsync() 
+        {
+            if (string.IsNullOrEmpty(_inputName.text)) 
+            {
+                PopupBuilder.singleton.OpenAlert(
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "이름 없음", R.singleton.CurrentLocale)
+                );
+                return;
+            }
+
+            int workspaceSeq = 0;
+            int.TryParse(R.singleton.GetParam(Key.WORKSPACE_SEQ), out workspaceSeq);
+            if (workspaceSeq <= 0) 
+            {
+                PopupBuilder.singleton.OpenAlert(
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "잘못된 접근", R.singleton.CurrentLocale)
+                );
+                return;
+            }
+
+            // get 'guest id, pw'
+            PsResponse<ResGuest> resGuest = await _module.GuestSignInAsync(workspaceSeq, _inputName.text, uploader.imageInfo);
+            if (! string.IsNullOrEmpty(resGuest.message)) 
+            {
+                PopupBuilder.singleton.OpenAlert(resGuest.message);
+                return;
+            }
+
+            // get 'token info'
+            PsResponse<ResToken> resToken = await _module.SignInAsync(resGuest.data.id, resGuest.data.pw);
+            if (! string.IsNullOrEmpty(resToken.message)) 
+            {
+                PopupBuilder.singleton.OpenAlert(resToken.message);
+                return;
+            }
+
+            // save info
+            R.singleton.TokenInfo = resToken.data;
+            R.singleton.workspaceSeq = workspaceSeq;
+            R.singleton.memberSeq = resGuest.data.seq;
+
+            JsLib.SetCookie(Key.GUEST_ID, resGuest.data.id);
+            JsLib.SetCookie(Key.GUEST_PASSWORD, resGuest.data.pw);
+            JsLib.SetCookie(Key.MEMBER_SEQ, resGuest.data.seq.ToString());
+            JsLib.SetCookie(Key.TOKEN_TYPE, resToken.data.token_type);
+            JsLib.SetCookie(Key.ACCESS_TOKEN, resToken.data.access_token);
+            JsLib.SetCookie(Key.WORKSPACE_SEQ, workspaceSeq.ToString());
+
+            // send alarm and enter workspace
+            string email = R.singleton.GetParam(Key.EMAIL); 
+            string url = string.Format(URL.SEND_GUEST_ALARM, resGuest.data.seq, email);
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.PATCH, string.Empty, R.singleton.token);
+            if (! string.IsNullOrEmpty(res.message)) 
+            {
+                PopupBuilder.singleton.OpenAlert(res.message);
+                return;
+            }
+
+            SceneLoader.Load(eScenes.GraphicUI);
+        }
+
+    #endregion  // guest sign-in
     }
 }

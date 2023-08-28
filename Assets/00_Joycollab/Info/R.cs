@@ -1,8 +1,8 @@
 /// <summary>
 /// 시스템 상 저장 공간 (Repository) 
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 10
-/// @version        : 1.0
+/// @last update    : 2023. 08. 28
+/// @version        : 1.1
 /// @update
 ///     v0.1 (2023. 03. 17) : 파일 생성, Joycollab 에서 사용하는 것들 정리 시작.
 ///     v0.2 (2023. 03. 31) : SimpleWorkspace, Alarm 관련 항목 정리 시작, Notify 에서 generic <T> 제거.
@@ -14,6 +14,7 @@
 ///     v0.8 (2023. 07. 18) : 기존에 사용했던 member state 관리 추가.
 ///     v0.9 (2023. 07. 19) : 읽지 않은 채팅 카운트를 위해 변수와 getter 추가.
 ///     v1.0 (2023. 08. 10) : Localization Init 을 위해 Init() 을 async 로 변경.
+///     v1.1 (2023. 08. 28) : Locale 을 반환하는 public 변수 추가.
 /// </summary>
 
 using System;
@@ -21,6 +22,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using Cysharp.Threading.Tasks;
@@ -191,6 +193,12 @@ namespace Joycollab.v2
                 }
             }
         }
+        public Locale CurrentLocale 
+        {
+            get {
+                return LocalizationSettings.SelectedLocale;
+            }
+        }
         public bool isKorean 
         {
             get {
@@ -209,7 +217,12 @@ namespace Joycollab.v2
             yield return LocalizationSettings.InitializationOperation;
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[locale];
 
-            _region = locale == 0 ? S.REGION_KOREAN : S.REGION_ENGLISH;
+            _region = locale switch {
+                0 => S.REGION_KOREAN,
+                1 => S.REGION_ENGLISH,
+                2 => S.REGION_JAPANESE,
+                _ => S.REGION_KOREAN
+            };
 
             isChanging = false;
         }

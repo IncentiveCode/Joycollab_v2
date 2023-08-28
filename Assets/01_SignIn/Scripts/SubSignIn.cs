@@ -148,7 +148,6 @@ namespace Joycollab.v2
 
 
             // set local variables
-            // rectLogo = _imgOfficeLogo.GetComponent<RectTransform>();   
             imageLoader = _imgOfficeLogo.GetComponent<ImageLoader>();
         }
 
@@ -307,16 +306,16 @@ namespace Joycollab.v2
             string id = _inputId.text;
             string pw = _inputPw.text;
 
-            PsResponse<ResToken> res = await _module.LoginAsync(id, pw);
+            PsResponse<ResToken> res = await _module.SignInAsync(id, pw);
             if (string.IsNullOrEmpty(res.message)) 
             {
+                R.singleton.ID = id;
+                R.singleton.TokenInfo = res.data;
+
                 JsLib.SetCookie(Key.TOGGLE_ID_SAVED, _toggleRemember.isOn ? S.TRUE : S.FALSE);
                 JsLib.SetCookie(Key.SAVED_LOGIN_ID, _toggleRemember.isOn ? _inputId.text : string.Empty);
                 JsLib.SetCookie(Key.TOKEN_TYPE, res.data.token_type);
                 JsLib.SetCookie(Key.ACCESS_TOKEN, res.data.access_token);
-
-                R.singleton.ID = id;
-                R.singleton.TokenInfo = res.data;
 
                 string token = $"{res.data.token_type} {res.data.access_token}";
                 string seq = R.singleton.GetParam(Key.WORKSPACE_SEQ);

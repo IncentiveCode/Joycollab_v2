@@ -19,10 +19,6 @@ namespace Joycollab.v2
 
         public void Init(string title, string content) 
         {
-            // check locale
-            Locale currentLocale = LocalizationSettings.SelectedLocale;
-
-
             // set content text
             _txtTitle.text = title;
             _txtContent.text = content;
@@ -42,7 +38,7 @@ namespace Joycollab.v2
                         }
                         else 
                         {
-                            string alert = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호 불일치", currentLocale);
+                            string alert = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호 불일치", R.singleton.CurrentLocale);
                             PopupBuilder.singleton.OpenAlert(alert);
                         }
                     },

@@ -658,7 +658,7 @@ GameObject:
   - component: {fileID: 681484234}
   - component: {fileID: 681484233}
   m_Layer: 5
-  m_Name: Button _ login
+  m_Name: Button _ sign in
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -711,7 +711,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -2040,7 +2040,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -2329,6 +2329,7 @@ GameObject:
   - component: {fileID: 3900706678935557874}
   - component: {fileID: 4948744221473135137}
   - component: {fileID: 6690971565440211992}
+  - component: {fileID: 6690971565440211993}
   m_Layer: 0
   m_Name: RawImage _ office logo
   m_TagString: Untagged
@@ -2517,6 +2518,7 @@ GameObject:
   - component: {fileID: 2646447444785273597}
   - component: {fileID: 3955887062237556014}
   - component: {fileID: 1062705877252382307}
+  - component: {fileID: 3955887062237556015}
   m_Layer: 0
   m_Name: guest
   m_TagString: SignInView
@@ -2602,6 +2604,28 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &3955887062237556015
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2646447444785273598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 88f31c6d1822c1d4fb09d4d0800b018f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewTag: SignInView
+  _module: {fileID: 5360900155746557333, guid: e4312bf969bb3479d8942dcd7fbe78f8, type: 3}
+  _btnPhoto: {fileID: 7372419696619418181}
+  _imgUploadPhoto: {fileID: 6060251923174234083}
+  _imgOfficeLogo: {fileID: 6690971565440211992}
+  _txtDesc: {fileID: 1484940164}
+  _inputName: {fileID: 553329353}
+  _btnEnter: {fileID: 5686868155814037993}
+  _btnSignIn: {fileID: 681484234}
+  _btnSignUp: {fileID: 2043038127}
 --- !u!222 &4948744221473135137
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2821,13 +2845,27 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 0}
+  m_Texture: {fileID: 2800000, guid: 9150e37a4772a5341b667fa5a28093e5, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
     y: 0
     width: 1
     height: 1
+--- !u!114 &6690971565440211993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 492268000213240551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 50c2a8145db98d1478f61f4c73146341, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _v2Size: {x: 300, y: 100}
+  _texDefault: {fileID: 2800000, guid: 9150e37a4772a5341b667fa5a28093e5, type: 3}
 --- !u!1 &7227705640356819236
 GameObject:
   m_ObjectHideFlags: 0
@@ -2859,7 +2897,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Navigation:
-    m_Mode: 3
+    m_Mode: 0
     m_WrapAround: 0
     m_SelectOnUp: {fileID: 0}
     m_SelectOnDown: {fileID: 0}
@@ -2977,7 +3015,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _inputName: {fileID: 0}
+  _v2Size: {x: 172, y: 172}
   _imgUpload: {fileID: 6060251923174234083}
+  _texDefault: {fileID: 2800000, guid: 82f61e6f15c6a445c91f619b2b3290fa, type: 3}
 --- !u!1 &8664751788339595712
 GameObject:
   m_ObjectHideFlags: 0

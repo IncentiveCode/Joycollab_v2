@@ -193,7 +193,7 @@ namespace Joycollab.v2
             string id = _inputId.text;
             string pw = _inputPw.text;
 
-            PsResponse<ResToken> res = await _module.LoginAsync(id, pw);
+            PsResponse<ResToken> res = await _module.SignInAsync(id, pw);
             if (string.IsNullOrEmpty(res.message)) 
             {
                 _inputId.interactable = _inputPw.interactable = false;

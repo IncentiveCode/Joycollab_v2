@@ -2,8 +2,8 @@
 /// Joycollab 통합 매니저 클래스 
 /// - singleton 남용을 막고, 기존 manager 클래스들에서 중복되어 있는 내용들을 수정/정리/최적화 하기 위해 작성.
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 23
-/// @version        : 0.6
+/// @last update    : 2023. 08. 28
+/// @version        : 0.7
 /// @update
 ///     v0.1 (2023. 04. 07) : 최초 작성.
 ///     v0.2 (2023. 04. 19) : singleton pattern 수정
@@ -11,10 +11,10 @@
 ///     v0.4 (2023. 08. 10) : 공지사항 확인, URL parsing 기능 추가. (v1 에서 사용하던 항목들)
 ///     v0.5 (2023. 08. 16) : 일본어 적용 (진행 중)
 ///     v0.6 (2023. 08. 23) : Window - OnFocus, OnBlur, OnResize 처리 함수 추가
+///     v0.7 (2023. 08. 28) : Localization 사용 방식 변경.
 /// </summary>
 
 using UnityEngine;
-using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
 using WebGLSupport;
@@ -173,8 +173,7 @@ namespace Joycollab.v2
             }
             else 
             {
-                Locale currentLocale = LocalizationSettings.SelectedLocale;
-                string content = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "브라우저 안내", currentLocale);
+                string content = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "브라우저 안내", R.singleton.CurrentLocale);
                 PopupBuilder.singleton.OpenAlert(
                     content,
                     () => CheckUrlParams()

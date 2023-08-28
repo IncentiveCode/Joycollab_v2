@@ -2,24 +2,24 @@
 /// [PC Web]
 /// 사용자 가입 화면
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 16 
-/// @version        : 0.1
+/// @last update    : 2023. 08. 28 
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 08. 16) : v1 에서 사용하던 Join 수정, 적용.
+///     v0.2 (2023. 08. 28) : class name 변경. Localization 사용 방식 변경. 회원 가입 이후의 조치 추가.
 /// </summary>
 
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
 using TMPro;
 
 namespace Joycollab.v2 
 {
-    public class Join : FixedView
+    public class SignUp : FixedView
     {
-        private const string TAG = "Join";
+        private const string TAG = "SignUp";
 
         [Header("Module")]
         [SerializeField] private SignInModule _module;
@@ -34,15 +34,10 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnNext;
         [SerializeField] private Button _btnBack;
 
-        [Header("tag")]
-        [TagSelector]
-        [SerializeField] private string viewTag;
 
         // local variables
-        private bool isWorld;
         private bool isInvite;
         private bool isCheckDone;
-        private Locale currentLocale;
 
 
     #region Unity functions
@@ -145,7 +140,6 @@ namespace Joycollab.v2
 
         private async UniTask<int> Refresh()
         {
-            isWorld = viewTag.Equals(S.WorldScene_ViewTag);
             if (isWorld) 
             {
                 _btnBack.gameObject.SetActive(true);
@@ -168,7 +162,6 @@ namespace Joycollab.v2
 
 
             // set local variables
-            currentLocale = LocalizationSettings.SelectedLocale;
             isCheckDone = false;
 
             await UniTask.Yield();
@@ -205,14 +198,14 @@ namespace Joycollab.v2
                     if (res.data.useYn.Equals("Y")) 
                     {
                         PopupBuilder.singleton.OpenAlert(
-                            LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "사용 중인 계정", currentLocale)
+                            LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "사용 중인 계정", R.singleton.CurrentLocale)
                         );
                     }
                     else 
                     {
                         PopupBuilder.singleton.OpenConfirm(
-                            LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "탈퇴회원 안내", currentLocale),
-                            LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "탈퇴회원 설명", currentLocale),
+                            LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "탈퇴회원 안내", R.singleton.CurrentLocale),
+                            LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "탈퇴회원 설명", R.singleton.CurrentLocale),
                             () => {
                                 ViewManager.singleton.Push(
                                     isWorld ? S.WorldScene_Restore : S.SignInScene_Restore,
@@ -221,7 +214,7 @@ namespace Joycollab.v2
                             },
                             () => {
                                 PopupBuilder.singleton.OpenAlert(
-                                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "다른 계정 사용 안내", currentLocale)
+                                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "다른 계정 사용 안내", R.singleton.CurrentLocale)
                                 );
                             }
                         );
@@ -230,7 +223,7 @@ namespace Joycollab.v2
 
                 case NetworkTask.HTTP_STATUS_CODE_NO_CONTENT :
                     PopupBuilder.singleton.OpenAlert(
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "사용 가능 계정", currentLocale)
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "사용 가능 계정", R.singleton.CurrentLocale)
                     );
 
                     _btnCheck.interactable = false;
@@ -250,7 +243,7 @@ namespace Joycollab.v2
             if (string.IsNullOrEmpty(_inputPw.text)) 
             {
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호 없음", currentLocale)
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호 없음", R.singleton.CurrentLocale)
                 );
                 return;
             }
@@ -258,7 +251,7 @@ namespace Joycollab.v2
             if (! RegExp.MatchPasswordRule(_inputPw.text)) 
             {
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호 안내", currentLocale)
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호 안내", R.singleton.CurrentLocale)
                 );
                 return;
             }
@@ -266,7 +259,7 @@ namespace Joycollab.v2
             if (string.IsNullOrEmpty(_inputPwConfirm.text)) 
             {
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호확인 없음", currentLocale)
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호확인 없음", R.singleton.CurrentLocale)
                 );
                 return;
             }
@@ -274,17 +267,17 @@ namespace Joycollab.v2
             if (! CheckPassword()) 
             {
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호 불일치", currentLocale)
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호 불일치", R.singleton.CurrentLocale)
                 );
                 return;
             }
 
             string id = _inputId.text;
             string pw = _inputPw.text;
-            string res = await _module.JoinAsync(id, pw);
-            if (! string.IsNullOrEmpty(res)) 
+            PsResponse<string> res = await _module.SignUpAsync(id, pw);
+            if (! string.IsNullOrEmpty(res.message)) 
             {
-                PopupBuilder.singleton.OpenAlert(res);
+                PopupBuilder.singleton.OpenAlert(res.message);
                 return;
             }
 

@@ -1,8 +1,8 @@
 /// <summary>
 /// 고정 위치를 가지는 창의 속성을 관리하기 위한 추상 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 21
-/// @version        : 0.6
+/// @last update    : 2023. 08. 28
+/// @version        : 0.7
 /// @update
 ///     v0.1 (2023. 03. 20) : 최초 생성
 ///     v0.2 (2023. 03. 21) : Show() 를 async 로 변경
@@ -10,6 +10,7 @@
 ///     v0.4 (2023. 06. 12) : softkeyboard 출력상태에서 back button 입력시 내용 사라지는 오류 수정.
 ///     v0.5 (2023. 06. 30) : softkeyboard 관련 listener 정리.
 ///     v0.6 (2023. 07. 21) : int seq 를 넘기는 Show() 함수 추가.
+///     v0.7 (2023. 08. 28) : View Tag 관련 변수 추가. (각각의 화면에서 컨트롤 하지 않고, FixedView 에서 공통분모를 컨트롤하게 수정)
 /// </summary>
 
 using UnityEngine;
@@ -21,6 +22,11 @@ namespace Joycollab.v2
 {
     public abstract class FixedView : MonoBehaviour
     {
+        // for scene
+        [TagSelector]
+        [SerializeField] protected string viewTag;
+        protected bool isOffice, isWorld, isMobile;
+
         // for view
         protected int viewID;
         protected eVisibleState visibleState;
@@ -47,6 +53,10 @@ namespace Joycollab.v2
                 Debug.Log("RectTransform component 확인 요망");
                 return;
             }
+
+            isOffice = viewTag.Equals(S.SignInScene_ViewTag); 
+            isWorld = viewTag.Equals(S.WorldScene_ViewTag);
+            isMobile = viewTag.Equals(S.MobileScene_ViewTag);
         }
 
         protected virtual void Reset()

@@ -167,7 +167,7 @@ namespace Joycollab.v2
             string id = _inputId.text;
             string pw = _inputPw.text;
 
-            PsResponse<ResToken> res = await _module.LoginAsync(id, pw);
+            PsResponse<ResToken> res = await _module.SignInAsync(id, pw);
             if (! string.IsNullOrEmpty(res.message)) 
             {
                 PopupBuilder.singleton.OpenAlert(
@@ -176,15 +176,14 @@ namespace Joycollab.v2
                 return;
             }
 
+            R.singleton.ID = id;
+            R.singleton.TokenInfo = res.data;
+
             JsLib.SetCookie(Key.TOGGLE_WORLD_ID_SAVED, _toggleRemember.isOn ? S.TRUE : S.FALSE);
             JsLib.SetCookie(Key.SAVED_WORLD_LOGIN_ID, _toggleRemember.isOn ? _inputId.text : string.Empty);
             JsLib.SetCookie(Key.TOGGLE_GO_TO_CENTER, _toggleGoToCenter.isOn ? S.TRUE : S.FALSE);
             JsLib.SetCookie(Key.TOKEN_TYPE, res.data.token_type);
             JsLib.SetCookie(Key.ACCESS_TOKEN, res.data.access_token);
-
-            R.singleton.ID = id;
-            R.singleton.TokenInfo = res.data;
-
 
             PsResponse<ResWorkspaceInfo> res2 = await _module.WorldSignInAsync(); 
             if (! string.IsNullOrEmpty(res2.message)) 

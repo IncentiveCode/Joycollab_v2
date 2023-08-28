@@ -1152,7 +1152,7 @@ GameObject:
   - component: {fileID: 845834965232016719}
   - component: {fileID: 2364757046356641278}
   - component: {fileID: 1078284351144349251}
-  - component: {fileID: 2404559912009495114}
+  - component: {fileID: 8102361313941478583}
   m_Layer: 0
   m_Name: sign in_w
   m_TagString: WorldView
@@ -1215,7 +1215,7 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
---- !u!114 &2404559912009495114
+--- !u!114 &8102361313941478583
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1224,18 +1224,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 845834965232016716}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9c50ae232da6d2441be8b5349e7b1d6b, type: 3}
+  m_Script: {fileID: 11500000, guid: b03f0132582f948d388dca6b92e2d8a5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewTag: WorldView
   _module: {fileID: 5360900155746557333, guid: e4312bf969bb3479d8942dcd7fbe78f8, type: 3}
   _inputId: {fileID: 845834963605375580}
   _inputPw: {fileID: 845834964610088465}
+  _inputDomain: {fileID: 0}
   _toggleRemember: {fileID: 4586245313918242439}
   _toggleGoToCenter: {fileID: 2925686157220064239}
-  _btnGuest: {fileID: 3863108939976446968}
   _btnSignIn: {fileID: 2709337967935562121}
   _btnSignUp: {fileID: 4730531093658166681}
+  _btnGuest: {fileID: 3863108939976446968}
   _btnResetPw: {fileID: 5100734698953239800}
+  _btnNext: {fileID: 0}
+  _btnVersion: {fileID: 0}
+  _btnSample: {fileID: 0}
+  _btnWorld: {fileID: 0}
 --- !u!1 &2576016754224722756
 GameObject:
   m_ObjectHideFlags: 0

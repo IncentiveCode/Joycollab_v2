@@ -200,7 +200,7 @@ namespace Joycollab.v2
         public const string WorldScene_ViewTag = "WorldView";
 
         public const string WorldScene_SignIn = "sign in_w";
-        public const string WorldScene_GuestLogin = "guest_w";
+        public const string WorldScene_Guest = "guest_w";
         public const string WorldScene_Reset = "reset_w";
         public const string WorldScene_Restore = "restore_w";
         public const string WorldScene_Agreement = "agreement_w";
