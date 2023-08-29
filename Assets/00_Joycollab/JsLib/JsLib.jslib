@@ -294,6 +294,34 @@ var JsLib = {
 			}
 		);
 	},
+
+	psSearchAddress : function(gameObjectNamePtr, callbackMethodNamePtr) {
+		var gameObjectName = UTF8ToString(gameObjectNamePtr);
+		var callbackMethodName = UTF8ToString(callbackMethodNamePtr);
+
+		new daum.Postcode({
+			oncomplete: function(data) {
+
+				var addr = data.address;
+				var lat = 0.0;
+				var lng = 0.0;
+				var result = '';
+
+				var geocoder = new kakao.maps.services.Geocoder();
+				geocoder.addressSearch(data.address, function(result, status) {
+					if (status === kakao.maps.services.Status.OK) {
+						lng = result[0].x
+						lat = result[0].y
+						result = addr +'|'+ lat +'|'+ lng;
+						SendMessage(gameObjectName, methodName, result);
+					}
+					else {
+						SendMessage(gameObjectName, methodName, addr);
+					}
+				});
+			}
+		}).open();
+	},
 }
 
 mergeInto(LibraryManager.library, JsLib);

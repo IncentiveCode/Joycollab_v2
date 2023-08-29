@@ -1,5 +1,4 @@
 /// <summary>
-/// [PC Web]
 /// 게스트가 특정 회사에 들어가거나 월드에 진입하는 화면
 /// @author         : HJ Lee
 /// @last update    : 2023. 08. 23.
@@ -25,7 +24,6 @@ namespace Joycollab.v2
 
         [Header("guest photo, office logo")]
         [SerializeField] private Button _btnPhoto;
-        [SerializeField] private RawImage _imgUploadPhoto;
         [SerializeField] private RawImage _imgOfficeLogo;
 
         [Header("greetings")]

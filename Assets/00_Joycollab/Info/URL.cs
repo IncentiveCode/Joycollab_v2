@@ -424,7 +424,7 @@ namespace Joycollab.v2
         ///     {0} : id
         ///     {1} : phone
         /// </summary>
-        public const string REQUEST_RESET = SERVER_PATH +"/npr/api/user/ckey/{0}/{1}";
+        public const string REQUEST_CODE = SERVER_PATH +"/npr/api/user/ckey/{0}/{1}";
 
         /// <summary>
         /// desc : 회원 ID 로 회원 정보 조회

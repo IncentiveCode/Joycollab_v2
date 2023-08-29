@@ -1,14 +1,15 @@
 /// <summary>
 /// Sign In 기능만 독립적으로 분리한 모듈
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 23
-/// @version        : 0.5
+/// @last update    : 2023. 08. 29
+/// @version        : 0.6
 /// @update
 ///     v0.1 (2023. 05. 09) : 최초 생성
 ///     v0.2 (2023. 05. 10) : LoginScene 에서 사용하던 Login 관련 기능 정리.
 ///     v0.3 (2023. 08. 11) : WorldScene 에서 사용하는 Login 관련 기능 정리.
-///     v0.4 (2023. 08. 16) : Module 기능 추가 정리 (진행 중)
-///     v0.5 (2023. 08. 23) : class name 변경. Module 기능 추가 정리 (진행 중)
+///     v0.4 (2023. 08. 16) : Module 기능 추가 정리.
+///     v0.5 (2023. 08. 23) : class name 변경. Module 기능 추가 정리.
+///     v0.6 (2023. 08. 29) : Reset, Restore 관련 기능 추가.
 /// </summary>
 
 using UnityEngine;
@@ -227,5 +228,42 @@ namespace Joycollab.v2
         }
 
     #endregion  // world functions
+
+
+    #region reset, restore functions
+
+        public async UniTask<PsResponse<ResCheckId>> CheckIdAsync(string id) 
+        {
+            string url = string.Format(URL.CHECK_ID, id);
+
+            PsResponse<ResCheckId> res = await NetworkTask.RequestAsync<ResCheckId>(url, eMethodType.GET);
+            return res;
+        }
+
+        public async UniTask<PsResponse<string>> RequestResetAsync(string ckey, string id, string pw, string tel) 
+        {
+            string url = string.Format(URL.RESET_PW, ckey, id, pw, tel);
+
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.PATCH);
+            return res;
+        }
+
+        public async UniTask<PsResponse<string>> RequestCodeAsync(string id, string phone) 
+        {
+            string url = string.Format(URL.REQUEST_CODE, id, phone);
+
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.GET);
+            return res;
+        }
+
+        public async UniTask<PsResponse<string>> RequestRestoreAsync(string ckey, string id, string pw, string tel) 
+        {
+            string url = string.Format(URL.RESTORE_ID, ckey, id, pw, tel);
+
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.PATCH);
+            return res;
+        }
+
+    #endregion  // reset, restore functions
     }
 }

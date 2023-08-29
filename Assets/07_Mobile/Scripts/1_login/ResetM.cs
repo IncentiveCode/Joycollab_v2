@@ -276,7 +276,7 @@ namespace Joycollab.v2
         // step 2. id, phone 정보로 인증 코드 요청
         private async UniTask<string> RequestCodeAsync(string id, string phone) 
         {
-            string url = string.Format(URL.REQUEST_RESET, id, phone);
+            string url = string.Format(URL.REQUEST_CODE, id, phone);
             PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.GET);
             return res.message;
         }

@@ -1,17 +1,18 @@
 ﻿/// <summary>
 /// PitchSolution - javascript library 
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 28 
-/// @version        : 0.7
+/// @last update    : 2023. 08. 29 
+/// @version        : 0.8
 /// @update
 ///     v0.1 (2023. 02. 22) : Joycollab 에서 사용하던 클래스 정리 및 통합.
 ///     v0.2 (2023. 02. 28) : unity 2021.3.13f1 으로 업그레이드 후, windows 에서 build 안되는 문제 해결. (한글 주석이 원인으로 보임)
-///     v0.3 (2023. 03. 17) : Graphic UI 와 Text UI 전환시 unity-canvas 에 min-widht 값을 추가하는 함수 추가. 추후 고도화 예정.
+///     v0.3 (2023. 03. 17) : Graphic UI 와 Text UI 전환시 unity-container 에 min-widht 값을 추가하는 함수 추가. 추후 고도화 예정.
 ///     v0.4 (2023. 07. 14) : WebGL 이 아닌 곳에서 Alert 사용시 Popup builder 를 이용한 open alert 출력하게 수정.
 ///                         copyToClipboard() 추가. 참고 : https://pudding-entertainment.medium.com/unity-webgl-add-a-share-button-93831b3555e9
 ///     v0.5 (2023. 07. 19) : Joycollab 에서 사용하던 popup 관련 클래스 정리 및 통합.
 ///     v0.6 (2023. 07. 26) : ConnectInnerWebview() 의 오류로 인해 빌드 실패하는 문제 해결.
 ///     v0.7 (2023. 08. 28) : ClearTokenCookie() 추가.
+///     v0.8 (2023. 08. 29) : kakao search address 추가.
 /// </summary>
 
 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -102,12 +103,14 @@ namespace Joycollab.v2
     #endregion  // popup, webview
 
 
-    #region location
+    #region location, address
 
         [DllImport("__Internal")] 
         public static extern void psGetLocation(string gameObjectName, string callbackMethodName);
+        [DllImport("__Internal")] 
+        public static extern void psSearchAddress(string gameObjectName, string callbackMethodName);
 
-    #endregion  // location
+    #endregion  // location, address
 
 #else
 
@@ -215,6 +218,12 @@ namespace Joycollab.v2
             GameObject.Find(gameObjectName).SendMessage(callbackMethodName, result);
         }
 
+        public static void psSearchAddress(string gameObjectName, string callbackMethodName)
+        {
+            string result = $"editor|서울시 금천구 가산디지털1로 205";
+            GameObject.Find(gameObjectName).SendMessage(callbackMethodName, result);
+        }
+
     #endregion  // location
 
 #endif
@@ -304,10 +313,11 @@ namespace Joycollab.v2
     #endregion  // popup, webview
 
 
-    #region location
+    #region location, address
 
         public static void GetLocation(string gameObjectName, string callbackMethodName) => JsLibPlugin.psGetLocation(gameObjectName, callbackMethodName);
+        public static void SearchAddress(string gameObjectName, string callbackMethodName) => JsLibPlugin.psSearchAddress(gameObjectName, callbackMethodName);
 
-    #endregion  // location
+    #endregion  // location, address
     }
 }

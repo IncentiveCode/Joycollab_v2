@@ -32,7 +32,7 @@ namespace Joycollab.v2
         protected eVisibleState visibleState;
         protected CanvasGroup canvasGroup;
         protected RectTransform viewRect;
-        protected float fadeTime = 1f;
+        protected float fadeTime = 0.5f;
 
 
     #region FixedView functions

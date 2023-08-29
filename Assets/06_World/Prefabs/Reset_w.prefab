@@ -1050,7 +1050,7 @@ GameObject:
   - component: {fileID: 3379941951736998180}
   - component: {fileID: 3379941951736998181}
   m_Layer: 0
-  m_Name: InputField (TMP) _ key
+  m_Name: InputField (TMP) _ code
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1859,7 +1859,7 @@ GameObject:
   - component: {fileID: 3379941952296977628}
   - component: {fileID: 3379941952296977629}
   m_Layer: 0
-  m_Name: Button _ back
+  m_Name: Button _ cancel force
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4083,6 +4083,7 @@ GameObject:
   - component: {fileID: 7876808168672613010}
   - component: {fileID: 6602411166228541720}
   - component: {fileID: 467887849294367483}
+  - component: {fileID: 831018172948644704}
   m_Layer: 5
   m_Name: reset_w
   m_TagString: WorldView
@@ -4146,6 +4147,31 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &831018172948644704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7876808168672613009}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bd5eca6264c1c204c9087c3fd11a13a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewTag: WorldView
+  _module: {fileID: 5360900155746557333, guid: e4312bf969bb3479d8942dcd7fbe78f8, type: 3}
+  _goBefore: {fileID: 4014221863464614759}
+  _inputId: {fileID: 6663397953950722720}
+  _inputPhone: {fileID: 4420579001166063715}
+  _btnNext: {fileID: 7876808168942176217}
+  _btnCancel: {fileID: 3505562303437035464}
+  _goAfter: {fileID: 3379941953096439866}
+  _inputCode: {fileID: 3379941951736998183}
+  _inputPw: {fileID: 3379941952476199941}
+  _inputPwConfirm: {fileID: 3379941953219569908}
+  _btnReset: {fileID: 3379941952994625127}
+  _btnCancelForce: {fileID: 3379941952296977631}
 --- !u!1 &7876808168942176222
 GameObject:
   m_ObjectHideFlags: 0
@@ -4345,7 +4371,7 @@ GameObject:
   - component: {fileID: 3611563491456771020}
   - component: {fileID: 2923366618769840084}
   m_Layer: 0
-  m_Name: Button _ back
+  m_Name: Button _ cancel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

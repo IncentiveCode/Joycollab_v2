@@ -1,5 +1,4 @@
 /// <summary>
-/// [PC Web]
 /// 사용자 Sign In 화면
 /// @author         : HJ Lee
 /// @last update    : 2023. 08. 28.
@@ -132,7 +131,7 @@ namespace Joycollab.v2
                     ViewManager.singleton.Push(S.WorldScene_Agreement);
                 }
             });
-            _btnResetPw.onClick.AddListener(() => Debug.Log("TODO. Reset 화면으로 이동"));
+            _btnResetPw.onClick.AddListener(() => ViewManager.singleton.Push(S.WorldScene_Reset));
 
             if (isOffice) 
             {

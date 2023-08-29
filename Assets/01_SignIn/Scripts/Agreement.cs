@@ -1,5 +1,4 @@
 /// <summary>
-/// [PC Web]
 /// 약관 동의 화면
 /// @author         : HJ Lee
 /// @last update    : 2023. 08. 28.

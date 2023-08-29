@@ -129,12 +129,13 @@ namespace Joycollab.v2
 
         private static string HandleError(long code, string data) 
         {
-            string result = "";
+            string msg = string.Empty;
+            string result = string.Empty;
             switch (code) 
             {
                 case HTTP_STATUS_CODE_BAD_REQUEST : 
                     ResBadRequest badRequest = JsonUtility.FromJson<ResBadRequest>(data); 
-                    string msg = badRequest.Message;
+                    msg = badRequest.Message;
                     if (string.IsNullOrEmpty(msg)) 
                     {
                         SimpleError err = JsonUtility.FromJson<SimpleError>(data);
@@ -156,7 +157,16 @@ namespace Joycollab.v2
                     break;
 
                 case HTTP_STATUS_CODE_NOT_FOUND :  
-                    result = "Not Found";
+                    ResBadRequest notFound = JsonUtility.FromJson<ResBadRequest>(data); 
+                    msg = notFound.Message;
+                    if (string.IsNullOrEmpty(msg)) 
+                    {
+                        result = "Not Found";
+                    }
+                    else 
+                    {
+                        result = msg;
+                    }
                     break;
 
                 case HTTP_STATUS_CODE_NOT_ACCEPTABLE :

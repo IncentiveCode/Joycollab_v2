@@ -1,6 +1,5 @@
 /// <summary>
-/// [PC Web]
-/// 사용자 가입 화면
+// 사용자 가입 화면
 /// @author         : HJ Lee
 /// @last update    : 2023. 08. 28 
 /// @version        : 0.2

@@ -1,5 +1,4 @@
 /// <summary>
-/// [PC Web]
 /// 특정 회사 사용자 Login 화면
 /// @author         : HJ Lee
 /// @last update    : 2023. 08. 23
@@ -30,7 +29,6 @@ namespace Joycollab.v2
     {
         private const string TAG = "SubSignIn";
 
-
         [Header("Module")]
         [SerializeField] private SignInModule _module;
 
@@ -55,7 +53,6 @@ namespace Joycollab.v2
 
         // local vairables
         private ImageLoader imageLoader;
-
         private bool isInvite;
         private bool isExpire;
 

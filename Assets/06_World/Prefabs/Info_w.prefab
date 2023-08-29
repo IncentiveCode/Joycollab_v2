@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3471280976291727945}
   - component: {fileID: 1673180633364508867}
   m_Layer: 0
-  m_Name: InputField (TMP) _ email
+  m_Name: InputField (TMP) _ id
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -104,7 +104,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_PressedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
     m_SelectedColor: {r: 1, g: 1, b: 1, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.2}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -118,7 +118,7 @@ MonoBehaviour:
     m_PressedTrigger: Pressed
     m_SelectedTrigger: Selected
     m_DisabledTrigger: Disabled
-  m_Interactable: 1
+  m_Interactable: 0
   m_TargetGraphic: {fileID: 5137044557015216135}
   m_TextViewport: {fileID: 1696967471404679990}
   m_TextComponent: {fileID: 4413032994192907786}
@@ -975,7 +975,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 120, y: 120}
+  m_SizeDelta: {x: 108, y: 108}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4730086971452740260
 CanvasRenderer:
@@ -1005,7 +1005,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Texture: {fileID: 0}
+  m_Texture: {fileID: 2800000, guid: 443eedb45e9f30448a2946df57d8e23f, type: 3}
   m_UVRect:
     serializedVersion: 2
     x: 0
@@ -1855,6 +1855,7 @@ GameObject:
   - component: {fileID: 3037733034252423192}
   - component: {fileID: 7609982303507500036}
   - component: {fileID: 2005079977766075364}
+  - component: {fileID: 7557895883698711181}
   m_Layer: 5
   m_Name: info_w
   m_TagString: WorldView
@@ -1917,6 +1918,29 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!114 &7557895883698711181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3037733034252423193}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5001650da2aba5a4cb9d5dbf96738f0a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewTag: SignInView
+  _module: {fileID: 5360900155746557333, guid: e4312bf969bb3479d8942dcd7fbe78f8, type: 3}
+  _inputId: {fileID: 3471280976291727945}
+  _inputName: {fileID: 3784445204719813701}
+  _inputPhone: {fileID: 1469471979229993433}
+  _inputOffice: {fileID: 8569276003094549764}
+  _inputAddress1: {fileID: 469047650138145892}
+  _inputAddress2: {fileID: 387452179349008566}
+  _btnPhoto: {fileID: 3037733034289842918}
+  _btnSearchAddress: {fileID: 4267645030966944569}
+  _btnNext: {fileID: 3037733035210503313}
 --- !u!1 &3037733034289842916
 GameObject:
   m_ObjectHideFlags: 0
@@ -2067,7 +2091,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _inputName: {fileID: 0}
+  _v2Size: {x: 108, y: 108}
   _imgUpload: {fileID: 3172959805379789765}
+  _texDefault: {fileID: 2800000, guid: 443eedb45e9f30448a2946df57d8e23f, type: 3}
 --- !u!1 &3037733035152601526
 GameObject:
   m_ObjectHideFlags: 0
@@ -4262,7 +4288,7 @@ GameObject:
   - component: {fileID: 8052209412542125169}
   - component: {fileID: 4267645030966944569}
   m_Layer: 0
-  m_Name: Button _ find address
+  m_Name: Button _ search address
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

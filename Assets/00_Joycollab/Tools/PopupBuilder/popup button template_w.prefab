@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 3846497398468947125}
   - component: {fileID: 23780700163760746}
   - component: {fileID: 7663996219638004895}
-  - component: {fileID: 852462645908697697}
+  - component: {fileID: 7197618933069875343}
   m_Layer: 5
   m_Name: popup button template_w
   m_TagString: Untagged
@@ -161,8 +161,8 @@ MonoBehaviour:
   _element: {fileID: 23780700163760746}
   _btn: {fileID: 3846497398468947125}
   _txt: {fileID: 30117971925539751}
-  _outline: {fileID: 852462645908697697}
---- !u!114 &852462645908697697
+  _outline: {fileID: 7197618933069875343}
+--- !u!114 &7197618933069875343
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -188,6 +188,7 @@ GameObject:
   - component: {fileID: 3052186458338970149}
   - component: {fileID: 420014669286609704}
   - component: {fileID: 30117971925539751}
+  - component: {fileID: 5193034019472150482}
   m_Layer: 5
   m_Name: Text
   m_TagString: Untagged
@@ -244,7 +245,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: f0d04114ba0084a7ba0fc2eb32365877, type: 3}
+    m_Font: {fileID: 12800000, guid: c894605cae6e6be42a651cdf2162a5ab, type: 3}
     m_FontSize: 14
     m_FontStyle: 0
     m_BestFit: 0
@@ -257,3 +258,21 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1
   m_Text: button
+--- !u!114 &5193034019472150482
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7885257552145864977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6977f13cefe7d0045a102556edabf7d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _text: {fileID: 0}
+  sizeOpt: 0
+  _sizeSmall: 14
+  _sizeNormal: 16
+  _sizeLarge: 18
+  _layoutElement: {fileID: 0}
