@@ -44,8 +44,8 @@ namespace Joycollab.v2
             	int memberSeq = R.singleton.memberSeq;
 
 				string url = share ?
-					string.Format(URL.GET_SHARE_TODO_LIST, memberSeq, viewOpt, filterOpt, startDate) :
-					string.Format(URL.GET_TODO_LIST, memberSeq, targetMemberSeq, viewOpt, startDate) ;
+					string.Format(URL.SHARE_TODO_LIST, memberSeq, viewOpt, filterOpt, startDate) :
+					string.Format(URL.TARGET_TODO_LIST, memberSeq, targetMemberSeq, viewOpt, startDate) ;
 				url += "?";
 
 				if (! string.IsNullOrEmpty(keyword)) url += "keyword="+ keyword +"&";

@@ -96,7 +96,7 @@ namespace Joycollab.v2
         /// <returns>NetworkTask request 결과물 : PsResponse</returns>
         public async UniTask<PsResponse<ResGuest>> GuestSignInAsync(int workspaceSeq, string name, string photoInfo) 
         {
-            string url = string.Format(URL.GUEST_LOGIN, name, workspaceSeq);
+            string url = string.Format(URL.SIGN_IN_AS_GUEST, name, workspaceSeq);
             PsResponse<ResGuest> res = await NetworkTask.RequestAsync<ResGuest>(url, eMethodType.POST, photoInfo, NetworkTask.BASIC_TOKEN);
             return res;
         }

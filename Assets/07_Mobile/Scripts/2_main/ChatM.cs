@@ -80,8 +80,8 @@ namespace Joycollab.v2
             string region = R.singleton.Region;
 
             string url = (opt.Length == 0) ?
-                string.Format(URL.MOBILE_CHAT_LINK, memberSeq, region, token) :
-                string.Format(URL.MOBILE_CHATVIEW_LINK, memberSeq, opt, region, token);
+                string.Format(URL.CHAT_LINK_M, memberSeq, region, token) :
+                string.Format(URL.CHATVIEW_LINK_M, memberSeq, opt, region, token);
 
             WebviewBuilder.singleton.OpenMobileWebview(url, eWebviewType.Chat);
 

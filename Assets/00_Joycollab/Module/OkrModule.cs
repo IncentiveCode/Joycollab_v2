@@ -263,7 +263,7 @@ namespace Joycollab.v2
             string token = R.singleton.token;
             int memberSeq = R.singleton.memberSeq;
 
-            string url = string.Format(URL.GET_OBJECTIVES, memberSeq, share);
+            string url = string.Format(URL.OBJECTIVE_LIST, memberSeq, share);
             PsResponse<TopOkrList> res = await NetworkTask.RequestAsync<TopOkrList>(url, eMethodType.GET, string.Empty, token);
 
             return res;

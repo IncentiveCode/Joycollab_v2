@@ -1,8 +1,8 @@
 /// <summary>
 /// NetworkTask 를 위한 API URL 정리 문서 
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 01
-/// @version        : 1.0
+/// @last update    : 2023. 08. 30
+/// @version        : 1.1
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리
 ///     v0.2 (2023. 03. 20) : Tray app 관련 URL 추가
@@ -14,6 +14,7 @@
 ///     v0.8 (2023. 07. 06) : Joycollab 에서 사용하던 URL 정리. (UserApi - Board)
 ///     v0.9 (2023. 07. 07) : Joycollab 에서 사용하던 URL 정리. (UserApi - Bookmark)
 ///     v1.0 (2023. 08. 01) : Joycollab 에서 사용하던 URL 정리. (UserApi - Attendance)
+///     v1.1 (2023. 08. 30) : v1 에서 사용하던 URL 정리 완료. World API 정리
 /// </summary>
 
 #define DEV // Dev Server
@@ -88,7 +89,7 @@ namespace Joycollab.v2
         /// <summary>
         /// desc : weather api - 아이콘 리스트 획득
         /// </summary>
-        public const string WEATHER_ICON_LIST = "https://www.weatherapi.com/docs/weather_conditions.json";
+        public const string GET_WEATHER_ICONS = "https://www.weatherapi.com/docs/weather_conditions.json";
 
         /// <summary>
         /// desc : weather api - 위도와 경도값으로 현재 날씨 획득 
@@ -127,7 +128,7 @@ namespace Joycollab.v2
         /// desc : 파일 목록 관리
         /// method : get (파일 리스트 획득), post (새 폴더 생성)
         /// </summary>
-        public const string URL_GOOGLE_DRIVE = GOOGLE_PATH +"drive/v3/files";
+        public const string GOOGLE_DRIVE = GOOGLE_PATH +"drive/v3/files";
 
         /// <summary>
         /// desc : 파일 관리
@@ -135,13 +136,13 @@ namespace Joycollab.v2
         /// param
         ///     {0} : file id
         /// </summary>
-        public const string URL_GOOGLE_DRIVE_DELETE_RENAME = GOOGLE_PATH + "drive/v3/files/{0}";
+        public const string CONTROL_GOOGLE_DRIVE = GOOGLE_PATH +"drive/v3/files/{0}";
 
         /// <summary>
         /// desc : 파일 업로드
         /// method : post
         /// </summary>
-        public const string URL_GOOGLE_UPLOAD_FILE = GOOGLE_PATH + "upload/drive/v3/files?uploadType=multipart";
+        public const string UPLOAD_GOOGLE_FILE = GOOGLE_PATH +"upload/drive/v3/files?uploadType=multipart";
 
         /// <summary>
         /// desc : 파일 다운로드
@@ -149,7 +150,7 @@ namespace Joycollab.v2
         /// param
         ///     {0} : file id
         /// </summary>
-        public const string URL_GOOGLE_DOWNLOAD_FILE = GOOGLE_PATH + "drive/v3/files/{0}?alt=media";
+        public const string DOWNLOAD_GOOGLE_FILE = GOOGLE_PATH +"drive/v3/files/{0}?alt=media";
 
         /// <summary>
         /// desc : 구글 독스 파일 다운로드
@@ -158,7 +159,7 @@ namespace Joycollab.v2
         ///     {0} : file id
         ///     {1} : mime type
         /// </summary>
-        public const string URL_GOOGLE_DOCS_DOWNLOAD = GOOGLE_PATH + "drive/v3/files/{0}/export?mimeType={1}";
+        public const string DOWNLOAD_GOOGLE_DOCS = GOOGLE_PATH +"drive/v3/files/{0}/export?mimeType={1}";
 
         /// <summary>
         /// desc : 파일의 부모 정보 확인
@@ -166,7 +167,7 @@ namespace Joycollab.v2
         /// param
         ///     {0} : file id
         /// </summary>
-        public const string URL_GOOGLE_PARENTS = GOOGLE_PATH + "drive/v3/files/{0}?fields=parents, name, id";
+        public const string GET_GOOGLE_FILE_PARENTS = GOOGLE_PATH +"drive/v3/files/{0}?fields=parents, name, id";
 
         /// <summary>
         /// desc : 파일 복사
@@ -174,7 +175,7 @@ namespace Joycollab.v2
         /// param
         ///     {0} : file id
         /// </summary>
-        public const string URL_GOOGLE_COPY = GOOGLE_PATH + "drive/v3/files/{0}/copy";
+        public const string COPY_GOOGLE_FILE = GOOGLE_PATH +"drive/v3/files/{0}/copy";
 
         /// <summary>
         /// desc : 파일 붙여넣기
@@ -183,7 +184,7 @@ namespace Joycollab.v2
         ///     {0} : file id
         ///     {1} : parent id
         /// </summary>
-        public const string URL_GOOGLE_ADD_PARENT = GOOGLE_PATH + "drive/v3/files/{0}?addParents={1}";
+        public const string PASTE_GOOGLE_FILE = GOOGLE_PATH +"drive/v3/files/{0}?addParents={1}";
 
         /// <summary>
         /// desc : 권한 확인
@@ -191,7 +192,7 @@ namespace Joycollab.v2
         /// param
         ///     {0} : file id
         /// </summary>
-        public const string URL_GOOGLE_PERMISSION = GOOGLE_PATH + "drive/v3/files/{0}/permissions";
+        public const string CHECK_GOOGLE_PERMISSION = GOOGLE_PATH +"drive/v3/files/{0}/permissions";
 
     #endregion  // Google Drive API
 
@@ -241,7 +242,7 @@ namespace Joycollab.v2
         ///     {3} : datetime
         ///     {4} : language code (ko / en)
         /// </summary>
-        public const string MEMBER_MANAGE_PAGE = "/setting_service/member?workspaceSeq={0}&memberSeq={1}&token={2}&dt={3}&lan={4}";  
+        public const string MEMBER_MANAGE_PAGE = PATH +"/setting_service/member?workspaceSeq={0}&memberSeq={1}&token={2}&dt={3}&lan={4}";  
 
         /// <summary>
         /// desc : 워크스페이스 관리 화면
@@ -251,7 +252,7 @@ namespace Joycollab.v2
         ///     {2} : datetime
         ///     {3} : language code (ko / en)
         /// </summary>
-        public const string SPACE_MANAGE_PAGE = "/setting_service/space?workspaceSeq={0}&token={1}&dt={2}&lan={3}";
+        public const string SPACE_MANAGE_PAGE = PATH +"/setting_service/space?workspaceSeq={0}&token={1}&dt={2}&lan={3}";
 
         /// <summary>
         /// desc : 권한 관리 화면
@@ -261,7 +262,7 @@ namespace Joycollab.v2
         ///     {2} : datetime
         ///     {3} : language code (ko / en)
         /// </summary>
-        public const string AUTH_MANAGE_PAGE = "/setting_service/auth?workspaceSeq={0}&token={1}&dt={2}&lan={3}";      
+        public const string AUTH_MANAGE_PAGE = PATH +"/setting_service/auth?workspaceSeq={0}&token={1}&dt={2}&lan={3}";      
 
         /// <summary>
         /// desc : 워크스페이스 대시보드 화면
@@ -271,7 +272,7 @@ namespace Joycollab.v2
         ///     {2} : token
         ///     {3} : language code (ko / en)
         /// </summary>
-        public const string DASHBOARD_PAGE = "/setting_service/dashboard?workspaceSeq={0}&memberSeq={1}&token={2}&lan={3}";  
+        public const string DASHBOARD_PAGE = PATH +"/setting_service/dashboard?workspaceSeq={0}&memberSeq={1}&token={2}&lan={3}";  
 
         /// <summary>
         /// desc : 칸반 보드 화면
@@ -292,7 +293,16 @@ namespace Joycollab.v2
         ///     {3} : language code (ko / en)
         ///     {4} : ui type (graphic ui = 1 / text ui = 0)
         /// </summary>
-        public const string CALANDAR_PAGE = PATH + "/calendar/?workspaceSeq={0}&memberSeq={1}&token={2}&lan={3}&softUI={4}";  
+        public const string CALANDAR_PAGE = PATH +"/calendar/?workspaceSeq={0}&memberSeq={1}&token={2}&lan={3}&softUI={4}";  
+
+        /// <summary>
+        /// desc : 정보 게시판 화면
+        /// param
+        ///     {0} : member seq
+        ///     {1} : token
+        ///     {2} : language code
+        /// </summary>
+        public const string BUILLETIN_BOARD = PATH +"/board_service/main/0/{0}?token={1}&lan={2}";
 
         /// <summary>
         /// desc : 튜토리얼 화면
@@ -300,6 +310,25 @@ namespace Joycollab.v2
         ///     {0} : language (빈 값이면 한글 튜토리얼 / _EN 이 붙으면 영문 튜토리얼)
         /// </summary>
         public const string TUTORIAL_PATH = PATH +"/help/help{0}.html";
+
+        /// <summary>
+        /// desc : 결제창 링크
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : language (ko or en)
+        ///     {2} : plan id
+        ///     {3} : monthly or yearly (1 or 12)
+        ///     {4} : user number
+        /// </summary>
+        public const string PAYMENT = SERVER_PATH +"/npr/workspace/pay/{0}/{1}/PAY/{2}/{3}/{4}";
+
+        /// <summary>
+        /// desc : 결제 카드 설정
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : language (ko or en)
+        /// </summary>
+        public const string PAYMENT_CARD = SERVER_PATH +"/npr/workspace/pay/{0}/{1}/AUTH";
 
     #endregion  // Manage Web Page Link
 
@@ -342,7 +371,7 @@ namespace Joycollab.v2
         /// param
         ///     {0} : space seq
         /// </summary>
-        public const string MEMBER_IN_SPACE = SERVER_PATH +"/api/space/{0}/members"; 
+        public const string MEMBER_LIST_IN_SPACE = SERVER_PATH +"/api/space/{0}/members"; 
 
         /// <summary>
         /// desc : 공간 등록
@@ -358,7 +387,7 @@ namespace Joycollab.v2
         /// param
         ///     {0} : workspace seq
         /// </summary>
-        public const string SPACE_POSITION = SERVER_PATH +"/api/space/position/{0}";
+        public const string SET_SPACE_POSITION = SERVER_PATH +"/api/space/position/{0}";
 
         /// <summary>
         /// desc : 워크스페이스 내 공간 조회
@@ -367,6 +396,46 @@ namespace Joycollab.v2
         ///     {0} : workspace seq
         /// </summary>
         public const string SPACE_LIST = SERVER_PATH +"/api/space/search/{0}";
+
+
+        // ---------- ---------- ----------
+        // 02. Member API
+
+        /// <summary>
+        /// desc : 해당 워크스페이스의 모든 사용자 조회
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        /// TODO. check
+        ///     WORKSPACE_MEMBER_LIST 와 동일한 기능을 함. 굳이 추가로 필요한지 확인 요망
+        /// </summary>
+        public const string ENTIRE_MEMBER_LIST = SERVER_PATH +"/member/{0}";
+
+        /// <summary>
+        /// desc : 사용자 지정석 배치 (여러 사용자 한번에 배치 가능)
+        /// method : patch
+        /// param
+        ///     {0} : workspace seq
+        /// </summary>
+        public const string SET_POSITION_FOR_ADMIN = SERVER_PATH +"/member/position/fixe/{0}";
+
+        /// <summary>
+        /// desc : 해당 스페이스에 지정된 사용자 목록 조회
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        /// </summary>
+        public const string SPACE_MEMBER_LIST = SERVER_PATH +"/member/space/{0}/{1}"; 
+
+        /// <summary>
+        /// desc : 부서에 지정된 사용자 목록 조회
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        /// </summary>
+        public const string TOPSPACE_MEMBER_LIST = SERVER_PATH +"/member/topSpace/{0}/{1}";
 
     #endregion  // AdmApi
 
@@ -386,6 +455,103 @@ namespace Joycollab.v2
         public const string GET_CODE = SERVER_PATH + "/code/getCode/{0}";
 
     #endregion  // AdminApi
+
+
+    #region MngApi
+
+        // ---------- ---------- ----------
+        // 01. Noti API
+
+        /// <summary>
+        /// desc : 공지사항 목록 조회
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : language
+        ///     {3} : keyword
+        ///     {4} : member type 이 guest 면 true, 그 외엔 false
+        /// </summary>
+        public const string NOTICE_LIST = SERVER_PATH +"/api/noti/{0}/{1}?lanId={2}&title={3}&guest={4}";  
+
+        /// <summary>
+        /// desc : 공지사항 등록
+        /// method : post
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        /// </summary>
+        public const string REGIST_NOTICE = SERVER_PATH +"/api/noti/{0}/{1}"; 
+
+        /// <summary>
+        /// desc : 공지사항 항목 관리
+        /// method : put (수정), get (상세 조회), delete (삭제)
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : notice seq
+        /// </summary>
+        public const string CONTROL_NOTICE = SERVER_PATH +"/api/noti/{0}/{1}/{2}";
+
+        /// <summary>
+        /// desc : 공지사항 파일 업로드
+        /// method : post
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        /// </summary>
+        public const string UPLOAD_NOTICE_FILE = SERVER_PATH +"/api/noti/files/{0}/{1}"; 
+
+        /// <summary>
+        /// desc : 공지사항 파일 다운로드
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : file path
+        /// </summary>
+        public const string DOWNLOAD_NOTICE_FILE = SERVER_PATH +"/api/noti/down/{0}/{1}?filePath={2}";
+
+        /// <summary>
+        /// desc : 최초 진입시 시스템 공지사항 확인 (팝업으로 출력할 항목 확인)
+        /// method : get
+        /// param
+        ///     {0} : page no
+        ///     {1} : popup true / false, 빈 값으로 던질시 전체 항목 조회
+        ///     {2} : page size
+        /// </summary>
+        public const string CHECK_SYSTEM_NOTICE = SERVER_PATH +"/api/noti/sys?page={0}&popup={1}&size={2}";  
+
+        /// <summary>
+        /// desc : 시스템 공지사항 목록 조회
+        /// method : get
+        /// param
+        ///     {0} : page no
+        ///     {1} : page size
+        /// </summary>
+        public const string SYSTEM_NOTICE_LIST = SERVER_PATH +"/api/noti/sys/list?page={0}&size={1}";
+
+        /// <summary>
+        /// desc : 시스템 공지사항 게시글 조회
+        /// method : get
+        /// param
+        ///     {0} : system notice seq
+        /// </summary>
+        public const string SYSTEM_NOTICE_INFO = SERVER_PATH +"/api/noti/sys/{0}";
+
+
+        // ---------- ---------- ----------
+        // 22. History API 
+
+        /// <summary>
+        /// desc : 로비 대기자 명단 조회
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        /// </summary>
+        public const string GUEST_WAITING_LIST = SERVER_PATH +"/api/hist/{0}/guest"; 
+
+    #endregion  // MngApi
 
 
     #region NonAuthApi
@@ -415,7 +581,7 @@ namespace Joycollab.v2
         ///     {1} : ckey
         /// </summary>
         /// <value></value>
-        public const string CHECK_INVITE_WITH_CKEY = SERVER_PATH +"/npr/api/user/{0}/invite?ckey={1}";  // [GET] - {0} : id, {1} : ckey
+        public const string CHECK_INVITE_WITH_CKEY = SERVER_PATH +"/npr/api/user/{0}/invite?ckey={1}";
 
         /// <summary>
         /// desc : 비밀번호 재설정 인증키 요청
@@ -441,7 +607,7 @@ namespace Joycollab.v2
         ///     {0} : guest name
         ///     {1} : workspace seq
         /// </summary>
-        public const string GUEST_LOGIN = SERVER_PATH +"/npr/api/user/guest?nm={0}&workspaceSeq={1}";
+        public const string SIGN_IN_AS_GUEST = SERVER_PATH +"/npr/api/user/guest?nm={0}&workspaceSeq={1}";
 
         /// <summary>
         /// desc : ckey 없이 회원가입
@@ -469,7 +635,7 @@ namespace Joycollab.v2
         ///     {2} : password
         ///     {3} : phone number
         /// </summary>
-        public const string RESET_PW = SERVER_PATH +"/npr/api/user/restPw?ckey={0}&id={1}&newPw={2}&tel={3}"; // [PATCH]  - {0} : code, {1} : id, {2} : newPw, {3} : tel
+        public const string RESET_PW = SERVER_PATH +"/npr/api/user/restPw?ckey={0}&id={1}&newPw={2}&tel={3}";
 
 
         // ---------- ---------- ----------
@@ -503,10 +669,75 @@ namespace Joycollab.v2
         /// </summary>
         public const string CHECK_WORKSPACE = SERVER_PATH +"/npr/workspace/getByWorkspaceSeq/{0}";
 
+
+        // ---------- ---------- ----------
+        // 011. Plan API
+
+        /// <summary>
+        /// desc : plan list 조회
+        /// method : get
+        /// </summary>
+        public const string PLAN_LIST = SERVER_PATH + "/npr/plan";
+
+
+        // ---------- ---------- ----------
+        // 012. Meeting Npr API
+
+        /// <summary>
+        /// desc : seminar 에 등록된 파일 다운로드 (for Guest)
+        /// method : get
+        /// param
+        ///     {0} : seminar seq
+        ///     {1} : file path
+        /// </summary>
+        public const string DOWNLOAD_SEMINAR_FILE_FOR_GUEST = SERVER_PATH +"/npr/meeting/down/{0}?filePath={1}";
+
     #endregion  // NonAuthApi
 
 
     #region UserApi
+
+        // ---------- ---------- ----------
+        // 01. User API
+
+        /// <summary>
+        /// desc : 회원 정보 관리
+        /// method : put (수정), get (조회), delete (탈퇴)
+        /// </summary>
+        public const string USER_INFO = SERVER_PATH +"/api/user";
+
+        /// <summary>
+        /// desc : 로그아웃
+        /// method : delete
+        /// param 
+        ///     {0} : user id (e-mail)
+        /// </summary>
+        public const string USER_LOGOUT = SERVER_PATH +"/api/user/logout?name={0}";
+
+        /// <summary>
+        /// desc : Google access token 조회
+        /// method : get
+        /// param
+        ///     {0} : user google id (e-mail)
+        /// </summary>
+        public const string GOOGLE_ACCESS_TOKEN = SERVER_PATH +"/api/user/googleAccessToken?name={0}";
+
+        /// <summary>
+        /// desc : Google refresh token 조회
+        /// method : get
+        /// param
+        ///     {0} : user google id (e-mail)
+        /// </summary>
+        public const string GOOGLE_REFRESH_TOKEN = SERVER_PATH +"/api/user/googleRefreshToken?name={0}";
+
+        /// <summary>
+        /// desc : Google 연동 해제
+        /// method : delete
+        /// param
+        ///     {0} : user google id (e-mail)
+        /// </summary>
+        public const string REVOKE_GOOGLE_CONNECTION = SERVER_PATH +"/api/user/revokingGoogleToken?name={0}";
+
 
         // ---------- ---------- ----------
         // 02. Workspace API
@@ -548,7 +779,7 @@ namespace Joycollab.v2
         /// param
         ///     {0} : workspace seq
         /// </summary>
-        public const string WORKSPACE_MEMBER_SIMPLE_LIST = SERVER_PATH + "/api/workspace/{0}/member/list";
+        public const string WORKSPACE_MEMBER_SIMPLE_LIST = SERVER_PATH +"/api/workspace/{0}/member/list";
 
         /// <summary>
         /// desc : 특정 worksapce 의 모든 member 모든 정보 조회
@@ -556,15 +787,101 @@ namespace Joycollab.v2
         /// param
         ///     {0} : workspace seq
         /// </summary>
-        public const string WORKSPACE_MEMBER_LIST = SERVER_PATH + "/api/workspace/{0}/members";
+        public const string WORKSPACE_MEMBER_LIST = SERVER_PATH +"/api/workspace/{0}/members";
 
         /// <summary>
-        /// desc : 특정 workspace 의 설정 정보 관리
-        /// method : get, patch
+        /// desc : 초대 거절
+        /// method : patch
+        /// param
+        ///     {0} : workspace seq
+        /// </summary>
+        public const string REJECT_WORKSPACE_INVITE = SERVER_PATH +"/api/workspace/{0}/reject";
+
+        /// <summary>
+        /// desc : 로비 정보 조회 및 설정
+        /// method : get (조회), patch (설정 변경)
         /// param
         ///     {0} : workspace seq
         /// </summary>
         public const string WORKSPACE_LOBBY_INFO = SERVER_PATH +"/api/workspace/{0}/setting";
+
+        /// <summary>
+        /// desc : 로비 기타 정보 조회 
+        /// method : get 
+        /// param
+        ///     {0} : workspace seq
+        /// </summary>
+        public const string WORKSPACE_LOBBY_INFO2 = SERVER_PATH +"/api/workspace/{0}/setting2";
+
+        /// <summary>
+        /// desc : 로비 모니터 이미지 설정
+        /// method : patch
+        /// param
+        ///     {0} : workspace seq
+        /// </summary>
+        public const string WORKSPACE_MONITOR_IMAGE = SERVER_PATH +"/api/workspace/{0}/settingMonitImg";
+
+        /// <summary>
+        /// desc : 로비 모니터 영상 정보 설정
+        /// method : patch
+        /// param
+        ///     {0} : workspace seq
+        /// </summary>
+        public const string WORKSPACE_MONITOR_URL = SERVER_PATH +"/api/workspace/{0}/settingMonitUrl";
+
+        /// <summary>
+        /// desc : 로비 공지사항 이미지 설정
+        /// method : patch
+        /// param
+        ///     {0} : workspace seq
+        /// </summary>
+        public const string WORKSPACE_NOTICE_IMAGE = SERVER_PATH +"/api/workspace/{0}/settingNoticeImg";
+
+        /// <summary>
+        /// desc : 근태 정보 조회 및 설정
+        /// method : get (조회), patch (설정 변경)
+        /// param
+        ///     {0} : workspace seq
+        /// </summary>
+        public const string WORKSPACE_ATTENDANCE_INFO = SERVER_PATH +"/api/workspace/attSet/{0}";
+
+        /// <summary>
+        /// desc : 결제 기록 조회
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        /// </summary>
+        public const string WORKSPACE_PAY_HISTORY = SERVER_PATH +"/api/workspace/history/{0}";
+
+        /// <summary>
+        /// desc : 상단 로고 이미지 설정
+        /// method : patch
+        /// param
+        ///     {0} : workspace seq
+        /// </summary>
+        public const string WORKSPACE_TOP_LOGO = SERVER_PATH +"/api/workspace/logo/{0}";
+
+        /// <summary>
+        /// desc : 플랜 변경
+        /// method : patch
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : user count
+        ///     {2} : period (1 or 12)
+        ///     {3} : plan id
+        /// </summary>
+        public const string CHANGE_PLAN = SERVER_PATH +"/api/workspace/plan/{0}?limitNum={1}&period={2}&planId={3}";
+
+        /// <summary>
+        /// desc : 플랜 변경 결과 조회
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : user count
+        ///     {2} : period (1 or 12)
+        ///     {3} : plan id
+        /// </summary>
+        public const string CHECK_NEXT_PLAN = SERVER_PATH +"/api/workspace/plan/changeResult/{0}?limitNum={1}&period={2}&planId={3}";
 
         /// <summary>
         /// desc : 특정 workspace 의 plan 구독 정보 확인
@@ -618,7 +935,7 @@ namespace Joycollab.v2
         ///     {0} : member seq
         ///     {1} : emotion code
         /// </summary>
-        public const string _EMOTION = SERVER_PATH +"/api/member/emotion/{0}/{1}";
+        public const string SET_EMOTION = SERVER_PATH +"/api/member/emotion/{0}/{1}";
 
         /// <summary>
         /// desc : FCM 토큰 저장
@@ -668,13 +985,13 @@ namespace Joycollab.v2
         public const string SET_POSITION = SERVER_PATH +"/api/member/position/current/{0}/{1}";
 
         /// <summary>
-        /// desc : 사용자 고정석 설정
+        /// desc : 사용자 지정석 설정
         /// method : patch
         /// param
         ///     {0} : member seq
         ///     {1} : space seq
         /// </summary>
-        public const string SET_FIXED_SEAT = SERVER_PATH +"/api/member/position/fixe/{0}/{1}";
+        public const string SET_SEAT = SERVER_PATH +"/api/member/position/fixe/{0}/{1}";
 
         /// <summary>
         /// desc : zoom token 삭제
@@ -682,7 +999,7 @@ namespace Joycollab.v2
         /// param
         ///     {0} : member seq
         /// </summary>
-        public const string REVOKE_ZOOM_TOKEN = SERVER_PATH +"/api/member/revokingToken/{0}";
+        public const string REVOKE_ZOOM_CONNECTION = SERVER_PATH +"/api/member/revokingToken/{0}";
 
         /// <summary>
         /// desc : 언어 및 지역 설정
@@ -742,14 +1059,14 @@ namespace Joycollab.v2
         ///     {3} : language code (ko / en)
         ///     {4} : access token
         /// </summary>
-        public const string MOBILE_CALL_LINK = PATH + "/meeting_service/{0}/{1}/{2}/call?lan={3}&token={4}";
+        public const string CALL_LINK_M = PATH +"/meeting_service/{0}/{1}/{2}/call?lan={3}&token={4}";
 
         /// <summary>
         /// desc : Voice call 발신을 위한 link
         /// param 
         ///     {0} : workspace seq
         /// </summary>
-        public const string MAKE_CALL = SERVER_PATH + "/api/call/{0}";
+        public const string MAKE_CALL = SERVER_PATH +"/api/call/{0}";
 
 
         // ---------- ---------- ----------
@@ -766,7 +1083,7 @@ namespace Joycollab.v2
         /// </summary>
         public const string MEETING_LINK = PATH +"/meeting_service/{0}/{1}/{2}/meeting?lan={3}";
         public const string SEMINAR_LINK = PATH +"/meeting_service/{0}/{1}/{2}/seminar?lan={3}";
-        public const string MOBILE_MEETING_LINK = PATH +"/meeting_service/{0}/{1}/{2}/meeting_mobile?lan={3}&token={4}";
+        public const string MEETING_LINK_M = PATH +"/meeting_service/{0}/{1}/{2}/meeting_mobile?lan={3}&token={4}";
 
 
         /// <summary>
@@ -779,7 +1096,7 @@ namespace Joycollab.v2
 
         /// <summary>
         /// desc : 특정 회의 관리
-        /// method : get (조회), put (수정), delete (삭제)
+        /// method : put (수정), get (조회), delete (삭제)
         /// param
         ///     {0} : workspace seq
         ///     {1} : meeting seq
@@ -861,8 +1178,8 @@ namespace Joycollab.v2
         // 05. File API
 
         /// <summary>
-        /// desc : 파일 리스트 조회 / 파일 업로드
-        /// method : get, post
+        /// desc : 파일 리스트 관련 기능
+        /// method : post (파일 업로드), get (조회)
         /// param
         ///     {0} : workspace seq
         ///     {1} : space seq
@@ -993,7 +1310,7 @@ namespace Joycollab.v2
         /// param 
         ///     {0} : member seq
         /// </summary>
-        public const string ALARM_COUNT_CLEAR = SERVER_PATH + "/api/alarm/clearCnt/{0}";
+        public const string RESET_ALARM_COUNT = SERVER_PATH +"/api/alarm/clearCnt/{0}";
 
         /// <summary>
         /// desc : 알림 갯수 정보 확인
@@ -1041,7 +1358,7 @@ namespace Joycollab.v2
         ///     {1} : language code (ko / en)
         ///     {2} : token
         /// </summary>
-        public const string MOBILE_CHAT_LINK = PATH +"/chat_service/{0}/mobile?lan={1}&token={2}";
+        public const string CHAT_LINK_M = PATH +"/chat_service/{0}/mobile?lan={1}&token={2}";
 
         /// <summary>
         /// desc : 모바일에서 대화방을 출력하기 위한 link
@@ -1051,7 +1368,7 @@ namespace Joycollab.v2
         ///     {2} : language code (ko / en)
         ///     {3} : token
         /// </summary>
-        public const string MOBILE_CHATVIEW_LINK = PATH +"/chat_service/{0}/mobile?otherMemberSeq={1}&lan={2}&token={3}"; 
+        public const string CHATVIEW_LINK_M = PATH +"/chat_service/{0}/mobile?otherMemberSeq={1}&lan={2}&token={3}"; 
 
         /// <summary>
         /// desc : 미확인 채팅 카운트 조회
@@ -1065,8 +1382,8 @@ namespace Joycollab.v2
         // 10. Board API
 
         /// <summary>
-        /// desc : 게시글 목록 조회 / 게시글 등록
-        /// method : get / post
+        /// desc : 게시물 목록 관리 기능
+        /// method : post (게시글 등록), get (조회)
         /// param
         ///     {0} : workspace seq
         ///     {1} : space seq
@@ -1074,8 +1391,8 @@ namespace Joycollab.v2
         public const string BOARD_LIST = SERVER_PATH +"/api/board/{0}/{1}";
 
         /// <summary>
-        /// desc : 게시글 상세 조회 / 게시글 수정 / 게시글 삭제
-        /// method : get / put / delete
+        /// desc : 게시글 관리 기능
+        /// method : put (게시글 수정), get (상세 조회), delete (삭제)
         /// param
         ///     {0} : workspace seq
         ///     {1} : space seq
@@ -1090,7 +1407,7 @@ namespace Joycollab.v2
         ///     {0} : workspace seq
         ///     {1} : space seq
         /// </summary>
-        public const string BOARD_FILE_DOWNLOAD = SERVER_PATH +"/api/board/down/{0}/{1}";
+        public const string DOWNLOAD_BOARD_FILE = SERVER_PATH +"/api/board/down/{0}/{1}";
 
         /// <summary>
         /// desc : 게시글 파일 업로드 with MultipartFormFileSection (section : files)
@@ -1099,7 +1416,41 @@ namespace Joycollab.v2
         ///     {0} : workspace seq
         ///     {1} : space seq
         /// </summary>
-        public const string BOARD_FILE_UPLOAD = SERVER_PATH +"/api/board/files/{0}/{1}";
+        public const string UPLOAD_BOARD_FILE = SERVER_PATH +"/api/board/files/{0}/{1}";
+
+
+        // ---------- ---------- ----------
+        // 11. Comment API
+
+        /// <summary>
+        /// desc : 댓글 등록 및 조회
+        /// method : post (댓글 등록), get (댓글 목록 조회)
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : board seq
+        /// </summary>
+        public const string COMMENT_INFO = SERVER_PATH +"/api/comment/{0}/{1}/{2}";
+
+        /// <summary>
+        /// desc : 댓글 관리
+        /// method : put (수정), delete (삭제)
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : comment seq
+        /// </summary>
+        public const string CONTROL_COMMENT = SERVER_PATH +"/api/comment/{0}/{1}/{2}";
+
+        /// <summary>
+        /// desc : 대댓글 등록
+        /// method : post
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : top comment seq
+        /// </summary>
+        public const string REG_REPLY = SERVER_PATH +"/api/comment/reply/{0}/{1}/{2}"; 
 
 
         // ---------- ---------- ----------
@@ -1166,8 +1517,8 @@ namespace Joycollab.v2
         public const string MODIFY_TODO = SERVER_PATH +"/api/todo/{0}/{1}/{2}/{3}";
 
         /// <summary>
-        /// desc : To-Do 완료처리 또는 삭제
-        /// method : put 또는 delete
+        /// desc : To-Do 항목 관리
+        /// method : put (완료 처리), delete (삭제)
         /// param
         ///     {0} : member seq
         ///     {1} : to-do seq
@@ -1178,12 +1529,12 @@ namespace Joycollab.v2
         /// desc : 특정 대상의 To-Do 조회
         /// method : get
         /// param
-        ///     {0} : my member seq
+        ///     {0} : member seq
         ///     {1} : target member seq
         ///     {2} : view option (일간, 주간, 월간)
         ///     {3} : 조회일자
         /// </summary>
-        public const string GET_TODO_LIST = SERVER_PATH +"/api/todo/target/{0}/{1}/{2}/{3}";
+        public const string TARGET_TODO_LIST = SERVER_PATH +"/api/todo/target/{0}/{1}/{2}/{3}";
 
         /// <summary>
         /// desc : 공유 옵션이 있는 To-Do 조회
@@ -1194,7 +1545,7 @@ namespace Joycollab.v2
         ///     {2} : filter type
         ///     {3} : 조회 일자
         /// </summary>
-        public const string GET_SHARE_TODO_LIST = SERVER_PATH +"/api/todo/{0}/{1}/{2}/{3}";
+        public const string SHARE_TODO_LIST = SERVER_PATH +"/api/todo/{0}/{1}/{2}/{3}";
 
 
         // ---------- ---------- ----------
@@ -1209,11 +1560,11 @@ namespace Joycollab.v2
         ///     {2} : view type (일간, 주간, 월간)
         ///     {3} : 조회 일자
         /// </summary>
-        public const string GET_SHARE_OKR_LIST = SERVER_PATH +"/api/okr/{0}/{1}/{2}/{3}";
+        public const string SHARE_OKR_LIST = SERVER_PATH +"/api/okr/{0}/{1}/{2}/{3}";
 
         /// <summary>
-        /// desc : OKR 수정 또는 삭제
-        /// method : put 또는 delete
+        /// desc : OKR 항목 관리
+        /// method : put (수정), delete (삭제)
         /// param
         ///     {0} : member seq
         ///     {1} : OKR seq
@@ -1227,7 +1578,7 @@ namespace Joycollab.v2
         ///     {0} : member seq
         ///     {1} : share type (개인, 부서, 전사)
         /// </summary>
-        public const string GET_OBJECTIVES = SERVER_PATH +"/api/okr/{0}/{1}";
+        public const string OBJECTIVE_LIST = SERVER_PATH +"/api/okr/{0}/{1}";
 
         /// <summary>
         /// desc : key result 등록
@@ -1246,7 +1597,7 @@ namespace Joycollab.v2
         ///     {1} : view type (일간, 주간, 월간)
         ///     {2} : 조회 일자
         /// </summary>
-        public const string GET_OKR_LIST = SERVER_PATH +"/api/okr/my/{0}/{1}/{2}";
+        public const string OKR_LIST = SERVER_PATH +"/api/okr/my/{0}/{1}/{2}";
 
         /// <summary>
         /// desc : objective 등록
@@ -1259,7 +1610,89 @@ namespace Joycollab.v2
 
 
         // ---------- ---------- ----------
-        // 16. Attendance API
+        // 15. Feedback API
+
+        /// <summary>
+        /// desc : feedback 등록
+        /// method : post
+        /// param
+        ///     {0} : member seq
+        ///     {1} : title code
+        ///     {2} : rating
+        /// </summary>
+        public const string REGIST_FEEDBACK = SERVER_PATH +"/api/feedback/{0}/{1}/{2}"; 
+
+        /// <summary>
+        /// desc : feedback file 등록
+        /// method : post
+        /// param
+        ///     {0} : member seq
+        /// </summary>
+        public const string UPLOAD_FEEDBACK_FILE = SERVER_PATH +"/api/feedback/{0}/files";
+
+
+        // ---------- ---------- ----------
+        // 16. TalkArea API
+
+        /// <summary>
+        /// desc : talk area 생성
+        /// method : post
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : height
+        ///     {2} : width
+        ///     {3} : pos x
+        ///     {4} : pos y
+        /// </summary>
+        public const string CREATE_TALK_AREA = SERVER_PATH +"/api/voice/{0}?h={1}&w={2}&x={3}&y={4}";
+
+        /// <summary>
+        /// desc : talk area 정보 확인
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : member seq
+        /// </summary>
+        public const string TALK_AREA_INFO = SERVER_PATH +"/api/voice/{0}/{1}";
+
+        /// <summary>
+        /// desc : talk area 참가
+        /// method : patch
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : talk area seq
+        ///     {2} : height
+        ///     {3} : width
+        ///     {4} : pos x
+        ///     {5} : pos y
+        /// </summary>
+        public const string JOIN_TALK_AREA = SERVER_PATH +"/api/voice/attend/{0}/{1}?h={2}&w={3}&x={4}&y={5}";  
+
+        /// <summary>
+        /// desc : talk area 떠나기
+        /// method : patch
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : talk area seq
+        ///     {2} : height
+        ///     {3} : width
+        ///     {4} : pos x
+        ///     {5} : pos y
+        /// </summary>
+        public const string LEAVE_TALK_AREA = SERVER_PATH +"/api/voice/leave/{0}/{1}?h={2}&w={3}&x={4}&y={5}";
+
+        /// <summary>
+        /// desc : talk area 상태 확인 
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : talk area seq
+        /// </summary>
+        public const string CHECK_TALK_AREA = SERVER_PATH +"/api/voice/get/{0}/{1}";  
+
+
+        // ---------- ---------- ----------
+        // 17. Attendance API
 
         /// <summary>
         /// desc : 특정 근태 기록 삭제
@@ -1281,7 +1714,7 @@ namespace Joycollab.v2
         ///     {4} : start date
         ///     {5} : end date
         /// </summary>
-        public const string GET_ATTENDANCE_LIST = SERVER_PATH +"/api/attendance/{0}/{1}/{2}/{3}/{4}/{5}";
+        public const string ATTENDANCE_LIST = SERVER_PATH +"/api/attendance/{0}/{1}/{2}/{3}/{4}/{5}";
 
         /// <summary>
         /// desc : 근태 기록 입력 
@@ -1318,6 +1751,65 @@ namespace Joycollab.v2
         /// </summary>
         public const string LEAVE_WORK = SERVER_PATH +"/api/attendance/leaveWork/{0}";
 
-    #endregion
+
+        // ---------- ---------- ----------
+        // 18. XMPP API
+
+        /// <summary>
+        /// desc : xmpp 전달
+        /// method : post
+        /// param
+        ///     {0} : content
+        ///     {1} : target member seq
+        ///     {2} : space seq -> 일반적으로 0 으로 전송
+        ///     {3} : workspace seq
+        /// </summary>
+        public const string SEND_XMPP = SERVER_PATH +"/xmpp/forward?content={0}&memberSeq={1}&spaceSeq={2}&workspaceSeq={3}";  
+
+    #endregion  // UserApi
+
+
+    #region UserApi - for World
+
+        // ---------- ---------- ----------
+        // 21. World API
+
+        /// <summary>
+        /// desc : 월드 옵션 설정 / 조회
+        /// method : post (정보 변경), get (조회)
+        /// param
+        ///     {0} : workspace seq
+        /// </summary>
+        public const string WORLD_INFO = SERVER_PATH +"/api/world/{0}";
+
+        /// <summary>
+        /// desc : 월드 옵션 - 파일 업로드
+        /// method : post
+        /// param
+        ///     {0} : workspace seq
+        /// </summary>
+        public const string UPLOAD_WORLD_FILE = SERVER_PATH +"/api/world/file/{0}";
+
+
+        // ---------- ---------- ----------
+        // 22. Clas API
+
+        /// <summary>
+        /// desc : 모임방 생성
+        /// method : post
+        /// param
+        ///     {0} : member seq
+        /// </summary>
+        public const string REGIST_CLAS = SERVER_PATH +"/api/clas/{0}";
+
+        /// <summary>
+        /// desc : 모임방 관리
+        /// method : put (옵션 수정), get (옵션 조회)
+        /// param
+        ///     {0} : workspace seq
+        /// </summary>
+        public const string CLAS_INFO = SERVER_PATH +"/api/clas/{0}";
+
+    #endregion  // UserApi - for World
     }
 }

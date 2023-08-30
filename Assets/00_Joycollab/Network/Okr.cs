@@ -40,8 +40,8 @@ namespace Joycollab.v2
                 int memberSeq = R.singleton.memberSeq;
 
                 string url = share ?
-                    string.Format(URL.GET_SHARE_OKR_LIST, memberSeq, filterOpt, viewOpt, startDate) : 
-                    string.Format(URL.GET_OKR_LIST, memberSeq, viewOpt, startDate) ;
+                    string.Format(URL.SHARE_OKR_LIST, memberSeq, filterOpt, viewOpt, startDate) : 
+                    string.Format(URL.OKR_LIST, memberSeq, viewOpt, startDate) ;
                 url += "?";
 
 				if (! string.IsNullOrEmpty(keyword)) url += "keyword="+ keyword +"&";
