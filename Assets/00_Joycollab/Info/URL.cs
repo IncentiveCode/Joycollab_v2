@@ -1803,6 +1803,15 @@ namespace Joycollab.v2
         public const string REGIST_CLAS = SERVER_PATH +"/api/clas/{0}";
 
         /// <summary>
+        /// desc : 모임방 목록 조회
+        /// method : get
+        /// param
+        ///     {0} : page no
+        ///     {1} : page size
+        /// </summary>
+        public const string CLAS_LIST = SERVER_PATH +"/api/clas?page={0}&size={1}";
+
+        /// <summary>
         /// desc : 모임방 관리
         /// method : put (옵션 수정), get (옵션 조회)
         /// param

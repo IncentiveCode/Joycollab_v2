@@ -38,6 +38,10 @@ namespace Joycollab.v2
 
     #region Canvas name
 
+        public const string Canvas_Top = "Top Canvas";          // order 2
+        public const string Canvas_Window = "Window Canvas";    // order 1
+        public const string Canvas_Bottom = "Bottom Canvas";    // order 0
+
         public const string Canvas_Popup = "Popup Canvas";
         public const string Canvas_Popup_M = "SafeArea _ popup";
         public const string Canvas_Progress_M = "SafeArea _ progress";

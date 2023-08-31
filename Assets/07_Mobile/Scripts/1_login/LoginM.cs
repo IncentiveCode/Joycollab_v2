@@ -47,7 +47,7 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnProgressTest;
 
         // local variables
-        private List<ResWorkspaceInfo> workspaces;
+        private List<WorkspaceInfo> workspaces;
         private StringBuilder stringBuilder;
 
 
@@ -151,7 +151,7 @@ namespace Joycollab.v2
             // _btnProgressTest.gameObject.SetActive(URL.DEV);
 
             // set local variables
-            workspaces = new List<ResWorkspaceInfo>();
+            workspaces = new List<WorkspaceInfo>();
             workspaces.Clear();
 
             stringBuilder = new StringBuilder();

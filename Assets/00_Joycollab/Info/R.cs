@@ -256,6 +256,8 @@ namespace Joycollab.v2
         private int _workspaceSeq;
         private int _memberSeq;
         private string _uiType;
+        private string _profile;
+        private string _userName;
 
         public ResToken TokenInfo {
             set { _tokenInfo = value; }
@@ -304,11 +306,19 @@ namespace Joycollab.v2
             get { return _uiType; }
             set { _uiType = value; }
         }
+        public string Profile {
+            get { return _profile; }
+            set { _profile = value; }
+        }
+        public string UserName {
+            get { return _userName; }
+            set { _userName = value; }
+        }
 
         private void ClearTokenInfo() 
         {
             _tokenInfo = null;
-            _id = _domainName = _uiType = string.Empty;
+            _id = _domainName = _uiType = _profile = _userName = string.Empty;
             _workspaceSeq = _memberSeq = 0;
         }
 

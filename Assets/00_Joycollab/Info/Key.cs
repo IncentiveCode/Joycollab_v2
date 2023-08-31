@@ -69,5 +69,13 @@ namespace Joycollab.v2
 		public const string MOBILE_GESTURE_PROPERTIES = "_mgr";
 
 	#endregion	// for Mobile
+
+
+	#region position, zoom value 
+
+		public const string ORTHOGRAPHIC_SIZE = "_os";
+		public const string ORTHOGRAPHIC_SIZE_W = "_osw";
+
+	#endregion	// position, zoom value 
 	}
 }

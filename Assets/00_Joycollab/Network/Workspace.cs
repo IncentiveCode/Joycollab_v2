@@ -4,7 +4,7 @@
 /// @last update    : 2023. 08. 11
 /// @version        : 0.5
 /// @update
-///     v0.1 (2023. 02. 22) : v1 에서 사용하던 클래스 정리 및 통합 진행 (SimpleWorkspace, ResWorkspaceList, ResWorkspaceInfo)
+///     v0.1 (2023. 02. 22) : v1 에서 사용하던 클래스 정리 및 통합 진행 (SimpleWorkspace, ResWorkspaceList, WorkspaceInfo)
 ///     v0.2 (2023. 03. 22) : v1 에서 사용하던 클래스 정리 및 통합 진행 (LobbyInfo)
 ///     v0.3 (2023. 06. 15) : array 를 list 로 변경 
 ///     v0.4 (2023. 06. 19) : WorkspaceStatus 클래스 추가
@@ -60,12 +60,12 @@ namespace Joycollab.v2
     [Serializable]
     public class ResWorkspaceList 
     {
-        public List<ResWorkspaceInfo> list;
+        public List<WorkspaceInfo> list;
     }
 
 
     [Serializable]
-    public class ResWorkspaceInfo
+    public class WorkspaceInfo
     {
         public string useYn;
         public int seq;

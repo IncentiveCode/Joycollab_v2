@@ -1,8 +1,8 @@
 /// <summary>
 /// Network 통신 - 사용자, 워크스페이스 멤버 관련 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 27
-/// @version        : 0.5
+/// @last update    : 2023. 08. 31
+/// @version        : 0.6
 /// @update
 ///     v0.1 (2023. 02. 23) : Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
 ///     v0.2 (2023. 06. 14) : MemberSeq 클래스 추가.
@@ -10,6 +10,7 @@
 ///     v0.4 (2023. 06. 19) : MemberName 클래스 추가.
 ///     v0.5 (2023. 06. 27) : 클래스 추가. (WorkspaceMemberInfo, WorkspaceMemberList)
 ///                           클래스 수정. (SimpleUser 에 tel 추가)
+///     v0.6 (2023. 08. 31) : 클래스 추가. (ReqSignUpInfo)
 /// </summary>
 
 using System;
@@ -54,6 +55,60 @@ namespace Joycollab.v2
         public float lat;
         public float lng;
         public string googleId;
+    }
+
+    [Serializable]
+    public class ReqSignUpInfo 
+    {
+        public string birthday;
+        public string gender;
+        public string nm;
+        public string photo;
+        public string tel;
+        public string address1;
+        public string address2;
+        public float lat;
+        public float lng;
+
+        public ReqSignUpInfo() 
+        {
+            birthday = gender = nm = photo = tel = address1 = address2 = string.Empty;
+            lat = lng = 0f;
+        }
+
+        // for office
+        public ReqSignUpInfo(
+            string photo, string birthday, string gender, string nm, string tel, string address1, string address2,
+            float lat, float lng
+        )
+        {
+            this.birthday = birthday;
+            this.gender = gender;
+            this.nm = nm;
+            this.photo = photo;
+            this.tel = tel;
+            this.address1 = address1;
+            this.address2 = address2;
+            this.lat = lat;
+            this.lng = lng;
+        }
+
+        // for world
+        public ReqSignUpInfo(
+            string photo, string nm, string tel, string address1, string address2,
+            float lat, float lng
+        )
+        {
+            this.birthday = string.Empty;
+            this.gender = string.Empty;
+            this.nm = nm;
+            this.photo = photo;
+            this.tel = tel;
+            this.address1 = address1;
+            this.address2 = address2;
+            this.lat = lat;
+            this.lng = lng;
+        }
     }
 
     [Serializable]

@@ -96,13 +96,13 @@ namespace Joycollab.v2
                 if (_inputPw.isFocused) _inputPwConfirm.Select();
             });
             _inputPwConfirm.onSubmit.AddListener((value) => {
-                if (_inputPwConfirm.isFocused) JoinAsync().Forget();
+                if (_inputPwConfirm.isFocused) SignUpAsync().Forget();
             });
 
 
             // set button listener
             _btnCheck.onClick.AddListener(() => CheckAsync().Forget());
-            _btnNext.onClick.AddListener(() => JoinAsync().Forget());
+            _btnNext.onClick.AddListener(() => SignUpAsync().Forget());
             _btnBack.onClick.AddListener(() => {
                 ViewManager.singleton.PopAll();
                 ViewManager.singleton.Push(
@@ -146,19 +146,19 @@ namespace Joycollab.v2
                 _inputId.text = _inputPw.text = _inputPwConfirm.text = string.Empty;
                 _inputId.interactable = true;
                 _btnCheck.interactable = true;
-                _btnNext.interactable = false;
             }
             else
             {
-                isInvite = R.singleton.GetParam(Key.INVITED).Equals(S.TRUE);
                 _btnBack.gameObject.SetActive(! isInvite);
+
+                isInvite = R.singleton.GetParam(Key.INVITED).Equals(S.TRUE);
 
                 _inputId.text = isInvite ? R.singleton.GetParam(Key.EMAIL) : string.Empty;
                 _inputId.interactable = !isInvite;
                 _btnCheck.interactable = !isInvite;
-                _btnNext.interactable = isInvite;
             }    
 
+            _btnNext.interactable = false;
 
             // set local variables
             isCheckDone = false;
@@ -237,7 +237,7 @@ namespace Joycollab.v2
             }
         }
 
-        private async UniTaskVoid JoinAsync() 
+        private async UniTaskVoid SignUpAsync() 
         {
             if (string.IsNullOrEmpty(_inputPw.text)) 
             {
@@ -273,14 +273,44 @@ namespace Joycollab.v2
 
             string id = _inputId.text;
             string pw = _inputPw.text;
-            PsResponse<string> res = await _module.SignUpAsync(id, pw);
+            string ckey = R.singleton.GetParam(Key.CKEY);
+
+            // sign up 처리
+            PsResponse<string> res = null;
+            if (isInvite) 
+                res = await _module.SignUpAsync(id, pw, ckey);
+            else
+                res = await _module.SignUpAsync(id, pw);
+
             if (! string.IsNullOrEmpty(res.message)) 
             {
                 PopupBuilder.singleton.OpenAlert(res.message);
                 return;
             }
 
-            // TODO. 후속 조치
+            // sign up 완료 후 sign in
+            PsResponse<ResToken> resToken = await _module.SignInAsync(id, pw);
+            if (! string.IsNullOrEmpty(resToken.message)) 
+            {
+                PopupBuilder.singleton.OpenAlert(
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "로그인 실패", R.singleton.CurrentLocale)
+                );
+                return;
+            }
+
+            // save info
+            R.singleton.ID = id;
+            R.singleton.TokenInfo = resToken.data;
+            JsLib.SetCookie(Key.TOKEN_TYPE, resToken.data.token_type);
+            JsLib.SetCookie(Key.ACCESS_TOKEN, resToken.data.access_token);
+
+            // 후속 조치
+            if (isOffice)
+                ViewManager.singleton.Push(S.SignInScene_Info); 
+            else if (isWorld) 
+                ViewManager.singleton.Push(S.WorldScene_Info); 
+            else
+                Debug.Log($"{TAG} | mobile scene 대기 중...");
         }
 
     #endregion  // join 

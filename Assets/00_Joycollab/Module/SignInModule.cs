@@ -107,7 +107,7 @@ namespace Joycollab.v2
         /// </summary>
         /// <param name="id">사용자 id (e-mail)</param>
         /// <param name="pw">사용자 password</param>
-        /// <returns>NetworkTask request 결과로 얻은 message</returns>
+        /// <returns>NetworkTask request 결과물 : PsResponse</returns>
         public async UniTask<PsResponse<string>> SignUpAsync(string id, string pw) 
         {
             WWWForm form = new WWWForm();
@@ -125,7 +125,7 @@ namespace Joycollab.v2
         /// <param name="id">사용자 id (e-mail)</param>
         /// <param name="pw">사용자 password</param>
         /// <param name="ckey">인증키</param>
-        /// <returns>NetworkTask request 결과로 얻은 message</returns>
+        /// <returns>NetworkTask request 결과물 : PsResponse</returns>
         public async UniTask<PsResponse<string>> SignUpAsync(string id, string pw, string ckey) 
         {
             WWWForm form = new WWWForm();
@@ -137,18 +137,32 @@ namespace Joycollab.v2
             return res;
         }
 
+        /// <summary>
+        /// 회원 정보 업데이트
+        /// </summary>
+        /// <param name="info">사용자 정보 instance</param>
+        /// <returns>NetworkTask request 결과물 : PsResponse</returns>
+        public async UniTask<PsResponse<string>> UpdateUserInfo(ReqSignUpInfo info) 
+        {
+            string body = JsonUtility.ToJson(info);
+            string token = R.singleton.token;
+
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(URL.USER_INFO, eMethodType.PUT, body, token);
+            return res;
+        }
+
     #endregion  // common functions
 
 
     #region world functions
 
-        public async UniTask<PsResponse<ResWorkspaceInfo>> WorldSignInAsync() 
+        public async UniTask<PsResponse<WorkspaceInfo>> WorldSignInAsync() 
         {
             // - step 1. workspace seq check
             int workspaceSeq = await GetWorldSequenceAsync();
             if (workspaceSeq == -1) 
             {
-                return new PsResponse<ResWorkspaceInfo>(-1, string.Empty);
+                return new PsResponse<WorkspaceInfo>(-1, string.Empty);
             }
 
             // - step 2. member seq check
@@ -159,11 +173,11 @@ namespace Joycollab.v2
                 message = await JoinWorldAsync(workspaceSeq);
                 if (! string.IsNullOrEmpty(message)) 
                 {
-                    return new PsResponse<ResWorkspaceInfo>(-1, message);
+                    return new PsResponse<WorkspaceInfo>(-1, message);
                 }
             }
 
-            PsResponse<ResWorkspaceInfo> res = await GetWorkspaceInfoAsync(workspaceSeq);
+            PsResponse<WorkspaceInfo> res = await GetWorkspaceInfoAsync(workspaceSeq);
             return res;
         }
 
@@ -205,21 +219,21 @@ namespace Joycollab.v2
         }
 
         // step 4. get member seq
-        private async UniTask<PsResponse<ResWorkspaceInfo>> GetWorkspaceInfoAsync(int workspaceSeq) 
+        private async UniTask<PsResponse<WorkspaceInfo>> GetWorkspaceInfoAsync(int workspaceSeq) 
         {
             string token = R.singleton.token;
             PsResponse<ResWorkspaceList> res = await NetworkTask.RequestAsync<ResWorkspaceList>(URL.WORKSPACE_LIST, eMethodType.GET, string.Empty, token);
             if (! string.IsNullOrEmpty(res.message))
             { 
-                return new PsResponse<ResWorkspaceInfo>(-1, res.message);
+                return new PsResponse<WorkspaceInfo>(-1, res.message);
             }
 
-            PsResponse<ResWorkspaceInfo> result = null;
-            foreach (ResWorkspaceInfo info in res.data.list) 
+            PsResponse<WorkspaceInfo> result = null;
+            foreach (WorkspaceInfo info in res.data.list) 
             {
                 if (info.workspace.seq == workspaceSeq) 
                 {
-                    result = new PsResponse<ResWorkspaceInfo>(200, info);
+                    result = new PsResponse<WorkspaceInfo>(200, info);
                     break;
                 }
             }

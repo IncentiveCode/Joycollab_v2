@@ -274,7 +274,7 @@ namespace Joycollab.v2
 
         private async UniTaskVoid WorldSignInAsync() 
         {
-            PsResponse<ResWorkspaceInfo> res = await _module.WorldSignInAsync();
+            PsResponse<WorkspaceInfo> res = await _module.WorldSignInAsync();
             if (! string.IsNullOrEmpty(res.message)) 
             {
                 PopupBuilder.singleton.OpenAlert(res.message);
