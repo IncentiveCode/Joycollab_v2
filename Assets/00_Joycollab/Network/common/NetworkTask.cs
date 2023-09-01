@@ -75,9 +75,9 @@ namespace Joycollab.v2
     public class NetworkTask
     {
         // timeout seconds
-        protected static double TIMEOUT_DEFAULT = 3;
-        protected static double TIMEOUT_WEATHER = 10;
-        protected static double TIMEOUT_TEXTURE = 15;
+        protected static double TIMEOUT_DEFAULT = 20;
+        protected static double TIMEOUT_WEATHER = 20;
+        protected static double TIMEOUT_TEXTURE = 30;
         protected static double TIMEOUT_MULTIPART = 180;
 
         // HTTP Status Code
@@ -206,12 +206,10 @@ namespace Joycollab.v2
             form.AddField(USERNAME, R.singleton.ID);
 
             PsResponse<ResToken> res = await PostAsync<ResToken>(URL.REQUEST_TOKEN, form, string.Empty, 
-                R.singleton.tokenScope.Equals(SCOPE_ADM) ? NetworkTask.BASIC_TOKEN : NetworkTask.BASIC_TOKEN_M
-            );
+                R.singleton.tokenScope.Equals(SCOPE_ADM) ? BASIC_TOKEN : BASIC_TOKEN_M);
 
             if (string.IsNullOrEmpty(res.message)) 
             {
-                Debug.Log("토큰 재발행 성공.");
                 R.singleton.TokenInfo = res.data;
                 JsLib.SetCookie(Key.TOKEN_TYPE, res.data.token_type);
                 JsLib.SetCookie(Key.ACCESS_TOKEN, res.data.access_token);

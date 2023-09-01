@@ -192,17 +192,25 @@ namespace Joycollab.v2
 
         private async UniTask<int> Refresh() 
         {
-            string toggleValue = JsLib.GetCookie(Key.TOGGLE_ID_SAVED);
-            bool isOn = toggleValue.Equals(S.TRUE);
-            _toggleRemember.isOn = isOn;
-            if (isWorld) 
+            string isSaved = string.Empty;
+            string savedId = string.Empty;
+
+            if (isOffice) 
             {
-                toggleValue = JsLib.GetCookie(Key.TOGGLE_GO_TO_CENTER);
-                isOn = toggleValue.Equals(S.TRUE);
-                _toggleGoToCenter.isOn = isOn;
+                isSaved = JsLib.GetCookie(Key.TOGGLE_ID_SAVED);
+                savedId = JsLib.GetCookie(Key.SAVED_SIGN_IN_ID);
+            }
+            else if (isWorld) 
+            {
+                _toggleGoToCenter.isOn = JsLib.GetCookie(Key.TOGGLE_GO_TO_CENTER).Equals(S.TRUE);
+                isSaved = JsLib.GetCookie(Key.TOGGLE_WORLD_ID_SAVED);
+                savedId = JsLib.GetCookie(Key.SAVED_WORLD_ID);
             }
 
-            _inputId.text = isOn ? JsLib.GetCookie(Key.SAVED_LOGIN_ID) : string.Empty;
+            bool isOn = isSaved.Equals(S.TRUE);
+            _toggleRemember.isOn = isOn;
+
+            _inputId.text = isOn ? savedId : string.Empty;
             _inputPw.text = string.Empty;
             if (isOffice) 
             {
@@ -254,7 +262,7 @@ namespace Joycollab.v2
             if (isOffice)
             {
                 JsLib.SetCookie(Key.TOGGLE_ID_SAVED, _toggleRemember.isOn ? S.TRUE : S.FALSE);
-                JsLib.SetCookie(Key.SAVED_LOGIN_ID, _toggleRemember.isOn ? _inputId.text : string.Empty);
+                JsLib.SetCookie(Key.SAVED_SIGN_IN_ID, _toggleRemember.isOn ? _inputId.text : string.Empty);
                 JsLib.SetCookie(Key.TOKEN_TYPE, res.data.token_type);
                 JsLib.SetCookie(Key.ACCESS_TOKEN, res.data.access_token);
 
@@ -263,7 +271,7 @@ namespace Joycollab.v2
             else if (isWorld) 
             {
                 JsLib.SetCookie(Key.TOGGLE_WORLD_ID_SAVED, _toggleRemember.isOn ? S.TRUE : S.FALSE);
-                JsLib.SetCookie(Key.SAVED_WORLD_LOGIN_ID, _toggleRemember.isOn ? _inputId.text : string.Empty);
+                JsLib.SetCookie(Key.SAVED_WORLD_ID, _toggleRemember.isOn ? _inputId.text : string.Empty);
                 JsLib.SetCookie(Key.TOGGLE_GO_TO_CENTER, _toggleGoToCenter.isOn ? S.TRUE : S.FALSE);
                 JsLib.SetCookie(Key.TOKEN_TYPE, res.data.token_type);
                 JsLib.SetCookie(Key.ACCESS_TOKEN, res.data.access_token);

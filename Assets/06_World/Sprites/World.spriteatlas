@@ -23,7 +23,7 @@ SpriteAtlas:
     platformSettings:
     - serializedVersion: 3
       m_BuildTarget: DefaultTexturePlatform
-      m_MaxTextureSize: 512
+      m_MaxTextureSize: 1024
       m_ResizeAlgorithm: 0
       m_TextureFormat: -1
       m_TextureCompression: 1
@@ -35,38 +35,60 @@ SpriteAtlas:
       m_ForceMaximumCompressionQuality_BC6H_BC7: 0
     packingSettings:
       serializedVersion: 2
-      padding: 4
+      padding: 8
       blockOffset: 1
       allowAlphaSplitting: 0
-      enableRotation: 1
-      enableTightPacking: 1
+      enableRotation: 0
+      enableTightPacking: 0
       enableAlphaDilation: 0
     secondaryTextureSettings: {}
     variantMultiplier: 1
     packables:
     - {fileID: 102900000, guid: f09c4196a8a13f042878a73023eea883, type: 3}
+    - {fileID: 102900000, guid: e032936bd7d58194f96b1274adaa7d9e, type: 3}
+    - {fileID: 102900000, guid: 5a8f59d571c59634bbff6e577d873b59, type: 3}
     bindAsDefault: 1
     isAtlasV2: 0
     cachedData: {fileID: 0}
   m_MasterAtlas: {fileID: 0}
   m_PackedSprites:
   - {fileID: 21300000, guid: 797c76604b7abf64095fc695f2e173da, type: 3}
+  - {fileID: 21300000, guid: 733695a090726cf4eaf9d7a99d39838c, type: 3}
+  - {fileID: 21300000, guid: 30afc0115bbfed04f8002150fbf82d22, type: 3}
+  - {fileID: 21300000, guid: 2e08691116896474d9b007036a844613, type: 3}
   - {fileID: 21300000, guid: 4ce134a1cdbe99d44a3c69491c0a5130, type: 3}
+  - {fileID: 21300000, guid: d6b8ad1351ef7624085444e255c53899, type: 3}
+  - {fileID: 21300000, guid: b42e63140683e384db755a2fc4116467, type: 3}
+  - {fileID: 21300000, guid: 10a3045488fa91244a45df04fd3cac50, type: 3}
+  - {fileID: 21300000, guid: 37a95936f933a1a469650e4c559cb3f1, type: 3}
   - {fileID: 21300000, guid: 5bef63a630532a245b72e653404d4e3a, type: 3}
   - {fileID: 21300000, guid: 9cdc53b60692a024f8b1aa9a55ca4f4e, type: 3}
+  - {fileID: 21300000, guid: c21696e7feddca04289ce46b7c20a522, type: 3}
   - {fileID: 21300000, guid: e28e17b8e9d327344a29160225f2b824, type: 3}
+  - {fileID: 21300000, guid: 67a80c9c8b388464f8178f41a05d8e62, type: 3}
   - {fileID: 21300000, guid: 657f8cacce8fb3b44b21d4950d83588e, type: 3}
   - {fileID: 21300000, guid: 73b10ead7831df34badc12df33aca81c, type: 3}
   - {fileID: 21300000, guid: 22e27d0fc101c9240822ddad97a720f1, type: 3}
+  - {fileID: 21300000, guid: ba36c01f728f83842bf2e0de53a9958d, type: 3}
   m_PackedSpriteNamesToIndex:
   - check_on
+  - ic_settings
+  - ic_bookmark
+  - ic_mic_off
   - logout
+  - building_mark
+  - ic_alarm
+  - pointer
+  - ic_mic_on
   - settings_profile_w
   - profile_w
+  - bar_select_w
   - toggle_w
+  - ic_member
   - camera_w
   - check
   - check_transparent
+  - ic_chat
   m_RenderDataMap: {}
   m_Tag: World
   m_IsVariant: 0

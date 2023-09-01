@@ -245,7 +245,7 @@ namespace Joycollab.v2
             bool isOn = toggleValue.Equals(S.TRUE);
             _toggleRemember.isOn = isOn;
 
-            _inputId.text = isOn ? JsLib.GetCookie(Key.SAVED_SUB_LOGIN_ID) : string.Empty;
+            _inputId.text = isOn ? JsLib.GetCookie(Key.SAVED_SUB_ID) : string.Empty;
             _inputPw.text = string.Empty;
 
 
@@ -309,8 +309,8 @@ namespace Joycollab.v2
                 R.singleton.ID = id;
                 R.singleton.TokenInfo = res.data;
 
-                JsLib.SetCookie(Key.TOGGLE_ID_SAVED, _toggleRemember.isOn ? S.TRUE : S.FALSE);
-                JsLib.SetCookie(Key.SAVED_LOGIN_ID, _toggleRemember.isOn ? _inputId.text : string.Empty);
+                JsLib.SetCookie(Key.TOGGLE_SUB_ID_SAVED, _toggleRemember.isOn ? S.TRUE : S.FALSE);
+                JsLib.SetCookie(Key.SAVED_SUB_ID, _toggleRemember.isOn ? _inputId.text : string.Empty);
                 JsLib.SetCookie(Key.TOKEN_TYPE, res.data.token_type);
                 JsLib.SetCookie(Key.ACCESS_TOKEN, res.data.access_token);
 

@@ -179,9 +179,23 @@ namespace Joycollab.v2
 
         private async UniTaskVoid CheckAsync() 
         {
-            string id = _inputId.text;
-            if (id.Length == 0) return;
+            if (string.IsNullOrEmpty(_inputId.text)) 
+            {
+                PopupBuilder.singleton.OpenAlert(
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "이메일 없음", R.singleton.CurrentLocale)
+                );
+                return;
+            }
 
+            if (! RegExp.MatchEmail(_inputId.text)) 
+            {
+                PopupBuilder.singleton.OpenAlert(
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "이메일 정규식검사 실패", R.singleton.CurrentLocale)
+                );
+                return;
+            }
+
+            string id = _inputId.text;
             string url = string.Format(URL.CHECK_ID, id);
             PsResponse<ResCheckId> res = await NetworkTask.RequestAsync<ResCheckId>(url, eMethodType.GET);
 

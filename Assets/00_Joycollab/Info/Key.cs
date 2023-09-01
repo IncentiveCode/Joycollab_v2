@@ -43,11 +43,11 @@ namespace Joycollab.v2
 		public const string SYSTEM_UPDATE_FLAG = "_suf";
 
 		public const string TOGGLE_ID_SAVED = "_tis";
-	 	public const string SAVED_LOGIN_ID = "_sli";
+	 	public const string SAVED_SIGN_IN_ID = "_ssii";
 		public const string TOGGLE_SUB_ID_SAVED = "_tsis";
-		public const string SAVED_SUB_LOGIN_ID = "_ssli";
+		public const string SAVED_SUB_ID = "_ssi";
 		public const string TOGGLE_WORLD_ID_SAVED = "_twis";
-		public const string SAVED_WORLD_LOGIN_ID = "_swli";
+		public const string SAVED_WORLD_ID = "_swi";
 		public const string TOGGLE_GO_TO_CENTER = "_tgtc";
 
 		public const string WORKSPACE_DOMAIN = "_wd";

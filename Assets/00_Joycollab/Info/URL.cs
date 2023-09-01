@@ -1,8 +1,8 @@
 /// <summary>
 /// NetworkTask 를 위한 API URL 정리 문서 
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 30
-/// @version        : 1.1
+/// @last update    : 2023. 09. 01
+/// @version        : 1.2
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리
 ///     v0.2 (2023. 03. 20) : Tray app 관련 URL 추가
@@ -15,6 +15,7 @@
 ///     v0.9 (2023. 07. 07) : Joycollab 에서 사용하던 URL 정리. (UserApi - Bookmark)
 ///     v1.0 (2023. 08. 01) : Joycollab 에서 사용하던 URL 정리. (UserApi - Attendance)
 ///     v1.1 (2023. 08. 30) : v1 에서 사용하던 URL 정리 완료. World API 정리
+///     v1.2 (2023. 09. 01) : File API V2 정리
 /// </summary>
 
 #define DEV // Dev Server
@@ -1263,7 +1264,7 @@ namespace Joycollab.v2
         ///     {3} : file path with new name
         /// </summary>
         /// <value></value>
-        public const string URL_FILE_RENAME = SERVER_PATH + "/api/file/rename/{0}/{1}?newFilePath={2}&sourceFilePath={3}";    
+        public const string RENAME_FILE = SERVER_PATH +"/api/file/rename/{0}/{1}?newFilePath={2}&sourceFilePath={3}";    
 
         ///  <summary>
         /// desc : 폴더 삭제
@@ -1274,6 +1275,98 @@ namespace Joycollab.v2
         ///     {2} : folder path
         /// </summary>
         public const string DELETE_FOLDER = SERVER_PATH +"/api/file/rm/{0}/{1}?folder={2}";
+
+
+        // ---------- ---------- ----------
+        // 05. File API v2
+
+        /// <summary>
+        /// desc : 파일 리스트 관련 기능
+        /// method : post (파일 업로드), get (조회)
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq (0 입력시 전사 파일, -1 입력시 내 파일)
+        ///     {2} : folder seq (0 입력시 root folder)
+        /// </summary>
+        public const string FILE_LIST_V2 = SERVER_PATH +"/api/v2/file/{0}/{1}/{2}";
+
+        /// <summary>
+        /// desc : 파일/폴더 복사 붙여넣기 or 이동
+        /// method : patch
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq (0 입력시 전사 파일, -1 입력시 내 파일)
+        ///     {2} : source seq (복사 or 이동할 파일 or 폴더의 seq)
+        ///     {3} : target seq (복사 or 이동시킬 폴더의 seq)
+        ///     {4} : type (copy | move)
+        /// </summary>
+        public const string CONTROL_FILE_V2 = SERVER_PATH +"/api/v2/file/change/{0}/{1}/{2}/{3}?type={4}";  
+
+        /// <summary>
+        /// desc : 파일 다운로드
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : file path
+        /// </summary>
+        public const string DOWNLOAD_FILE_V2 = SERVER_PATH +"/api/v2/file/down/{0}/{1}?filePath={2}";
+
+        /// <summary>
+        /// desc : 파일 경로 조회
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : file seq
+        /// </summary>
+        public const string GET_FULLPATH_v2 = SERVER_PATH +"/api/v2/file/fullPath/{0}/{1}/{2}";
+
+        /// <summary>
+        /// desc : 파일함 키워드 검색
+        /// method : get
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : member seq
+        ///     {3} : keyword
+        ///     {4} : page
+        ///     {5} : size
+        /// </summary>
+        public const string SEARCH_FILE_V2 = SERVER_PATH +"/api/v2/file/keyword/{0}/{1}/{2}?keyword={3}&page={4}&size={5}";  
+
+        /// <summary>
+        /// desc : 새 폴더 생성
+        /// method : post
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq (0 입력시 전사 파일, -1 입력시 내 파일)
+        ///     {2} : top folder seq (0 입력시 root folder)
+        ///     {3} : req folder name
+        /// </summary>
+        public const string CREATE_FOLDER_V2 = SERVER_PATH +"/api/v2/file/mkdir/{0}/{1}/{2}?folder={3}";
+
+        /// <summary>
+        /// desc : 파일/폴더명 변경
+        /// method : patch
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : file seq
+        ///     {3} : new name
+        /// </summary>
+        /// <value></value>
+        public const string RENAME_FILE_V2 = SERVER_PATH +"/api/v2/file/rename/{0}/{1}/{2}?name={3}";
+
+        ///  <summary>
+        /// desc : 폴더 삭제
+        /// method : delete
+        /// param
+        ///     {0} : workspace seq
+        ///     {1} : space seq
+        ///     {2} : file / folder seq
+        /// </summary>
+        public const string DELETE_FOLDER_V2 = SERVER_PATH +"/api/v2/file/rm/{0}/{1}/{2}";
 
 
         // ---------- ---------- ----------

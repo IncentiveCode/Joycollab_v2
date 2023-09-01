@@ -200,7 +200,7 @@ namespace Joycollab.v2
 
                 R.singleton.ID = id;
                 R.singleton.TokenInfo = res.data;
-                JsLib.SetCookie(Key.SAVED_LOGIN_ID, id);
+                JsLib.SetCookie(Key.SAVED_SIGN_IN_ID, id);
 
                 GetWorkspaceList().Forget();
             }
@@ -299,7 +299,7 @@ namespace Joycollab.v2
             _inputPw.interactable = true;
             _btnClearPw.gameObject.SetActive(false);
 
-            string id = JsLib.GetCookie(Key.SAVED_LOGIN_ID);
+            string id = JsLib.GetCookie(Key.SAVED_SIGN_IN_ID);
             _inputId.text = id;
             _inputId.interactable = true;
             _btnClearId.gameObject.SetActive(! string.IsNullOrEmpty(id));
