@@ -115,7 +115,7 @@ namespace Joycollab.v2
         ///     {0} : joycollab id
         /// </summary>  
         public const string GOOGLE_AUTH = DEV ?
-            "https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=https://dev.jcollab.com/serv/google/oauth&client_id=784523561336-t1ro70eqca4fkvbl4hosr6k7jisonpbu.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&prompt=consent&response_type=code&access_type=offline&state={0}" :
+            "https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=https://dev.jcollab.com/serv/google/oauth&client_id=1029682796818-n46k67eoufrue8p504pl12h554b7ktvt.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&prompt=consent&response_type=code&access_type=offline&state={0}" :
             "https://accounts.google.com/o/oauth2/v2/auth?redirect_uri=https://jcollab.com/serv/google/oauth&client_id=1029682796818-j4hl9h8fqnb6qe9a9lsmstra8s89evs6.apps.googleusercontent.com&scope=https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fdrive+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fcalendar+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.email+https%3A%2F%2Fwww.googleapis.com%2Fauth%2Fuserinfo.profile&prompt=consent&response_type=code&access_type=offline&state={0}";   
 
     #endregion  // System Link
