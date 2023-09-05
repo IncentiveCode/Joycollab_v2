@@ -177,11 +177,12 @@ namespace WebGLSupport
             var rect = GetElemetRect();
             bool isPassword = input.contentType == ContentType.Password;
 
-            // var fontSize = Mathf.Max(14, input.fontSize); // limit font size : 14 !!
-            var fontSize = input.fontSize; 
-            Debug.Log($"WebGLInput | OnSelect(), origin font size : {fontSize}");
+            var fontSize = Mathf.Max(14, input.fontSize); // limit font size : 14 !!
+            // var fontSize = input.fontSize; 
+            // Debug.Log($"WebGLInput | OnSelect(), origin font size : {fontSize}");
 
-            // test
+            // font size test
+            /**
             Vector2 referencesResolution = new Vector2(1920f, 1080f);
             Vector2 currentResolution = new Vector2(Screen.width, Screen.height);
             float widthRatio = currentResolution.x / referencesResolution.x;
@@ -193,6 +194,8 @@ namespace WebGLSupport
                 fontSize = (Int32) temp;
                 Debug.Log($"WebGLInput | OnSelect(), modified font size : {fontSize}");
             }
+             */
+            // -----
 
             // モバイルの場合、強制表示する
             var isHidden = !(showHtmlElement || Application.isMobilePlatform);
@@ -217,6 +220,9 @@ namespace WebGLSupport
             }
 
             WebGLWindow.OnBlurEvent += OnWindowBlur;
+
+            // test
+            WebGLWindow.OnResizeEvent += OnWindowBlur;
         }
 
         void OnWindowBlur()
@@ -270,6 +276,9 @@ namespace WebGLSupport
             instances.Remove(id);
             id = -1;    // reset id to -1;
             WebGLWindow.OnBlurEvent -= OnWindowBlur;
+
+            // test
+            WebGLWindow.OnResizeEvent -= OnWindowBlur;
         }
 
         [MonoPInvokeCallback(typeof(Action<int>))]
