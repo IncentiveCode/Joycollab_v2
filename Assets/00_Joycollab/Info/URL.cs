@@ -1,8 +1,8 @@
 /// <summary>
 /// NetworkTask 를 위한 API URL 정리 문서 
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 01
-/// @version        : 1.2
+/// @last update    : 2023. 09. 06
+/// @version        : 1.3
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리
 ///     v0.2 (2023. 03. 20) : Tray app 관련 URL 추가
@@ -16,6 +16,7 @@
 ///     v1.0 (2023. 08. 01) : Joycollab 에서 사용하던 URL 정리. (UserApi - Attendance)
 ///     v1.1 (2023. 08. 30) : v1 에서 사용하던 URL 정리 완료. World API 정리
 ///     v1.2 (2023. 09. 01) : File API V2 정리
+///     v1.3 (2023. 09. 06) : google token 조회 및 연동 해제 부분의 parameter 삭제.
 /// </summary>
 
 #define DEV // Dev Server
@@ -718,26 +719,20 @@ namespace Joycollab.v2
         /// <summary>
         /// desc : Google access token 조회
         /// method : get
-        /// param
-        ///     {0} : user google id (e-mail)
         /// </summary>
-        public const string GOOGLE_ACCESS_TOKEN = SERVER_PATH +"/api/user/googleAccessToken?name={0}";
+        public const string GOOGLE_ACCESS_TOKEN = SERVER_PATH +"/api/user/googleAccessToken";
 
         /// <summary>
         /// desc : Google refresh token 조회
         /// method : get
-        /// param
-        ///     {0} : user google id (e-mail)
         /// </summary>
-        public const string GOOGLE_REFRESH_TOKEN = SERVER_PATH +"/api/user/googleRefreshToken?name={0}";
+        public const string GOOGLE_REFRESH_TOKEN = SERVER_PATH +"/api/user/googleRefreshToken";
 
         /// <summary>
         /// desc : Google 연동 해제
         /// method : delete
-        /// param
-        ///     {0} : user google id (e-mail)
         /// </summary>
-        public const string REVOKE_GOOGLE_CONNECTION = SERVER_PATH +"/api/user/revokingGoogleToken?name={0}";
+        public const string REVOKE_GOOGLE_CONNECTION = SERVER_PATH +"/api/user/revokingGoogleToken";
 
 
         // ---------- ---------- ----------

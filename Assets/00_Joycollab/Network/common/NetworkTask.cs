@@ -1,8 +1,8 @@
 /// <summary>
 /// Network 통신 라이브러리  
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 31
-/// @version        : 0.6
+/// @last update    : 2023. 09. 06
+/// @version        : 0.7
 /// @update
 ///     v0.1 (2023. 02. 20) : UniTask 사용해서 최초 생성.
 ///     v0.2 (2023. 03. 31) : int 형태로 리턴되는 결과를 처리하기 위해, PsResponse 안에 int 형 data 추가.
@@ -10,6 +10,8 @@
 ///     v0.4 (2023. 05. 10) : extra field 추가.
 ///     v0.5 (2023. 06. 19) : multipart form post method 추가.
 ///     v0.6 (2023. 07. 31) : return 앞에 req.Dispose() 추가.
+///     v0.7 (2023. 09. 06) : 중복되는 req.Dispose() 를 finally 로 이동. FileDownload function 추가.
+///                           token refresh 가 없는 GoogleDriveAsync() 추가.
 /// </summary>
 
 using System;
@@ -74,6 +76,8 @@ namespace Joycollab.v2
 
     public class NetworkTask
     {
+        private const string TAG = "NetworkTask";
+
         // timeout seconds
         protected static double TIMEOUT_DEFAULT = 20;
         protected static double TIMEOUT_WEATHER = 20;
@@ -116,6 +120,7 @@ namespace Joycollab.v2
 
 
     #region common
+
         private static async UniTask CheckConnection() 
         {
             if (Application.internetReachability == NetworkReachability.NotReachable) 
@@ -223,10 +228,12 @@ namespace Joycollab.v2
                 return res.message;
             }
         }
+
     #endregion  // common 
 
 
     #region Post only
+
         public static async UniTask<PsResponse<T>> PostAsync<T>(string url, WWWForm body, string contentType="", string token="") 
         {
             // 0. test
@@ -246,8 +253,7 @@ namespace Joycollab.v2
             req.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
 
             // 4. set header
-            // req.SetRequestHeader(ACCEPT_LANGUAGE, LanguageManager.Instance.Region);
-            req.SetRequestHeader(ACCEPT_LANGUAGE, S.REGION_KOREAN);
+            req.SetRequestHeader(ACCEPT_LANGUAGE, R.singleton.Region);
             if (!string.IsNullOrEmpty(contentType))
             {
                 req.SetRequestHeader(CONTENT_TYPE, contentType);
@@ -266,7 +272,6 @@ namespace Joycollab.v2
 
                 if (data.Length == 0)
                 {
-                    req.Dispose();
                     return new PsResponse<T>(code, string.Empty);
                 }
 
@@ -274,7 +279,6 @@ namespace Joycollab.v2
                 string first = data.Substring(0, 1);
                 if (! first.Equals("[") && ! first.Equals("{")) 
                 {
-                    req.Dispose();
                     return new PsResponse<T>(code, string.Empty, data);
                 }
 
@@ -284,7 +288,6 @@ namespace Joycollab.v2
                     data = "{\"list\":" + data + "}";
                 }
 
-                req.Dispose();
                 T result = JsonUtility.FromJson<T>(data);
                 return new PsResponse<T>(code, result);
             }
@@ -292,16 +295,15 @@ namespace Joycollab.v2
             {
                 if (ce.CancellationToken == cts.Token) 
                 {
-                    Debug.LogError("NetworkTask | PostAsync() timeout exception : "+ ce.Message);
+                    Debug.LogError($"{TAG} | PostAsync() timeout exception : {ce.Message}");
 
                     // re-try
-                    req.Dispose();
                     return await PostAsync<T>(url, body, contentType, token);
                 }
             }
             catch (Exception e) 
             {
-                Debug.LogError($@"NetworkTask | PostAsync() occur exception.
+                Debug.LogError($@"{TAG} | PostAsync() occur exception.
                         - URL : {url}
                         - Response Code : {req.responseCode}
                         - Result : {req.downloadHandler.text}
@@ -312,7 +314,6 @@ namespace Joycollab.v2
                     string t = await RefreshToken();
                     if (string.IsNullOrEmpty(t))
                     {
-                        req.Dispose();
                         return await PostAsync<T>(url, body, contentType, R.singleton.token);
                     }
                 }
@@ -322,16 +323,17 @@ namespace Joycollab.v2
                     string message = HandleError(req.responseCode, req.downloadHandler.text);
                     if (message.Length == 0)
                     {
-                        req.Dispose();
                         return new PsResponse<T>(code, e.Message);
                     }
 
-                    req.Dispose();
                     return new PsResponse<T>(code, message);
                 }
             }
+            finally 
+            {
+                req.Dispose();
+            }
 
-            req.Dispose();
             return new PsResponse<T>(HTTP_EXCEPTION, "알 수 없는 오류");
         }
 
@@ -365,8 +367,7 @@ namespace Joycollab.v2
             req.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
 
             // 5. set header
-            // req.SetRequestHeader(ACCEPT_LANGUAGE, LanguageManager.Instance.Region);
-            req.SetRequestHeader(ACCEPT_LANGUAGE, S.REGION_KOREAN);
+            req.SetRequestHeader(ACCEPT_LANGUAGE, R.singleton.Region);
             req.SetRequestHeader(CONTENT_TYPE, contentType);
             req.SetRequestHeader(AUTHORIZATION, token);
 
@@ -379,7 +380,6 @@ namespace Joycollab.v2
 
                 if (data.Length == 0)
                 {
-                    req.Dispose();
                     return new PsResponse<T>(code, string.Empty);
                 }
 
@@ -387,7 +387,6 @@ namespace Joycollab.v2
                 string first = data.Substring(0, 1);
                 if (! first.Equals("[") && ! first.Equals("{")) 
                 {
-                    req.Dispose();
                     return new PsResponse<T>(code, string.Empty, data);
                 }
 
@@ -397,7 +396,6 @@ namespace Joycollab.v2
                     data = "{\"list\":" + data + "}";
                 }
 
-                req.Dispose();
                 T result = JsonUtility.FromJson<T>(data);
                 return new PsResponse<T>(code, result);
             }
@@ -405,16 +403,15 @@ namespace Joycollab.v2
             {
                 if (ce.CancellationToken == cts.Token) 
                 {
-                    Debug.LogError("NetworkTask | PostMultipartAsync() timeout exception : "+ ce.Message);
+                    Debug.LogError($"{TAG} | PostMultipartAsync() timeout exception : {ce.Message}");
 
                     // re-try
-                    req.Dispose();
                     return await PostMultipartAsync<T>(url, body, token);
                 }
             }
             catch (Exception e) 
             {
-                Debug.LogError($@"NetworkTask | PostMultipartAsync() occur exception.
+                Debug.LogError($@"{TAG} | PostMultipartAsync() occur exception.
                         - URL : {url}
                         - Response Code : {req.responseCode}
                         - Result : {req.downloadHandler.text}
@@ -425,7 +422,6 @@ namespace Joycollab.v2
                     string t = await RefreshToken();
                     if (string.IsNullOrEmpty(t))
                     {
-                        req.Dispose();
                         return await PostMultipartAsync<T>(url, body, R.singleton.token);
                     }
                 }
@@ -435,16 +431,17 @@ namespace Joycollab.v2
                     string message = HandleError(req.responseCode, req.downloadHandler.text);
                     if (message.Length == 0)
                     {
-                        req.Dispose();
                         return new PsResponse<T>(code, e.Message);
                     }
 
-                    req.Dispose();
                     return new PsResponse<T>(code, message);
                 }
             }
+            finally 
+            {
+                req.Dispose();
+            }
 
-            req.Dispose();
             return new PsResponse<T>(HTTP_EXCEPTION, "알 수 없는 오류");
         }
 
@@ -452,6 +449,71 @@ namespace Joycollab.v2
 
 
     #region File, Image and ETC
+
+        public static async UniTask<byte[]> GetFileAsync(string url) 
+        {
+            // 0. test
+            Debug.Log("Request url : "+ url);
+
+            // 1. network check
+            await CheckConnection();
+
+            // 2. timeout setting
+            var cts = new CancellationTokenSource();
+            cts.CancelAfterSlim(TimeSpan.FromSeconds(TIMEOUT_MULTIPART));
+
+            // 3. create UnityWebRequest
+            UnityWebRequest req = UnityWebRequest.Get(url);
+            req.certificateHandler = new WebRequestCert();
+            req.useHttpContinue = false;
+            req.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
+
+            // 4. request to server
+            try 
+            {
+                await req.SendWebRequest().WithCancellation(cts.Token);
+                long code = req.responseCode;
+
+                return req.downloadHandler.data;
+            }
+            catch (OperationCanceledException ce) 
+            {
+                if (ce.CancellationToken == cts.Token) 
+                {
+                    Debug.LogError($"{TAG} | GetFileAsync() timeout exception : {ce.Message}");
+
+                    // re-try
+                    return await GetFileAsync(url);
+                }
+            }
+            catch (Exception e) 
+            {
+                Debug.LogError($@"{TAG} | GetFileAsync() occur exception.
+                        - URL : {url}
+                        - Response Code : {req.responseCode}
+                        - Result : {e.Message}");
+
+                if (req.responseCode == HTTP_STATUS_CODE_UNAUTHORIZED && ! string.IsNullOrEmpty(R.singleton.refreshToken)) 
+                {
+                    string t = await RefreshToken();
+                    if (string.IsNullOrEmpty(t)) 
+                    {
+                        return await GetFileAsync(url);
+                    }
+                }
+                else 
+                {
+                    return null;
+                }
+            }
+            finally
+            {
+                req.Dispose();
+            }
+
+            return null;
+        }
+
         public static async UniTask<Texture2D> GetTextureAsync(string url) 
         {
             // 0. test
@@ -476,23 +538,21 @@ namespace Joycollab.v2
                 long code = req.responseCode;
 
                 Texture2D texture = DownloadHandlerTexture.GetContent(req);
-                req.Dispose();
                 return texture;
             }
             catch (OperationCanceledException ce) 
             {
                 if (ce.CancellationToken == cts.Token) 
                 {
-                    Debug.LogError("NetworkTask | GetTextureAsync() timeout exception : "+ ce.Message);
+                    Debug.LogError($"{TAG} | GetTextureAsync() timeout exception : {ce.Message}");
 
                     // re-try
-                    req.Dispose();
                     return await GetTextureAsync(url);
                 }
             }
             catch (Exception e) 
             {
-                Debug.LogError($@"NetworkTask | GetTextureAsync() occur exception.
+                Debug.LogError($@"{TAG} | GetTextureAsync() occur exception.
                         - URL : {url}
                         - Response Code : {req.responseCode}
                         - Result : {e.Message}");
@@ -502,24 +562,27 @@ namespace Joycollab.v2
                     string t = await RefreshToken();
                     if (string.IsNullOrEmpty(t)) 
                     {
-                        req.Dispose();
                         return await GetTextureAsync(url);
                     }
                 }
                 else 
                 {
-                    req.Dispose();
                     return null;
                 }
             }
+            finally
+            {
+                req.Dispose();
+            }
 
-            req.Dispose();
             return null;
         }
+
     #endregion  // File, Image and ETC
 
 
     #region Common Request
+
         public static async UniTask<PsResponse<T>> RequestAsync<T>(string url, eMethodType type, string body="", string token="") 
         {
             byte[] bodyRaw = Encoding.UTF8.GetBytes(body);
@@ -546,8 +609,7 @@ namespace Joycollab.v2
             req.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
 
             // 4. set header
-            // req.SetRequestHeader(ACCEPT_LANGUAGE, LanguageManager.Instance.Region);
-            req.SetRequestHeader(ACCEPT_LANGUAGE, S.REGION_KOREAN);
+            req.SetRequestHeader(ACCEPT_LANGUAGE, R.singleton.Region);
             req.SetRequestHeader(CONTENT_TYPE, CONTENT_JSON);
             if (!string.IsNullOrEmpty(token)) 
             {
@@ -569,7 +631,6 @@ namespace Joycollab.v2
 
                 if (data.Length == 0)
                 {
-                    req.Dispose();
                     return new PsResponse<T>(code, string.Empty);
                 }
 
@@ -577,7 +638,6 @@ namespace Joycollab.v2
                 string first = data.Substring(0, 1);
                 if (! first.Equals("[") && ! first.Equals("{")) 
                 {
-                    req.Dispose();
                     return new PsResponse<T>(code, string.Empty, data);
                 }
 
@@ -587,7 +647,6 @@ namespace Joycollab.v2
                     data = "{\"list\":" + data + "}";
                 }
 
-                req.Dispose();
                 T result = JsonUtility.FromJson<T>(data);
                 return new PsResponse<T>(code, result);
             }
@@ -595,16 +654,15 @@ namespace Joycollab.v2
             {
                 if (ce.CancellationToken == cts.Token) 
                 {
-                    Debug.LogError("NetworkTask | RequestAsync() timeout exception : "+ ce.Message);
+                    Debug.LogError($"{TAG} | RequestAsync() timeout exception : {ce.Message}");
 
                     // re-try
-                    req.Dispose();
                     return await RequestAsync<T>(url, type, bodyRaw, token);
                 }
             }
             catch (Exception e) 
             {
-                Debug.LogError($@"NetworkTask | RequestAsync() occur exception.
+                Debug.LogError($@"{TAG} | RequestAsync() occur exception.
                         - URL : {url}
                         - Response Code : {req.responseCode}
                         - Result : {req.downloadHandler.text}
@@ -615,7 +673,6 @@ namespace Joycollab.v2
                     string t = await RefreshToken();
                     if (string.IsNullOrEmpty(t)) 
                     {
-                        req.Dispose();
                         return await RequestAsync<T>(url, type, bodyRaw, R.singleton.token);
                     }
                 }
@@ -625,19 +682,156 @@ namespace Joycollab.v2
                     string message = HandleError(req.responseCode, req.downloadHandler.text);
                     if (message.Length == 0)
                     {
-                        req.Dispose();
                         return new PsResponse<T>(code, e.Message);
                     }
 
-                    req.Dispose();
                     return new PsResponse<T>(code, message);
                 }
             }
+            finally 
+            {
+                req.Dispose();
+            }
 
-            req.Dispose();
             return new PsResponse<T>(HTTP_EXCEPTION, "알 수 없는 오류");
         }
 
     #endregion  // Common Request
+
+
+    #region Google drive request
+
+        private static async UniTask<PsResponse<string>> RefreshGoogleToken() 
+        {
+            // 1. network check
+            await CheckConnection();
+
+            // 2. timeout setting
+            var cts = new CancellationTokenSource();
+            cts.CancelAfterSlim(TimeSpan.FromSeconds(TIMEOUT_DEFAULT));
+
+            // 3. create UnityWebRequest
+            string id = "leehj1321@gmail.com";  // TODO. Repo 의 GoogleId 로 변경할 것.
+            string url = string.Format(URL.GOOGLE_ACCESS_TOKEN, id);
+            PsResponse<string> res = await NetworkTask.GoogleDriveAsync<string>(url, eMethodType.GET);
+            return res;
+        }
+
+        public static async UniTask<PsResponse<T>> GoogleDriveAsync<T>(string url, eMethodType type, string body="", string token="") 
+        {
+            byte[] bodyRaw = Encoding.UTF8.GetBytes(body);
+            return await GoogleDriveAsync<T>(url, type, bodyRaw, token);
+        }
+    
+        private static async UniTask<PsResponse<T>> GoogleDriveAsync<T>(string url, eMethodType type, byte[] bodyRaw, string token="") 
+        {
+            // 0. test
+            // await UniTask.Delay(TimeSpan.FromSeconds(2f));
+            Debug.Log("Request url : "+ url);
+
+            // 1. network check
+            await CheckConnection();
+
+            // 2. timeout setting
+            var cts = new CancellationTokenSource();
+            cts.CancelAfterSlim(TimeSpan.FromSeconds(TIMEOUT_DEFAULT));
+
+            // 3. create UnityWebRequest
+            UnityWebRequest req = new UnityWebRequest(url, type.ToString()); 
+            req.certificateHandler = new WebRequestCert();
+            req.useHttpContinue = false;
+            req.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
+
+            // 4. set header
+            req.SetRequestHeader(ACCEPT_LANGUAGE, R.singleton.Region);
+            req.SetRequestHeader(CONTENT_TYPE, CONTENT_JSON);
+            if (!string.IsNullOrEmpty(token)) 
+            {
+                req.SetRequestHeader(AUTHORIZATION, token);
+            }
+            
+            // 5. set body
+            if (bodyRaw.Length != 0)
+            {
+                req.uploadHandler = new UploadHandlerRaw(bodyRaw);
+            }
+
+            // 6. request to server
+            try 
+            {
+                var res = await req.SendWebRequest().WithCancellation(cts.Token);
+                long code = req.responseCode;
+                string data = res.downloadHandler.text;
+
+                if (data.Length == 0)
+                {
+                    return new PsResponse<T>(code, string.Empty);
+                }
+
+                // json 형태가 아니라면, data 를 그대로 리턴한다.
+                string first = data.Substring(0, 1);
+                if (! first.Equals("[") && ! first.Equals("{")) 
+                {
+                    return new PsResponse<T>(code, string.Empty, data);
+                }
+
+                // 첫글자가 [ 로 시작하면, list 를 붙여준다.
+                if (first.Equals("["))
+                {
+                    data = "{\"list\":" + data + "}";
+                }
+
+                T result = JsonUtility.FromJson<T>(data);
+                return new PsResponse<T>(code, result);
+            }
+            catch (OperationCanceledException ce) 
+            {
+                if (ce.CancellationToken == cts.Token) 
+                {
+                    Debug.LogError($"{TAG} | GoogleDriveAsync() timeout exception : {ce.Message}");
+
+                    // re-try
+                    return await GoogleDriveAsync<T>(url, type, bodyRaw, token);
+                }
+            }
+            catch (Exception e) 
+            {
+                Debug.LogError($@"{TAG} | GoogleDriveAsync() occur exception.
+                        - URL : {url}
+                        - Response Code : {req.responseCode}
+                        - Result : {req.downloadHandler.text}
+                        - Exception : {e.Message}");
+
+                if (req.responseCode == HTTP_STATUS_CODE_UNAUTHORIZED) 
+                {
+                    PsResponse<string> googleTokenRes = await RefreshGoogleToken();
+                    if (string.IsNullOrEmpty(googleTokenRes.message)) 
+                    {
+                        string googleToken = $"Bearer {googleTokenRes.stringData}";
+                        Debug.Log($"{TAG} | GoogleTokenRefresh : {googleToken}");
+                        return await RequestAsync<T>(url, type, bodyRaw, googleToken);
+                    }
+                }
+                else 
+                {
+                    long code = req.responseCode;
+                    string message = HandleError(req.responseCode, req.downloadHandler.text);
+                    if (message.Length == 0)
+                    {
+                        return new PsResponse<T>(code, e.Message);
+                    }
+
+                    return new PsResponse<T>(code, message);
+                }
+            }
+            finally 
+            {
+                req.Dispose();
+            }
+
+            return new PsResponse<T>(HTTP_EXCEPTION, "알 수 없는 오류");
+        }
+
+    #endregion  // Google drive request
     }
 }
