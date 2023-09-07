@@ -134,7 +134,7 @@ namespace Joycollab.v2
 
         /// <summary>
         /// desc : 파일 관리
-        /// method : delete (파일 삭제), path (파일 이름 변경)
+        /// method : delete (파일 삭제), patch (파일 이름 변경)
         /// param
         ///     {0} : file id
         /// </summary>
@@ -1354,14 +1354,14 @@ namespace Joycollab.v2
         public const string RENAME_FILE_V2 = SERVER_PATH +"/api/v2/file/rename/{0}/{1}/{2}?name={3}";
 
         ///  <summary>
-        /// desc : 폴더 삭제
+        /// desc : 파일, 폴더 삭제
         /// method : delete
         /// param
         ///     {0} : workspace seq
         ///     {1} : space seq
         ///     {2} : file / folder seq
         /// </summary>
-        public const string DELETE_FOLDER_V2 = SERVER_PATH +"/api/v2/file/rm/{0}/{1}/{2}";
+        public const string DELETE_FILE_V2 = SERVER_PATH +"/api/v2/file/rm/{0}/{1}/{2}";
 
 
         // ---------- ---------- ----------

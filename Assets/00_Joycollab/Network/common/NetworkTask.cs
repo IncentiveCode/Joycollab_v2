@@ -253,7 +253,9 @@ namespace Joycollab.v2
             req.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
 
             // 4. set header
-            req.SetRequestHeader(ACCEPT_LANGUAGE, R.singleton.Region);
+            // req.SetRequestHeader(ACCEPT_LANGUAGE, R.singleton == null ? S.REGION_KOREAN : R.singleton.Region);
+            // TODO. just test
+            req.SetRequestHeader(ACCEPT_LANGUAGE, S.REGION_KOREAN);
             if (!string.IsNullOrEmpty(contentType))
             {
                 req.SetRequestHeader(CONTENT_TYPE, contentType);
@@ -367,7 +369,9 @@ namespace Joycollab.v2
             req.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
 
             // 5. set header
-            req.SetRequestHeader(ACCEPT_LANGUAGE, R.singleton.Region);
+            // req.SetRequestHeader(ACCEPT_LANGUAGE, R.singleton == null ? S.REGION_KOREAN : R.singleton.Region);
+            // TODO. just test
+            req.SetRequestHeader(ACCEPT_LANGUAGE, S.REGION_KOREAN);
             req.SetRequestHeader(CONTENT_TYPE, contentType);
             req.SetRequestHeader(AUTHORIZATION, token);
 
@@ -609,7 +613,9 @@ namespace Joycollab.v2
             req.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
 
             // 4. set header
-            req.SetRequestHeader(ACCEPT_LANGUAGE, R.singleton.Region);
+            // req.SetRequestHeader(ACCEPT_LANGUAGE, R.singleton == null ? S.REGION_KOREAN : R.singleton.Region);
+            // TODO. just test
+            req.SetRequestHeader(ACCEPT_LANGUAGE, S.REGION_KOREAN);
             req.SetRequestHeader(CONTENT_TYPE, CONTENT_JSON);
             if (!string.IsNullOrEmpty(token)) 
             {
@@ -743,7 +749,9 @@ namespace Joycollab.v2
             req.downloadHandler = (DownloadHandler) new DownloadHandlerBuffer();
 
             // 4. set header
-            req.SetRequestHeader(ACCEPT_LANGUAGE, R.singleton.Region);
+            // req.SetRequestHeader(ACCEPT_LANGUAGE, R.singleton == null ? S.REGION_KOREAN : R.singleton.Region);
+            // TODO. just test
+            req.SetRequestHeader(ACCEPT_LANGUAGE, S.REGION_KOREAN);
             req.SetRequestHeader(CONTENT_TYPE, CONTENT_JSON);
             if (!string.IsNullOrEmpty(token)) 
             {
