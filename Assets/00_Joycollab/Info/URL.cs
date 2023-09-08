@@ -172,6 +172,16 @@ namespace Joycollab.v2
         public const string GET_GOOGLE_FILE_PARENTS = GOOGLE_PATH +"drive/v3/files/{0}?fields=parents, name, id";
 
         /// <summary>
+        /// desc : 파일에 부모 정보 추가
+        /// method : patch
+        /// param
+        ///     {0} : file id
+        ///     {1} : parent id
+        /// </summary>
+        /// <value></value>
+        public const string ADD_GOOGLE_FILE_PARENT = GOOGLE_PATH +"drive/v3/files/{0}?addParents={1}";
+
+        /// <summary>
         /// desc : 파일 복사
         /// method : post
         /// param

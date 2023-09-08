@@ -40,7 +40,7 @@ namespace Joycollab.v2
             singleton = this;
 
             mainCamera = GetComponent<Camera>();
-            v2MapSize = new Vector2(20.48f, 11.52f);
+            v2MapSize = new Vector2(20.48f, 13.08f);
         }
 
         private void Start() 
