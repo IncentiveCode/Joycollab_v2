@@ -1,11 +1,12 @@
 /// <summary>
 /// Plan data 를 받아서 출력하는 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 01
-/// @version        : 0.2
+/// @last update    : 2023. 09. 12
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 07. 31) : 최초 생성
 ///     v0.2 (2023. 08. 01) : Init() 할 때, localize string key 를 전달하는 형태로 변경.
+///     v0.3 (2023. 09. 12) : Test 를 위한 항목들은 PlanParseTester 로 분리.
 /// </summary>
 
 using UnityEngine;
@@ -23,11 +24,8 @@ namespace Joycollab.v2
         [SerializeField] private PlanData _planStandard;
         [SerializeField] private PlanData _planPremium;
 
-        [Header("test part")]
-        [SerializeField] private Button _btnFree;
-        [SerializeField] private Button _btnBasic;
-        [SerializeField] private Button _btnStandard;
-        [SerializeField] private Button _btnPremium;
+        [Header("plan type")]
+        [SerializeField] private ePlanType _type;
 
         [Header("display part")]
         [SerializeField] private Transform _transform;
@@ -52,50 +50,41 @@ namespace Joycollab.v2
                 Debug.Log($"{TAG} | 내용물이 출력될 GameObject 를 먼저 설정해야 테스트를 진행할 수 있습니다.");
                 return;
             }
-
-            _btnFree.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | free plan contents.");
-                Parse(_planFree);
-            });
-
-            _btnBasic.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | basic plan contents.");
-                Parse(_planBasic);
-            });
-
-            _btnStandard.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | standard plan contents.");
-                Parse(_planStandard);
-            });
-
-            _btnPremium.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | premium plan contents.");
-                Parse(_planPremium);
-            });
         }
 
         private void OnEnable() 
         {
-            Parse(_planFree);
+            switch (_type)
+            {
+                case ePlanType.Free :
+                    Parse(_planFree);
+                    break;
+
+                case ePlanType.Basic :
+                    Parse(_planBasic);
+                    break;
+
+                case ePlanType.Standard :
+                    Parse(_planStandard);
+                    break;
+
+                default :
+                    Parse(_planPremium);
+                    break;
+            }
         }
 
     #endregion  // Unity functions
 
 
-    #region public function
-
-        public void Parse(PlanData data) 
+    #region private functions
+        private void Parse(PlanData data) 
         {
             color = data.PlanColor;
 
             ClearContent();
             ChangeContent(data);
         }
-
-    #endregion  // public function
-
-
-    #region private functions
 
         private void CreateContentBlock(string key) 
         {
