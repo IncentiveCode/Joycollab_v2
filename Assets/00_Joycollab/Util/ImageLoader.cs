@@ -88,7 +88,7 @@ namespace Joycollab.v2
             Util.ResizeRawImage(rect, img, _v2Size.x, _v2Size.y);
         }
 
-        public async UniTaskVoid LoadOfficeLogo(string url) 
+        public async UniTaskVoid LoadImage(string url) 
         {
             // check 'null'
             if (img == null) img = GetComponent<RawImage>();

@@ -243,6 +243,8 @@ namespace Joycollab.v2
                     }
                 }
 
+                // TODO. TMP 에도 내 workspace list 를 넣어주자.
+
                 // display
                 int cnt = workspaces.Count;
                 if (cnt == 0) 

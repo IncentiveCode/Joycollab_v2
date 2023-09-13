@@ -182,7 +182,7 @@ namespace Joycollab.v2
             {
                 string logoPath = R.singleton.GetParam(Key.WORKSPACE_LOGO);
                 string url = $"{URL.SERVER_PATH}{logoPath}";
-                imageLoader.LoadOfficeLogo(url).Forget();
+                imageLoader.LoadImage(url).Forget();
             }
 
             await UniTask.Yield();

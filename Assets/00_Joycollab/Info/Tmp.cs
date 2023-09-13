@@ -15,8 +15,6 @@ namespace Joycollab.v2
 {
     public class Tmp : Singleton<Tmp>
     {
-
-
     #region Common functions
 
         private void Awake() 

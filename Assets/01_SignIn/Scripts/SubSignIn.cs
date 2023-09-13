@@ -233,7 +233,7 @@ namespace Joycollab.v2
             // get office logo
             string logoPath = R.singleton.GetParam(Key.WORKSPACE_LOGO);
             string url = URL.SERVER_PATH + logoPath;
-            imageLoader.LoadOfficeLogo(url).Forget();
+            imageLoader.LoadImage(url).Forget();
 
             // set info
             string officeName = R.singleton.GetParam(Key.WORKSPACE_NAME);
