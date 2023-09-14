@@ -889,7 +889,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_FontData:
-    m_Font: {fileID: 12800000, guid: ddea17484c2584a7dac74dd9bc4bf03d, type: 3}
+    m_Font: {fileID: 12800000, guid: 1a3bc380cc52c314892f58439d738eab, type: 3}
     m_FontSize: 20
     m_FontStyle: 0
     m_BestFit: 0
@@ -1083,6 +1083,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fd4519930d2a943448f5006552ed39e4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  viewTag: 
   _module: {fileID: 3885572265497194788, guid: 70087befb498f76419218adfd8fbf041, type: 3}
   _inputSearch: {fileID: 2377573502293111250}
   _btnClear: {fileID: 2377573501797723860}
@@ -1096,6 +1097,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6285185088738074887}
     m_Modifications:
+    - target: {fileID: 8979132109527101039, guid: 964c88f697a854a92a1f61eac63ed839, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 42dab36f438155a408817900844a6519, type: 2}
     - target: {fileID: 8979132110667939950, guid: 964c88f697a854a92a1f61eac63ed839, type: 3}
       propertyPath: m_Name
       value: InputField (TMP) _ search m
@@ -1184,6 +1189,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8979132111177409596, guid: 964c88f697a854a92a1f61eac63ed839, type: 3}
+      propertyPath: m_fontAsset
+      value: 
+      objectReference: {fileID: 11400000, guid: 42dab36f438155a408817900844a6519, type: 2}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 964c88f697a854a92a1f61eac63ed839, type: 3}
 --- !u!114 &2377573501176472249 stripped
