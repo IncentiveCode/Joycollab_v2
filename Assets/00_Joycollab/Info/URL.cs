@@ -987,8 +987,10 @@ namespace Joycollab.v2
         /// param
         ///     {0} : member seq
         ///     {1} : space seq
+        ///     {2} : current pos x
+        ///     {3} : current pos y
         /// </summary>
-        public const string SET_POSITION = SERVER_PATH +"/api/member/position/current/{0}/{1}";
+        public const string SET_POSITION = SERVER_PATH +"/api/member/position/current/{0}/{1}?cx={2}&cy={3}";
 
         /// <summary>
         /// desc : 사용자 지정석 설정
