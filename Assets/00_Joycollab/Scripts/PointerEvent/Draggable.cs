@@ -29,7 +29,7 @@ namespace Joycollab.v2
 
     #region Unity functions
 
-        private void Awake() 
+        private void Start() 
         {
             // set rect transform
             if (rect == null) 

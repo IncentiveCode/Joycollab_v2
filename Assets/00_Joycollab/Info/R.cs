@@ -160,6 +160,7 @@ namespace Joycollab.v2
                 case eStorageKey.InstantAlarm :
                 case eStorageKey.Chat :
                 case eStorageKey.FontSize :
+                case eStorageKey.WindowRefrsh :
                     observer.UpdateInfo(key);
                     break;
 

@@ -204,5 +204,36 @@ namespace Joycollab.v2
 		public const int MobileScene_Test = 10102;
 
 	#endregion	// MobileScene ID
+
+
+	#region World ID
+
+		// ---------- ---------- ----------
+		// UI Window List - FLOAT
+
+		public const int FLOATING_BAR_W = 20000;
+		public const int ALARM_W = 20001;
+		public const int BOOKMARK_W = 20002;
+		public const int SETTINGS_W = 20003;
+		public const int USER_LIST_W = 20004;
+
+
+		// ---------- ---------- ----------
+		// UI Window List 
+
+		public const int MEETING_LIST_W = 20010;
+		public const int MEETING_CREATE_W = 20011;
+		public const int MEETING_MEMBER_W = 20012;
+		public const int MEETING_DETAIL_W = 20013;
+
+		public const int SEMINAR_LIST_W = 20020;
+		public const int SEMINAR_CREATE_W = 20021;
+		public const int SEMINAR_MEMBER_W = 20022;
+		public const int SEMINAR_DETAIL_W = 20023;
+
+		public const int ROOM_LIST_W = 20030;
+		public const int ROOM_CREATE_W = 20031;
+
+	#endregion	// World ID
 	}
 }

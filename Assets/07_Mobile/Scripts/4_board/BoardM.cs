@@ -13,8 +13,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
-using Cysharp.Threading.Tasks;
 using Gpm.Ui;
+using Cysharp.Threading.Tasks;
 using TMPro;
 
 namespace Joycollab.v2

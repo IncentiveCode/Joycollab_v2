@@ -1,8 +1,8 @@
 /// <summary>
 /// 자주 사용하는 string 값 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 25
-/// @version        : 1.0
+/// @last update    : 2023. 09. 14
+/// @version        : 1.1
 /// @update
 ///     v0.1 (2023. 03. 20) : 최초 생성. Scene 이름, LoginView, MobileView 이름 정리
 ///     v0.2 (2023. 04. 07) : Language, region 관련 상수 정리 
@@ -14,6 +14,7 @@
 ///     v0.8 (2023. 08. 23) : 일부 클래스 이름 변경으로 인해 상수값 수정.
 ///     v0.9 (2023. 08. 24) : Management Scene 상수값 추가.
 ///     v1.0 (2023. 08. 25) : URL.GET_CODE 에서 사용하는 Top Code 상수값 추가. 
+///     v1.1 (2023. 09. 14) : World 에서 사용할 WindowView 이름 정리 (진행 중)
 /// </summary>
 
 namespace Joycollab.v2
@@ -42,6 +43,7 @@ namespace Joycollab.v2
         public const string Canvas_Window = "Window Canvas";    // order 1
         public const string Canvas_Bottom = "Bottom Canvas";    // order 0
 
+        public const string Canvas_Master = "Master Canvas";
         public const string Canvas_Popup = "Popup Canvas";
         public const string Canvas_Popup_M = "SafeArea _ popup";
         public const string Canvas_Progress_M = "SafeArea _ progress";
@@ -213,6 +215,14 @@ namespace Joycollab.v2
         public const string WorldScene_Info = "info_w";
 
     #endregion  // World FixedView Name
+
+
+    #region World WindowView Name
+
+        public const string WorldScene_RoomList = "room list_w";
+        public const string WorldScene_CreateRoom = "create room_w";
+
+    #endregion  // World WindowView Name
 
 
     #region Language

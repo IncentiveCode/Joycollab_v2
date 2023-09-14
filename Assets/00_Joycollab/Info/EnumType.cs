@@ -191,7 +191,10 @@ namespace Joycollab.v2
     {
         UserInfo, Alarm, InstantAlarm, Chat,
 
-        FontSize,
+        FontSize, 
+        
+        WindowRefrsh,
+
         Test
     }
 

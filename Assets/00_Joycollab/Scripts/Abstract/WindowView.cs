@@ -18,11 +18,23 @@ namespace Joycollab.v2
         // for scene
         [TagSelector]
         [SerializeField] protected string viewTag;
-        protected bool isOffice, isWorld;
+        protected bool isOffice, isWorld, isMobile;
 
         // for view
         protected int viewID;
+        [SerializeField] protected bool isMultiple;
+        public bool AllowMultiple 
+        {
+            get {
+                return isMultiple;
+            }
+        }
         protected eVisibleState visibleState;
+        public bool isDisappeared 
+        {
+            get { return visibleState == eVisibleState.Disappeared; }
+        }
+
         protected CanvasGroup canvasGroup;
         protected RectTransform viewRect;
         protected float fadeTime = 0.5f;
@@ -66,6 +78,7 @@ namespace Joycollab.v2
 
             isOffice = viewTag.Equals(S.SignInScene_ViewTag); 
             isWorld = viewTag.Equals(S.WorldScene_ViewTag);
+            isMobile = viewTag.Equals(S.MobileScene_ViewTag);
         } 
 
         protected virtual void Reset() 
@@ -99,6 +112,11 @@ namespace Joycollab.v2
             await UniTask.Yield();
         }
 
+        public virtual void SetAsLastSibling() 
+        {
+            viewRect.SetAsLastSibling();
+        }
+
         protected virtual void Appearing() 
         {
             if (canvasGroup == null) return;
@@ -110,6 +128,7 @@ namespace Joycollab.v2
             canvasGroup.blocksRaycasts = true;
 
             visibleState = eVisibleState.Appeared;
+            viewRect.SetAsLastSibling();
         }
 
     #endregion  // WindowView functions
