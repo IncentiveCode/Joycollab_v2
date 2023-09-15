@@ -139,6 +139,7 @@ namespace Joycollab.v2
                 _btnVersion.onClick.AddListener(() => Debug.Log("TODO. ViewManager 생성 후, 패치 노트 화면으로 이동"));
 
                 _btnSample.onClick.AddListener(() => {
+                    SystemManager.singleton.SetFontOpt(1);
                     SceneLoader.Load(eScenes.Sample);
                 });
                 _btnSample.gameObject.SetActive(URL.DEV);
@@ -147,6 +148,7 @@ namespace Joycollab.v2
                 #if UNITY_WEBGL && !UNITY_EDITOR
                     JsLib.Redirection(URL.WORLD_INDEX);
                 #else
+                    SystemManager.singleton.SetFontOpt(1);
                     SceneLoader.Load(eScenes.World);
                 #endif
                 });
@@ -253,6 +255,7 @@ namespace Joycollab.v2
                 PopupBuilder.singleton.OpenAlert(
                     LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "로그인 실패", R.singleton.CurrentLocale)
                 );
+                return;
             }
 
             // save info
@@ -267,6 +270,7 @@ namespace Joycollab.v2
                 JsLib.SetCookie(Key.ACCESS_TOKEN, res.data.access_token);
 
                 // TODO. Add space selecter
+                Debug.Log($"{TAG} | office selector 이관 예정.");
             }
             else if (isWorld) 
             {

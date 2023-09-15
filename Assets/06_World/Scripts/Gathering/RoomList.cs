@@ -55,7 +55,7 @@ namespace Joycollab.v2
             Init();
             base.Reset();
 
-            keyRefresh = eStorageKey.WindowRefrsh;
+            keyRefresh = eStorageKey.WindowRefresh;
         }
 
     #endregion  // Unity functions
@@ -94,7 +94,6 @@ namespace Joycollab.v2
 
         public async override UniTaskVoid Show() 
         {
-            Debug.Log($"{TAG} | Show() call.");
             base.Show().Forget();
 
             if (R.singleton != null) 
@@ -110,7 +109,6 @@ namespace Joycollab.v2
 
         public override void Hide() 
         {
-            Debug.Log($"{TAG} | Hide() call.");
             base.Hide();
 
             if (R.singleton != null) 

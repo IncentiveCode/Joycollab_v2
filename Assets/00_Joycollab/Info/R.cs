@@ -1,8 +1,8 @@
 /// <summary>
 /// 시스템 상 저장 공간 (Repository) 
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 28
-/// @version        : 1.1
+/// @last update    : 2023. 09. 15
+/// @version        : 1.2
 /// @update
 ///     v0.1 (2023. 03. 17) : 파일 생성, Joycollab 에서 사용하는 것들 정리 시작.
 ///     v0.2 (2023. 03. 31) : SimpleWorkspace, Alarm 관련 항목 정리 시작, Notify 에서 generic <T> 제거.
@@ -15,6 +15,7 @@
 ///     v0.9 (2023. 07. 19) : 읽지 않은 채팅 카운트를 위해 변수와 getter 추가.
 ///     v1.0 (2023. 08. 10) : Localization Init 을 위해 Init() 을 async 로 변경.
 ///     v1.1 (2023. 08. 28) : Locale 을 반환하는 public 변수 추가.
+///     v1.2 (2023. 09. 15) : Google, Zoom 관련 getter 추가.
 /// </summary>
 
 using System;
@@ -160,7 +161,7 @@ namespace Joycollab.v2
                 case eStorageKey.InstantAlarm :
                 case eStorageKey.Chat :
                 case eStorageKey.FontSize :
-                case eStorageKey.WindowRefrsh :
+                case eStorageKey.WindowRefresh :
                     observer.UpdateInfo(key);
                     break;
 
@@ -425,6 +426,23 @@ namespace Joycollab.v2
         public string myXmppPw {
             get { return _memberInfo.xmppPw; }
         }
+        public string myGoogleId {
+            get { return _memberInfo.user.googleId; }
+        }
+        public bool isGoogleConnected {
+            get { return !(string.IsNullOrEmpty(myGoogleId)); }
+        }
+        public string myZoomId {
+            get { return _memberInfo.user.zoomId; }
+        }
+        public string myZoomMail {
+            get { return _memberInfo.user.zoomEmail; }
+        }
+        public bool isZoomConnected {
+            get { return !(string.IsNullOrEmpty(myZoomId)); }
+        }
+
+
         public string myInfoSerialize {
             get { return JsonUtility.ToJson(_memberInfo); }
         }

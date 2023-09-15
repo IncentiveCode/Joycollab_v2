@@ -2023,7 +2023,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7157817452551727392}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: Joycollab.v2.WindowManager, jc_assembly
+        m_MethodName: Push
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: room list_w
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &7157817453416296162
 GameObject:
   m_ObjectHideFlags: 0
@@ -3166,4 +3178,16 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7157817453625718679}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: Joycollab.v2.WindowManager, jc_assembly
+        m_MethodName: Push
+        m_Mode: 5
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: settings_w
+          m_BoolArgument: 0
+        m_CallState: 2

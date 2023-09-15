@@ -1,16 +1,17 @@
 /// <summary>
 /// Network 통신 - 사용자, 워크스페이스 멤버 관련 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 31
-/// @version        : 0.6
+/// @last update    : 2023. 09. 15
+/// @version        : 0.7
 /// @update
-///     v0.1 (2023. 02. 23) : Joycollab 에서 사용하던 클래스 정리 및 통합 (진행 중)
+///     v0.1 (2023. 02. 23) : Joycollab 에서 사용하던 클래스 정리 및 통합.
 ///     v0.2 (2023. 06. 14) : MemberSeq 클래스 추가.
 ///     v0.3 (2023. 06. 15) : array 를 list 로 변경, SimpleMemberList, SimpleMemberInfo, SimpleUser 클래스 추가.
 ///     v0.4 (2023. 06. 19) : MemberName 클래스 추가.
 ///     v0.5 (2023. 06. 27) : 클래스 추가. (WorkspaceMemberInfo, WorkspaceMemberList)
 ///                           클래스 수정. (SimpleUser 에 tel 추가)
 ///     v0.6 (2023. 08. 31) : 클래스 추가. (ReqSignUpInfo)
+///     v0.7 (2023. 09. 15) : ResUserInfo 에 zoom id, zoom e-mail 필드 추가.
 /// </summary>
 
 using System;
@@ -55,6 +56,8 @@ namespace Joycollab.v2
         public float lat;
         public float lng;
         public string googleId;
+        public string zoomId;
+        public string zoomEmail;
     }
 
     [Serializable]

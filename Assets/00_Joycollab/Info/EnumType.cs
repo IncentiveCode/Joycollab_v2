@@ -193,7 +193,7 @@ namespace Joycollab.v2
 
         FontSize, 
         
-        WindowRefrsh,
+        WindowRefresh,
 
         Test
     }

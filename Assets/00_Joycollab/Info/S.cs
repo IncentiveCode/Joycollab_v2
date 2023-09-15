@@ -219,6 +219,10 @@ namespace Joycollab.v2
 
     #region World WindowView Name
 
+        public const string WorldScene_AlarmList = "alarm list_w";
+        public const string WorldScene_Bookmark = "bookmark_w";
+        public const string WorldScene_Settings = "settings_w";
+        public const string WorldScene_UserList = "user list_w";
         public const string WorldScene_RoomList = "room list_w";
         public const string WorldScene_CreateRoom = "create room_w";
 

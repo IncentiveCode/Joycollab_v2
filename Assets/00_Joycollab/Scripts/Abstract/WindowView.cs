@@ -81,10 +81,7 @@ namespace Joycollab.v2
             isMobile = viewTag.Equals(S.MobileScene_ViewTag);
         } 
 
-        protected virtual void Reset() 
-        {
-            Hide();
-        }
+        protected virtual void Reset() => Hide();
 
         public virtual void Hide() 
         {
@@ -120,6 +117,7 @@ namespace Joycollab.v2
         protected virtual void Appearing() 
         {
             if (canvasGroup == null) return;
+
             if (visibleState != eVisibleState.Appearing) 
                 visibleState = eVisibleState.Appearing;
 

@@ -189,6 +189,9 @@ namespace Joycollab.v2
             // testURL = URL.INDEX;
             // testURL = URL.WORLD_INDEX;
 
+            // font size 조절.
+            SetFontOpt(1);
+
             string absURL = Application.isEditor ? testURL : Application.absoluteURL; 
             if (string.IsNullOrEmpty(absURL)) absURL = URL.INDEX;
             string nextScene = ParseUrl(absURL);
@@ -274,6 +277,7 @@ namespace Joycollab.v2
 
         public void Exit() 
         {
+            SetFontOpt(1);
             SceneLoader.Load(eScenes.SignIn);
         }
 

@@ -52,25 +52,10 @@ namespace Joycollab.v2
                 return;
             }
 
-            _btnFree.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | free plan contents.");
-                Parse(_planFree);
-            });
-
-            _btnBasic.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | basic plan contents.");
-                Parse(_planBasic);
-            });
-
-            _btnStandard.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | standard plan contents.");
-                Parse(_planStandard);
-            });
-
-            _btnPremium.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | premium plan contents.");
-                Parse(_planPremium);
-            });
+            _btnFree.onClick.AddListener(() => Parse(_planFree));
+            _btnBasic.onClick.AddListener(() => Parse(_planBasic));
+            _btnStandard.onClick.AddListener(() => Parse(_planStandard));
+            _btnPremium.onClick.AddListener(() => Parse(_planPremium));
         }
 
         private void OnEnable() 
