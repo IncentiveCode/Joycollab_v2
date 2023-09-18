@@ -62,12 +62,20 @@ namespace Joycollab.v2
             base.UpdateData(scrollData);
 
             data = (ClasData) scrollData;
+            Debug.Log(JsonUtility.ToJson(data.info));
+
             this.seq = data.info.seq;
 
             // 이미지 로드
             string logoPath = string.Format("{0}{1}", URL.SERVER_PATH, data.info.logo);
-            Debug.Log($"{TAG} | image path : {logoPath}");
-            loader.LoadImage(logoPath).Forget();
+            if (string.IsNullOrEmpty(data.info.logo))
+            {
+                loader.SetDefault();
+            }
+            else
+            {
+                loader.LoadImage(logoPath).Forget();
+            }
 
             // 문구 정리
             _txtTitle.text = data.info.nm;

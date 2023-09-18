@@ -187,7 +187,7 @@ namespace Joycollab.v2
 
             string testURL = string.Empty;
             // testURL = URL.INDEX;
-            // testURL = URL.WORLD_INDEX;
+            testURL = URL.WORLD_INDEX;
 
             // font size 조절.
             SetFontOpt(1);

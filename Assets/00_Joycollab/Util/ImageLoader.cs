@@ -121,6 +121,12 @@ namespace Joycollab.v2
             Util.ResizeRawImage(rect, img, _v2Size.x, _v2Size.y);
         }
 
+        public void SetDefault() 
+        {
+            img.texture = _texDefault;
+            Util.ResizeRawImage(rect, img, _v2Size.x, _v2Size.y);
+        }
+
     #endregion  // Public function
     }
 }
