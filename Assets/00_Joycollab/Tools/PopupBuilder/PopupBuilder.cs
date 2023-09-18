@@ -48,21 +48,6 @@ namespace Joycollab.v2
 
     #region Private functions
 
-        /**
-        private void InitSingleton() 
-        {
-            if (singleton != null && singleton == this) return;
-            if (singleton != null) 
-            {
-                Destroy(gameObject);
-                return;
-            }
-
-            singleton = this;
-            DontDestroyOnLoad(gameObject);
-        }
-         */
-
         private void SetTransform() 
         {
         #if UNITY_ANDROID || UNITY_IOS

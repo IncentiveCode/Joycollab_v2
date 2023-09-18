@@ -293,6 +293,17 @@ namespace Joycollab.v2
                 return;
             }
 
+            // workspace 정보 설정. 
+            Debug.Log($"{TAG} | member seq : {res.data.seq}, workspace seq : {res.data.workspace.seq}");
+            JsLib.SetCookie(Key.WORKSPACE_SEQ, res.data.workspace.seq.ToString());
+            JsLib.SetCookie(Key.MEMBER_SEQ, res.data.seq.ToString());
+
+            R.singleton.workspaceSeq = res.data.workspace.seq;
+            R.singleton.memberSeq = res.data.seq;
+            R.singleton.domainName = res.data.workspace.domain;
+            R.singleton.uiType = res.data.uiType;
+
+            // world avatar 정보 설정.
             WorldAvatarInfo info = new WorldAvatarInfo();
             info.seq = res.data.seq;
             info.nickNm = res.data.nickNm;
@@ -301,6 +312,14 @@ namespace Joycollab.v2
             // TODO. set world avatar info
             // WorldAvatar.localPlayerInfo = info;
             // WorldChatView.localPlayerInfo = info;
+
+            // 사용자 정보 로드 
+            string resMyInfo = await _module.GetMyInfoAsync();
+            if (! string.IsNullOrEmpty(resMyInfo)) 
+            {
+                PopupBuilder.singleton.OpenAlert(resMyInfo);
+                return;
+            }
 
             if (_toggleGoToCenter.isOn)
             {

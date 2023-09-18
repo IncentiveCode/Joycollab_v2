@@ -279,5 +279,43 @@ namespace Joycollab.v2
         }
 
     #endregion  // reset, restore functions
+
+
+    #region Load Info
+
+        public async UniTask<string> GetMyInfoAsync() 
+        {
+            string url = string.Format(URL.MEMBER_INFO, R.singleton.memberSeq);
+            PsResponse<ResMemberInfo> res = await NetworkTask.RequestAsync<ResMemberInfo>(url, eMethodType.GET, string.Empty, R.singleton.token);
+
+            if (string.IsNullOrEmpty(res.message)) 
+            {
+                R.singleton.MemberInfo = res.data;
+
+                Debug.Log($"{TAG} | current language : {res.data.lan.id}");
+                switch (res.data.lan.id) 
+                {
+                    case S.REGION_KOREAN :
+                        R.singleton.ChangeLocale(ID.LANGUAGE_KOREAN);
+                        break;
+
+                    case S.REGION_JAPANESE :
+                        R.singleton.ChangeLocale(ID.LANGUAGE_JAPANESE);
+                        break;
+                    
+                    default :
+                        R.singleton.ChangeLocale(ID.LANGUAGE_ENGLISH);
+                        break;
+                }    
+            }
+            else 
+            {
+                Debug.Log($"{TAG} | GetMyInfo(), error : {res.message}");
+            }
+            
+            return res.message;
+        }
+
+    #endregion  // Load Info
     }
 }

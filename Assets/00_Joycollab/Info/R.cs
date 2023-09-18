@@ -162,6 +162,7 @@ namespace Joycollab.v2
                 case eStorageKey.Chat :
                 case eStorageKey.FontSize :
                 case eStorageKey.WindowRefresh :
+                case eStorageKey.UserCount :
                     observer.UpdateInfo(key);
                     break;
 
@@ -184,10 +185,11 @@ namespace Joycollab.v2
             get { 
                 if (string.IsNullOrEmpty(_region)) 
                 {
-                    if (Application.systemLanguage == SystemLanguage.Korean) 
-                        return S.REGION_KOREAN;
-                    else 
-                        return S.REGION_ENGLISH;
+                    return Application.systemLanguage switch {
+                        SystemLanguage.Korean => S.REGION_KOREAN,
+                        SystemLanguage.Japanese => S.REGION_JAPANESE,
+                        _ => S.REGION_ENGLISH
+                    };
                 }
                 else 
                 {
@@ -221,9 +223,8 @@ namespace Joycollab.v2
 
             _region = locale switch {
                 0 => S.REGION_KOREAN,
-                1 => S.REGION_ENGLISH,
                 2 => S.REGION_JAPANESE,
-                _ => S.REGION_KOREAN
+                _ => S.REGION_ENGLISH
             };
 
             isChanging = false;
@@ -526,11 +527,12 @@ namespace Joycollab.v2
     #endregion  // Workspace Info 
 
 
-    #region Alarm Info 
+    #region Alarm Info  (ADD. 'chat count', 'world user count')
 
         private List<ResAlarmInfo> listAlarm;
         private int unreadAlarmCount;
         private int unreadChatCount;
+        private int currentUserCount;
 
         public void AddAlarmInfo(ResAlarmInfo info) => listAlarm.Add(info);
         public int AlarmCount {
@@ -545,14 +547,6 @@ namespace Joycollab.v2
             }
         }
 
-        public int UnreadChatCount {
-            get { return unreadChatCount; }
-            set {
-                unreadChatCount = Mathf.Clamp(value, 0, 100);
-                NotifyAll(eStorageKey.Chat);
-            }
-        }
-
         public int GetIndex(int seq) 
         {
             int index = listAlarm.FindIndex(item => item.seq == seq);    
@@ -564,6 +558,22 @@ namespace Joycollab.v2
             listAlarm.Clear();
             unreadAlarmCount = 0;
             unreadChatCount = 0;
+        }
+
+        public int UnreadChatCount {
+            get { return unreadChatCount; }
+            set {
+                unreadChatCount = Mathf.Clamp(value, 0, 100);
+                NotifyAll(eStorageKey.Chat);
+            }
+        }
+
+        public int CurrentUserCount {
+            get { return currentUserCount; }
+            set {
+                currentUserCount = Mathf.Clamp(value, 0, 100);
+                NotifyAll(eStorageKey.UserCount);
+            }
         }
 
     #endregion  // Alarm Info

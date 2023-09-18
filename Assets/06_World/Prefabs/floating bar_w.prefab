@@ -1,5 +1,104 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
+--- !u!1 &2932199188922517557
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 8670369720907950789}
+  - component: {fileID: 8361952944878803634}
+  - component: {fileID: 4504584406516460017}
+  - component: {fileID: 7778045164235399387}
+  m_Layer: 5
+  m_Name: Text _ chat count
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &8670369720907950789
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2932199188922517557}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1566893245684876623}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &8361952944878803634
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2932199188922517557}
+  m_CullTransparentMesh: 1
+--- !u!114 &4504584406516460017
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2932199188922517557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f7201a12d95ffc409449d95f23cf332, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: c894605cae6e6be42a651cdf2162a5ab, type: 3}
+    m_FontSize: 14
+    m_FontStyle: 0
+    m_BestFit: 0
+    m_MinSize: 0
+    m_MaxSize: 40
+    m_Alignment: 4
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: 99+
+--- !u!114 &7778045164235399387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2932199188922517557}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6977f13cefe7d0045a102556edabf7d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _text: {fileID: 0}
+  sizeOpt: 0
+  _sizeSmall: 10
+  _sizeNormal: 12
+  _sizeLarge: 14
+  _layoutElement: {fileID: 0}
 --- !u!1 &7157817452017210801
 GameObject:
   m_ObjectHideFlags: 0
@@ -433,7 +532,7 @@ GameObject:
   - component: {fileID: 7157817452142094010}
   - component: {fileID: 7157817452142094011}
   m_Layer: 5
-  m_Name: Text (Legacy) _ member count
+  m_Name: Text _ user count
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -667,7 +766,7 @@ GameObject:
   - component: {fileID: 7157817452603814187}
   - component: {fileID: 7157817452603814180}
   m_Layer: 5
-  m_Name: Image _ count area
+  m_Name: Image _ user panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -916,6 +1015,7 @@ RectTransform:
   - {fileID: 7157817453726946039}
   - {fileID: 7157817453956008117}
   - {fileID: 7157817453317660972}
+  - {fileID: 1566893245684876623}
   m_Father: {fileID: 7157817452866386932}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1951,7 +2051,7 @@ GameObject:
   - component: {fileID: 7157817453347806352}
   - component: {fileID: 7157817453347806359}
   m_Layer: 5
-  m_Name: Button _ mic on/off
+  m_Name: Button _ mic control
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2023,19 +2123,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7157817452551727392}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Joycollab.v2.WindowManager, jc_assembly
-        m_MethodName: Push
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: room list_w
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
 --- !u!1 &7157817453416296162
 GameObject:
   m_ObjectHideFlags: 0
@@ -2206,6 +2294,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7157817453579595456}
+  - component: {fileID: 513826526972715613}
   m_Layer: 5
   m_Name: floating bar_w
   m_TagString: Untagged
@@ -2235,6 +2324,33 @@ RectTransform:
   m_AnchoredPosition: {x: -54, y: 51}
   m_SizeDelta: {x: 80, y: 550}
   m_Pivot: {x: 1, y: 0}
+--- !u!114 &513826526972715613
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7157817453579595457}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5154a72a3e66ab429580e437ebcb3c3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _imgPanel: {fileID: 7157817453777643861}
+  _imgProfile: {fileID: 7157817454100575619}
+  _imgAlarmPanel: {fileID: 7157817454068347077}
+  _txtAlarmCount: {fileID: 7157817453848455930}
+  _imgChatPanel: {fileID: 4586814521513763527}
+  _txtChatCount: {fileID: 4504584406516460017}
+  _imgUserPanel: {fileID: 7157817452603814180}
+  _txtUserCount: {fileID: 7157817452142094010}
+  _btnProfile: {fileID: 7157817453197863535}
+  _btnMicControl: {fileID: 7157817453347806359}
+  _btnAlarm: {fileID: 7157817453335753176}
+  _btnBookmark: {fileID: 7157817453241252405}
+  _btnChat: {fileID: 7157817452860631826}
+  _btnSettings: {fileID: 7157817454105820453}
+  _btnUserList: {fileID: 7157817453416296167}
 --- !u!1 &7157817453625718673
 GameObject:
   m_ObjectHideFlags: 0
@@ -2399,7 +2515,7 @@ GameObject:
   - component: {fileID: 7157817453777643860}
   - component: {fileID: 7157817453777643861}
   m_Layer: 5
-  m_Name: image _ background
+  m_Name: image _ panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2477,7 +2593,7 @@ GameObject:
   - component: {fileID: 7157817453845346497}
   - component: {fileID: 7157817453845346498}
   m_Layer: 5
-  m_Name: Text (Legacy)
+  m_Name: Text _ name
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2616,7 +2732,7 @@ GameObject:
   - component: {fileID: 7157817453848455930}
   - component: {fileID: 7157817453848455928}
   m_Layer: 5
-  m_Name: Text (Legacy) _ alarm count
+  m_Name: Text _ alarm count
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2942,7 +3058,7 @@ GameObject:
   - component: {fileID: 7157817454068347076}
   - component: {fileID: 7157817454068347077}
   m_Layer: 5
-  m_Name: Image _ count area
+  m_Name: Image _ alarm panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3178,16 +3294,81 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 7157817453625718679}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 0}
-        m_TargetAssemblyTypeName: Joycollab.v2.WindowManager, jc_assembly
-        m_MethodName: Push
-        m_Mode: 5
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: settings_w
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
+--- !u!1 &7374490979217472559
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1566893245684876623}
+  - component: {fileID: 3686425315001870084}
+  - component: {fileID: 4586814521513763527}
+  m_Layer: 5
+  m_Name: Image _ chat panel
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1566893245684876623
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7374490979217472559}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 8670369720907950789}
+  m_Father: {fileID: 7157817452860631827}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 37, y: 71}
+  m_SizeDelta: {x: 40, y: 20}
+  m_Pivot: {x: 0, y: 0}
+--- !u!222 &3686425315001870084
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7374490979217472559}
+  m_CullTransparentMesh: 1
+--- !u!114 &4586814521513763527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7374490979217472559}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 0
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 8aed429c1842c8049bbb25ff9f99ec6d, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 1
+  m_PixelsPerUnitMultiplier: 1

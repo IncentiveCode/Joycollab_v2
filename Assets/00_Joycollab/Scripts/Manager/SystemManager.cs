@@ -153,17 +153,16 @@ namespace Joycollab.v2
             Debug.Log($"{TAG} | browser language : {defaultLanguage}");
             switch (defaultLanguage) 
             {
-                case S.REGION_ENGLISH :
-                    R.singleton.ChangeLocale(ID.LANGUAGE_ENGLISH);
+                case S.REGION_KOREAN :
+                    R.singleton.ChangeLocale(ID.LANGUAGE_KOREAN);
                     break;
 
                 case S.REGION_JAPANESE :
                     R.singleton.ChangeLocale(ID.LANGUAGE_JAPANESE);
                     break;
 
-                case S.REGION_KOREAN :
                 default :
-                    R.singleton.ChangeLocale(ID.LANGUAGE_KOREAN);
+                    R.singleton.ChangeLocale(ID.LANGUAGE_ENGLISH);
                     break;
             }
             
