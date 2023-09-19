@@ -7,7 +7,6 @@
 ///     v0.1 (2023. 05. 11) : Joycollab 에서 사용하던 항목 정리.
 /// </summary>
 
-using UnityEngine;
 using System.Text.RegularExpressions;
 
 namespace Joycollab.v2
@@ -45,6 +44,11 @@ namespace Joycollab.v2
 			else
 				result = "";
 			return result;
+		}
+
+		public static string ReplaceOnlyNumber(string number) 
+		{
+			return Regex.Replace(number, @"\D", "");
 		}
 
 		public static bool MatchPhoneNumber(string number, out string onlyNumber) 

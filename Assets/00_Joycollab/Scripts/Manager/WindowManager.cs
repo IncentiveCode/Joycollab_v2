@@ -16,8 +16,8 @@ namespace Joycollab.v2
     [Serializable]
     public class SerializedWindow 
     {
-        public string nm;
-        public GameObject go;
+        public string name;
+        public GameObject gameObject;
     }
 
     public class WindowManager : MonoBehaviour
@@ -57,9 +57,9 @@ namespace Joycollab.v2
             GameObject go = null;
             foreach (var t in _dictWindows) 
             {
-                if (t.nm.Equals(viewName)) 
+                if (t.name.Equals(viewName)) 
                 {
-                    go = t.go;
+                    go = t.gameObject;
                     break;
                 }
             }

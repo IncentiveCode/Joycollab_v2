@@ -10,6 +10,7 @@
 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
 using TMPro;
 
@@ -51,7 +52,8 @@ namespace Joycollab.v2
         // local variables
         private ImageUploader imageUploader;
         private ImageLoader imageLoader;
-        private string id, tel;
+
+        private ResMemberInfo currentInfo;
         private float lat, lng;
 
 
@@ -108,9 +110,28 @@ namespace Joycollab.v2
 
         private async UniTask<int> Refresh() 
         {
-            SetInputFieldActive(true);
+            currentInfo = JsonUtility.FromJson<ResMemberInfo>(R.singleton.myInfoSerialize);
 
-            // TODO. module 통신 이후 개인 정보 가지고 와서 출력.
+            imageUploader.Init();
+
+            string url = $"{URL.SERVER_PATH}{currentInfo.photo}";
+            imageLoader.LoadProfile(url, R.singleton.memberSeq).Forget();
+
+            SetInputFieldActive(true);
+            _txtId.text = currentInfo.user.id;
+            _inputName.text = currentInfo.nickNm;; 
+            _inputOffice.text = currentInfo.compName;
+            _inputGrade.text = currentInfo.jobGrade;
+            _inputPhone.text = currentInfo.user.tel; 
+            _inputAddress1.text = currentInfo.addr;
+            _inputAddress2.text = currentInfo.addrDtl;
+
+            _inputBusinessNumber.text = currentInfo.businessNum; 
+            _inputCeo.text = currentInfo.ceoNm; 
+            _inputSector.text = currentInfo.business; 
+            _inputService.text = currentInfo.mainBusiness; 
+            _inputTel.text = currentInfo.tel; 
+            _inputHomepage.text = currentInfo.homepage;
 
             await UniTask.Yield();
             return 0;
@@ -156,6 +177,32 @@ namespace Joycollab.v2
             }
 
             _inputAddress2.Select();
+        }
+
+        public async UniTask<string> UpdateMyInfo() 
+        {
+            if (! string.IsNullOrEmpty(imageUploader.imageInfo))
+                currentInfo.photo = imageUploader.imageInfo;
+
+            currentInfo.nickNm = _inputName.text;
+            currentInfo.compName = _inputOffice.text;
+            currentInfo.jobGrade = _inputGrade.text;
+            currentInfo.user.tel = RegExp.ReplaceOnlyNumber(_inputPhone.text);
+            currentInfo.addr = _inputAddress1.text;
+            currentInfo.addrDtl = _inputAddress2.text;
+
+            currentInfo.businessNum = _inputBusinessNumber.text;
+            currentInfo.ceoNm = _inputCeo.text;
+            currentInfo.business = _inputSector.text;
+            currentInfo.mainBusiness = _inputService.text;
+            currentInfo.tel = RegExp.ReplaceOnlyNumber(_inputTel.text);
+            currentInfo.homepage = _inputHomepage.text;
+
+            string url = string.Format(URL.MEMBER_INFO, R.singleton.memberSeq);
+            string body = JsonUtility.ToJson(currentInfo);
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.PUT, body, R.singleton.token);
+
+            return res.message;
         }
 
     #endregion  // Event handling

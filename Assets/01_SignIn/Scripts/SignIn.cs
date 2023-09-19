@@ -308,10 +308,8 @@ namespace Joycollab.v2
             info.seq = res.data.seq;
             info.nickNm = res.data.nickNm;
             info.photo = res.data.photo;
-
-            // TODO. set world avatar info
-            // WorldAvatar.localPlayerInfo = info;
-            // WorldChatView.localPlayerInfo = info;
+            WorldAvatar.localPlayerInfo = info;
+            WorldChatView.localPlayerInfo = info;
 
             // 사용자 정보 로드 
             string resMyInfo = await _module.GetMyInfoAsync();

@@ -1,8 +1,8 @@
 /// <summary>
 /// 시스템 상 저장 공간 (Repository) 
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 15
-/// @version        : 1.2
+/// @last update    : 2023. 09. 19
+/// @version        : 1.3
 /// @update
 ///     v0.1 (2023. 03. 17) : 파일 생성, Joycollab 에서 사용하는 것들 정리 시작.
 ///     v0.2 (2023. 03. 31) : SimpleWorkspace, Alarm 관련 항목 정리 시작, Notify 에서 generic <T> 제거.
@@ -16,6 +16,7 @@
 ///     v1.0 (2023. 08. 10) : Localization Init 을 위해 Init() 을 async 로 변경.
 ///     v1.1 (2023. 08. 28) : Locale 을 반환하는 public 변수 추가.
 ///     v1.2 (2023. 09. 15) : Google, Zoom 관련 getter 추가.
+///     v1.3 (2023. 09. 19) : ResMemberInfo 에 추가된 필드들에 대한 getter 추가 
 /// </summary>
 
 using System;
@@ -387,6 +388,9 @@ namespace Joycollab.v2
         public string mySpaceName {
             get { return _memberInfo.space.nm; }
         }
+        public string myId {
+            get { return _memberInfo.user.id; }
+        }
         public string myName {
             get { return _memberInfo.nickNm; }
             set { _memberInfo.nickNm = value; }
@@ -394,6 +398,10 @@ namespace Joycollab.v2
         public string myPhoto {
             get { return _memberInfo.photo; }
             set { _memberInfo.photo = value; }
+        }
+        public string myPhone {
+            get { return _memberInfo.user.tel; }
+            set { _memberInfo.user.tel = value; }
         }
         public string myGrade {
             get { return _memberInfo.jobGrade; }
@@ -442,7 +450,34 @@ namespace Joycollab.v2
         public bool isZoomConnected {
             get { return !(string.IsNullOrEmpty(myZoomId)); }
         }
-
+        public string ourPlan {
+            get { return _memberInfo.plan; }
+        }
+        public string myStartDate {
+            get { return _memberInfo.sdt; }
+        }
+        public string ourBusinessNumber {
+            get { return _memberInfo.businessNum; }
+        }
+        public string ourCompanyName {
+            get { return _memberInfo.compName; }
+            set { _memberInfo.compName = value; }
+        }
+        public string ourBusiness {
+            get { return _memberInfo.business; }
+        }
+        public string ourTel {
+            get { return _memberInfo.tel; }
+        }
+        public string ourCeoName {
+            get { return _memberInfo.ceoNm; }
+        }
+        public string ourMainBusiness {
+            get { return _memberInfo.mainBusiness; }
+        }
+        public string ourHomepage {
+            get { return _memberInfo.homepage; }
+        }
 
         public string myInfoSerialize {
             get { return JsonUtility.ToJson(_memberInfo); }

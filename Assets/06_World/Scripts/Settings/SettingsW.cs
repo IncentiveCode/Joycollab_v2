@@ -10,6 +10,7 @@
 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
 
 namespace Joycollab.v2
@@ -79,11 +80,20 @@ namespace Joycollab.v2
                 if (_toggleIndividual.isOn) 
                 {
                     _pageIndividual.Block(true); 
-                    await UniTask.Delay(50);
 
                     Debug.Log($"{TAG} | 개인 설정 저장.");
+                    string res = await _pageIndividual.UpdateMyInfo();
+                    if (string.IsNullOrEmpty(res)) 
+                    {
+                        PopupBuilder.singleton.OpenAlert(
+                            LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "환경설정.변경 완료 안내", R.singleton.CurrentLocale)
+                        );
+                    }
+                    else 
+                    {
+                        PopupBuilder.singleton.OpenAlert(res);
+                    }
 
-                    await UniTask.Delay(50);
                     _pageIndividual.Block(false); 
                 }
                 else
