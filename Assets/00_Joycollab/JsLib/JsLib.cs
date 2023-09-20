@@ -214,13 +214,13 @@ namespace Joycollab.v2
 
         public static void psGetLocation(string gameObjectName, string callbackMethodName)
         {
-            string result = $"editor|위치 정보를 가지고 오지 못함.";
+            string result = "37.483621|126.879779";
             GameObject.Find(gameObjectName).SendMessage(callbackMethodName, result);
         }
 
         public static void psSearchAddress(string gameObjectName, string callbackMethodName)
         {
-            string result = $"서울시 금천구 가산디지털1로 205|37.483621|126.879779";
+            string result = "서울시 금천구 가산디지털1로 205|37.483621|126.879779";
             GameObject.Find(gameObjectName).SendMessage(callbackMethodName, result);
         }
 

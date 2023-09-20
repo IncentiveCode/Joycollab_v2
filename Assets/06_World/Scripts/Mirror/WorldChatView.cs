@@ -45,15 +45,11 @@ namespace Joycollab.v2
             delay = new WaitForSeconds(1f);
             networkManager = WorldNetworkManager.singleton;
 
-            _inputMessage.onEndEdit.AddListener((input) => {
-                if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter) || Input.GetButtonDown("Submit")) 
-                    Send(_inputMessage.text.Trim());
+            _inputMessage.onSubmit.AddListener((input) => {
+                Send(input.Trim());
             });
             _inputMessage.onValueChanged.AddListener((input) => {
                 _btnSend.interactable = !string.IsNullOrWhiteSpace(input);
-            });
-            _inputMessage.onSubmit.AddListener((input) => {
-                Send(input.Trim());
             });
             _inputMessage.onSelect.AddListener((input) => OnChat = true);
             _inputMessage.onDeselect.AddListener((input) => OnChat = false);
@@ -129,11 +125,31 @@ namespace Joycollab.v2
         [Command(requiresAuthority = false)]
         private void CommandSend(string message, NetworkConnectionToClient sender = null) 
         {
+            if (! sender.identity.TryGetComponent(out WorldAvatar avatar)) 
+            {
+                Debug.Log("WorldAvatar component 가 없음.");
+                return;
+            }
+
+            /**
             if (!playerNames.ContainsKey(sender)) 
                 playerNames.Add(sender, sender.identity.GetComponent<WorldAvatar>().avatarName);
 
             if (!string.IsNullOrWhiteSpace(message)) 
+            {
                 RpcReceive(playerNames[sender], message.Trim());
+                sender.identity.GetComponent<WorldAvatar>().UpdateAvatarChat(message.Trim());
+            }
+             */
+
+            if (!playerNames.ContainsKey(sender)) 
+                playerNames.Add(sender, avatar.avatarName);
+
+            if (!string.IsNullOrWhiteSpace(message)) 
+            {
+                RpcReceive(playerNames[sender], message.Trim());
+                avatar.UpdateAvatarChat(message.Trim());
+            }
         }
 
     #endregion

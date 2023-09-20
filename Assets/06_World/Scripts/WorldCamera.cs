@@ -43,11 +43,12 @@ namespace Joycollab.v2
             v2MapSize = new Vector2(20.48f, 13.08f);
         }
 
-        private void Start() 
+        private void OnEnable() 
         {
             float prefSize = PlayerPrefs.GetFloat(Key.ORTHOGRAPHIC_SIZE_W, 8f);
             prefSize = Mathf.Clamp(prefSize, fMinSize, fMaxSize);
             mainCamera.orthographicSize = fLastSize = fSize = prefSize;
+            mainCamera.transform.position = new Vector3(1.477197f, 1.103448f, -10f);
 
             v3CameraPos = mainCamera.transform.position;
             fZ = v3CameraPos.z;

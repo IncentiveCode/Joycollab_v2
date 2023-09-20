@@ -16,6 +16,8 @@ namespace Joycollab.v2
 {
     public class WorldAvatar : NetworkBehaviour
     {
+        private const string TAG = "WorldAvatar";
+
         [Header("Basic info")]
         [SerializeField] private Sprite _spriteDefault;
         [SerializeField] private bool isMovable; 
@@ -29,6 +31,7 @@ namespace Joycollab.v2
         [Header("UI")]
         [SerializeField] private TMP_Text _txtName;
         [SerializeField] private SpriteRenderer _rendererProfile;
+        [SerializeField] private Transform _transformBubble;
 
         [Header("Avatar info")]
         internal static WorldAvatarInfo localPlayerInfo;
@@ -38,6 +41,8 @@ namespace Joycollab.v2
         public string avatarName; 
         [SyncVar(hook = nameof(SetAvatarPhoto_Hook))]
         public string avatarPhoto;
+        [SyncVar(hook = nameof(SetAvatarChat_Hook))] 
+        public string avatarChat;
 
         // main camera
         [SerializeField, Tooltip("test")]
@@ -86,6 +91,12 @@ namespace Joycollab.v2
             avatarName = name;
             avatarPhoto = photo;
         }
+
+        public void UpdateAvatarChat(string chat) 
+        {
+            if (! string.IsNullOrEmpty(chat))
+                avatarChat = chat;
+        } 
 
     #endregion
 
@@ -168,8 +179,21 @@ namespace Joycollab.v2
                 Destroy(_rendererProfile.sprite.texture);
 
             // change texture scale
-            float rw = (float) 13f / (float) res.width;
-            float rh = (float) 13f / (float) res.height;
+            float ratio, rw, rh;
+            if (res.width >= res.height)
+            {
+                ratio = (float) res.height / (float) res.width;
+                rw = 13f / (float) res.width;
+                rh = 13f / (float) res.height * ratio;
+            }
+            else 
+            {
+                ratio = (float) res.width / (float) res.height;
+                rw = 13f / (float) res.width * ratio;
+                rh = 13f / (float) res.height;
+            }
+
+            Debug.Log(ratio);
             _rendererProfile.transform.localScale = new Vector3(rw, rh, 1f);
             _rendererProfile.sprite = s;
         }
@@ -179,6 +203,11 @@ namespace Joycollab.v2
         {
             string url = $"{URL.SERVER_PATH}{photo}";
             GetAvatarPhoto(url).Forget();
+        }
+
+        public void SetAvatarChat_Hook(string _, string chat) 
+        {
+            WorldChatBubble.Create(_transformBubble, Vector3.zero, chat);
         }
 
     #endregion  // AVatar info

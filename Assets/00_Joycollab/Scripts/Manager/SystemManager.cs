@@ -31,6 +31,9 @@ namespace Joycollab.v2
         [SerializeField] private Transform _transform;
         [SerializeField] private GameObject _goUpdateGuide;
 
+        [Header("common assets")]
+        [SerializeField] public Transform pfChatBubble;
+
 
     #region Unity functions
 

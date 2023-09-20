@@ -90,6 +90,17 @@ namespace Joycollab.v2
             R.singleton.RegisterObserver(this, eStorageKey.UserCount);
         }
 
+        private void OnEnable() 
+        {
+            if (R.singleton != null) 
+            {
+                R.singleton.RequestInfo(this, eStorageKey.UserInfo);
+                R.singleton.RequestInfo(this, eStorageKey.Alarm);
+                R.singleton.RequestInfo(this, eStorageKey.Chat);
+                R.singleton.RequestInfo(this, eStorageKey.UserCount);
+            }
+        }
+
         private void OnDestroy() 
         {
             // unregister event
@@ -109,10 +120,11 @@ namespace Joycollab.v2
 
         public void UpdateInfo(eStorageKey key) 
         {
+            Debug.Log($"{TAG} | UpdateInfo() call. key : {key}");
             switch (key) 
             {
                 case eStorageKey.UserInfo :
-                    if (myPhoto.Equals(R.singleton.myPhoto)) 
+                    if (!myPhoto.Equals(R.singleton.myPhoto)) 
                     {
                         myPhoto = R.singleton.myPhoto;
 
