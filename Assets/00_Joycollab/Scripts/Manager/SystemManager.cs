@@ -2,8 +2,8 @@
 /// Joycollab 통합 매니저 클래스 
 /// - singleton 남용을 막고, 기존 manager 클래스들에서 중복되어 있는 내용들을 수정/정리/최적화 하기 위해 작성.
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 28
-/// @version        : 0.7
+/// @last update    : 2023. 09. 21
+/// @version        : 0.8
 /// @update
 ///     v0.1 (2023. 04. 07) : 최초 작성.
 ///     v0.2 (2023. 04. 19) : singleton pattern 수정
@@ -12,6 +12,7 @@
 ///     v0.5 (2023. 08. 16) : 일본어 적용 (진행 중)
 ///     v0.6 (2023. 08. 23) : Window - OnFocus, OnBlur, OnResize 처리 함수 추가
 ///     v0.7 (2023. 08. 28) : Localization 사용 방식 변경.
+///     v0.8 (2023. 09. 21) : AudioSource 추가. AudioClip 관련 함수 추가.
 /// </summary>
 
 using UnityEngine;
@@ -31,8 +32,12 @@ namespace Joycollab.v2
         [SerializeField] private Transform _transform;
         [SerializeField] private GameObject _goUpdateGuide;
 
-        [Header("common assets")]
+        [Header("world assets")]
         [SerializeField] public Transform pfChatBubble;
+        [SerializeField] public GameObject pfWorldAlarmSoundItem;
+
+        // audio
+        private AudioSource audioSource;
 
 
     #region Unity functions
@@ -41,6 +46,8 @@ namespace Joycollab.v2
         {
             InitSingleton();
             SetTransform();
+
+            audioSource = GetComponent<AudioSource>();
         }
 
         private async UniTaskVoid Start() 
@@ -284,5 +291,34 @@ namespace Joycollab.v2
         }
 
     #endregion  // Temp
+
+
+    #region AudioSource
+
+        public void PlayAudioClip(AudioClip clip) 
+        {
+            if (audioSource == null) 
+            {
+                Debug.Log($"{TAG} | PlayAudioClip(), AudioSource is null");
+                return;
+            }
+
+            audioSource.clip = clip;
+            audioSource.Play();
+        }
+
+        public void StopAudioClip() 
+        {
+            if (audioSource == null) 
+            {
+                Debug.Log($"{TAG} | StopAudioClip(), AudioSource is null");
+                return;
+            }
+
+            audioSource.Stop();
+            audioSource.clip = null;
+        }
+
+    #endregion AudioSource
     }
 }

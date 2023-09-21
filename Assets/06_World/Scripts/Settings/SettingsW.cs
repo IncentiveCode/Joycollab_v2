@@ -88,6 +88,8 @@ namespace Joycollab.v2
                         PopupBuilder.singleton.OpenAlert(
                             LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "환경설정.변경 완료 안내", R.singleton.CurrentLocale)
                         );
+
+                        _pageIndividual.Show().Forget();
                     }
                     else 
                     {
@@ -98,7 +100,24 @@ namespace Joycollab.v2
                 }
                 else
                 {
+                    _pageConfiguration.Block(true);
+
                     Debug.Log($"{TAG} | 환경 설정 저장.");
+                    string res = await _pageConfiguration.UpdateConfiguration();
+                    if (string.IsNullOrEmpty(res))
+                    {
+                        PopupBuilder.singleton.OpenAlert(
+                            LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "환경설정.변경 완료 안내", R.singleton.CurrentLocale)
+                        );
+
+                        _pageConfiguration.Show().Forget();
+                    }
+                    else 
+                    {
+                        PopupBuilder.singleton.OpenAlert(res);
+                    }
+
+                    _pageConfiguration.Block(false);
                 }
             });
         }
@@ -119,6 +138,15 @@ namespace Joycollab.v2
         public override void Hide() 
         {
             base.Hide();
+
+            if (_toggleIndividual.isOn) 
+            {
+                Debug.Log($"{TAG} | 개인 설정 취소.");
+            }
+            else 
+            {
+                Debug.Log($"{TAG} | 환경 설정 취소.");
+            }
 
             if (R.singleton != null) 
             {

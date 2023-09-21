@@ -1,8 +1,8 @@
 /// <summary>
 /// Network 통신 - 사용자, 워크스페이스 멤버 관련 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 19
-/// @version        : 0.8
+/// @last update    : 2023. 09. 21
+/// @version        : 0.9
 /// @update
 ///     v0.1 (2023. 02. 23) : Joycollab 에서 사용하던 클래스 정리 및 통합.
 ///     v0.2 (2023. 06. 14) : MemberSeq 클래스 추가.
@@ -13,6 +13,7 @@
 ///     v0.6 (2023. 08. 31) : 클래스 추가. (ReqSignUpInfo)
 ///     v0.7 (2023. 09. 15) : ResUserInfo 에 zoom id, zoom e-mail 필드 추가.
 ///     v0.8 (2023. 09. 19) : ResMemberInfo 에 추가된 필드 추가 (fcmToken, plan, sdt, businessNum, compName, business, tel, ceoNm, mainBusiness, homepage)
+///     v0.9 (2023. 09. 21) : Request 용 class 추가 (ReqMemberInfo, ReqMemberCompanyInfo, ReqMemberEnvironmentInfo and...)
 /// </summary>
 
 using System;
@@ -153,6 +154,7 @@ namespace Joycollab.v2
         public float camSize;
         public bool lobby;
         public string zoomId;
+        public int fontSize;
         public string uiType;
         public string fcmToken;
         public string plan;
@@ -164,6 +166,80 @@ namespace Joycollab.v2
         public string ceoNm;
         public string mainBusiness;
         public string homepage;
+    }
+
+    [Serializable]
+    public class ReqMemberInfo 
+    {
+        public string addr;
+        public string addrDtl;
+        public string birthday;
+        public string description;
+        public string gender;
+        public string jobGrade;
+        public float lat;
+        public float lng;
+        public string nickNm;
+        public string photo;
+        public string tel;
+
+        public ReqMemberInfo(ResMemberInfo info) 
+        {
+            addr = info.addr;
+            addrDtl = info.addrDtl;
+            birthday = info.user.birthday;
+            description = info.description;
+            gender = info.user.gender;
+            jobGrade = info.jobGrade;
+            nickNm = info.nickNm;
+            photo = info.photo;
+            tel = info.user.tel;
+
+            lat = info.lat;
+            lng = info.lng;
+        }
+    }
+
+    public class ReqMemberCompanyInfo 
+    {
+        public string business;
+        public string businessNum;
+        public string ceoNm;
+        public string compName;
+        public string homepage;
+        public string mainBusiness;
+        public string tel;
+
+        public ReqMemberCompanyInfo(ResMemberInfo info) 
+        {
+            business = info.business;
+            businessNum = info.businessNum;
+            ceoNm = info.ceoNm; 
+            compName = info.compName;
+            homepage = info.homepage; 
+            mainBusiness = info.mainBusiness;
+            tel = info.tel;
+        }
+    }
+
+    public class ReqMemberEnvironmentInfo 
+    {
+        public string dateFormatStr;
+        public int fontSize;
+        public string hourFormatStr;
+        public string lanId;
+        public string timeZone;
+        public int weekStart;
+
+        public ReqMemberEnvironmentInfo(ResMemberInfo info)
+        {
+            dateFormatStr = info.dateFormatStr;
+            fontSize = info.fontSize;
+            hourFormatStr = info.hourFormatStr;
+            lanId = info.lan.id;
+            timeZone = info.timeZone;
+            weekStart = info.weekStart;
+        }
     }
 
     [Serializable]

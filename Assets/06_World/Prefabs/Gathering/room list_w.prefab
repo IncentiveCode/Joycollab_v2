@@ -3799,12 +3799,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4410380554454928921}
   - component: {fileID: 4410380554454928924}
-  - component: {fileID: 4410380554454928923}
-  - component: {fileID: 4410380554454928922}
   - component: {fileID: 5103049847809793262}
   m_Layer: 5
   m_Name: room list_w
-  m_TagString: Untagged
+  m_TagString: WorldView
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -3845,44 +3843,6 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
---- !u!223 &4410380554454928923
-Canvas:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4410380554454928920}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_RenderMode: 2
-  m_Camera: {fileID: 0}
-  m_PlaneDistance: 100
-  m_PixelPerfect: 0
-  m_ReceivesEvents: 1
-  m_OverrideSorting: 0
-  m_OverridePixelPerfect: 1
-  m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 25
-  m_SortingLayerID: 0
-  m_SortingOrder: 0
-  m_TargetDisplay: 0
---- !u!114 &4410380554454928922
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4410380554454928920}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dc42784cf147c0c48a680349fa168899, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
-  m_BlockingMask:
-    serializedVersion: 2
-    m_Bits: 4294967295
 --- !u!114 &5103049847809793262
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3897,7 +3857,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewTag: WorldView
   isMultiple: 0
-  canvasGroup: {fileID: 0}
   width: 600
   height: 650
   _module: {fileID: 6249342011219856174, guid: 8db3979ed6b09f340a7ea79c0e31ec69, type: 3}

@@ -19,8 +19,8 @@ namespace Joycollab.v2
     {
         private const string TAG = "WorldChatBubble";
         private const float OPENING_TIME = 1f;
-        private const int DISPLAY_TIME = 8;
-        private const float CLOSING_TIME = 3f;
+        private const int DISPLAY_TIME = 5;
+        private const float CLOSING_TIME = 1f;
 
         [SerializeField] private SpriteRenderer _rendererBubble;
         [SerializeField] private TMP_Text _txtChat; 
@@ -66,7 +66,7 @@ namespace Joycollab.v2
             _txtChat.ForceMeshUpdate();
 
             Vector2 chatSize = _txtChat.GetRenderedValues(false);
-            Vector2 padding = new Vector2(0.6f, 0.6f);
+            Vector2 padding = new Vector2(0.6f, 0.14f);
             _rendererBubble.size = chatSize + padding;
 
             sequence = DOTween.Sequence()
@@ -74,7 +74,7 @@ namespace Joycollab.v2
                 .Join(_txtChat.DOFade(1, OPENING_TIME))
                 .AppendInterval(DISPLAY_TIME)
                 .Append(_rendererBubble.DOFade(0, CLOSING_TIME))
-                .Append(_txtChat.DOFade(0, CLOSING_TIME))
+                .Join(_txtChat.DOFade(0, CLOSING_TIME))
                 .AppendCallback(() => Destroy(gameObject));
 
             uid = Guid.NewGuid();

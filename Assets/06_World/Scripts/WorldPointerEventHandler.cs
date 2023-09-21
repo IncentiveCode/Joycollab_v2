@@ -22,23 +22,23 @@ namespace Joycollab.v2
         public void OnScroll(PointerEventData data) 
         {
             fSize = Input.GetAxis("Mouse ScrollWheel");
-            WorldCamera.singleton.HandleWheelEvent(fSize);
+            MapCamera.singleton.HandleWheelEvent(fSize);
             return;
         }
 
         public void OnBeginDrag(PointerEventData data) 
         {
-            WorldCamera.singleton.HandleBeginDrag(data.position);
+            MapCamera.singleton.HandleBeginDrag(data.position);
         }
 
         public void OnDrag(PointerEventData data) 
         {
-            WorldCamera.singleton.HandleDrag(data.position);
+            MapCamera.singleton.HandleDrag(data.position);
         }
 
         public void OnEndDrag(PointerEventData data) 
         {
-            WorldCamera.singleton.HandleDrag(data.position, true);
+            MapCamera.singleton.HandleDrag(data.position, true);
         }
 
     #endregion  // interface implementations

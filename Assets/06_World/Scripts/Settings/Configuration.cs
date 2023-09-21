@@ -8,6 +8,7 @@
 ///     v0.1 (2023. 09. 15) : 최초 생성
 /// </summary>
 
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Localization.Settings;
@@ -21,7 +22,8 @@ namespace Joycollab.v2
         private const string GOOGLE_AUTH_CALLBACK = "OnGoogleCallback";
         private const string ZOOM_AUTH_CALLBACK = "OnZoomCallback";
 
-        // TODO. 모듈 추가 예정. 
+        [Header("module")]
+        [SerializeField] private SettingModule _module;
 
         [Header("language and region")]
         [SerializeField] private Dropdown _dropdownTimezone;
@@ -58,7 +60,9 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnZoomDisconnect;
 
         // local variables
-        // TODO. 현재 상태 기록 변수 또는 객체 필요.
+        private ReqMemberEnvironmentInfo environmentInfo;
+        private Dictionary<string, bool> dictAlarmSounds;
+
         private bool flagParentToggle;
         private bool flagChildToggle;
         
@@ -82,21 +86,28 @@ namespace Joycollab.v2
 
 
             // set dropdown listener
+            // - 없어도 괜찮은 항목들은 주석처리... 추후 필요하면 다시 작업할 것.
+            /**
             _dropdownTimezone.onValueChanged.AddListener((index) => {
                 Debug.Log($"{TAG} | timezone changed. index : {index}");
             });
+             */
             _dropdownLanguage.onValueChanged.AddListener((index) => {
                 Debug.Log($"{TAG} | langauge changed. index : {index}");
+                R.singleton.ChangeLocale(index);
             });
             _dropdownFontSize.onValueChanged.AddListener((index) => {
                 Debug.Log($"{TAG} | font size changed. index : {index}");
+                R.singleton.FontSizeOpt = (index + 1);
             });
+            /**
             _dropdownWeekStart.onValueChanged.AddListener((index) => {
                 Debug.Log($"{TAG} | week start changed. index : {index}");
             });
             _dropdownTimeFormat.onValueChanged.AddListener((index) => {
                 Debug.Log($"{TAG} | time format changed. index : {index}");
             });
+             */
 
 
             // set 'meeting' notification toggle listener
@@ -235,8 +246,77 @@ namespace Joycollab.v2
         {
             flagParentToggle = flagChildToggle = false;
 
-            await UniTask.Yield();
+            var (memberInfoRes, alarmSoundRes) = await UniTask.WhenAll(
+                _module.GetMyInfo(),
+                _module.GetAlarmContents()
+            );
+
+            if (! string.IsNullOrEmpty(memberInfoRes.message))
+            {
+                PopupBuilder.singleton.OpenAlert(memberInfoRes.message);
+                return -1;
+            }
+            
+            if (! string.IsNullOrEmpty(alarmSoundRes.message))
+            {
+                PopupBuilder.singleton.OpenAlert(alarmSoundRes.message);
+                return -2;
+            }
+
+            R.singleton.MemberInfo = memberInfoRes.data;
+            environmentInfo = new ReqMemberEnvironmentInfo(memberInfoRes.data);
+            SetEnvironment();
+
+            SetAlarmSound(alarmSoundRes.data);
+
             return 0;
+        }
+
+        private void SetEnvironment() 
+        {
+            _dropdownTimezone.value = 0;
+            _dropdownLanguage.value = environmentInfo.lanId switch {
+                S.REGION_KOREAN => ID.LANGUAGE_KOREAN,
+                S.REGION_JAPANESE => ID.LANGUAGE_JAPANESE,
+                _ => ID.LANGUAGE_ENGLISH 
+            };
+            _dropdownFontSize.value = Mathf.Clamp(environmentInfo.fontSize - 1, 0, 3);
+            _dropdownWeekStart.value = (environmentInfo.weekStart == 1) ? 1 : 0;
+            _dropdownTimeFormat.value = (environmentInfo.hourFormatStr.Equals("HH")) ? 1 : 0;
+        }
+
+        private void SetAlarmSound(TpsList data) 
+        {
+            // current data 정리 
+            if (dictAlarmSounds == null) dictAlarmSounds = new Dictionary<string, bool>();
+            dictAlarmSounds.Clear();
+            foreach (var item in R.singleton.myAlarmOpt.alarmOptSounds) 
+            {
+                dictAlarmSounds.Add(item.tp.id, item.alarm);
+            }
+
+            // alarm list 정리
+            var children = _transformSoundContent.GetComponentInChildren<Transform>();
+            foreach (Transform child in children) 
+            {
+                if (child.name.Equals(_transformSoundContent.name)) continue;
+                Destroy(child.gameObject);
+            }
+
+            foreach (TpsInfo i in data.list) 
+            {
+                var go = Instantiate(SystemManager.singleton.pfWorldAlarmSoundItem, Vector3.zero, Quaternion.identity);
+                if (go.TryGetComponent<AlarmSoundItem>(out AlarmSoundItem item))
+                {
+                    item.Init(i);
+                    item.Usage = dictAlarmSounds.ContainsKey(i.id) ? dictAlarmSounds[i.id] : false;
+                    go.transform.SetParent(_transformSoundContent, false);
+                }
+                else 
+                {
+                    Destroy(go.gameObject);
+                }
+            }
         }
 
         private bool IsAllCheckMeetingToggle() 
@@ -273,6 +353,20 @@ namespace Joycollab.v2
                 await UniTask.Delay(50);
                 flagChildToggle = false;
             } 
+        }
+
+        public async UniTask<string> UpdateConfiguration() 
+        {
+            environmentInfo.lanId = R.singleton.Region;
+            environmentInfo.fontSize = R.singleton.FontSizeOpt;
+            environmentInfo.weekStart = _dropdownWeekStart.value;
+            environmentInfo.hourFormatStr = (_dropdownTimeFormat.value == 1) ? "hh" : "HH";
+
+            string res = await _module.UpdateEnvironment(environmentInfo);
+            if (! string.IsNullOrEmpty(res)) 
+                return res;
+
+            return string.Empty;
         }
 
     #endregion  // event handling

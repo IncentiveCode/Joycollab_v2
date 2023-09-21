@@ -933,6 +933,14 @@ namespace Joycollab.v2
         ///     {0} : member seq
         /// </summary>
         public const string SET_BACKGROUND_IMAGE = SERVER_PATH +"/api/member/backgroundImg/{0}";
+        
+        /// <summary>
+        /// desc : [world] 멤버 기업 정보 수정
+        /// method : put
+        /// param
+        ///     {0} : member seq
+        /// </summary>
+        public const string COMPANY_INFO = SERVER_PATH +"/api/member/comp/{0}";
 
         /// <summary>
         /// desc : 감정 변경
@@ -1014,8 +1022,14 @@ namespace Joycollab.v2
         /// method : patch
         /// param
         ///     {0} : member seq
+        ///     {1} : dateFormatStr (yyyy-MM-dd 로 고정)
+        ///     {2} : fontSize (1, 2, 3)
+        ///     {3} : hourFormatStr (hh, HH)
+        ///     {4} : lanId (ko, en, jp)
+        ///     {5} : timeZone (현재는 GMT+9 로 고정)
+        ///     {6} : weekStart (0 = 일요일, 1 = 월요일)
         /// </summary>
-        public const string SET_LANGUAGE = SERVER_PATH +"/api/member/setting/{0}";
+        public const string SET_ENVIRONMENT = SERVER_PATH +"/api/member/setting/{0}?dateFormatStr={1}&fontSize={2}&hourFormatStr={3}&lanId={4}&timeZone={5}&weekStart={6}";
 
         /// <summary>
         /// desc : 상태 변경

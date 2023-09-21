@@ -162,6 +162,7 @@ namespace Joycollab.v2
                 case eStorageKey.InstantAlarm :
                 case eStorageKey.Chat :
                 case eStorageKey.FontSize :
+                case eStorageKey.Locale :
                 case eStorageKey.WindowRefresh :
                 case eStorageKey.UserCount :
                     observer.UpdateInfo(key);
@@ -197,6 +198,10 @@ namespace Joycollab.v2
                     return _region;
                 }
             }
+            set {
+                _region = value;
+                NotifyAll(eStorageKey.Locale);
+            }
         }
         public Locale CurrentLocale 
         {
@@ -222,7 +227,7 @@ namespace Joycollab.v2
             yield return LocalizationSettings.InitializationOperation;
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[locale];
 
-            _region = locale switch {
+            Region = locale switch {
                 0 => S.REGION_KOREAN,
                 2 => S.REGION_JAPANESE,
                 _ => S.REGION_ENGLISH
@@ -244,7 +249,7 @@ namespace Joycollab.v2
                 return Mathf.Clamp(_fontSizeOpt, 1, 3);
             }
             set {
-                _fontSizeOpt = value;
+                _fontSizeOpt = Mathf.Clamp(value, 1, 3);
                 NotifyAll(eStorageKey.FontSize);
             }
         }

@@ -2,9 +2,9 @@
 /// Window Panel 이동을 위한 클래스 
 /// @author         : HJ Lee
 /// @last update    : 2023. 03. 15
-/// @version        : 1.0
+/// @version        : 0.1
 /// @update
-///     v1.0 (2023. 03. 15) : 최초 생성, Joycollab & TechnoPark 등 작업을 하면서 작성한 것들을 수정 및 적용
+///     v0.1 (2023. 03. 15) : 최초 생성, Joycollab & TechnoPark 등 작업을 하면서 작성한 것들을 수정 및 적용
 /// </summary>
 
 using UnityEngine;

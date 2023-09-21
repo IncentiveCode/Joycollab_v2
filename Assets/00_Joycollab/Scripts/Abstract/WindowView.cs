@@ -8,12 +8,13 @@
 /// </summary>
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
 
 namespace Joycollab.v2
 {
-    public class WindowView : MonoBehaviour
+    public class WindowView : MonoBehaviour, IPointerDownHandler
     {
         // for scene
         [TagSelector]
@@ -130,5 +131,15 @@ namespace Joycollab.v2
         }
 
     #endregion  // WindowView functions
+
+
+    #region Interface implementations
+
+        public void OnPointerDown(PointerEventData data) 
+        {
+            viewRect.SetAsLastSibling();
+        }
+
+    #endregion  // Interface implementations
     }
 }

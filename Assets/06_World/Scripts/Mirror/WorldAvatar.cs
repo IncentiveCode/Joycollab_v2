@@ -193,7 +193,6 @@ namespace Joycollab.v2
                 rh = 13f / (float) res.height;
             }
 
-            Debug.Log(ratio);
             _rendererProfile.transform.localScale = new Vector3(rw, rh, 1f);
             _rendererProfile.sprite = s;
         }

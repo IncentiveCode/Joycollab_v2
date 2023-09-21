@@ -452,7 +452,7 @@ namespace Joycollab.v2
     #endregion
 
 
-    #region File, Image and ETC
+    #region File, Image, Sound and ETC
 
         public static async UniTask<byte[]> GetFileAsync(string url) 
         {
@@ -504,10 +504,6 @@ namespace Joycollab.v2
                     {
                         return await GetFileAsync(url);
                     }
-                }
-                else 
-                {
-                    return null;
                 }
             }
             finally
@@ -569,9 +565,65 @@ namespace Joycollab.v2
                         return await GetTextureAsync(url);
                     }
                 }
-                else 
+            }
+            finally
+            {
+                req.Dispose();
+            }
+
+            return null;
+        }
+
+        public static async UniTask<AudioClip> GetAudioAsync(string url) 
+        {
+            // 0. test
+            Debug.Log("Request url : "+ url);
+
+            // 1. network check
+            await CheckConnection();
+
+            // 2. timeout setting
+            var cts = new CancellationTokenSource();
+            cts.CancelAfterSlim(TimeSpan.FromSeconds(TIMEOUT_MULTIPART));
+
+            // 3. create UnityWebRequest
+            UnityWebRequest req = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.MPEG);
+            req.certificateHandler = new WebRequestCert();
+            req.useHttpContinue = false;
+
+            // 4. request to server
+            try 
+            {
+                await req.SendWebRequest().WithCancellation(cts.Token);
+                long code = req.responseCode;
+                AudioClip clip = DownloadHandlerAudioClip.GetContent(req);
+                Debug.Log($"GetAudioAsync(), code : {code}, clip length : {clip.length}");
+                return clip;
+            }
+            catch (OperationCanceledException ce) 
+            {
+                if (ce.CancellationToken == cts.Token) 
                 {
-                    return null;
+                    Debug.LogError($"{TAG} | GetAudioAsync() timeout exception : {ce.Message}");
+
+                    // re-try
+                    return await GetAudioAsync(url);
+                }
+            }
+            catch (Exception e) 
+            {
+                Debug.LogError($@"{TAG} | GetAudioAsync() occur exception.
+                        - URL : {url}
+                        - Response Code : {req.responseCode}
+                        - Result : {e.Message}");
+
+                if (req.responseCode == HTTP_STATUS_CODE_UNAUTHORIZED && ! string.IsNullOrEmpty(R.singleton.refreshToken)) 
+                {
+                    string t = await RefreshToken();
+                    if (string.IsNullOrEmpty(t)) 
+                    {
+                        return await GetAudioAsync(url);
+                    }
                 }
             }
             finally
@@ -582,7 +634,7 @@ namespace Joycollab.v2
             return null;
         }
 
-    #endregion  // File, Image and ETC
+    #endregion  // File, Image, Sound and ETC
 
 
     #region Common Request

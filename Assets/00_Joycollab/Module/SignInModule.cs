@@ -292,7 +292,7 @@ namespace Joycollab.v2
             {
                 R.singleton.MemberInfo = res.data;
 
-                Debug.Log($"{TAG} | current language : {res.data.lan.id}");
+                // Debug.Log($"{TAG} | current language : {res.data.lan.id}");
                 switch (res.data.lan.id) 
                 {
                     case S.REGION_KOREAN :
@@ -307,6 +307,9 @@ namespace Joycollab.v2
                         R.singleton.ChangeLocale(ID.LANGUAGE_ENGLISH);
                         break;
                 }    
+
+                // Debug.Log($"{TAG} | current font size : {res.data.fontSize}");
+                R.singleton.FontSizeOpt = res.data.fontSize;
             }
             else 
             {

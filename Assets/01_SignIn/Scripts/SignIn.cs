@@ -1,8 +1,8 @@
 /// <summary>
 /// 사용자 Sign In 화면
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 28.
-/// @version        : 1.3
+/// @last update    : 2023. 09. 21.
+/// @version        : 1.4
 /// @update
 ///     v0.1 : UI Canvas 최적화 (static canvas, active canvas 분리)
 ///     v0.2 : Tab key 로 input field 이동할 수 있게 수정.
@@ -18,6 +18,7 @@
 ///     v1.1 (2023. 08. 16) : tab key 처리 수정.
 ///     v1.2 (2023. 08. 23) : file name, class name 변경. (Login -> SignIn)
 ///     v1.3 (2023. 08. 28) : SignInW, v1 에서 만들었던 world login 과 통합.
+///     v1.4 (2023. 09. 21) : world -> joycollab 으로 돌아가는 버튼과 테스트 버튼 추가.
 /// </summary>
 
 using UnityEngine;
@@ -53,6 +54,8 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnVersion;
         [SerializeField] private Button _btnSample;
         [SerializeField] private Button _btnWorld;
+        [SerializeField] private Button _btnJoycollab;
+        [SerializeField] private Button _btnTest;
 
 
     #region Unity functions
@@ -157,6 +160,22 @@ namespace Joycollab.v2
             else if (isWorld) 
             {
                 _btnGuest.onClick.AddListener(() => ViewManager.singleton.Push(S.WorldScene_Guest));
+                _btnJoycollab.onClick.AddListener(() => {
+                #if UNITY_WEBGL && !UNITY_EDITOR
+                    JsLib.Redirection(URL.INDEX);
+                #else
+                    SystemManager.singleton.SetFontOpt(1);
+                    SceneLoader.Load(eScenes.SignIn);
+                #endif
+                });
+                if (_btnTest != null) 
+                {
+                    _btnTest.onClick.AddListener(() => {
+                        _inputId.text = "hjlee@pitchsolution.co.kr";
+                        _inputPw.text = "Qwer!234";
+                        SignInAsync().Forget();
+                    });
+                }
             }
         }
 

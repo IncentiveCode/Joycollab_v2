@@ -21,7 +21,8 @@ namespace Joycollab.v2
         private const string TAG = "IndividualSettings";
         private const string CALLBACK = "SearchAddressResult";
 
-        // TODO. 모듈 추가 예정. 
+        [Header("module")]
+        [SerializeField] private SettingModule _module;
 
         [Header("text")]
         [SerializeField] private Text _txtId;
@@ -53,7 +54,8 @@ namespace Joycollab.v2
         private ImageUploader imageUploader;
         private ImageLoader imageLoader;
 
-        private ResMemberInfo currentInfo;
+        private ReqMemberInfo memberInfo;
+        private ReqMemberCompanyInfo companyInfo;
         private float lat, lng;
 
 
@@ -89,7 +91,6 @@ namespace Joycollab.v2
 
         public async override UniTaskVoid Show() 
         {
-            Debug.Log($"{TAG} | Show() call.");
             base.Show().Forget();
 
             await Refresh();
@@ -110,30 +111,37 @@ namespace Joycollab.v2
 
         private async UniTask<int> Refresh() 
         {
-            currentInfo = JsonUtility.FromJson<ResMemberInfo>(R.singleton.myInfoSerialize);
+            PsResponse<ResMemberInfo> res = await _module.GetMyInfo();
+            if (! string.IsNullOrEmpty(res.message)) 
+            {
+                PopupBuilder.singleton.OpenAlert(res.message);
+                return -1;
+            }
 
+            R.singleton.MemberInfo = res.data;
+            memberInfo = new ReqMemberInfo(res.data);
+            companyInfo = new ReqMemberCompanyInfo(res.data);
+            
             imageUploader.Init();
-
-            string url = $"{URL.SERVER_PATH}{currentInfo.photo}";
-            imageLoader.LoadProfile(url, R.singleton.memberSeq).Forget();
+            string photoPath = $"{URL.SERVER_PATH}{memberInfo.photo}";
+            imageLoader.LoadProfile(photoPath, R.singleton.memberSeq).Forget();
 
             SetInputFieldActive(true);
-            _txtId.text = currentInfo.user.id;
-            _inputName.text = currentInfo.nickNm;; 
-            _inputOffice.text = currentInfo.compName;
-            _inputGrade.text = currentInfo.jobGrade;
-            _inputPhone.text = currentInfo.user.tel; 
-            _inputAddress1.text = currentInfo.addr;
-            _inputAddress2.text = currentInfo.addrDtl;
+            _txtId.text = R.singleton.myId; 
+            _inputName.text = memberInfo.nickNm;; 
+            _inputOffice.text = companyInfo.compName;
+            _inputGrade.text = memberInfo.jobGrade;
+            _inputPhone.text = memberInfo.tel; 
+            _inputAddress1.text = memberInfo.addr;
+            _inputAddress2.text = memberInfo.addrDtl;
 
-            _inputBusinessNumber.text = currentInfo.businessNum; 
-            _inputCeo.text = currentInfo.ceoNm; 
-            _inputSector.text = currentInfo.business; 
-            _inputService.text = currentInfo.mainBusiness; 
-            _inputTel.text = currentInfo.tel; 
-            _inputHomepage.text = currentInfo.homepage;
+            _inputBusinessNumber.text = companyInfo.businessNum; 
+            _inputCeo.text = companyInfo.ceoNm; 
+            _inputSector.text = companyInfo.business; 
+            _inputService.text = companyInfo.mainBusiness; 
+            _inputTel.text = companyInfo.tel; 
+            _inputHomepage.text = companyInfo.homepage;
 
-            await UniTask.Yield();
             return 0;
         }
 
@@ -182,27 +190,39 @@ namespace Joycollab.v2
         public async UniTask<string> UpdateMyInfo() 
         {
             if (! string.IsNullOrEmpty(imageUploader.imageInfo))
-                currentInfo.photo = imageUploader.imageInfo;
+                memberInfo.photo = imageUploader.imageInfo;
 
-            currentInfo.nickNm = _inputName.text;
-            currentInfo.compName = _inputOffice.text;
-            currentInfo.jobGrade = _inputGrade.text;
-            currentInfo.user.tel = RegExp.ReplaceOnlyNumber(_inputPhone.text);
-            currentInfo.addr = _inputAddress1.text;
-            currentInfo.addrDtl = _inputAddress2.text;
+            memberInfo.nickNm = _inputName.text;
+            memberInfo.jobGrade = _inputGrade.text;
+            memberInfo.tel = RegExp.ReplaceOnlyNumber(_inputPhone.text);
+            memberInfo.addr = _inputAddress1.text;
+            memberInfo.addrDtl = _inputAddress2.text;
+            memberInfo.lat = lat;
+            memberInfo.lng = lng;
 
-            currentInfo.businessNum = _inputBusinessNumber.text;
-            currentInfo.ceoNm = _inputCeo.text;
-            currentInfo.business = _inputSector.text;
-            currentInfo.mainBusiness = _inputService.text;
-            currentInfo.tel = RegExp.ReplaceOnlyNumber(_inputTel.text);
-            currentInfo.homepage = _inputHomepage.text;
+            companyInfo.compName = _inputOffice.text;
+            companyInfo.businessNum = _inputBusinessNumber.text;
+            companyInfo.ceoNm = _inputCeo.text;
+            companyInfo.business = _inputSector.text;
+            companyInfo.mainBusiness = _inputService.text;
+            companyInfo.tel = RegExp.ReplaceOnlyNumber(_inputTel.text);
+            companyInfo.homepage = _inputHomepage.text;
 
-            string url = string.Format(URL.MEMBER_INFO, R.singleton.memberSeq);
-            string body = JsonUtility.ToJson(currentInfo);
-            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.PUT, body, R.singleton.token);
+            string memberInfoBody = JsonUtility.ToJson(memberInfo);
+            string companyInfoBody = JsonUtility.ToJson(companyInfo);
 
-            return res.message;
+            var (memberRes, companyRes) = await UniTask.WhenAll(
+                _module.UpdateMyInfo(memberInfoBody),
+                _module.UpdateMyCompanyInfo(companyInfoBody)
+            );
+
+            if (! string.IsNullOrEmpty(memberRes))
+                return memberRes;
+            
+            if (! string.IsNullOrEmpty(companyRes))
+                return companyRes;
+
+            return string.Empty;
         }
 
     #endregion  // Event handling

@@ -37,22 +37,19 @@ namespace Joycollab.v2
         {
             _text = GetComponent<Text>();
 
-            // set event variables and add listener
-            keyFontSize = eStorageKey.FontSize;
-
-            R.singleton.RegisterObserver(this, keyFontSize);
+            R.singleton.RegisterObserver(this, eStorageKey.FontSize);
         }
 
         private void OnEnable() 
         {
-            UpdateInfo(keyFontSize);    
+            UpdateInfo(eStorageKey.FontSize);    
         }
 
         private void OnDestroy() 
         {
             if (R.singleton != null)
             {
-                R.singleton.UnregisterObserver(this, keyFontSize);
+                R.singleton.UnregisterObserver(this, eStorageKey.FontSize);
             }
         }
     
@@ -61,11 +58,9 @@ namespace Joycollab.v2
 
     #region Event Listener
 
-        private eStorageKey keyFontSize;
-
         public void UpdateInfo(eStorageKey key) 
         {
-            if (key == keyFontSize) 
+            if (key == eStorageKey.FontSize) 
             {
                 sizeOpt = R.singleton.FontSizeOpt;
 
