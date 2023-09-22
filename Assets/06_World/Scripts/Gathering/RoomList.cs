@@ -1,6 +1,6 @@
 /// <summary>
 /// [world]
-/// 모임방 리스트 Script
+/// 모임방 리스트 class
 /// @author         : HJ Lee
 /// @last update    : 2023. 09. 14
 /// @version        : 0.1

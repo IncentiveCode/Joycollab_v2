@@ -13,7 +13,7 @@
 ///     v0.6 (2023. 08. 31) : 클래스 추가. (ReqSignUpInfo)
 ///     v0.7 (2023. 09. 15) : ResUserInfo 에 zoom id, zoom e-mail 필드 추가.
 ///     v0.8 (2023. 09. 19) : ResMemberInfo 에 추가된 필드 추가 (fcmToken, plan, sdt, businessNum, compName, business, tel, ceoNm, mainBusiness, homepage)
-///     v0.9 (2023. 09. 21) : Request 용 class 추가 (ReqMemberInfo, ReqMemberCompanyInfo, ReqMemberEnvironmentInfo and...)
+///     v0.9 (2023. 09. 21) : Request 용 class 추가 (ReqMemberInfo, ReqMemberCompanyInfo, ReqMemberEnvironmentInfo, ReqMemberAlarmInfo and...)
 /// </summary>
 
 using System;
@@ -239,6 +239,24 @@ namespace Joycollab.v2
             lanId = info.lan.id;
             timeZone = info.timeZone;
             weekStart = info.weekStart;
+        }
+    }
+
+    public class ReqMemberAlarmInfo 
+    {
+        public List<alarmOptItemInfo> alarmOptItems;
+        public List<alarmOptItemInfo> alarmOptSounds;
+        public bool bottomPopupNotice;
+
+        public ReqMemberAlarmInfo() 
+        {
+            alarmOptItems = new List<alarmOptItemInfo>();
+            alarmOptItems.Clear();
+
+            alarmOptSounds = new List<alarmOptItemInfo>();
+            alarmOptSounds.Clear();
+
+            bottomPopupNotice = false;
         }
     }
 

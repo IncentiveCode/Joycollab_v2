@@ -1,10 +1,11 @@
 /// <summary>
 /// 모임방 기능만 독립적으로 분리한 모듈
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 14
-/// @version        : 0.1
+/// @last update    : 2023. 09. 22
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 09. 14) : 최초 생성
+/// 	v0.2 (2023. 09. 22) : 카테고리 목록 확인, 모임방 생성 기능 추가.
 /// </summary>
 
 using UnityEngine;
@@ -18,7 +19,7 @@ namespace Joycollab.v2
 		private const string TAG = "GatheringModule";
 
 
-	#region public functions
+	#region for List 
 
 		public async UniTask<string> GetRoomList(RequestForClas req, InfiniteScroll view) 
 		{
@@ -53,6 +54,14 @@ namespace Joycollab.v2
 			return res.message;
 		}
 
-	#endregion	// public functions
+        public async UniTask<PsResponse<TpsList>> GetCategories() 
+        {
+            string url = string.Format(URL.GET_CODE, "모임방 카테고리");
+            PsResponse<TpsList> res = await NetworkTask.RequestAsync<TpsList>(url, eMethodType.GET, string.Empty, R.singleton.token);
+
+            return res; 
+        }
+
+	#endregion	// for List
 	}
 }

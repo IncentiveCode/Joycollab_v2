@@ -577,7 +577,14 @@ namespace Joycollab.v2
         public static async UniTask<AudioClip> GetAudioAsync(string url) 
         {
             // 0. test
-            Debug.Log("Request url : "+ url);
+            string[] split = url.Split('.');
+            string ext = split[split.Length - 1];
+            Debug.Log($"Request url : {url}, extension : {ext}");
+
+            AudioType type = ext switch {
+                "wav" => AudioType.WAV,
+                _ => AudioType.MPEG
+            };
 
             // 1. network check
             await CheckConnection();
@@ -587,7 +594,7 @@ namespace Joycollab.v2
             cts.CancelAfterSlim(TimeSpan.FromSeconds(TIMEOUT_MULTIPART));
 
             // 3. create UnityWebRequest
-            UnityWebRequest req = UnityWebRequestMultimedia.GetAudioClip(url, AudioType.MPEG);
+            UnityWebRequest req = UnityWebRequestMultimedia.GetAudioClip(url, type);
             req.certificateHandler = new WebRequestCert();
             req.useHttpContinue = false;
 

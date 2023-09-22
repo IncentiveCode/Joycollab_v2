@@ -34,15 +34,17 @@ namespace Joycollab.v2
 
         [Header("sound")]
         [SerializeField] private Transform _transformSoundContent;
-        [SerializeField] private GameObject _goSoundContent;
 
-        [Header("notification _ meeting")]
+        [Header("notification")]
+        [SerializeField] private List<string> _listAlarmKey;
+
+        // - meeting
         [SerializeField] private Toggle _toggleMeetingAll;
         [SerializeField] private Toggle _toggleMeetingCreated;
         [SerializeField] private Toggle _toggleMeetingStarted;
         [SerializeField] private Toggle _toggleMeetingClosed;
 
-        [Header("notification _ voice call")]
+        // - voice call
         [SerializeField] private Toggle _toggleVoiceAll;
         [SerializeField] private Toggle _toggleVoiceReceive;
         [SerializeField] private Toggle _toggleVoiceMissed;
@@ -60,9 +62,11 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnZoomDisconnect;
 
         // local variables
-        private ReqMemberEnvironmentInfo environmentInfo;
-        private Dictionary<string, bool> dictAlarmSounds;
+        private ReqMemberEnvironmentInfo reqEnvironmentInfo;
+        private ReqMemberAlarmInfo reqAlarmInfo;
 
+        private Dictionary<string, alarmOptItemInfo> dictAlarmOptions;
+        private Dictionary<string, alarmOptItemInfo> dictAlarmSounds;
         private bool flagParentToggle;
         private bool flagChildToggle;
         
@@ -264,60 +268,47 @@ namespace Joycollab.v2
             }
 
             R.singleton.MemberInfo = memberInfoRes.data;
-            environmentInfo = new ReqMemberEnvironmentInfo(memberInfoRes.data);
+            reqEnvironmentInfo = new ReqMemberEnvironmentInfo(memberInfoRes.data);
             SetEnvironment();
 
+            reqAlarmInfo = new ReqMemberAlarmInfo();
+            SetAlarmOption();
             SetAlarmSound(alarmSoundRes.data);
+
+            SetConnections();
 
             return 0;
         }
 
-        private void SetEnvironment() 
+        public async UniTask<string> UpdateConfiguration() 
         {
-            _dropdownTimezone.value = 0;
-            _dropdownLanguage.value = environmentInfo.lanId switch {
-                S.REGION_KOREAN => ID.LANGUAGE_KOREAN,
-                S.REGION_JAPANESE => ID.LANGUAGE_JAPANESE,
-                _ => ID.LANGUAGE_ENGLISH 
-            };
-            _dropdownFontSize.value = Mathf.Clamp(environmentInfo.fontSize - 1, 0, 3);
-            _dropdownWeekStart.value = (environmentInfo.weekStart == 1) ? 1 : 0;
-            _dropdownTimeFormat.value = (environmentInfo.hourFormatStr.Equals("HH")) ? 1 : 0;
+            // 환경 설정 정리
+            reqEnvironmentInfo.lanId = R.singleton.Region;
+            reqEnvironmentInfo.fontSize = R.singleton.FontSizeOpt;
+            reqEnvironmentInfo.weekStart = _dropdownWeekStart.value;
+            reqEnvironmentInfo.hourFormatStr = (_dropdownTimeFormat.value == 1) ? "HH" : "hh";
+
+            // 알림 설정 정리
+            string alarmBody = OrganizeAlarmOptions();
+
+            var (resEnvironment, resAlarm) = await UniTask.WhenAll(
+                _module.UpdateEnvironment(reqEnvironmentInfo),
+                _module.UpdateAlarmOptions(alarmBody)
+            );
+
+            if (! string.IsNullOrEmpty(resEnvironment))
+                return resEnvironment;
+
+            if (! string.IsNullOrEmpty(resAlarm))
+                return resAlarm;
+
+            return string.Empty;
         }
 
-        private void SetAlarmSound(TpsList data) 
-        {
-            // current data 정리 
-            if (dictAlarmSounds == null) dictAlarmSounds = new Dictionary<string, bool>();
-            dictAlarmSounds.Clear();
-            foreach (var item in R.singleton.myAlarmOpt.alarmOptSounds) 
-            {
-                dictAlarmSounds.Add(item.tp.id, item.alarm);
-            }
+    #endregion  // event handling
 
-            // alarm list 정리
-            var children = _transformSoundContent.GetComponentInChildren<Transform>();
-            foreach (Transform child in children) 
-            {
-                if (child.name.Equals(_transformSoundContent.name)) continue;
-                Destroy(child.gameObject);
-            }
 
-            foreach (TpsInfo i in data.list) 
-            {
-                var go = Instantiate(SystemManager.singleton.pfWorldAlarmSoundItem, Vector3.zero, Quaternion.identity);
-                if (go.TryGetComponent<AlarmSoundItem>(out AlarmSoundItem item))
-                {
-                    item.Init(i);
-                    item.Usage = dictAlarmSounds.ContainsKey(i.id) ? dictAlarmSounds[i.id] : false;
-                    go.transform.SetParent(_transformSoundContent, false);
-                }
-                else 
-                {
-                    Destroy(go.gameObject);
-                }
-            }
-        }
+    #region value check
 
         private bool IsAllCheckMeetingToggle() 
         {
@@ -355,20 +346,189 @@ namespace Joycollab.v2
             } 
         }
 
-        public async UniTask<string> UpdateConfiguration() 
+        private void SetEnvironment() 
         {
-            environmentInfo.lanId = R.singleton.Region;
-            environmentInfo.fontSize = R.singleton.FontSizeOpt;
-            environmentInfo.weekStart = _dropdownWeekStart.value;
-            environmentInfo.hourFormatStr = (_dropdownTimeFormat.value == 1) ? "hh" : "HH";
-
-            string res = await _module.UpdateEnvironment(environmentInfo);
-            if (! string.IsNullOrEmpty(res)) 
-                return res;
-
-            return string.Empty;
+            _dropdownTimezone.value = 0;
+            _dropdownLanguage.value = reqEnvironmentInfo.lanId switch {
+                S.REGION_KOREAN => ID.LANGUAGE_KOREAN,
+                S.REGION_JAPANESE => ID.LANGUAGE_JAPANESE,
+                _ => ID.LANGUAGE_ENGLISH 
+            };
+            _dropdownFontSize.value = Mathf.Clamp(reqEnvironmentInfo.fontSize - 1, 0, 3);
+            _dropdownWeekStart.value = (reqEnvironmentInfo.weekStart == 1) ? 1 : 0;
+            _dropdownTimeFormat.value = (reqEnvironmentInfo.hourFormatStr.Equals("HH")) ? 1 : 0;
         }
 
-    #endregion  // event handling
+        private void SetAlarmOption() 
+        {
+            // current data 정리
+            if (dictAlarmOptions == null) dictAlarmOptions = new Dictionary<string, alarmOptItemInfo>();
+            dictAlarmOptions.Clear();
+            foreach (var item in R.singleton.myAlarmOpt.alarmOptItems) 
+            {
+                if (_listAlarmKey.Contains(item.tp.id))
+                    dictAlarmOptions.Add(item.tp.id, item);
+            }
+
+            // alarm option 정리
+            foreach (var i in dictAlarmOptions) 
+            {
+                // Debug.Log($"id : {i.Value.tp.id}, usage : {i.Value.useYn}");
+                switch (i.Value.tp.id) 
+                {
+                    case S.ALARM_ID_RESERVE_MEETING :
+                        _toggleMeetingCreated.isOn = i.Value.alarm;
+                        break;
+
+                    case S.ALARM_ID_START_MEETING :
+                        _toggleMeetingStarted.isOn = i.Value.alarm;
+                        break;
+
+                    case S.ALARM_ID_DONE_MEETING :
+                        _toggleMeetingClosed.isOn = i.Value.alarm;
+                        break;
+
+                    case S.ALARM_ID_REQUEST_VOICE :
+                        _toggleVoiceReceive.isOn = i.Value.alarm;
+                        break;
+
+                    case S.ALARM_ID_MISSED_VOICE :
+                        _toggleVoiceMissed.isOn = i.Value.alarm;
+                        break;
+
+                    case S.ALARM_ID_REJECT_VOICE :
+                        _toggleVoiceRefuse.isOn = i.Value.alarm;
+                        break;
+                }
+            }
+        }
+
+        private void SetAlarmSound(TpsList data) 
+        {
+            // current data 정리 
+            if (dictAlarmSounds == null) dictAlarmSounds = new Dictionary<string, alarmOptItemInfo>();
+            dictAlarmSounds.Clear();
+            foreach (var i in R.singleton.myAlarmOpt.alarmOptSounds) 
+            {
+                dictAlarmSounds.Add(i.tp.id, i);
+            }
+
+            // alarm list 정리
+            var children = _transformSoundContent.GetComponentInChildren<Transform>();
+            foreach (Transform child in children) 
+            {
+                if (child.name.Equals(_transformSoundContent.name)) continue;
+                Destroy(child.gameObject);
+            }
+
+            foreach (TpsInfo i in data.list) 
+            {
+                var go = Instantiate(SystemManager.singleton.pfWorldAlarmSoundItem, Vector3.zero, Quaternion.identity);
+                if (go.TryGetComponent<AlarmSoundItem>(out AlarmSoundItem item))
+                {
+                    item.Init(i);
+                    item.Usage = dictAlarmSounds.ContainsKey(i.id) ? dictAlarmSounds[i.id].alarm : false;
+                    go.transform.SetParent(_transformSoundContent, false);
+                }
+                else 
+                {
+                    Destroy(go.gameObject);
+                }
+            }
+        }
+
+        public string OrganizeAlarmOptions() 
+        {
+            // alarm option 정리
+            reqAlarmInfo.alarmOptItems.Clear();
+            foreach (var i in dictAlarmOptions) 
+            {
+                switch (i.Value.tp.id) 
+                {
+                    case S.ALARM_ID_RESERVE_MEETING :
+                        i.Value.alarm = _toggleMeetingCreated.isOn;
+                        reqAlarmInfo.alarmOptItems.Add(i.Value);
+                        break;
+
+                    case S.ALARM_ID_START_MEETING :
+                        i.Value.alarm = _toggleMeetingStarted.isOn;
+                        reqAlarmInfo.alarmOptItems.Add(i.Value);
+                        break;
+
+                    case S.ALARM_ID_DONE_MEETING :
+                        i.Value.alarm = _toggleMeetingClosed.isOn;
+                        reqAlarmInfo.alarmOptItems.Add(i.Value);
+                        break;
+
+                    case S.ALARM_ID_REQUEST_VOICE :
+                        i.Value.alarm = _toggleVoiceReceive.isOn;
+                        reqAlarmInfo.alarmOptItems.Add(i.Value);
+                        break;
+
+                    case S.ALARM_ID_MISSED_VOICE :
+                        i.Value.alarm = _toggleVoiceMissed.isOn;
+                        reqAlarmInfo.alarmOptItems.Add(i.Value);
+                        break;
+
+                    case S.ALARM_ID_REJECT_VOICE :
+                        i.Value.alarm = _toggleVoiceRefuse.isOn;
+                        reqAlarmInfo.alarmOptItems.Add(i.Value);
+                        break;
+                }
+            }
+                
+            // alarm sound 정리
+            reqAlarmInfo.alarmOptSounds.Clear();
+            var children = _transformSoundContent.GetComponentInChildren<Transform>();
+            foreach (Transform child in children) 
+            {
+                if (child.TryGetComponent<AlarmSoundItem>(out AlarmSoundItem item))
+                {
+                    Debug.Log($"{TAG} | alarm sound option, id : {item.ID}, usage : {item.Usage}");
+                    dictAlarmSounds[item.ID].alarm = item.Usage;
+                }
+            }
+            foreach (var i in dictAlarmSounds) 
+            {
+                reqAlarmInfo.alarmOptSounds.Add(i.Value);
+            }
+
+            return JsonUtility.ToJson(reqAlarmInfo);
+        }
+
+        private void SetConnections() 
+        {
+            // google 연결 확인
+            bool isGoogle = R.singleton.isGoogleConnected;
+            _txtGoogleId.text = isGoogle ? R.singleton.myGoogleId : string.Empty;
+            _btnGoogleSignIn.interactable = ! isGoogle;
+            _btnGoogleDisconnect.gameObject.SetActive(isGoogle);
+
+            // zoom 연결 확인
+            bool isZoom = R.singleton.isZoomConnected;
+            _txtZoomId.text = isZoom ? R.singleton.myZoomId : string.Empty;
+            _btnZoomSignIn.gameObject.SetActive(! isZoom);
+            _imgZoomSignInDone.gameObject.SetActive(isZoom);
+            _btnZoomDisconnect.gameObject.SetActive(isZoom);
+        }
+
+    #endregion  // value check
+
+
+    #region auth callback functions
+
+        public void OnGoogleCallback() 
+        {
+            Debug.Log($"{TAG} | {GOOGLE_AUTH_CALLBACK} call.");
+            Refresh().Forget();
+        }
+
+        public void OnZoomCallback() 
+        {
+            Debug.Log($"{TAG} | {ZOOM_AUTH_CALLBACK} call.");
+            Refresh().Forget();
+        }
+
+    #endregion  // auth callback functions
     }
 }

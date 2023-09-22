@@ -364,7 +364,8 @@ namespace Joycollab.v2
 
         // - 음성 통화 관련 Alarm ID
         public const string ALARM_ID_REQUEST_VOICE = "음성통화 요청";
-        public const string ALARM_ID_REJECT_VOICE = "음성통화 요청";
+        public const string ALARM_ID_REJECT_VOICE = "음성통화 거절";
+        public const string ALARM_ID_MISSED_VOICE = "부재중 음성통화 요청";
 
         // - 배치, 정보 변경 관련 Alarm ID
         public const string ALARM_ID_UPDATE_MEMBER = "멤버 정보 변경";

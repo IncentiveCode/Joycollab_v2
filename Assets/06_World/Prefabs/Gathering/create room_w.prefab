@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 6373684002552950049}
   - component: {fileID: 4807172253975687478}
   m_Layer: 5
-  m_Name: Toggle _ thumb 3
+  m_Name: Toggle _ thumb 2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3780,7 +3780,7 @@ GameObject:
   - component: {fileID: 685529987584816008}
   - component: {fileID: 685529987584816011}
   m_Layer: 5
-  m_Name: Button _ select
+  m_Name: Button _ thumbnail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4798,7 +4798,7 @@ GameObject:
   - component: {fileID: 685529987831469498}
   - component: {fileID: 685529987831469501}
   m_Layer: 5
-  m_Name: InputField (TMP) _ desc
+  m_Name: InputField (TMP) _ thumbnail
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -5831,6 +5831,7 @@ GameObject:
   m_Component:
   - component: {fileID: 685529987934333013}
   - component: {fileID: 685529987934333008}
+  - component: {fileID: 8459481676588302808}
   m_Layer: 5
   m_Name: create room_w
   m_TagString: WorldView
@@ -5860,7 +5861,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
   m_AnchoredPosition: {x: 840, y: 295}
-  m_SizeDelta: {x: 647, y: 650}
+  m_SizeDelta: {x: 650, y: 650}
   m_Pivot: {x: 0, y: 0}
 --- !u!225 &685529987934333008
 CanvasGroup:
@@ -5874,6 +5875,52 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &8459481676588302808
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 685529987934333012}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f5b86ee10f3cf474c8bc1bb7087fd76e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  viewTag: WorldView
+  isMultiple: 0
+  width: 650
+  height: 650
+  _module: {fileID: 6249342011219856174, guid: 8db3979ed6b09f340a7ea79c0e31ec69, type: 3}
+  _inputTitle: {fileID: 685529987379113024}
+  _inputDetail: {fileID: 685529988262636592}
+  _inputThumbnail: {fileID: 685529987831469498}
+  _dropdownCategory: {fileID: 1767518358839416330}
+  _listThemeOption:
+  - {fileID: 685529987439801617}
+  - {fileID: 685529987285514034}
+  - {fileID: 685529986940736841}
+  - {fileID: 685529987847736386}
+  - {fileID: 685529988575405948}
+  _listPublicOption:
+  - {fileID: 685529988426926783}
+  - {fileID: 685529988543934410}
+  - {fileID: 685529986554553333}
+  _btnClose: {fileID: 685529988313617267}
+  _btnThumbnail: {fileID: 685529987584816011}
+  _btnCreate: {fileID: 5662066580508938332}
+  _btnCancel: {fileID: 8156298888269732570}
+  _goThumbnailPopup: {fileID: 4393891491260587549}
+  _imgThumbnail: {fileID: 7510377131822650226}
+  _btnThumbnailUpload: {fileID: 7518536227123870388}
+  _btnPopupConfirm: {fileID: 1196931330428413059}
+  _btnPopupCancel: {fileID: 2832280877854334420}
+  _listThumbnailOption:
+  - {fileID: 7900593793551976876}
+  - {fileID: 5056256068750975744}
+  - {fileID: 4807172253975687478}
+  - {fileID: 8515913232682702618}
+  - {fileID: 5698064882346359099}
 --- !u!1 &685529987936949049
 GameObject:
   m_ObjectHideFlags: 0
@@ -8770,7 +8817,7 @@ GameObject:
   - component: {fileID: 8632141976836166357}
   - component: {fileID: 5698064882346359099}
   m_Layer: 5
-  m_Name: Toggle _ thumb 5
+  m_Name: Toggle _ thumb 4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9168,7 +9215,7 @@ GameObject:
   - component: {fileID: 1196931330428413058}
   - component: {fileID: 1196931330428413059}
   m_Layer: 5
-  m_Name: Button _ confirm
+  m_Name: Button _ popup confirm
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9366,7 +9413,7 @@ GameObject:
   - component: {fileID: 2700532953033095603}
   - component: {fileID: 2832280877854334420}
   m_Layer: 5
-  m_Name: Button _ cancel
+  m_Name: Button _ popup cancel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -9709,7 +9756,7 @@ GameObject:
   - component: {fileID: 3538811833133448678}
   - component: {fileID: 8515913232682702618}
   m_Layer: 5
-  m_Name: Toggle _ thumb 4
+  m_Name: Toggle _ thumb 3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10319,7 +10366,6 @@ GameObject:
   - component: {fileID: 1767518358839416436}
   - component: {fileID: 1767518358839416331}
   - component: {fileID: 1767518358839416330}
-  - component: {fileID: 1767518358839416437}
   m_Layer: 5
   m_Name: Dropdown _ category
   m_TagString: Untagged
@@ -10441,59 +10487,6 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls: []
   m_AlphaFadeSpeed: 0.15
---- !u!114 &1767518358839416437
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1767518358839416328}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d45a40e9d90b463448fa70b5b20a008c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  options:
-  - text:
-      m_TableReference:
-        m_TableCollectionName: GUID:1939ce2388859e6458ee26288c24ded5
-      m_TableEntryReference:
-        m_KeyId: 278786462908422
-        m_Key: 
-      m_FallbackState: 0
-      m_WaitForCompletion: 0
-      m_LocalVariables: []
-  - text:
-      m_TableReference:
-        m_TableCollectionName: GUID:ce2aa06bdf6be40e49e0c5664c7c9861
-      m_TableEntryReference:
-        m_KeyId: 51777837280460800
-        m_Key: 
-      m_FallbackState: 0
-      m_WaitForCompletion: 0
-      m_LocalVariables: []
-  - text:
-      m_TableReference:
-        m_TableCollectionName: GUID:ce2aa06bdf6be40e49e0c5664c7c9861
-      m_TableEntryReference:
-        m_KeyId: 51777837284655105
-        m_Key: 
-      m_FallbackState: 0
-      m_WaitForCompletion: 0
-      m_LocalVariables: []
-  - text:
-      m_TableReference:
-        m_TableCollectionName: GUID:ce2aa06bdf6be40e49e0c5664c7c9861
-      m_TableEntryReference:
-        m_KeyId: 51777837263683584
-        m_Key: 
-      m_FallbackState: 0
-      m_WaitForCompletion: 0
-      m_LocalVariables: []
-  selectedOptionIndex: 0
-  references:
-    version: 2
-    RefIds: []
 --- !u!1 &1767518359227490581
 GameObject:
   m_ObjectHideFlags: 0
@@ -10897,7 +10890,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 0}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 120}
+  m_SizeDelta: {x: 0, y: 150}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!222 &1767518359572392026
 CanvasRenderer:
@@ -14129,7 +14122,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &5249669041146426274
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15933,7 +15926,6 @@ GameObject:
   - component: {fileID: 3966319819571595930}
   - component: {fileID: 3916087443291994082}
   - component: {fileID: 7510377131822650226}
-  - component: {fileID: 6686935833002892970}
   m_Layer: 5
   m_Name: RawImage _ thumbnail
   m_TagString: Untagged
@@ -15996,22 +15988,6 @@ MonoBehaviour:
     y: 0
     width: 1
     height: 1
---- !u!114 &6686935833002892970
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5692523334970180749}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9fe3c1ba38a4b461995462f3c83feb80, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _inputName: {fileID: 0}
-  _v2Size: {x: 120, y: 120}
-  _imgUpload: {fileID: 7510377131822650226}
-  _texDefault: {fileID: 2800000, guid: 66af15ec40798654fbeaed12bed6116c, type: 3}
 --- !u!1 &5795614383104413233
 GameObject:
   m_ObjectHideFlags: 0
@@ -16102,7 +16078,7 @@ GameObject:
   - component: {fileID: 4558817069212308257}
   - component: {fileID: 7900593793551976876}
   m_Layer: 5
-  m_Name: Toggle _ thumb 1
+  m_Name: Toggle _ thumb 0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20237,8 +20213,9 @@ GameObject:
   - component: {fileID: 4336499525723548616}
   - component: {fileID: 4828239586545982388}
   - component: {fileID: 7518536227123870388}
+  - component: {fileID: 7748687209940229947}
   m_Layer: 5
-  m_Name: Button _ upload
+  m_Name: Button _ popup upload
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20348,6 +20325,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &7748687209940229947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8942721910348945426}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9fe3c1ba38a4b461995462f3c83feb80, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _inputName: {fileID: 685529987831469498}
+  _v2Size: {x: 120, y: 120}
+  _imgUpload: {fileID: 7510377131822650226}
+  _texDefault: {fileID: 2800000, guid: 66af15ec40798654fbeaed12bed6116c, type: 3}
 --- !u!1 &8958909318943963540
 GameObject:
   m_ObjectHideFlags: 0
@@ -21011,7 +21004,7 @@ GameObject:
   - component: {fileID: 1688727019841417577}
   - component: {fileID: 5056256068750975744}
   m_Layer: 5
-  m_Name: Toggle _ thumb 2
+  m_Name: Toggle _ thumb 1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

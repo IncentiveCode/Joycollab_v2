@@ -66,6 +66,14 @@ namespace Joycollab.v2
             return res; 
         }
 
+        public async UniTask<string> UpdateAlarmOptions(string body) 
+        {
+            string url = string.Format(URL.SET_ALARM_OPTION, R.singleton.memberSeq, R.singleton.myAlarmOpt.seq);
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.PATCH, body, R.singleton.token);
+
+            return res.message;
+        }
+
     #endregion  // 환경 설정
     }
 }

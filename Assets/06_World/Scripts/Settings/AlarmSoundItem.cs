@@ -7,10 +7,12 @@
 ///     v0.1 (2023. 09. 21) : 최초 생성, Joycollab & TechnoPark 등 작업을 하면서 작성한 것들을 수정 및 적용
 /// </summary>
 
+using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Localization.Settings;
 using DG.Tweening;
+using UnityEngine.Networking;
 
 namespace Joycollab.v2
 {
@@ -31,13 +33,32 @@ namespace Joycollab.v2
 
         // local variables
         private TpsInfo info;
+        private AudioSource audioSource;
+        private bool isPlaying;
 
 
     #region Unity functions
 
         private void Awake() 
         {
+            audioSource = GetComponent<AudioSource>();
+            audioSource.loop = false;
+
             R.singleton.RegisterObserver(this, eStorageKey.Locale);
+        }
+
+        private void Update() 
+        {
+            if (isPlaying) 
+            {
+                if (! audioSource.isPlaying) 
+                {
+                    isPlaying = false;
+
+                    _btnPreview.gameObject.SetActive(true);
+                    _btnStop.gameObject.SetActive(false);
+                }
+            }
         }
 
         private void OnDestroy() 
@@ -57,6 +78,7 @@ namespace Joycollab.v2
         {
             // init state
             this.info = info;
+            isPlaying = false;
 
             _txtName.text = LocalizationSettings.StringDatabase.GetLocalizedString(
                 "Setting", info.id, R.singleton.CurrentLocale
@@ -71,14 +93,23 @@ namespace Joycollab.v2
                 string url = $"{URL.SYSTEM_SOUND_PATH}{info.refVal}";
                 AudioClip res = await NetworkTask.GetAudioAsync(url);
                 if (res != null)
-                    SystemManager.singleton.PlayAudioClip(res);
+                {
+                    isPlaying = true;
+                    audioSource.PlayOneShot(res);
 
-                _btnStop.gameObject.SetActive(true);
-                _btnPreview.gameObject.SetActive(false);
+                    _btnStop.gameObject.SetActive(true);
+                    _btnPreview.gameObject.SetActive(false);
+                }
             });
 
             _btnStop.onClick.AddListener(() => {
                 Debug.Log("${TAG} | sound stop.");
+
+                if (audioSource.isPlaying)
+                {
+                    isPlaying = false;
+                    audioSource.Stop();
+                }
 
                 _btnPreview.gameObject.SetActive(true);
                 _btnStop.gameObject.SetActive(false);
@@ -112,6 +143,13 @@ namespace Joycollab.v2
                 _txtName.text = LocalizationSettings.StringDatabase.GetLocalizedString(
                     "Setting", info.id, R.singleton.CurrentLocale
                 );
+            }
+        }
+
+        public string ID 
+        {
+            get { 
+                return info.id;
             }
         }
 
