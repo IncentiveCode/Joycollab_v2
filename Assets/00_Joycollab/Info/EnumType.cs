@@ -1,13 +1,14 @@
 /// <summary>
 /// 열거형 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 10
-/// @version        : 0.4
+/// @last update    : 2023. 09. 25
+/// @version        : 0.5
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리.
 ///     v0.2 (2023. 07. 18) : Xmpp type, Webview type 추가.
 ///     v0.3 (2023. 08. 01) : Plan type 추가.
 ///     v0.4 (2023. 08. 10) : Scene type 수정. (Init, Map 추가. 순서 변경.)
+///     v0.5 (2023. 09. 25) : Scene type 추가. clickable type 추가 (eScenes.Room, eClickableObjectType.FileBox 추가.)
 /// </summary>
 
 namespace Joycollab.v2
@@ -24,7 +25,7 @@ namespace Joycollab.v2
         GraphicUI, TextUI,
         Arrange, 
         Management,
-        World, Map, Square,
+        World, Map, Square, Room,
         Sample,
         Mobile,
     }
@@ -109,7 +110,7 @@ namespace Joycollab.v2
         Building, Elevator, Information, WorldAvatar,
         
         // Joycollab 과 World 에서 공통으로 사용할 항목들.
-        Board, Notice, Seminar, Display, Meeting,
+        Board, Notice, Seminar, Display, Meeting, FileBox,
 
         // 추후 object 는 상세하게 쪼개질 가능성 있음.
         Object,

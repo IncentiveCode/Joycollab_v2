@@ -9,6 +9,7 @@ namespace Joycollab.v2
         private SerializedProperty _rendererType;
         private SerializedProperty _menuItems;
         private SerializedProperty _alphaValueOnEnter;
+        private SerializedProperty _alphaValueOnExit;
 
         protected virtual void OnEnable() 
         {
@@ -16,6 +17,7 @@ namespace Joycollab.v2
             _rendererType = this.serializedObject.FindProperty("_rendererType");     
             _menuItems = this.serializedObject.FindProperty("_menuItems");     
             _alphaValueOnEnter = this.serializedObject.FindProperty("_alphaValueOnEnter");     
+            _alphaValueOnExit = this.serializedObject.FindProperty("_alphaValueOnExit");     
         }
 
         public override void OnInspectorGUI() 
@@ -26,6 +28,7 @@ namespace Joycollab.v2
             EditorGUILayout.PropertyField(_objectType);
             EditorGUILayout.PropertyField(_rendererType);
             EditorGUILayout.PropertyField(_alphaValueOnEnter);
+            EditorGUILayout.PropertyField(_alphaValueOnExit);
             EditorGUILayout.PropertyField(_menuItems);
 
             int t = _objectType.enumValueIndex;

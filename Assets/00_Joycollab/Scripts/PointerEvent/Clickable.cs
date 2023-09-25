@@ -10,6 +10,7 @@ namespace Joycollab.v2
         [SerializeField] private eRendererType _rendererType;
         [SerializeField] private eMenuTitle[] _menuItems;
         [SerializeField, Range(0, 1)] private float _alphaValueOnEnter;
+        [SerializeField, Range(0, 1)] private float _alphaValueOnExit;
 
         [Header("type : Building")]
         // [SerializeField] private BuildingData _soBuildingData;   // TODO. 추가 예정.
@@ -56,14 +57,14 @@ namespace Joycollab.v2
                 case eRendererType.UI_Image :
                     image = GetComponent<Image>();
                     temp = image.color;
-                    temp.a = 0f;
+                    temp.a = _alphaValueOnExit;
                     image.color = temp;
                     break;
 
                 case eRendererType.SpriteRenderer :
                     spriteRenderer = GetComponent<SpriteRenderer>();
                     temp = spriteRenderer.color;
-                    temp.a = 0f;
+                    temp.a = _alphaValueOnExit;
                     spriteRenderer.color = temp;
                     break;
 
@@ -130,7 +131,7 @@ namespace Joycollab.v2
             if (_rendererType != eRendererType.UI_Image) return;
 
             // TODO. object type 에 따라 Pointer Enter 이벤트 처리.
-            temp.a = 0f;
+            temp.a = _alphaValueOnExit;
             switch (_objectType) 
             {
                 case eClickableObjectType.Building :
@@ -196,6 +197,7 @@ namespace Joycollab.v2
                 case eClickableObjectType.Seminar :
                 case eClickableObjectType.Display :
                 case eClickableObjectType.Meeting :
+                case eClickableObjectType.FileBox :
                     spriteRenderer.color = temp;
                     break;
 
@@ -209,7 +211,7 @@ namespace Joycollab.v2
         {
             if (_rendererType != eRendererType.SpriteRenderer) return;
 
-            temp.a = 0f;
+            temp.a = _alphaValueOnExit;
             switch (_objectType) 
             {
                 case eClickableObjectType.Building :
@@ -225,6 +227,7 @@ namespace Joycollab.v2
                 case eClickableObjectType.Seminar :
                 case eClickableObjectType.Display :
                 case eClickableObjectType.Meeting :
+                case eClickableObjectType.FileBox :
                     spriteRenderer.color = temp;
                     break;
 
