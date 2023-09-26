@@ -13,11 +13,7 @@ namespace Joycollab.v2
 {
     public class SquareCamera : MonoBehaviour
     {
-        private static SquareCamera instance;
-        public static SquareCamera Instance
-        {
-            get { return instance; }
-        }
+        public static SquareCamera singleton { get; private set; }
 
         // 카메라, 크기 관련 변수
         private Camera mainCam;
@@ -43,7 +39,7 @@ namespace Joycollab.v2
 
         private void Awake() 
         {
-            instance = this;
+            singleton = this;
 
             mainCam = Camera.main;
             cameraMoveSpeed = 4f;
@@ -88,10 +84,6 @@ namespace Joycollab.v2
         {
             if (floorNo == no) return;
 
-            // Vector3 pos = playerTransform.position;
-            // pos.x += (no == 1) ? 50f : -50f;
-            // playerTransform.position = pos;
-
             playerTransform.position = arrPos[no - 1];
             floorNo = no;
         }
@@ -110,13 +102,13 @@ namespace Joycollab.v2
                 Time.deltaTime * cameraMoveSpeed);
 
             float lx = v2SquareSize.x - fWidth; 
-            float clampX = Mathf.Clamp(mainCam.transform.position.x, 
-                -lx + ((floorNo == 1) ? 0 : 50), 
-                lx + ((floorNo == 1) ? 0 : 50)); 
+            float clampX = Mathf.Clamp(mainCam.transform.position.x, -lx, lx);
             v3CameraPos.x = clampX;
 
             float ly = v2SquareSize.y - fSize;
-            float clampY = Mathf.Clamp(mainCam.transform.position.y, -ly, ly);
+            float clampY = Mathf.Clamp(mainCam.transform.position.y, 
+                -ly + ((floorNo == 1) ? 0 : 35), 
+                ly + ((floorNo == 1) ? 0 : 35)); 
             v3CameraPos.y = clampY;
 
             v3CameraPos.z = fZ;

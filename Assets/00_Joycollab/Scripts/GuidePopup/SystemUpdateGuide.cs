@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 
 namespace Joycollab.v2

@@ -41,7 +41,7 @@ namespace Joycollab.v2
 
         public const string Canvas_Top = "Top Canvas";          // order 2
         public const string Canvas_Window = "Window Canvas";    // order 1
-        public const string Canvas_Bottom = "Bottom Canvas";    // order 0
+        public const string Canvas_System = "System Canvas";    // order 0
 
         public const string Canvas_Master = "Master Canvas";
         public const string Canvas_Popup = "Popup Canvas";

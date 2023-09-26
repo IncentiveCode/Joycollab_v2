@@ -10,7 +10,6 @@
 /// </summary>
 
 using UnityEngine;
-using UnityEngine.UI;
 
 namespace Joycollab.v2
 {
@@ -78,6 +77,7 @@ namespace Joycollab.v2
 
 
     #region private functions
+
         private void Parse(PlanData data) 
         {
             color = data.PlanColor;

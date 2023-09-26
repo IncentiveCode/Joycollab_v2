@@ -2,9 +2,9 @@
 /// Network 통신 - 실패 응답 
 /// @author         : HJ Lee
 /// @last update    : 2023. 02. 20
-/// @version        : 1.0
+/// @version        : 0.1
 /// @update
-///     v1.0 (2023. 02. 20) : Joycollab 에서 사용하던 클래스 정리 및 통합
+///     v0.1 (2023. 02. 20) : Joycollab 에서 사용하던 클래스 정리 및 통합
 /// </summary>
 
 using System;
