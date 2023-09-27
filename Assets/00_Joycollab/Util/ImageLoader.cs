@@ -23,6 +23,7 @@ namespace Joycollab.v2
 
         // local variables
         private RawImage img;
+        private Texture2D res;
         private RectTransform rect;
 
 
@@ -37,7 +38,10 @@ namespace Joycollab.v2
 
         private void OnDestroy() 
         {
-            img.texture = null;
+            if (res != null)
+            {
+                Destroy(res);
+            }
         }
 
     #endregion  // Unity functions
@@ -60,7 +64,7 @@ namespace Joycollab.v2
             }
 
             // check 'R'
-            Texture2D res = R.singleton.GetPhoto(seq);
+            res = R.singleton.GetPhoto(seq);
             if (res != null) 
             {
                 img.texture = res;

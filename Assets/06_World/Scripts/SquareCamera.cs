@@ -32,7 +32,12 @@ namespace Joycollab.v2
         // for map info
         private Vector2 v2SquareSize;
         private int floorNo;
-        [SerializeField] private Vector3[] arrPos;
+        [SerializeField] private Vector3[] arrMapPos;
+
+        // for room info
+        private Vector2 v2RoomSize;
+        private int roomNo;
+        [SerializeField] private Vector3[] arrRoomPos;
 
 
     #region Unity functions
@@ -47,6 +52,9 @@ namespace Joycollab.v2
 
             v2SquareSize = new Vector2(20.48f, 11.52f);
             floorNo = 1;
+
+            v2RoomSize = new Vector2(9.6f, 5.4f);
+            roomNo = 1;
         }
 
         private void FixedUpdate()
@@ -84,7 +92,7 @@ namespace Joycollab.v2
         {
             if (floorNo == no) return;
 
-            playerTransform.position = arrPos[no - 1];
+            playerTransform.position = arrMapPos[no - 1];
             floorNo = no;
         }
 

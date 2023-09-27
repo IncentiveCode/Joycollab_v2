@@ -130,6 +130,7 @@ namespace Joycollab.v2
             switch (key) 
             {
                 case eStorageKey.UserInfo :
+                    Debug.Log($"{TAG} | UpdateInfo (UserInfo) - photo : {myPhoto}");
                     if (!myPhoto.Equals(R.singleton.myPhoto)) 
                     {
                         myPhoto = R.singleton.myPhoto;
