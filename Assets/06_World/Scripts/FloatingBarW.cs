@@ -50,7 +50,6 @@ namespace Joycollab.v2
         private string myPhoto;
         private int alarmCount, chatCount, userCount;
 
-        private int temp = 1;
 
     #region Unity functions
 
@@ -60,10 +59,10 @@ namespace Joycollab.v2
             _btnProfile.onClick.AddListener(() => {
                 Debug.Log($"{TAG} | user profile open.");
 
-                // 임시로 사용 중.
-                if (temp == 1) temp = 2;
-                else if (temp == 2) temp = 1;
-                SquareCamera.singleton.Teleport(temp);
+                if (R.singleton.ElevaotrOpt == 0) 
+                    R.singleton.ElevaotrOpt ++;
+                else
+                    R.singleton.ElevaotrOpt = 0;
             });
             _btnMicControl.onClick.AddListener(() => {
                 // 임시로 사용 중.

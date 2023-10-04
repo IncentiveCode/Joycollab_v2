@@ -1,12 +1,13 @@
 /// <summary>
 /// Network 통신 - 모임방 관련 요청과 응답
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 22 
-/// @version        : 0.3
+/// @last update    : 2023. 10. 04 
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 08. 31) : 최초 생성
 ///     v0.2 (2023. 09. 14) : InfiniteScrollData class 수정. Request class 추가.
 ///     v0.3 (2023. 09. 22) : 모임방 생성용 Request class 추가. (RequestCreateClas, RequestCreateClasDetail)
+///     v0.4 (2023. 10. 04) : 모임방 카테고리 관련 InfiniteScrollData class 추가.
 /// </summary>
  
 using System;
@@ -130,16 +131,34 @@ namespace Joycollab.v2
         public ClasInfo info;
         public bool loadMore;
 
-        public ClasData(ClasInfo c) 
-        {
-            info = c;
-            loadMore = false;
-        }
 
         public ClasData() 
         {
             info = null;
             loadMore = true;
+        }
+
+        public ClasData(ClasInfo c) 
+        {
+            info = c;
+            loadMore = false;
+        }
+    }
+
+
+    public class RoomCategoryData : InfiniteScrollData
+    {
+        public TpsInfo info;
+
+
+        public RoomCategoryData() 
+        {
+            this.info = null;
+        }
+
+        public RoomCategoryData(TpsInfo info) 
+        {
+            this.info = info;
         }
     }
 }

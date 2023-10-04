@@ -163,6 +163,7 @@ namespace Joycollab.v2
                 case eStorageKey.Chat :
                 case eStorageKey.FontSize :
                 case eStorageKey.Locale :
+                case eStorageKey.Elevator :
                 case eStorageKey.WindowRefresh :
                 case eStorageKey.UserCount :
                     observer.UpdateInfo(key);
@@ -255,6 +256,25 @@ namespace Joycollab.v2
         }
 
     #endregion  // font setting
+
+
+    #region elevator
+
+        private int _elevatorOpt;
+
+        public int ElevaotrOpt 
+        {
+            get {
+                return Mathf.Clamp(_elevatorOpt, 0, 10);
+            }
+            set {
+                _elevatorOpt = Mathf.Clamp(value, 0, 10);
+                NotifyAll(eStorageKey.Elevator);
+                Debug.Log($"{TAG} | elevator opt : {_elevatorOpt}");
+            }
+        }
+
+    #endregion  // elevator
 
 
     #region Token & important information

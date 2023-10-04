@@ -28,8 +28,8 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnClear;
         [SerializeField] private Button _btnSearch;
 
-        // TODO. 추후 카테고리 관련 항목이 들어갈 수 있음. 지금은 고정값으로 처리.
-        // [Header("category")]
+        [Header("category")]
+        [SerializeField] private InfiniteScroll _categoryView;
 
         [Header("buttons")]
         [SerializeField] private Button _btnCreate;
@@ -121,6 +121,13 @@ namespace Joycollab.v2
 
         private async UniTask<int> Refresh() 
         {
+            string res = await _module.GetCategoryList(_categoryView);
+            if (! string.IsNullOrEmpty(res)) 
+            {
+                PopupBuilder.singleton.OpenAlert(res, () => Hide());
+                return -1;
+            }
+
             if (firstRequest) 
             {
                 req.keyword = string.Empty;
@@ -129,7 +136,7 @@ namespace Joycollab.v2
                 req.refresh = true;
                 firstRequest = false;
 
-                string res = await _module.GetRoomList(req, _scrollView);
+                res = await _module.GetRoomList(req, _scrollView);
                 if (! string.IsNullOrEmpty(res)) 
                 {
                     PopupBuilder.singleton.OpenAlert(res, () => Hide());

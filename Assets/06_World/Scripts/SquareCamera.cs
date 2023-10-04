@@ -54,7 +54,7 @@ namespace Joycollab.v2
             floorNo = 1;
 
             v2RoomSize = new Vector2(9.6f, 5.4f);
-            roomNo = 1;
+            roomNo = 0;
         }
 
         private void FixedUpdate()
@@ -96,6 +96,22 @@ namespace Joycollab.v2
             floorNo = no;
         }
 
+        public void TeleportForRoom(int no) 
+        {
+            if (roomNo == no) return;
+
+            if (no == 0)
+            {
+                playerTransform.position = arrMapPos[floorNo - 1];
+            }
+            else
+            {
+                playerTransform.position = arrRoomPos[no - 1];
+            }
+
+            roomNo = no;
+        }
+
     #endregion  // public functions
 
 
@@ -109,16 +125,32 @@ namespace Joycollab.v2
                 playerTransform.position + distance,
                 Time.deltaTime * cameraMoveSpeed);
 
-            float lx = v2SquareSize.x - fWidth; 
-            float clampX = Mathf.Clamp(mainCam.transform.position.x, -lx, lx);
+            float lx, clampX, ly, clampY;
+
+            if (roomNo == 0)
+            {
+                lx = v2SquareSize.x - fWidth; 
+                ly = v2SquareSize.y - fSize;
+
+                clampY = Mathf.Clamp(mainCam.transform.position.y, 
+                    -ly + ((floorNo == 1) ? 0 : 35), 
+                    ly + ((floorNo == 1) ? 0 : 35)); 
+                v3CameraPos.y = clampY;
+            }
+            else 
+            {
+                lx = v2RoomSize.x - fWidth;
+                ly = v2RoomSize.y - fSize;
+
+                float ty = ((roomNo - 1) * 15) + 60;
+                clampY = Mathf.Clamp(mainCam.transform.position.y, 
+                    -ly + ty, 
+                    ly + ty); 
+                v3CameraPos.y = clampY;
+            }
+
+            clampX = Mathf.Clamp(mainCam.transform.position.x, -lx, lx);
             v3CameraPos.x = clampX;
-
-            float ly = v2SquareSize.y - fSize;
-            float clampY = Mathf.Clamp(mainCam.transform.position.y, 
-                -ly + ((floorNo == 1) ? 0 : 35), 
-                ly + ((floorNo == 1) ? 0 : 35)); 
-            v3CameraPos.y = clampY;
-
             v3CameraPos.z = fZ;
 
             mainCam.transform.position = v3CameraPos;

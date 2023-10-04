@@ -62,6 +62,25 @@ namespace Joycollab.v2
             return res; 
         }
 
+		public async UniTask<string> GetCategoryList(InfiniteScroll view) 
+		{
+            string url = string.Format(URL.GET_CODE, "모임방 카테고리");
+            PsResponse<TpsList> res = await NetworkTask.RequestAsync<TpsList>(url, eMethodType.GET, string.Empty, R.singleton.token);
+
+			view.Clear();
+			if (string.IsNullOrEmpty(res.message)) 
+			{
+				RoomCategoryData t;
+				foreach (var item in res.data.list) 
+				{
+					t = new RoomCategoryData(item);
+					view.InsertData(t);
+				}
+			}
+
+			return res.message;
+		}
+
 	#endregion	// for List
 	}
 }
