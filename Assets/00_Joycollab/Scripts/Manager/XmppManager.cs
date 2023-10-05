@@ -517,7 +517,7 @@ namespace Joycollab.v2
 
                     string token = R.singleton.accessToken;
 
-                    link = string.Format(URL.MOBILE_CALL_LINK, workspaceSeq, xcMsg.seq, memberSeq, lan, token);
+                    link = string.Format(URL.CALL_LINK_M, workspaceSeq, xcMsg.seq, memberSeq, lan, token);
                     AndroidLib.singleton.CheckVoicePermission(() => {
                         // TODO. 음성통화 소리 출력
 

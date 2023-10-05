@@ -81,7 +81,7 @@ namespace Joycollab.v2
                 GetMyInfoAsync(),
                 GetOfficeInfoAsync(),
                 GetAlarmListAsync(),
-                GetSpaceListAsync(),
+                // GetSpaceListAsync(),
                 GetBookmarkListAsync(),
                 GetStateListAsync(),
                 GetUnreadCountAsync()

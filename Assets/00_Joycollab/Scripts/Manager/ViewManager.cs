@@ -98,6 +98,10 @@ namespace Joycollab.v2
                     Push(S.WorldScene_SignIn);
                     break;
 
+                case S.MobileScene_ViewTag :
+                    Push(S.MobileScene_Login);
+                    break;
+
                 default :
                     Push(S.SignInScene_SignIn);
                     break;

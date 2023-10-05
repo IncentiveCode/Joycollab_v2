@@ -24,6 +24,7 @@ namespace Joycollab.v2
         [SerializeField] private RawImage _imgLogo;
         
 		[Header("button")]
+        [SerializeField] private Button _btnItem;
 		[SerializeField] private Button _btnEnter;
 		[SerializeField] private Button _btnJoin;
 
@@ -44,6 +45,7 @@ namespace Joycollab.v2
         private void Awake() 
         {
             // set button listener
+            _btnItem.onClick.AddListener(OnSelect);
             _btnEnter.onClick.AddListener(OnEnter);
             _btnJoin.onClick.AddListener(OnJoin);
 

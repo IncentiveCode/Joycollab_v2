@@ -53,6 +53,7 @@ namespace Joycollab.v2
         {
             Init();
             base.Reset();
+            Debug.Log($"{TAG} | Awake() call.");
         }
 
     #endregion  // Unity functions
@@ -67,6 +68,10 @@ namespace Joycollab.v2
 
 
             // set infinite scrollview
+            _categoryView.AddSelectCallback((data) => {
+                Debug.Log($"{TAG} | category select. selected : {((RoomCategoryData)data).info.nm}");
+            });
+
             _scrollView.AddSelectCallback((data) => {
                 Debug.Log($"{TAG} | Load More");
             });

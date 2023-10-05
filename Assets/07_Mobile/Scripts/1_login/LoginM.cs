@@ -139,7 +139,7 @@ namespace Joycollab.v2
             _btnTest.onClick.AddListener(() => {
                 // _inputId.text = "hjlee@pitchsolution.co.kr";
                 _inputId.text = "incentivecode@gmail.com";
-                _inputPw.text = "123123123";
+                _inputPw.text = "Qwer!234";
                 Request().Forget();
             });
             // _btnTest.gameObject.SetActive(URL.DEV);
