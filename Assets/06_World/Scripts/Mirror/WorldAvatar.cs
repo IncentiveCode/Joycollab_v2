@@ -41,6 +41,9 @@ namespace Joycollab.v2
         public string avatarName; 
         [SyncVar(hook = nameof(SetAvatarPhoto_Hook))]
         public string avatarPhoto;
+        [SyncVar]
+        public string avatarMemberType;
+
         [SyncVar(hook = nameof(SetAvatarChat_Hook))] 
         public string avatarChat;
 
@@ -85,11 +88,12 @@ namespace Joycollab.v2
 
     #region Public functions
 
-        public void UpdateAvatarInfo(int seq, string name, string photo) 
+        public void UpdateAvatarInfo(WorldAvatarInfo info) 
         {
-            avatarSeq = seq;
-            avatarName = name;
-            avatarPhoto = photo;
+            avatarSeq = info.seq;
+            avatarName = info.nickNm;
+            avatarPhoto = info.photo;
+            avatarMemberType = info.memberType;
         }
 
         public void UpdateAvatarChat(string chat) 

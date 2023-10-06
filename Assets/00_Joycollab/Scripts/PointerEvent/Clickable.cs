@@ -8,7 +8,7 @@ namespace Joycollab.v2
     {
         [SerializeField] private eClickableObjectType _objectType;
         [SerializeField] private eRendererType _rendererType;
-        [SerializeField] private eMenuTitle[] _menuItems;
+        [SerializeField] private string[] _menuItems;
         [SerializeField, Range(0, 1)] private float _alphaValueOnEnter;
         [SerializeField, Range(0, 1)] private float _alphaValueOnExit;
 
@@ -282,7 +282,7 @@ namespace Joycollab.v2
                 return;
             }
 
-            MenuController ctrl = MenuBuilder.Instance.Build();
+            MenuController ctrl = MenuBuilder.singleton.Build();
             if (ctrl == null)
             {
                 Debug.LogError("현재 scene 에 MenuBuilder instance 가 없습니다.");
@@ -291,30 +291,35 @@ namespace Joycollab.v2
 
             // TODO. 건물 정보 설정 후 이름 출력할 것.
             ctrl.Init("Menu");
-            foreach (eMenuTitle menuItem in _menuItems) 
+            foreach (var item in _menuItems) 
             {
-                ctrl.AddMenu(menuItem, () => {
-                    switch (menuItem) 
+                ctrl.AddMenu(item, () => {
+                    switch (item) 
                     {
-                        case eMenuTitle.Detail :
+                        case S.MENU_DETAILS :
                             Debug.Log("건물 상세 화면 연결 예정.");
-                            ProgressBuilder.singleton.OpenProgress(1f);
+                            // ProgressBuilder.singleton.OpenProgress(1f);
                             break;
 
-                        case eMenuTitle.Enter :
+                        case S.MENU_ENTER :
                             Debug.Log("Mirror server 연결 후 Square Scene 으로 이동 예정.");
-                            ProgressBuilder.singleton.OpenProgress(1f);
+                            // ProgressBuilder.singleton.OpenProgress(1f);
 
-                            /**
                             var manager = WorldNetworkManager.singleton;
-                            // manager.networkAddress = "localhost";
-                            manager.networkAddress = "dev.jcollab.com";
-                            manager.StartClient();
-                             */
+                            // manager.networkAddress = "dev.jcollab.com";
+                            manager.networkAddress = "localhost";
+                            if (manager.isNetworkActive)
+                            {
+                                manager.StartClient();
+                            }
+                            else 
+                            {
+                                manager.StartHost();
+                            }
                             break;
 
                         default :
-                            Debug.LogError($"아직 준비되지 않은 아이템 항목 : {menuItem.ToString()}");
+                            Debug.LogError($"아직 준비되지 않은 아이템 항목 : {item}");
                             break;
                     }
                 });

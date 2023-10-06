@@ -2,10 +2,11 @@
 /// [world]
 /// 사용자 리스트 Script
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 18
-/// @version        : 0.1
+/// @last update    : 2023. 10. 06
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 09. 18) : 최초 생성
+///     v0.2 (2023. 10. 06) : world avatar data class 에 정보 담아서 리스트 출력
 /// </summary>
 
 using UnityEngine;
@@ -59,7 +60,7 @@ namespace Joycollab.v2
 
             // set infinite scrollview
             _scrollView.AddSelectCallback((data) => {
-                Debug.Log($"{TAG} | 해당 사용자의 정보 출력...");
+                Debug.Log($"{TAG} | 해당 사용자의 정보 출력. user seq : {((WorldAvatarData)data).info.seq}, name : {((WorldAvatarData)data).info.nickNm}");
             });
 
 
@@ -107,11 +108,17 @@ namespace Joycollab.v2
 
         private async UniTask<int> Refresh() 
         {
-            // TODO. Mirror 쪽의 사용자 정보를 어떻게 출력할지 검토.
+            WorldAvatarData t;
 
+            _scrollView.Clear();
+            foreach (var info in WorldAvatarList.avatarInfos) 
+            {
+                t = new WorldAvatarData(info);
+                _scrollView.InsertData(t);
+            }
             _scrollView.UpdateAllData();
-            await UniTask.Yield(); 
 
+            await UniTask.Yield(); 
             _btnClear.gameObject.SetActive(! string.IsNullOrEmpty(_inputSearch.text));
             return 0;
         }

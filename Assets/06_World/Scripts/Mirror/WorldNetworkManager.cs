@@ -14,9 +14,6 @@ namespace Joycollab.v2
 {
     public class WorldNetworkManager : NetworkManager
     {
-        private Transform canvas;
-
-
     #region override functions
 
         public override void Awake() 
@@ -61,7 +58,8 @@ namespace Joycollab.v2
             NetworkServer.AddPlayerForConnection(conn, player);
             WorldAvatar script = player.GetComponent<WorldAvatar>();
             WorldAvatarInfo info = (WorldAvatarInfo) conn.authenticationData;
-            script.UpdateAvatarInfo(info.seq, info.nickNm, info.photo);
+            // script.UpdateAvatarInfo(info.seq, info.nickNm, info.photo, info.memberType);
+            script.UpdateAvatarInfo(info);
         }
 
         public override void OnServerDisconnect(NetworkConnectionToClient conn) 

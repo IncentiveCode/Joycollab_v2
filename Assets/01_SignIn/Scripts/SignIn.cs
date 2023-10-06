@@ -323,10 +323,12 @@ namespace Joycollab.v2
             R.singleton.uiType = res.data.uiType;
 
             // world avatar 정보 설정.
-            WorldAvatarInfo info = new WorldAvatarInfo();
-            info.seq = res.data.seq;
-            info.nickNm = res.data.nickNm;
-            info.photo = res.data.photo;
+            WorldAvatarInfo info = new WorldAvatarInfo(
+                res.data.seq, 
+                res.data.nickNm,
+                res.data.photo,
+                res.data.memberType
+            );
             WorldAvatar.localPlayerInfo = info;
             WorldChatView.localPlayerInfo = info;
 

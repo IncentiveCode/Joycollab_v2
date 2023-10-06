@@ -1,8 +1,8 @@
 /// <summary>
 /// Network 통신 - 사용자, 워크스페이스 멤버 관련 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 21
-/// @version        : 0.9
+/// @last update    : 2023. 10. 06
+/// @version        : 1.0
 /// @update
 ///     v0.1 (2023. 02. 23) : Joycollab 에서 사용하던 클래스 정리 및 통합.
 ///     v0.2 (2023. 06. 14) : MemberSeq 클래스 추가.
@@ -14,6 +14,7 @@
 ///     v0.7 (2023. 09. 15) : ResUserInfo 에 zoom id, zoom e-mail 필드 추가.
 ///     v0.8 (2023. 09. 19) : ResMemberInfo 에 추가된 필드 추가 (fcmToken, plan, sdt, businessNum, compName, business, tel, ceoNm, mainBusiness, homepage)
 ///     v0.9 (2023. 09. 21) : Request 용 class 추가 (ReqMemberInfo, ReqMemberCompanyInfo, ReqMemberEnvironmentInfo, ReqMemberAlarmInfo and...)
+///     v1.0 (2023. 10. 06) : Infinite scroll data 추가. (WorldAvatarData)
 /// </summary>
 
 using System;
@@ -28,18 +29,20 @@ namespace Joycollab.v2
         public int seq;
         public string nickNm;
         public string photo;
+        public string memberType;
 
         public WorldAvatarInfo() 
         {
             seq = -1;
-            nickNm = photo = string.Empty;
+            nickNm = photo = memberType = string.Empty;
         }
 
-        public WorldAvatarInfo(int seq, string nickNm, string photo)
+        public WorldAvatarInfo(int seq, string nickNm, string photo, string memberType)
         {
             this.seq = seq;
             this.nickNm = nickNm;
             this.photo = photo;
+            this.memberType = memberType;
         }
     }
 
@@ -348,6 +351,21 @@ namespace Joycollab.v2
             info = data;
         }
 	}
+
+    public class WorldAvatarData : InfiniteScrollData 
+    {
+        public WorldAvatarInfo info;
+
+        public WorldAvatarData() 
+        {
+            info = new WorldAvatarInfo();
+        }
+
+        public WorldAvatarData(WorldAvatarInfo data) 
+        {
+            info = data;
+        }
+    }
 
 #endregion  // infinite scroll data
 }

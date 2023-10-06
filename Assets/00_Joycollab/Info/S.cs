@@ -1,8 +1,8 @@
 /// <summary>
 /// 자주 사용하는 string 값 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 14
-/// @version        : 1.1
+/// @last update    : 2023. 10. 06
+/// @version        : 1.2
 /// @update
 ///     v0.1 (2023. 03. 20) : 최초 생성. Scene 이름, LoginView, MobileView 이름 정리
 ///     v0.2 (2023. 04. 07) : Language, region 관련 상수 정리 
@@ -15,6 +15,7 @@
 ///     v0.9 (2023. 08. 24) : Management Scene 상수값 추가.
 ///     v1.0 (2023. 08. 25) : URL.GET_CODE 에서 사용하는 Top Code 상수값 추가. 
 ///     v1.1 (2023. 09. 14) : World 에서 사용할 WindowView 이름 정리 (진행 중)
+///     v1.2 (2023. 10. 06) : Popup menu string 정리
 /// </summary>
 
 namespace Joycollab.v2
@@ -44,6 +45,7 @@ namespace Joycollab.v2
         public const string Canvas_System = "System Canvas";    // order 0
 
         public const string Canvas_Master = "Master Canvas";
+        public const string Canvas_Menu = "Menu Canvas";
         public const string Canvas_Popup = "Popup Canvas";
         public const string Canvas_Popup_M = "SafeArea _ popup";
         public const string Canvas_Progress_M = "SafeArea _ progress";
@@ -406,5 +408,53 @@ namespace Joycollab.v2
         public const string PLAN_PREMIUM = "프리미엄";
 
     #endregion  // plan
+
+
+    #region Popup menu
+
+        public const string MENU_SHARE_FILEBOX = "공유 파일";
+        public const string MENU_DEPT_BOARD = "부서 게시판";
+        public const string MENU_DEPT_TODO = "부서 할 일";
+        public const string MENU_DEPT_CALL = "부서 음성 통화";
+        public const string MENU_DEPT_MEETING = "부서 화상 회의";
+
+
+        public const string MENU_GROUP = "그룹";
+        public const string MENU_GROUP_CALL = "그룹 음성 통화";
+        public const string MENU_GROUP_CHAT = "그룹 채팅";
+        public const string MENU_GROUP_MEETING = "그룹 화상 회의";
+
+
+        public const string MENU_VIEW = "상세 보기";
+        public const string MENU_CALL = "음성 통화";
+        public const string MENU_CHAT = "채팅";
+        public const string MENU_MEETING = "화상 회의";
+        public const string MENU_FILEBOX = "파일함 보기";
+        public const string MENU_TODO = "할 일 보기";
+
+
+        public const string MENU_MOVE_MY_SEAT = "내 자리로 이동";
+        public const string MENU_MOVE_LOBBY = "로비로 이동";
+        public const string MENU_MOVE_LOUNGE = "휴게실로 이동";
+
+
+        public const string MENU_RENAME = "이름 변경";
+        public const string MENU_NEW_FOLDER = "새 폴더";
+        public const string MENU_OPEN = "열기";
+        public const string MENU_DOWNLOAD = "다운로드";
+        public const string MENU_COPY = "복사";
+        public const string MENU_PASTE = "붙여넣기";
+        public const string MENU_DELETE = "삭제";
+        public const string MENU_DELETE_FILE = "파일 삭제";
+        public const string MENU_SELECT_ALL = "전체 선택";
+
+
+        public const string MENU_CANCEL_ARRANGE = "배치 취소";
+
+
+        public const string MENU_DETAILS = "상세보기";
+        public const string MENU_ENTER = "입장";
+
+    #endregion  // Popup menu
     }
 }

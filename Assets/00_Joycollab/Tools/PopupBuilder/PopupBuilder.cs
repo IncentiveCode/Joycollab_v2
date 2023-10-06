@@ -39,7 +39,6 @@ namespace Joycollab.v2
 
         private void Awake() 
         {
-            // InitSingleton();
             singleton = this;
         }
 
