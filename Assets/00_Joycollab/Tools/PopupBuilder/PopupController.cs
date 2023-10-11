@@ -159,7 +159,7 @@ namespace Joycollab.v2
                 if (string.IsNullOrEmpty(value))
                 {
                     Locale currentLocale = LocalizationSettings.SelectedLocale;
-                    string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "알림", currentLocale);
+                    string notice = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "알림", currentLocale);
                     _txtTitle.text = notice;
                 }
                 else 

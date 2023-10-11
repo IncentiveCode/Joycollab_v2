@@ -125,12 +125,12 @@ namespace Joycollab.v2
                         break;
 
                     case S.SHARE_COMPANY :
-                        _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "전사", currentLocale);
+                        _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "전사", currentLocale);
                         break;
 
                     case S.SHARE_NONE :
                     default :
-                        _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "없음", currentLocale);
+                        _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "없음", currentLocale);
                         break;
                 }
 

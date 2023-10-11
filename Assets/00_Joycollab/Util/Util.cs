@@ -1,11 +1,12 @@
 /// <summary>
 /// Utility functions 집합 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 09
-/// @version        : 0.2
+/// @last update    : 2023. 10. 11
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 03. 15) : 최초 생성, Joycollab & TechnoPark 등 작업을 하면서 작성한 것들을 수정 및 적용 (진행 중)
 ///     v0.2 (2023. 08. 09) : CalculateScalerRatio() 수정. constant pixel size 타입의 경우, scaleFactor 를 리턴.
+///     v0.3 (2023. 10. 11) : tp 에서 사용하던 Timezone 관련 함수 추가.
 /// </summary>
 
 using System;
@@ -146,6 +147,7 @@ namespace Joycollab.v2
 
 
     #region gesture detect
+
         /// <summary>
         /// Quaternion 값을 Euler Angles 로 변경하는 함수.
         /// </summary>
@@ -174,6 +176,51 @@ namespace Joycollab.v2
             return result;
         }
          */
+
     #endregion // gesture detect
+
+
+    #region Timezone
+
+        /// <summary>
+        /// utc (long data) 를 Datetime 형태로 변경하는 함수.
+        /// </summary>
+        /// <param name="Utc">utc value</param>
+        /// <returns>변경된 datetime value</returns>
+        public static DateTime Utc2LocalTime(long Utc)
+        {
+            DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            DateTime date = start.AddMilliseconds(Utc).ToLocalTime();
+
+            return date;
+        }
+
+        /// <summary>
+        /// offset 을 사용해서 utc (long data) 를 Datetime 형태로 변경하는 함수.
+        /// </summary>
+        /// <param name="Utc">utc value</param>
+        /// <returns>변경된 datetime value</returns>
+        public static DateTime Utc2CurrentZoneTime(long Utc, int offsets) 
+        {
+            DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            DateTime date = start.AddMilliseconds(Utc).AddMinutes(offsets);
+
+            return date;
+        }
+
+        /// <summary>
+        /// DateTime 을 utc (long type) 으로 변경하는 함수.
+        /// </summary>
+        /// <param name="date"></param>
+        /// <returns></returns>
+        public static long Datetime2Utc(DateTime date) 
+        {
+            DateTime start = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            long result = (long)date.ToUniversalTime().Subtract(start).TotalMilliseconds;
+
+            return result;
+        }         
+
+    #endregion  // Timezone
 	}
 }

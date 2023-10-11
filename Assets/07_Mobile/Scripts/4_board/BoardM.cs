@@ -138,7 +138,7 @@ namespace Joycollab.v2
             if (! hasAuth) 
             {
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "권한오류 (게시글 조회)", currentLocale),
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "권한오류.게시글 조회", currentLocale),
                     () => BackProcess()
                 );
             }

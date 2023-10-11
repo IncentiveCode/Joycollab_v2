@@ -271,7 +271,7 @@ namespace Joycollab.v2
                 else 
                 {
                     Locale currentLocale = LocalizationSettings.SelectedLocale;
-                    string title = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "스페이스 선택", currentLocale);
+                    string title = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "스페이스 선택", currentLocale);
 					string temp = stringBuilder.ToString();
 					string[] options = temp.Split(',');
                     PopupBuilder.singleton.OpenSlide(title, options, new string[] { }, viewID, false);

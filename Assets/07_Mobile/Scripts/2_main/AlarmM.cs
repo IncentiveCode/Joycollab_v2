@@ -139,7 +139,7 @@ namespace Joycollab.v2
                 if (R.singleton.AlarmCount == 0) return;
 
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
-                string text = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "모든 알림 삭제 질문", currentLocale);
+                string text = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "모든 알림 삭제 확인", currentLocale);
                 PopupBuilder.singleton.OpenConfirm(text, async () => {
                     string res = await _module.TruncateAlarm();
                     if (string.IsNullOrEmpty(res)) 

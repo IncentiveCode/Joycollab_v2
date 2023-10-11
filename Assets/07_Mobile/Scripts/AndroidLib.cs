@@ -252,9 +252,9 @@ namespace Joycollab.v2
                     Locale currentLocale = LocalizationSettings.SelectedLocale;
                     PopupBuilder.singleton.OpenConfirm(
                         LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "카메라 권한 요청", currentLocale),
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "허용", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Word", "허용", currentLocale),
                         () => Debug.Log($"{TAG} | 카메라 권한 요청 승인"),
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "거부", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Word", "거부", currentLocale),
                         () => {
                             PopupBuilder.singleton.OpenAlert(
                                 LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "카메라 권한 요청 거부", currentLocale)
@@ -282,9 +282,9 @@ namespace Joycollab.v2
                     Locale currentLocale = LocalizationSettings.SelectedLocale;
                     PopupBuilder.singleton.OpenConfirm(
                         LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "마이크 권한 요청", currentLocale),
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "허용", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Word", "허용", currentLocale),
                         () => Debug.Log($"{TAG} | 마이크 권한 요청 승인"),
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "거부", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Word", "거부", currentLocale),
                         () => {
                             PopupBuilder.singleton.OpenAlert(
                                 LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "마이크 권한 요청 거부", currentLocale)
@@ -317,12 +317,12 @@ namespace Joycollab.v2
                     Locale currentLocale = LocalizationSettings.SelectedLocale;
                     PopupBuilder.singleton.OpenConfirm(
                         LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "마이크 권한 요청", currentLocale),
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "허용", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Word", "허용", currentLocale),
                         () => {
                             Debug.Log($"{TAG} | 마이크 권한 요청 승인");
                             func?.Invoke();
                         },
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "거부", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Word", "거부", currentLocale),
                         () => {
                             PopupBuilder.singleton.OpenAlert(
                                 LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "마이크 권한 요청 거부", currentLocale)
@@ -364,12 +364,12 @@ namespace Joycollab.v2
                     Locale currentLocale = LocalizationSettings.SelectedLocale;
                     PopupBuilder.singleton.OpenConfirm(
                         LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "파일읽기 권한 요청", currentLocale),
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "허용", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Word", "허용", currentLocale),
                         () => {
                             Debug.Log($"{TAG} | 파일 읽기 권한 요청 승인");
                             Permission.RequestUserPermissions(permissions);
                         },
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "거부", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Word", "거부", currentLocale),
                         () => {
                             PopupBuilder.singleton.OpenAlert(
                                 LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "파일읽기 권한 요청 거부", currentLocale)
@@ -392,12 +392,12 @@ namespace Joycollab.v2
                     Locale currentLocale = LocalizationSettings.SelectedLocale;
                     PopupBuilder.singleton.OpenConfirm(
                         LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "파일읽기 권한 요청", currentLocale),
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "허용", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Word", "허용", currentLocale),
                         () => {
                             Debug.Log($"{TAG} | 파일 읽기 권한 요청 승인");
                             Permission.RequestUserPermission(Permission.ExternalStorageRead);
                         },
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "거부", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Word", "거부", currentLocale),
                         () => {
                             PopupBuilder.singleton.OpenAlert(
                                 LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "파일읽기 권한 요청 거부", currentLocale)
@@ -430,12 +430,12 @@ namespace Joycollab.v2
                     Locale currentLocale = LocalizationSettings.SelectedLocale;
                     PopupBuilder.singleton.OpenConfirm(
                         LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "파일읽기 권한 요청", currentLocale),
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "허용", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Word", "허용", currentLocale),
                         () => {
                             Debug.Log($"{TAG} | 파일 읽기 권한 요청 승인");
                             func?.Invoke();
                         },
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "거부", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Word", "거부", currentLocale),
                         () => {
                             PopupBuilder.singleton.OpenAlert(
                                 LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "파일읽기 권한 요청 거부", currentLocale)
@@ -466,12 +466,12 @@ namespace Joycollab.v2
                     Locale currentLocale = LocalizationSettings.SelectedLocale;
                     PopupBuilder.singleton.OpenConfirm(
                         LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "파일쓰기 권한 요청", currentLocale),
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "허용", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Word", "허용", currentLocale),
                         () => {
                             Debug.Log($"{TAG} | 파일 쓰기 권한 요청 승인");
                             func?.Invoke();
                         },
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "거부", currentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Word", "거부", currentLocale),
                         () => {
                             PopupBuilder.singleton.OpenAlert(
                                 LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "파일쓰기 권한 요청 거부", currentLocale)

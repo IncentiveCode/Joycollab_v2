@@ -105,7 +105,7 @@ namespace Joycollab.v2
         {
             Locale currentLocale = LocalizationSettings.SelectedLocale;
             PopupBuilder.singleton.OpenConfirm(
-                LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "로그아웃 질문", currentLocale),
+                LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "로그아웃 확인", currentLocale),
                 () => LogoutProcess()
             );
         }
@@ -135,28 +135,28 @@ namespace Joycollab.v2
             switch (R.singleton.myMemberType) 
             {
                 case S.MANAGER :
-                    _txtMemberType.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "멤버타입 매니저", currentLocale);
+                    _txtMemberType.text = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "멤버타입.매니저", currentLocale);
                     break;
 
                 case S.ADMIN :
-                    _txtMemberType.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "멤버타입 관리자", currentLocale);
+                    _txtMemberType.text = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "멤버타입.관리자", currentLocale);
                     break;
 
                 case S.OWNER :
-                    _txtMemberType.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "멤버타입 소유자", currentLocale);
+                    _txtMemberType.text = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "멤버타입.소유자", currentLocale);
                     break;
 
                 case S.COLLABORATOR :
-                    _txtMemberType.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "멤버타입 협업자", currentLocale);
+                    _txtMemberType.text = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "멤버타입.협업자", currentLocale);
                     break;
 
                 case S.GUEST :
-                    _txtMemberType.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "멤버타입 게스트", currentLocale);
+                    _txtMemberType.text = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "멤버타입.게스트", currentLocale);
                     break;
 
                 case S.USER :
                 default :
-                    _txtMemberType.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "멤버타입 일반사용자", currentLocale);
+                    _txtMemberType.text = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "멤버타입.일반사용자", currentLocale);
                     break;
             }
 

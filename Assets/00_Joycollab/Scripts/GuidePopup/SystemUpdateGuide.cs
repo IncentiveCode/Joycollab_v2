@@ -37,7 +37,7 @@ namespace Joycollab.v2
                         }
                         else 
                         {
-                            string alert = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호 불일치", R.singleton.CurrentLocale);
+                            string alert = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호 불일치 안내", R.singleton.CurrentLocale);
                             PopupBuilder.singleton.OpenAlert(alert);
                         }
                     },

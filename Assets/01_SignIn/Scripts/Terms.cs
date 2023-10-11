@@ -70,15 +70,15 @@ namespace Joycollab.v2
             switch (opt) 
             {
                 case S.TERMS_OF_USAGE :
-                    _txtTitle.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "이용약관", R.singleton.CurrentLocale);
+                    _txtTitle.text = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "이용약관", R.singleton.CurrentLocale);
                     break;
 
                 case S.TERMS_OF_PRIVACY :
-                    _txtTitle.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "개인정보 수집 및 이용", R.singleton.CurrentLocale);
+                    _txtTitle.text = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "개인정보 수집 및 이용", R.singleton.CurrentLocale);
                     break;
 
                 case S.TERMS_OF_MARKETING :
-                    _txtTitle.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "마케팅 정보 수신", R.singleton.CurrentLocale);
+                    _txtTitle.text = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "마케팅 정보 수신", R.singleton.CurrentLocale);
                     break;
 
                 default :
@@ -90,7 +90,7 @@ namespace Joycollab.v2
             {
                 _txtTitle.text = _txtContent.text = string.Empty;
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "잘못된 접근", R.singleton.CurrentLocale),
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "잘못된 접근", R.singleton.CurrentLocale),
                     () => ViewManager.singleton.Pop()
                 );
                 await UniTask.Yield();
@@ -108,7 +108,7 @@ namespace Joycollab.v2
                 {
                     _txtTitle.text = _txtContent.text = string.Empty;
                     PopupBuilder.singleton.OpenAlert(
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "정보 갱신 실패", R.singleton.CurrentLocale),
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "정보 갱신 실패", R.singleton.CurrentLocale),
                         () => ViewManager.singleton.Pop()
                     );
                 }

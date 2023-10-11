@@ -311,8 +311,8 @@ namespace Joycollab.v2
             if (string.IsNullOrEmpty(res.message)) 
             {
                 string message = (this.seq == -1) ? 
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "등록 완료", currentLocale) :
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "수정 완료", currentLocale);
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "등록 안내", currentLocale) :
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "수정 안내", currentLocale);
 
                 PopupBuilder.singleton.OpenAlert(message, () => {
                     if (this.seq == -1)

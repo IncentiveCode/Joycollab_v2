@@ -1284,8 +1284,8 @@ GameObject:
   - component: {fileID: 889695674088263623}
   - component: {fileID: 889695674088263622}
   - component: {fileID: 889695674088263624}
+  - component: {fileID: 8047648084889751173}
   - component: {fileID: 889695674088263625}
-  - component: {fileID: 889695674088263626}
   m_Layer: 5
   m_Name: Text _ title
   m_TagString: Untagged
@@ -1375,25 +1375,7 @@ MonoBehaviour:
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
---- !u!114 &889695674088263625
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 889695674088263620}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6977f13cefe7d0045a102556edabf7d9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _text: {fileID: 0}
-  sizeOpt: 0
-  _sizeSmall: 18
-  _sizeNormal: 21
-  _sizeLarge: 24
-  _layoutElement: {fileID: 0}
---- !u!114 &889695674088263626
+--- !u!114 &8047648084889751173
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1407,9 +1389,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_StringReference:
     m_TableReference:
-      m_TableCollectionName: GUID:ce2aa06bdf6be40e49e0c5664c7c9861
+      m_TableCollectionName: GUID:1939ce2388859e6458ee26288c24ded5
     m_TableEntryReference:
-      m_KeyId: 51777837284655104
+      m_KeyId: 14807352881905719
       m_Key: 
     m_FallbackState: 0
     m_WaitForCompletion: 0
@@ -1433,6 +1415,24 @@ MonoBehaviour:
   references:
     version: 2
     RefIds: []
+--- !u!114 &889695674088263625
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 889695674088263620}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6977f13cefe7d0045a102556edabf7d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _text: {fileID: 0}
+  sizeOpt: 0
+  _sizeSmall: 18
+  _sizeNormal: 21
+  _sizeLarge: 24
+  _layoutElement: {fileID: 0}
 --- !u!1001 &4014462981068383287
 PrefabInstance:
   m_ObjectHideFlags: 0

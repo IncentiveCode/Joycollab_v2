@@ -569,6 +569,16 @@ namespace Joycollab.v2
     #region NonAuthApi
 
         // ---------- ---------- ----------
+        // 000. Timezone API (without authorization)
+
+        /// <summary>
+        /// desc : Timezone List 조회
+        /// method : get
+        /// </summary>
+        public const string TIMEZONE_LIST = SERVER_PATH +"/npr/api/timezone";
+
+
+        // ---------- ---------- ----------
         // 001. Member API (without authorization)
 
         /// <summary>

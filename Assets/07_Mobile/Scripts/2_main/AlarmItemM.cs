@@ -102,15 +102,15 @@ namespace Joycollab.v2
 				string t = string.Empty;
 				if (diff.Hours == 0) 
 				{
-					t = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", 
-						diff.Minutes == 1 ? "게시글 1분 전" : "게시글 수분 전", 
+					t = LocalizationSettings.StringDatabase.GetLocalizedString("Word", 
+						diff.Minutes == 1 ? "시간.1분 전" : "시간.수분 전", 
 						currentLocale);
 					_txtDate.text = string.Format(t, diff.Minutes);
 				}
 				else
 				{
-					t = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", 
-						diff.Hours == 1 ? "게시글 1시간 전" : "게시글 수시간 전", 
+					t = LocalizationSettings.StringDatabase.GetLocalizedString("Word", 
+						diff.Hours == 1 ? "시간.1시간 전" : "시간.수시간 전", 
 						currentLocale);
 					_txtDate.text = string.Format(t, diff.Hours);
 				}
@@ -285,7 +285,7 @@ namespace Joycollab.v2
 		private void OnMenu() 
 		{
             Locale currentLocale = LocalizationSettings.SelectedLocale;
-			string title = LocalizationSettings.StringDatabase.GetLocalizedString("Menu", "알림 관리", currentLocale);
+			string title = LocalizationSettings.StringDatabase.GetLocalizedString("Menu", "알림.관리", currentLocale);
 
 			int targetSeq = 0;
 			switch (id) 
@@ -320,9 +320,9 @@ namespace Joycollab.v2
 
 			PopupBuilder.singleton.OpenSlide(title, 
 				new string[] {
-					LocalizationSettings.StringDatabase.GetLocalizedString("Menu", "알림 상세 확인", currentLocale),
-					LocalizationSettings.StringDatabase.GetLocalizedString("Menu", "알림 읽음으로 표시", currentLocale),
-					LocalizationSettings.StringDatabase.GetLocalizedString("Menu", "알림 삭제", currentLocale)
+					LocalizationSettings.StringDatabase.GetLocalizedString("Menu", "알림.상세 확인", currentLocale),
+					LocalizationSettings.StringDatabase.GetLocalizedString("Menu", "알림.읽음으로 표시", currentLocale),
+					LocalizationSettings.StringDatabase.GetLocalizedString("Menu", "알림.삭제", currentLocale)
 				}, 
 				new string[] {	// alarm seq, tp id, target seq
 					seq.ToString(),

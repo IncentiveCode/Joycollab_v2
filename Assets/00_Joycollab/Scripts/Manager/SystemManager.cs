@@ -2,8 +2,8 @@
 /// Joycollab 통합 매니저 클래스 
 /// - singleton 남용을 막고, 기존 manager 클래스들에서 중복되어 있는 내용들을 수정/정리/최적화 하기 위해 작성.
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 21
-/// @version        : 0.8
+/// @last update    : 2023. 10. 11
+/// @version        : 0.9
 /// @update
 ///     v0.1 (2023. 04. 07) : 최초 작성.
 ///     v0.2 (2023. 04. 19) : singleton pattern 수정
@@ -13,8 +13,11 @@
 ///     v0.6 (2023. 08. 23) : Window - OnFocus, OnBlur, OnResize 처리 함수 추가
 ///     v0.7 (2023. 08. 28) : Localization 사용 방식 변경.
 ///     v0.8 (2023. 09. 21) : AudioSource 추가. AudioClip 관련 함수 추가.
+///     v0.9 (2023. 10. 11) : Timezone 관련 기능 추가.
 /// </summary>
 
+using System;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
@@ -39,6 +42,10 @@ namespace Joycollab.v2
         // audio
         private AudioSource audioSource;
 
+        // timezone
+        private TimezoneList timezoneList;
+        private TimezoneItem timezoneSeoul;
+
 
     #region Unity functions
 
@@ -47,7 +54,11 @@ namespace Joycollab.v2
             InitSingleton();
             SetTransform();
 
+            // get components
             audioSource = GetComponent<AudioSource>();
+
+            // set local variables
+            timezoneList = new TimezoneList();
         }
 
         private async UniTaskVoid Start() 
@@ -58,7 +69,22 @@ namespace Joycollab.v2
             Application.targetFrameRate = 30;
         #endif
 
-            await R.singleton.Init();
+            var (repoRes, timezoneRes) = await UniTask.WhenAll(
+                R.singleton.Init(),
+                InitTimezone()
+            );
+
+            if (repoRes == false) 
+            {
+                Debug.Log($"{TAG} | Start(), R class init fail.");
+            }
+
+            if (! string.IsNullOrEmpty(timezoneRes)) 
+            {
+                PopupBuilder.singleton.OpenAlert(timezoneRes);
+                return;
+            }
+
             GetSystemNotice().Forget();
         }
 
@@ -103,6 +129,41 @@ namespace Joycollab.v2
         #endif
         }
 
+        private async UniTask<string> InitTimezone() 
+        {
+            if (timezoneList.list.Count > 0) 
+            {
+                Debug.Log($"{TAG} | InitTimezone(), 이미 초기화가 되어 있는 상태.");
+                timezoneList.list.Clear();
+            }
+
+            await UniTask.Yield();
+            return string.Empty;
+
+            // TODO. api 추가되면 반영할 것.
+            /** 
+            PsResponse<TimezoneList> res = await NetworkTask.RequestAsync<TimezoneList>(URL.TIMEZONE_LIST, eMethodType.GET);
+            if (res.message.Equals(string.Empty)) 
+            {
+                timezoneList = res.data;                 
+                foreach (var ti in timezoneList.list) 
+                {
+                    if (ti.id.Equals("Asia/Seoul"))
+                    {
+                        timezoneSeoul = ti;
+                        break;
+                    }
+                } 
+            }
+            else 
+            {
+                Debug.Log($"{TAG} | InitTimezone(), code : {res.code}, error : {res.message}");
+            }
+
+            return res.message;
+             */
+        }
+
     #endregion  // Initialize
 
 
@@ -111,7 +172,6 @@ namespace Joycollab.v2
         private async UniTaskVoid GetSystemNotice() 
         {
             PsResponse<UpdateNoticeList> res = await NetworkTask.RequestAsync<UpdateNoticeList>(URL.SYSTEM_NOTICE_PATH, eMethodType.GET);
-
             if (res.message.Equals(string.Empty)) 
             {
                 if (res.data.list.Count >= 1) 
@@ -141,7 +201,7 @@ namespace Joycollab.v2
             }
             else 
             {
-                Debug.Log($"{TAG} | code : "+ res.code +", error : " + res.message);
+                Debug.Log($"{TAG} | GetSystemNotice(), code : {res.code}, error : {res.message}");
             }
         }
 
@@ -320,5 +380,50 @@ namespace Joycollab.v2
         }
 
     #endregion AudioSource
+
+
+    #region Timezone 
+
+		public DateTime GetSeoulTime() 
+		{
+			DateTime now = DateTime.Now;
+			long tick = Util.Datetime2Utc(now);
+
+			return Util.Utc2CurrentZoneTime(tick, timezoneSeoul.utcOffset);
+		}
+
+		public List<TimezoneItem> TimeZones 
+		{
+			get {
+                return (timezoneList.list.Count == 0) ? null : timezoneList.list;
+			}
+		}
+
+		public TimezoneItem GetTimezone(int index) 
+		{
+			if (index < 0) return null;
+            return (timezoneList.list.Count == 0) ? null : timezoneList.list[index];
+		}
+
+		public int GetTimezoneIndex(string key) 
+		{
+			if (string.IsNullOrEmpty(key)) return -1;
+
+			int index = -1;
+            TimezoneItem ti = null;
+            for (int i = 0; i < timezoneList.list.Count; i++) 
+            {
+                ti = timezoneList.list[i];
+                if (ti.id.Equals(key)) 
+                {
+                    index = i; 
+                    break;
+                }
+            }
+
+			return index;
+		}            
+
+    #endregion  // Timezone 
     }
 }

@@ -86,7 +86,7 @@ namespace Joycollab.v2
             _btnEdit.onClick.AddListener(() => ViewManager.singleton.Push(S.MobileScene_CreateTodo, seq));
             _btnDelete.onClick.AddListener(() => {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
-                string message = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "삭제 안내", currentLocale);
+                string message = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "삭제 확인", currentLocale);
 
                 PopupBuilder.singleton.OpenConfirm(message, () => DeleteInfo().Forget());
             });
@@ -157,19 +157,19 @@ namespace Joycollab.v2
                     break;
 
                 case S.SHARE_COMPANY :
-                    _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "전사", currentLocale);
+                    _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "전사", currentLocale);
                     break;
 
                 case S.SHARE_NONE :
                 default :
-                    _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "없음", currentLocale);
+                    _txtShareOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "없음", currentLocale);
                     break;
             }
 
             // remind option
             if (string.IsNullOrEmpty(data.info.alarm))
             {
-                _txtRemindOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", "미리 알림 없음", currentLocale);
+                _txtRemindOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Word", "미리알림.없음", currentLocale);
             }
             else 
             {
@@ -178,8 +178,8 @@ namespace Joycollab.v2
                 System.DateTime convertAlarm = System.Convert.ToDateTime(data.info.alarm);
                 System.TimeSpan diff = convertSdt - convertAlarm;
 
-                string key = string.Format("미리 알림 {0}분 전", diff.Minutes);
-                _txtRemindOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", key, currentLocale);
+                string key = string.Format("미리알림.{0}분 전", diff.Minutes);
+                _txtRemindOpt.text = LocalizationSettings.StringDatabase.GetLocalizedString("Word", key, currentLocale);
             }
 
             // 내 정보인 경우에만 버튼 출력
@@ -220,7 +220,7 @@ namespace Joycollab.v2
             if (string.IsNullOrEmpty(res.message)) 
             {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
-                string message = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "삭제 완료", currentLocale);
+                string message = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "삭제 안내", currentLocale);
                 PopupBuilder.singleton.OpenAlert(message, () => {
                     ViewManager.singleton.Pop(true);
                 });

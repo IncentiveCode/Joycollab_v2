@@ -83,15 +83,15 @@ namespace Joycollab.v2
 
                     if (diff.Hours == 0) 
                     {
-                        temp = LocalizationSettings.StringDatabase.GetLocalizedString("Texts",
-                            diff.Minutes == 1 ? "게시글 1분 전" : "게시글 수분 전",
+                        temp = LocalizationSettings.StringDatabase.GetLocalizedString("Word",
+                            diff.Minutes == 1 ? "시간.1분 전" : "시간.수분 전",
                             currentLocale);
                         _txtCreateDate.text = string.Format(temp, diff.Minutes);
                     }
                     else 
                     {
-                        temp = LocalizationSettings.StringDatabase.GetLocalizedString("Texts",
-                            diff.Hours == 1 ? "게시글 1시간 전" : "게시글 수시간 전",
+                        temp = LocalizationSettings.StringDatabase.GetLocalizedString("Word",
+                            diff.Hours == 1 ? "시간.1시간 전" : "시간.수시간 전",
                             currentLocale);
                         _txtCreateDate.text = string.Format(temp, diff.Hours);
                     }

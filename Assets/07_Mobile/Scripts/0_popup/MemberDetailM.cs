@@ -241,8 +241,8 @@ namespace Joycollab.v2
             if (_imgState != null) 
             {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
-                string temp = string.Format("상태 ({0})", res.data.status.id);
-                _txtState.text = LocalizationSettings.StringDatabase.GetLocalizedString("Texts", temp, currentLocale);
+                string temp = string.Format("상태.({0})", res.data.status.id);
+                _txtState.text = LocalizationSettings.StringDatabase.GetLocalizedString("Word", temp, currentLocale);
 
                 switch (res.data.status.id) 
                 {

@@ -211,7 +211,7 @@ namespace Joycollab.v2
                     if (res.data.useYn.Equals("Y")) 
                     {
                         PopupBuilder.singleton.OpenAlert(
-                            LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "사용 중인 계정", R.singleton.CurrentLocale)
+                            LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "사용 중인 계정 안내", R.singleton.CurrentLocale)
                         );
                     }
                     else 

@@ -201,15 +201,15 @@ namespace Joycollab.v2
             switch (spaceSeq) 
             {
                 case -1 : 
-                    rootName = LocalizationSettings.StringDatabase.GetLocalizedString("Menu", "폴더 개인", currentLocale);
+                    rootName = LocalizationSettings.StringDatabase.GetLocalizedString("Menu", "폴더.개인", currentLocale);
                     break;
 
                 case 0 :
-                    rootName = LocalizationSettings.StringDatabase.GetLocalizedString("Menu", "폴더 전사", currentLocale);
+                    rootName = LocalizationSettings.StringDatabase.GetLocalizedString("Menu", "폴더.전사", currentLocale);
                     break;
 
                 default :
-                    rootName = LocalizationSettings.StringDatabase.GetLocalizedString("Menu", "폴더 부서", currentLocale);
+                    rootName = LocalizationSettings.StringDatabase.GetLocalizedString("Menu", "폴더.부서", currentLocale);
                     break;
             }
 
@@ -298,7 +298,7 @@ namespace Joycollab.v2
             {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "권한오류 (파일 업로드)", currentLocale)
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "권한오류.파일 업로드", currentLocale)
                 );
 
                 await UniTask.Yield();
@@ -436,7 +436,7 @@ namespace Joycollab.v2
             {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "권한오류 (파일 업로드)", currentLocale)
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "권한오류.파일 업로드", currentLocale)
                 );
 
                 await UniTask.Yield();

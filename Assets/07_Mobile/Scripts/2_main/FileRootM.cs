@@ -68,7 +68,7 @@ namespace Joycollab.v2
                 {
                     Locale currentLocale = LocalizationSettings.SelectedLocale;
                     PopupBuilder.singleton.OpenAlert(
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "권한오류 (파일 조회)", currentLocale)
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "권한오류.파일 조회", currentLocale)
                     );
                 }
             });
@@ -86,7 +86,7 @@ namespace Joycollab.v2
                 {
                     Locale currentLocale = LocalizationSettings.SelectedLocale;
                     PopupBuilder.singleton.OpenAlert(
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "권한오류 (파일 조회)", currentLocale)
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "권한오류.파일 조회", currentLocale)
                     );
                 }
             });
@@ -96,7 +96,7 @@ namespace Joycollab.v2
             _btnDrive.onClick.AddListener(() => {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "기능 준비중", currentLocale)
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "기능 준비 안내", currentLocale)
                 ); 
             });
         }

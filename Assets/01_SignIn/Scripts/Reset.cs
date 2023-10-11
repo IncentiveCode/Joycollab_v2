@@ -236,7 +236,7 @@ namespace Joycollab.v2
                     if (res.data.useYn.Equals("N")) 
                     {
                         PopupBuilder.singleton.OpenAlert(
-                            LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "사용 정지 계정", R.singleton.CurrentLocale)
+                            LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "사용 정지 계정 안내", R.singleton.CurrentLocale)
                         );
                     }
                     else 
@@ -247,7 +247,7 @@ namespace Joycollab.v2
 
                 case NetworkTask.HTTP_STATUS_CODE_NO_CONTENT :
                     PopupBuilder.singleton.OpenAlert(
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "존재하지 않는 계정", R.singleton.CurrentLocale)
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "존재하지 않는 계정 안내", R.singleton.CurrentLocale)
                     );
                     break;
 
@@ -334,7 +334,7 @@ namespace Joycollab.v2
             if (! _inputPw.text.Equals(_inputPwConfirm.text)) 
             {
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호 불일치", R.singleton.CurrentLocale)
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호 불일치 안내", R.singleton.CurrentLocale)
                 );
                 return;
             }
