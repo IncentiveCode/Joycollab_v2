@@ -454,6 +454,7 @@ namespace Joycollab.v2
 
         public const string MENU_DETAILS = "상세보기";
         public const string MENU_ENTER = "입장";
+        public const string MENU_MOVE_TO_OFFICE = "오피스로 이동";
 
     #endregion  // Popup menu
     }

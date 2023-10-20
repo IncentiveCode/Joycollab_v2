@@ -734,6 +734,8 @@ public class WebViewObject : MonoBehaviour
         mMarginBottom = bottom;
         mMarginRelative = relative;
         float ml, mt, mr, mb;
+        ml = mt = mr = mb = 0.0f;
+
 #if UNITY_EDITOR_WIN || UNITY_STANDALONE_WIN || UNITY_EDITOR_LINUX
         //TODO: UNSUPPORTED
 #elif UNITY_WEBPLAYER || UNITY_WEBGL
@@ -973,6 +975,8 @@ public class WebViewObject : MonoBehaviour
         if (webView == null)
             return false;
         return webView.Call<bool>("SetURLPattern", allowPattern, denyPattern, hookPattern);
+#else
+        return false;
 #endif
     }
 
@@ -1057,6 +1061,8 @@ public class WebViewObject : MonoBehaviour
         if (webView == null)
             return 0;
         return webView.Get<int>("progress");
+#else
+        return 0;
 #endif
     }
 
@@ -1076,6 +1082,8 @@ public class WebViewObject : MonoBehaviour
         if (webView == null)
             return false;
         return webView.Get<bool>("canGoBack");
+#else
+        return false;
 #endif
     }
 
@@ -1095,6 +1103,8 @@ public class WebViewObject : MonoBehaviour
         if (webView == null)
             return false;
         return webView.Get<bool>("canGoForward");
+#else
+        return false;
 #endif
     }
 
@@ -1252,6 +1262,8 @@ public class WebViewObject : MonoBehaviour
         if (webView == null)
             return null;
         return webView.Call<string>("GetCustomHeaderValue", headerKey);
+#else
+        return null;
 #endif
     }
 

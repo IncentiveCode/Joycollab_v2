@@ -56,6 +56,7 @@ namespace Joycollab.v2
             _btnSend.onClick.AddListener(() => Send(_inputMessage.text.Trim()));
         }
 
+        /**
         private void OnDestroy() 
         {
             // close host
@@ -65,11 +66,12 @@ namespace Joycollab.v2
                 networkManager.StopHost();
             }
             // close client
-            else if (NetworkClient.isConnected) 
+            if (NetworkClient.isConnected) 
             {
                 networkManager.StopClient();
             }
         }
+         */
 
     #endregion  // Unity functions
 

@@ -58,7 +58,6 @@ namespace Joycollab.v2
             NetworkServer.AddPlayerForConnection(conn, player);
             WorldAvatar script = player.GetComponent<WorldAvatar>();
             WorldAvatarInfo info = (WorldAvatarInfo) conn.authenticationData;
-            // script.UpdateAvatarInfo(info.seq, info.nickNm, info.photo, info.memberType);
             script.UpdateAvatarInfo(info);
         }
 

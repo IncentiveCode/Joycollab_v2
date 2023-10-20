@@ -53,10 +53,12 @@ var JsLib = {
 		var language = navigator.language;
 		if (language != null) {
 			language = language.toLowerCase().substring(0, 2);
-			if (language != 'ko') language = 'en';
+			if (language == 'ko') 		language = 'ko';
+			else if (language == 'ja')	language = 'ja';
+			else 						language = 'en';
 		}
 		else {
-			language = 'ko';
+			language = 'en';
 		}
 
 		var userAgent = navigator.userAgent.toLowerCase();

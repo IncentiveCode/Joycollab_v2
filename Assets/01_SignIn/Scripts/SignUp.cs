@@ -307,7 +307,7 @@ namespace Joycollab.v2
             if (! string.IsNullOrEmpty(resToken.message)) 
             {
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "로그인 실패", R.singleton.CurrentLocale)
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "로그인 실패 안내", R.singleton.CurrentLocale)
                 );
                 return;
             }

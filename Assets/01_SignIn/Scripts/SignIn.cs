@@ -272,7 +272,7 @@ namespace Joycollab.v2
             if (! string.IsNullOrEmpty(res.message)) 
             {
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "로그인 실패", R.singleton.CurrentLocale)
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "로그인 실패 안내", R.singleton.CurrentLocale)
                 );
                 return;
             }
@@ -342,12 +342,12 @@ namespace Joycollab.v2
 
             if (_toggleGoToCenter.isOn)
             {
-                Debug.Log($"{TAG} | Square scene 으로 이동.");
-                SceneLoader.Load(eScenes.Square);
+                var manager = WorldNetworkManager.singleton;
+                manager.networkAddress = "dev.jcollab.com";
+                manager.StartClient();
             }
             else
             {
-                Debug.Log($"{TAG} | Map scene 으로 이동.");
                 SceneLoader.Load(eScenes.Map);
             }
         }

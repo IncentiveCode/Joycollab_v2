@@ -120,6 +120,7 @@ namespace Joycollab.v2
         private void HandleCameraPosition() 
         {
             if (mainCam == null) return;
+            if (mainCam.transform == null) return;
 
             mainCam.transform.position = Vector3.Lerp(mainCam.transform.position,
                 playerTransform.position + distance,

@@ -136,7 +136,11 @@ namespace Joycollab.v2
 
         public static void psCheckBrowser(string gameObjectName, string methodName) 
         {
-            string lan = (Application.systemLanguage == SystemLanguage.Korean) ? "ko" : "en";
+            string lan = Application.systemLanguage switch {
+                SystemLanguage.Korean => "ko",
+                SystemLanguage.Japanese => "ja",
+                _ => "en"   
+            }; 
             string result = $"editor|{lan}";
             GameObject.Find(gameObjectName).SendMessage(methodName, result);
         }

@@ -208,7 +208,7 @@ namespace Joycollab.v2
             {
                 Locale currentLocale = LocalizationSettings.SelectedLocale;
                 PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "로그인 실패", currentLocale)
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "로그인 실패 안내", currentLocale)
                 );
             }
         }

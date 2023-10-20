@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Localization.Settings;
 
 namespace Joycollab.v2
 {
@@ -50,6 +51,7 @@ namespace Joycollab.v2
 
 
     #region Unity functions
+
         private void Start() 
         {
             switch (_rendererType) 
@@ -84,10 +86,12 @@ namespace Joycollab.v2
                     break;
             }
         }
+
     #endregion
 
 
     #region Object setting functions
+
         private void SetBuildingInfo() 
         {
             /**
@@ -102,10 +106,12 @@ namespace Joycollab.v2
                 _imgTag.gameObject.SetActive(_alwaysOpenTag);
             }
         }
+
     #endregion  // Object setting functions
 
 
     #region Interface functions implementation (for UGUI Click)
+
         public void OnPointerEnter(PointerEventData data) 
         {
             if (_rendererType != eRendererType.UI_Image) return;
@@ -116,7 +122,10 @@ namespace Joycollab.v2
             {
                 case eClickableObjectType.Building :
                     image.color = temp;
-                    _imgTag.gameObject.SetActive(true);
+                    if (_imgTag != null) 
+                    {
+                        _imgTag.gameObject.SetActive(true);
+                    }
 
                     break;
 
@@ -136,7 +145,10 @@ namespace Joycollab.v2
             {
                 case eClickableObjectType.Building :
                     image.color = temp;
-                    _imgTag.gameObject.SetActive(_alwaysOpenTag);
+                    if (_imgTag != null)
+                    {
+                        _imgTag.gameObject.SetActive(_alwaysOpenTag);
+                    }
 
                     break;
 
@@ -173,10 +185,12 @@ namespace Joycollab.v2
                     break;
             }
         }
+
     #endregion  // Interface functions implementation (for UGUI Click)
 
 
     #region Mouse enter, exit functions (with SpriteRenderer)
+
         private void OnMouseEnter()
         {
             if (_rendererType != eRendererType.SpriteRenderer) return;
@@ -265,13 +279,16 @@ namespace Joycollab.v2
                     break;
             }
         }
+
     #endregion
 
 
     #region  // 'Building' Click event 
         private void BuildingLeftClick(PointerEventData data) 
         {
-
+            PopupBuilder.singleton.OpenAlert(
+                LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "기능 준비 안내", R.singleton.CurrentLocale)
+            );
         }
 
         private void BuildingRightClick(PointerEventData data) 
@@ -298,24 +315,15 @@ namespace Joycollab.v2
                     {
                         case S.MENU_DETAILS :
                             Debug.Log("건물 상세 화면 연결 예정.");
-                            // ProgressBuilder.singleton.OpenProgress(1f);
+                            PopupBuilder.singleton.OpenAlert(
+                                LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "기능 준비 안내", R.singleton.CurrentLocale)
+                            );
                             break;
 
                         case S.MENU_ENTER :
-                            Debug.Log("Mirror server 연결 후 Square Scene 으로 이동 예정.");
-                            // ProgressBuilder.singleton.OpenProgress(1f);
-
                             var manager = WorldNetworkManager.singleton;
-                            // manager.networkAddress = "dev.jcollab.com";
-                            manager.networkAddress = "localhost";
-                            if (manager.isNetworkActive)
-                            {
-                                manager.StartClient();
-                            }
-                            else 
-                            {
-                                manager.StartHost();
-                            }
+                            manager.networkAddress = "dev.jcollab.com";
+                            manager.StartClient();
                             break;
 
                         default :
