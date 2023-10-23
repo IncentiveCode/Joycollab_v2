@@ -72,9 +72,7 @@ namespace Joycollab.v2
 
         private void DisplayBuildingInfo() 
         {
-            // EditorGUILayout.PropertyField(serializedObject.FindProperty("_goPopupBuilding"));
-            // EditorGUILayout.PropertyField(serializedObject.FindProperty("_soBuildingData"));
-            // EditorGUILayout.PropertyField(serializedObject.FindProperty("_buildingInfo"));
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("_soBuildingData"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("_imgTag"));
             EditorGUILayout.PropertyField(serializedObject.FindProperty("_alwaysOpenTag"));
         }

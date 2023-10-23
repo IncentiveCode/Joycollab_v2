@@ -62,10 +62,7 @@ namespace Joycollab.v2
             selectedString = string.Empty;
 
             input.onTextSelection.AddListener((value, start, end) => {
-                    if (end >= start)
-                    selectedString = value.Substring(start, (end - start));
-                else
-                    selectedString = value.Substring(end, (start - end));
+                selectedString = end >= start ? value.Substring(start, (end - start)) : value.Substring(end, (start - end));
             });
             input.onDeselect.AddListener((value) => {
                 selectedString = string.Empty;

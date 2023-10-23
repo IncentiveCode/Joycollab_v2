@@ -14,8 +14,7 @@ namespace Joycollab.v2
         [SerializeField, Range(0, 1)] private float _alphaValueOnExit;
 
         [Header("type : Building")]
-        // [SerializeField] private BuildingData _soBuildingData;   // TODO. 추가 예정.
-        // [SerializeField] private ResBuildingInfo _buildingInfo;  // TODO. 추가 예정.
+        [SerializeField] private BuildingData _soBuildingData;   
         [SerializeField] private Image _imgTag;                  
         [SerializeField] private bool _alwaysOpenTag;            
 
@@ -94,12 +93,10 @@ namespace Joycollab.v2
 
         private void SetBuildingInfo() 
         {
-            /**
             if (_soBuildingData != null) 
             {
 
             }
-             */
 
             if (_imgTag != null) 
             {

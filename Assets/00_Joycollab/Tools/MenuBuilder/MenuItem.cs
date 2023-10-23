@@ -23,10 +23,7 @@ namespace Joycollab.v2
         [SerializeField] private TMP_Text _txtTitle;
         [SerializeField] private LocalizeStringEvent _localeEvent; 
 
-        public string ItemName 
-        {
-            get { return _txtTitle.text; }
-        }
+        public string ItemName => _txtTitle.text;
 
         public void Init(string key) 
         {

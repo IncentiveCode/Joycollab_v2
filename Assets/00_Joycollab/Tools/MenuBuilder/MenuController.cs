@@ -98,8 +98,9 @@ namespace Joycollab.v2
 
             float maxX = (float) (Screen.width / ratio);
             float maxY = (float) (Screen.height / ratio);
-            float panelX = rect.sizeDelta.x;
-            float panelY = rect.sizeDelta.y;
+            Vector2 sizeDelta = rect.sizeDelta;
+            float panelX = sizeDelta.x;
+            float panelY = sizeDelta.y;
 
             v2Temp.x = Mathf.Clamp(v2Temp.x, 0, maxX - panelX);
             v2Temp.y = Mathf.Clamp(v2Temp.y, 0, maxY - panelY);
