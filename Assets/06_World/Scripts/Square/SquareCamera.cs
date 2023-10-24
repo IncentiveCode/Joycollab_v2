@@ -1,13 +1,16 @@
 /// <summary>
 /// Square 에서 사용할 카메라 제어 클래스 
 /// @author         : HJ Lee
-/// @last update    : 2023. 03. 07 
-/// @version        : 0.1
+/// @last update    : 2023. 10. 24 
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 03. 07) : 최초 생성, mirror-test 에서 작업한 항목 migration.
+///     v0.2 (2023. 10. 24) : Teleport 시 fade out / fade in 추가.
 /// </summary>
 
 using UnityEngine;
+using Cysharp.Threading.Tasks;
+using DG.Tweening;
 
 namespace Joycollab.v2
 {
@@ -38,6 +41,12 @@ namespace Joycollab.v2
         private Vector2 v2RoomSize;
         private int roomNo;
         [SerializeField] private Vector3[] arrRoomPos;
+        
+        // for blocker
+        private const float TIME = 1.5f;
+        private const int DELAY_TIME = 500;
+        private bool isMove;
+        [SerializeField] private CanvasGroup blocker;
 
 
     #region Unity functions
@@ -48,13 +57,17 @@ namespace Joycollab.v2
 
             mainCam = Camera.main;
             cameraMoveSpeed = 4f;
-            isSet = false;
+            isSet = isMove = false;
 
             v2SquareSize = new Vector2(20.48f, 11.52f);
             floorNo = 1;
 
             v2RoomSize = new Vector2(9.6f, 5.4f);
             roomNo = 0;
+            
+            blocker.DOFade(0f, TIME);
+            blocker.interactable = false;
+            blocker.blocksRaycasts = false;
         }
 
         private void FixedUpdate()
@@ -67,6 +80,8 @@ namespace Joycollab.v2
         private void OnDestroy() 
         {
             isSet = false;
+            floorNo = roomNo = 0;
+            
             mainCam = null;
         }
 
@@ -88,28 +103,64 @@ namespace Joycollab.v2
             isSet = true;
         }
 
-        public void Teleport(int no) 
+        public async UniTaskVoid Teleport(int no)
         {
+            if (isMove) return;
             if (floorNo == no) return;
 
+            isMove = true;
+            blocker.alpha = 1f;
+            blocker.interactable = true;
+            blocker.blocksRaycasts = true;
+            
             playerTransform.position = arrMapPos[no - 1];
             floorNo = no;
+            await UniTask.Delay(DELAY_TIME);
+
+            blocker.DOFade(0f, TIME);
+            blocker.interactable = false;
+            blocker.blocksRaycasts = false;
+            isMove = false;
         }
 
-        public void TeleportForRoom(int no) 
+        public async UniTaskVoid TeleportForRoom(int no)
         {
+            if (isMove) return;
             if (roomNo == no) return;
 
-            if (no == 0)
-            {
-                playerTransform.position = arrMapPos[floorNo - 1];
-            }
-            else
-            {
-                playerTransform.position = arrRoomPos[no - 1];
-            }
-
+            isMove = true;
+            blocker.alpha = 1f;
+            blocker.interactable = true;
+            blocker.blocksRaycasts = true;
+            
+            playerTransform.position = no == 0 ? arrMapPos[floorNo - 1] : arrRoomPos[no - 1];
             roomNo = no;
+            await UniTask.Delay(DELAY_TIME);
+            
+            blocker.DOFade(0f, TIME);
+            blocker.interactable = false;
+            blocker.blocksRaycasts = false;
+            isMove = false;
+        }
+
+        public async UniTaskVoid TeleportForRoom(int no, Vector3 pos)
+        {
+            if (isMove) return;
+            if (roomNo == no) return;
+            
+            isMove = true;
+            blocker.alpha = 1f;
+            blocker.interactable = true;
+            blocker.blocksRaycasts = true;
+
+            playerTransform.position = pos;
+            roomNo = no;
+            await UniTask.Delay(DELAY_TIME);
+            
+            blocker.DOFade(0f, TIME);
+            blocker.interactable = false;
+            blocker.blocksRaycasts = false;
+            isMove = false; 
         }
 
     #endregion  // public functions

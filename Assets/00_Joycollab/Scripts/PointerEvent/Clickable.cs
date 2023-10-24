@@ -7,6 +7,8 @@ namespace Joycollab.v2
 {
     public class Clickable : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
     {
+        private const string TAG = "Clickable"; 
+        
         [SerializeField] private eClickableObjectType _objectType;
         [SerializeField] private eRendererType _rendererType;
         [SerializeField] private string[] _menuItems;
@@ -311,7 +313,6 @@ namespace Joycollab.v2
                     switch (item) 
                     {
                         case S.MENU_DETAILS :
-                            Debug.Log("건물 상세 화면 연결 예정.");
                             PopupBuilder.singleton.OpenAlert(
                                 LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "기능 준비 안내", R.singleton.CurrentLocale)
                             );
@@ -321,6 +322,17 @@ namespace Joycollab.v2
                             var manager = WorldNetworkManager.singleton;
                             manager.networkAddress = "dev.jcollab.com";
                             manager.StartClient();
+                            break;
+                        
+                        case S.MENU_MOVE_TO_OFFICE :
+                            if (_soBuildingData.UsingJoycollab)
+                            {
+                                JsLib.OpenWebview(_soBuildingData.JoycollabLink, "office");
+                            }
+                            else 
+                            {
+                                Debug.Log($"{TAG} | {_soBuildingData.BuildingName} 은 joycollab 주소가 없음.");
+                            }
                             break;
 
                         default :
@@ -336,6 +348,7 @@ namespace Joycollab.v2
         {
 
         }
+        
     #endregion  // 'Building' Click event 
 
 

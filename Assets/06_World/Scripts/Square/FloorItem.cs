@@ -52,7 +52,7 @@ namespace Joycollab.v2
                 else 
                 {
                     // Debug.Log($"{TAG} | teleport, "+ floorNo);
-                    SquareCamera.singleton.Teleport(floorNo);
+                    SquareCamera.singleton.Teleport(floorNo).Forget();
                     _elevator.PostSelection(order);
                 }
             });

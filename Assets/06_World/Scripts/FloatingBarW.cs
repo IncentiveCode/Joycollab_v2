@@ -10,7 +10,7 @@
 
 using UnityEngine;
 using UnityEngine.UI;
-using Cysharp.Threading.Tasks;
+using UnityEngine.Localization.Settings;
 
 namespace Joycollab.v2
 {
@@ -57,16 +57,13 @@ namespace Joycollab.v2
         {
             // set button listener
             _btnProfile.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | user profile open.");
-
-                if (R.singleton.ElevaotrOpt == 0) 
-                    R.singleton.ElevaotrOpt ++;
-                else
-                    R.singleton.ElevaotrOpt = 0;
+                PopupBuilder.singleton.OpenAlert(
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "기능 준비 안내", R.singleton.CurrentLocale)
+                );
             });
             _btnMicControl.onClick.AddListener(() => {
                 // 임시로 사용 중.
-                WindowManager.singleton.Push(S.WorldScene_RoomList);
+                // WindowManager.singleton.Push(S.WorldScene_RoomList);
             });
             _btnAlarm.onClick.AddListener(() => {
                 Debug.Log($"{TAG} | alarm panel open.");

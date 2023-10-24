@@ -26,45 +26,16 @@ namespace Joycollab.v2
 
 
     #region public functions
+    
+        public string BuildingName => _name;
+        public Texture2D Logo => _logo;
+        public bool UsingJoycollab => !string.IsNullOrEmpty(_joycollab);
+        public string JoycollabLink => _joycollab;
+        public bool UsingHomepage => !string.IsNullOrEmpty(_homepage);
+        public string HomepageLink => _homepage;
+        public string Tel => _tel;
+        public string Address => _address;
 
-        public string BuildingName 
-        {
-            get { return _name; }
-        }
-
-        public Texture2D Logo
-        {
-            get { return _logo; }
-        }
-
-        public bool UsingJoycollab
-        {
-            get { return string.IsNullOrEmpty(_joycollab); }
-        }
-        public string JoycollabLink
-        {
-            get { return _joycollab; }
-        }
-
-        public bool UsingHomepage
-        {
-            get { return string.IsNullOrEmpty(_homepage); }
-        }
-        public string HomepageLink
-        {
-            get { return _homepage; }
-        }
-
-        public string Tel
-        {
-            get { return _tel; }
-        }
-
-        public string Address
-        {
-            get { return _address; }
-        }
-
-        #endregion  // public functions
+    #endregion  // public functions
     }
 }

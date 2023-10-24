@@ -16,14 +16,10 @@ namespace Joycollab.v2
     public class WindowPage : MonoBehaviour
     {
         // for view
-        protected eVisibleState visibleState;
-        public bool isDisappeared 
-        {
-            get { return visibleState == eVisibleState.Disappeared; }
-        }
-
-        protected CanvasGroup canvasGroup;
-        protected float fadeTime = 0.5f;
+        private eVisibleState visibleState;
+        public bool isDisappeared => visibleState == eVisibleState.Disappeared;
+        private CanvasGroup canvasGroup;
+        private float fadeTime = 0.5f;
 
 
     #region WindowPage functions
@@ -70,7 +66,7 @@ namespace Joycollab.v2
             canvasGroup.blocksRaycasts = !isOn;
         }
 
-        public async virtual UniTaskVoid Show() 
+        public virtual async UniTaskVoid Show() 
         {
             visibleState = eVisibleState.Appearing;
             await UniTask.Yield();

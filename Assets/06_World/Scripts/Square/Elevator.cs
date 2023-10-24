@@ -58,12 +58,12 @@ namespace Joycollab.v2
                 else        ShowFloorList();
             });
 
-            _btnRoom1.onClick.AddListener(() => SquareCamera.singleton.TeleportForRoom(1));
-            _btnRoom2.onClick.AddListener(() => SquareCamera.singleton.TeleportForRoom(2));
-            _btnRoom3.onClick.AddListener(() => SquareCamera.singleton.TeleportForRoom(3));
-            _btnRoom4.onClick.AddListener(() => SquareCamera.singleton.TeleportForRoom(4));
-            _btnRoom5.onClick.AddListener(() => SquareCamera.singleton.TeleportForRoom(5));
-            _btnRoom0.onClick.AddListener(() => SquareCamera.singleton.TeleportForRoom(0));
+            _btnRoom1.onClick.AddListener(() => SquareCamera.singleton.TeleportForRoom(1).Forget());
+            _btnRoom2.onClick.AddListener(() => SquareCamera.singleton.TeleportForRoom(2).Forget());
+            _btnRoom3.onClick.AddListener(() => SquareCamera.singleton.TeleportForRoom(3).Forget());
+            _btnRoom4.onClick.AddListener(() => SquareCamera.singleton.TeleportForRoom(4).Forget());
+            _btnRoom5.onClick.AddListener(() => SquareCamera.singleton.TeleportForRoom(5).Forget());
+            _btnRoom0.onClick.AddListener(() => SquareCamera.singleton.TeleportForRoom(0).Forget());
 
 
             // set current info

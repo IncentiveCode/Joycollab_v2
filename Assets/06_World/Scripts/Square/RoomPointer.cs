@@ -1,26 +1,30 @@
 /// <summary>
-/// WorldScene, 건물 위에 사용할 포인터 표시 클래스
+/// Square, 모임방 예시를 위해 사용할 포인터 표시 클래스
 /// @author         : HJ Lee
 /// @last update    : 2023. 10. 24 
-/// @version        : 0.2
+/// @version        : 0.1
 /// @update
-///     v0.1 (2023. 09. 01) : v1 에서 사용하던 항목 수정 후 적용.
-///     v0.2 (2023. 10. 24) : 속도와 제약이 0 인 경우에 대한 처리 추가.
+///     v0.1 (2023. 10. 24) : 신규 생성
 /// </summary>
 
+using System;
 using UnityEngine;
 
 namespace Joycollab.v2
 {
-    public class BuildingPointer : MonoBehaviour
+    public class RoomPointer : MonoBehaviour
     {
         [Header("Default")]
         [SerializeField] private eRendererType _rendererType;
         [SerializeField] private bool _isMovable;
 
-        [Header("Move Parameter")]
+        [Header("Move Parameter")] 
         [SerializeField] private float _moveLimit = 5f;
         [SerializeField] private float _speed = 2f;
+        
+        [Header("target Parameter")] 
+        [SerializeField] private int _roomNo;
+        [SerializeField] private Vector3 _target;
 
         private int _direction = 1;
         private bool run;
@@ -88,6 +92,17 @@ namespace Joycollab.v2
             run = false;     
         }
 
-    #endregion
+        private void OnTriggerEnter2D(Collider2D other)
+        {
+            if (!other.tag.Equals("Player")) return;
+            
+            var mover = other.GetComponent<WorldAvatar>();
+            if (mover != null && mover.isOwned)
+            {
+                SquareCamera.singleton.TeleportForRoom(_roomNo, _target).Forget();
+            }
+        }
+
+        #endregion
     }
 }
