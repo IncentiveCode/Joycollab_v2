@@ -18,13 +18,8 @@ namespace Joycollab.v2
         [SerializeField] private eRendererType _rendererType;
         [SerializeField] private bool _isMovable;
 
-        [Header("Move Parameter")] 
-        [SerializeField] private float _moveLimit = 5f;
-        [SerializeField] private float _speed = 2f;
-        
-        [Header("target Parameter")] 
-        [SerializeField] private int _roomNo;
-        [SerializeField] private Vector3 _target;
+        [Header("Parameters")]
+        [SerializeField] private RoomPointerData data;
 
         private int _direction = 1;
         private bool run;
@@ -53,8 +48,8 @@ namespace Joycollab.v2
             }
 
             currentY = pos.y;
-            minY = currentY - _moveLimit;
-            maxY = currentY + _moveLimit;
+            minY = currentY - data.MoveLimit;
+            maxY = currentY + data.MoveLimit;
         }
 
         private void Update() 
@@ -72,11 +67,11 @@ namespace Joycollab.v2
                 transform.eulerAngles = rotate;
             }
 
-            if (_speed == 0) return;
+            if (data.Speed == 0) return;
             rotate.y += Time.deltaTime * 90f;
 
-            if (_moveLimit == 0) return;
-            pos.y += Time.deltaTime * _speed * _direction;
+            if (data.MoveLimit == 0) return;
+            pos.y += Time.deltaTime * data.Speed * _direction;
             
             if (pos.y >= maxY) _direction = -1;
             if (pos.y <= minY) _direction = 1;
@@ -99,7 +94,7 @@ namespace Joycollab.v2
             var mover = other.GetComponent<WorldAvatar>();
             if (mover != null && mover.isOwned)
             {
-                SquareCamera.singleton.TeleportForRoom(_roomNo, _target).Forget();
+                SquareCamera.singleton.TeleportForRoom(data.RoomNo, data.Target).Forget();
             }
         }
 

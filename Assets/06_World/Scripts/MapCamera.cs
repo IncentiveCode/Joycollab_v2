@@ -1,19 +1,23 @@
 /// <summary>
 /// MapScene 에서 사용할 카메라 제어 클래스 
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 21 
-/// @version        : 0.2
+/// @last update    : 2023. 10. 25 
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 08. 31) : v1 에서 사용하던 항목 수정 후 적용.
 ///     v0.2 (2023. 09. 21) : class name 변경. (WorldCamera -> MapCamera)
+///     v0.3 (2023. 10. 25) : WebGLSupport 의 ResizeEvent 추가.
 /// </summary>
 
 using UnityEngine;
+using WebGLSupport;
 
 namespace Joycollab.v2
 {
     public class MapCamera : MonoBehaviour
     {
+        private const string TAG = "MapCamera";
+
         public static MapCamera singleton { get; private set ; }
 
         // for camera, camera position
@@ -42,6 +46,8 @@ namespace Joycollab.v2
 
             mainCamera = GetComponent<Camera>();
             v2MapSize = new Vector2(20.48f, 13.08f);
+
+            WebGLWindow.OnResizeEvent += OnResize;
         }
 
         private void OnEnable() 
@@ -55,6 +61,12 @@ namespace Joycollab.v2
             fZ = v3CameraPos.z;
 
             fWidth = fSize * Screen.width / Screen.height;
+            SetCameraLimit();
+        }
+
+        private void OnDestroy() 
+        {
+            WebGLWindow.OnResizeEvent -= OnResize;
         }
 
     #endregion
@@ -119,5 +131,17 @@ namespace Joycollab.v2
         }
 
     #endregion
+
+
+    #region webgl support callback
+
+        private void OnResize() 
+        {
+            Debug.Log($"{TAG} | OnResize(), width : {Screen.width}, height : {Screen.height}");
+            fWidth = fSize * Screen.width / Screen.height;
+            SetCameraLimit();
+        }
+
+    #endregion  // webgl support callback
     }
 }

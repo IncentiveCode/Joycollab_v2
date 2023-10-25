@@ -13,7 +13,7 @@ using UnityEngine;
 
 namespace Joycollab.v2
 {
-    public class WorldObjectTrigger : MonoBehaviour
+    public class ObjectAlphaTrigger : MonoBehaviour
     {
         [SerializeField] 
         private Color colorOnEnter;

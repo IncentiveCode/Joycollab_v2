@@ -17,7 +17,7 @@ namespace Joycollab.v2
         private const string TAG = "RoomDoor";
         private const float TRANSITION_TIME = 0.5f;
 
-        [SerializeField] private SpriteRenderer renderer;
+        [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Vector2 v2Close;
         [SerializeField] private Vector2 v2Open;
         
@@ -26,7 +26,7 @@ namespace Joycollab.v2
 
         private void Awake()
         {
-            if (renderer != null) return;
+            if (spriteRenderer != null) return;
             
             Debug.Log($"{TAG} | SpriteRenderer 를 먼저 inspector 에서 설정해주세요.");
             return;
@@ -34,7 +34,7 @@ namespace Joycollab.v2
 
         private void Start()
         {
-            renderer.transform.DOLocalMove(v2Close, TRANSITION_TIME);
+            spriteRenderer.transform.DOLocalMove(v2Close, TRANSITION_TIME);
         }
 
         private void OnTriggerEnter2D(Collider2D other)
@@ -44,7 +44,7 @@ namespace Joycollab.v2
             var mover = other.GetComponent<WorldAvatar>();
             if (mover != null && mover.isOwned)
             {
-                renderer.transform.DOLocalMove(v2Open, TRANSITION_TIME).SetEase(Ease.OutQuart);
+                spriteRenderer.transform.DOLocalMove(v2Open, TRANSITION_TIME).SetEase(Ease.OutQuart);
             }
         }
 
@@ -55,7 +55,7 @@ namespace Joycollab.v2
             var mover = other.GetComponent<WorldAvatar>();
             if (mover != null && mover.isOwned)
             {
-                renderer.transform.DOLocalMove(v2Close, TRANSITION_TIME);
+                spriteRenderer.transform.DOLocalMove(v2Close, TRANSITION_TIME);
             }
         }
 
