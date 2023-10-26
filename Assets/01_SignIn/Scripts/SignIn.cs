@@ -340,6 +340,13 @@ namespace Joycollab.v2
                 return;
             }
 
+            // xmpp login
+        #if UNITY_WEBGL && !UNITY_EDITOR
+            SystemManager.singleton.XMPP.XmppLoginForWebGL(R.singleton.memberSeq, R.singleton.myXmppPw);
+        #else
+            SystemManager.singleton.XMPP.XmppLogin(R.singleton.myXmppId, R.singleton.myXmppPw);
+        #endif
+
             if (_toggleGoToCenter.isOn)
             {
                 var manager = WorldNetworkManager.singleton;

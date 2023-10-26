@@ -324,6 +324,6 @@ var JsLib = {
 			}
 		}).open();
 	},
-}
+};
 
 mergeInto(LibraryManager.library, JsLib);

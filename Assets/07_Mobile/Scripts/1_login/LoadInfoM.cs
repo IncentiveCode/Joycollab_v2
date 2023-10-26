@@ -98,8 +98,8 @@ namespace Joycollab.v2
             // TODO. FCM 관련된 항목도 Bridge app 에서 처리할 것.
 
             // init xmpp manager
-            XmppManager.singleton.Init();
-            XmppManager.singleton.XmppLogin($"jc-user-{R.singleton.memberSeq}", R.singleton.myXmppPw);
+            SystemManager.singleton.XMPP.Init();
+            SystemManager.singleton.XMPP.XmppLogin(R.singleton.myXmppId, R.singleton.myXmppPw);
 
             // TODO. Ping Manager 도 추가할 것.
             // init ping 

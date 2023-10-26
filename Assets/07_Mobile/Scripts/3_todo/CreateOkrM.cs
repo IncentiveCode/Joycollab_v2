@@ -248,9 +248,9 @@ namespace Joycollab.v2
         {
             ReqOkrInfo req = new ReqOkrInfo();
             req.content = _inputDetail.text;
-            req.createMember = new Seq() { seq = R.singleton.memberSeq };
+            req.createMember = new Seq(R.singleton.memberSeq);
             req.ed = _txtDueDate.text;
-            req.modifyMember = new Seq() { seq = R.singleton.memberSeq };
+            req.modifyMember = new Seq(R.singleton.memberSeq);
             req.sd = _txtStartDate.text;
             req.title = _inputTitle.text;
 

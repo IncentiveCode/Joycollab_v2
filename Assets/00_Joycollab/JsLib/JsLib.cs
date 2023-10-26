@@ -4,7 +4,7 @@
 /// @last update    : 2023. 08. 29 
 /// @version        : 0.8
 /// @update
-///     v0.1 (2023. 02. 22) : Joycollab 에서 사용하던 클래스 정리 및 통합.
+///     v0.1 (2023. 02. 22) : v1 에서 사용하던 클래스 정리 및 통합.
 ///     v0.2 (2023. 02. 28) : unity 2021.3.13f1 으로 업그레이드 후, windows 에서 build 안되는 문제 해결. (한글 주석이 원인으로 보임)
 ///     v0.3 (2023. 03. 17) : Graphic UI 와 Text UI 전환시 unity-container 에 min-widht 값을 추가하는 함수 추가. 추후 고도화 예정.
 ///     v0.4 (2023. 07. 14) : WebGL 이 아닌 곳에서 Alert 사용시 Popup builder 를 이용한 open alert 출력하게 수정.

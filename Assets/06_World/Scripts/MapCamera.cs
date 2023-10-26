@@ -1,5 +1,5 @@
 /// <summary>
-/// MapScene 에서 사용할 카메라 제어 클래스 
+/// Map 에서 사용할 카메라 제어 클래스 
 /// @author         : HJ Lee
 /// @last update    : 2023. 10. 25 
 /// @version        : 0.3

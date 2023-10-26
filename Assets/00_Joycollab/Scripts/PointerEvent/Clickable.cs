@@ -20,6 +20,9 @@ namespace Joycollab.v2
         [SerializeField] private Image _imgTag;                  
         [SerializeField] private bool _alwaysOpenTag;            
 
+        [Header("type : WorldAvatar")]
+        private WorldAvatar _worldAvatarInfo;
+
         [Header("type : Elevator")]
         [SerializeField] private GameObject _goElevatorMenu;
 
@@ -58,17 +61,21 @@ namespace Joycollab.v2
             switch (_rendererType) 
             {
                 case eRendererType.UI_Image :
-                    image = GetComponent<Image>();
-                    temp = image.color;
-                    temp.a = _alphaValueOnExit;
-                    image.color = temp;
+                    if (TryGetComponent<Image>(out image)) 
+                    {
+                        temp = image.color;
+                        temp.a = _alphaValueOnExit;
+                        image.color = temp;
+                    }
                     break;
 
                 case eRendererType.SpriteRenderer :
-                    spriteRenderer = GetComponent<SpriteRenderer>();
-                    temp = spriteRenderer.color;
-                    temp.a = _alphaValueOnExit;
-                    spriteRenderer.color = temp;
+                    if (TryGetComponent<SpriteRenderer>(out spriteRenderer))
+                    {
+                        temp = spriteRenderer.color;
+                        temp.a = _alphaValueOnExit;
+                        spriteRenderer.color = temp;
+                    }
                     break;
 
                 default :
@@ -82,6 +89,10 @@ namespace Joycollab.v2
                     SetBuildingInfo();
                     break;
 
+                case eClickableObjectType.WorldAvatar :
+                    SetWorldAvatarInfo();
+                    break;
+
                 default :
                     // Debug.Log($"현재 Clickable object 의 타입 : {_objectType.ToString()}, 준비 중...");
                     break;
@@ -89,24 +100,6 @@ namespace Joycollab.v2
         }
 
     #endregion
-
-
-    #region Object setting functions
-
-        private void SetBuildingInfo() 
-        {
-            if (_soBuildingData != null) 
-            {
-
-            }
-
-            if (_imgTag != null) 
-            {
-                _imgTag.gameObject.SetActive(_alwaysOpenTag);
-            }
-        }
-
-    #endregion  // Object setting functions
 
 
     #region Interface functions implementation (for UGUI Click)
@@ -125,7 +118,9 @@ namespace Joycollab.v2
                     {
                         _imgTag.gameObject.SetActive(true);
                     }
+                    break;
 
+                case eClickableObjectType.WorldAvatar :
                     break;
 
                 default :
@@ -148,7 +143,9 @@ namespace Joycollab.v2
                     {
                         _imgTag.gameObject.SetActive(_alwaysOpenTag);
                     }
+                    break;
 
+                case eClickableObjectType.WorldAvatar :
                     break;
 
                 default :
@@ -173,6 +170,10 @@ namespace Joycollab.v2
                         BuildingWheelClick(data);
                     break;
 
+                case eClickableObjectType.WorldAvatar :
+                    if (data.button == PointerEventData.InputButton.Right)
+                        WorldAvatarRightClick(data);
+                    break;
 
                 case eClickableObjectType.Display :
                     if (data.button == PointerEventData.InputButton.Left)
@@ -199,9 +200,6 @@ namespace Joycollab.v2
             {
                 case eClickableObjectType.Building :
                     spriteRenderer.color = temp;
-
-                    // TODO. 건물 이름표 출력할 경우 추가.
-
                     break;
 
                 case eClickableObjectType.Information :
@@ -229,9 +227,6 @@ namespace Joycollab.v2
             {
                 case eClickableObjectType.Building :
                     spriteRenderer.color = temp;
-
-                    // TODO. 건물 이름표 출력할 경우 추가.
-
                     break;
 
                 case eClickableObjectType.Information :
@@ -258,7 +253,6 @@ namespace Joycollab.v2
             PointerEventData data = new PointerEventData(EventSystem.current); 
             switch (_objectType) 
             {
-
                 case eClickableObjectType.Display :
                     DisplayLeftClick(data);
                     break;
@@ -282,7 +276,21 @@ namespace Joycollab.v2
     #endregion
 
 
-    #region  // 'Building' Click event 
+    #region about 'Building'
+
+        private void SetBuildingInfo() 
+        {
+            if (_soBuildingData != null) 
+            {
+
+            }
+
+            if (_imgTag != null) 
+            {
+                _imgTag.gameObject.SetActive(_alwaysOpenTag);
+            }
+        }
+
         private void BuildingLeftClick(PointerEventData data) 
         {
             PopupBuilder.singleton.OpenAlert(
@@ -349,7 +357,68 @@ namespace Joycollab.v2
 
         }
         
-    #endregion  // 'Building' Click event 
+    #endregion  // about 'Building' 
+
+
+    #region about 'World Avatar'
+
+        private void SetWorldAvatarInfo() 
+        {
+            _worldAvatarInfo = GetComponent<WorldAvatar>();
+        }
+
+        private void WorldAvatarRightClick(PointerEventData data) 
+        {
+            if (_menuItems.Length == 0) 
+            {
+                Debug.LogError("이 아바타에 등록된 메뉴가 하나도 없습니다.");
+                return;
+            }
+
+            MenuController ctrl = MenuBuilder.singleton.Build();
+            if (ctrl == null)
+            {
+                Debug.LogError("현재 scene 에 MenuBuilder instance 가 없습니다.");
+                return;
+            }
+
+            bool isMyMenu = (R.singleton.memberSeq == _worldAvatarInfo.avatarSeq);
+
+            ctrl.Init(_worldAvatarInfo.avatarName);
+            foreach (var item in _menuItems) 
+            {
+                if (string.IsNullOrEmpty(item)) continue;
+                if (isMyMenu && item.Equals(S.MENU_CHAT)) continue;
+                if (isMyMenu && item.Equals(S.MENU_CALL)) continue;
+
+                ctrl.AddMenu(item, () => {
+                    switch (item) 
+                    {
+                        case S.MENU_DETAILS :
+                            PopupBuilder.singleton.OpenAlert(
+                                LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "기능 준비 안내", R.singleton.CurrentLocale)
+                            );
+                            break;
+
+                        case S.MENU_CHAT :
+                            string chatLink = string.Format(URL.CHATVIEW_LINK, R.singleton.memberSeq, _worldAvatarInfo.avatarSeq, R.singleton.Region);
+                            JsLib.OpenChat(chatLink, _worldAvatarInfo.avatarSeq);
+                            break;
+
+                        case S.MENU_CALL :
+                            SystemManager.singleton.CallOneToOne(_worldAvatarInfo.avatarSeq).Forget();
+                            break;
+                        
+                        default :
+                            Debug.LogError($"아직 준비되지 않은 아이템 항목 : {item}");
+                            break;
+                    }
+                });
+            }
+            ctrl.Open(data.position);
+        }
+
+    #endregion  // about 'World Avatar' 
 
 
     #region 'Seminar' Click event

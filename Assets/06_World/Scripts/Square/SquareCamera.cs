@@ -1,21 +1,25 @@
 /// <summary>
 /// Square 에서 사용할 카메라 제어 클래스 
 /// @author         : HJ Lee
-/// @last update    : 2023. 10. 24 
-/// @version        : 0.2
+/// @last update    : 2023. 10. 26 
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 03. 07) : 최초 생성, mirror-test 에서 작업한 항목 migration.
 ///     v0.2 (2023. 10. 24) : Teleport 시 fade out / fade in 추가.
+///     v0.3 (2023. 10. 26) : WebGLSupport 의 ResizeEvent 추가.
 /// </summary>
 
 using UnityEngine;
 using Cysharp.Threading.Tasks;
 using DG.Tweening;
+using WebGLSupport;
 
 namespace Joycollab.v2
 {
     public class SquareCamera : MonoBehaviour
     {
+        private const string TAG = "SquareCamera";
+
         public static SquareCamera singleton { get; private set; }
 
         // 카메라, 크기 관련 변수
@@ -68,6 +72,8 @@ namespace Joycollab.v2
             blocker.DOFade(0f, TIME);
             blocker.interactable = false;
             blocker.blocksRaycasts = false;
+
+            WebGLWindow.OnResizeEvent += OnResize;
         }
 
         private void FixedUpdate()
@@ -81,8 +87,9 @@ namespace Joycollab.v2
         {
             isSet = false;
             floorNo = roomNo = 0;
-            
             mainCam = null;
+
+            WebGLWindow.OnResizeEvent -= OnResize;
         }
 
     #endregion  // Unity functions
@@ -209,5 +216,16 @@ namespace Joycollab.v2
         }
 
     #endregion  // private functions
+
+
+    #region webgl support callback
+
+        private void OnResize() 
+        {
+            Debug.Log($"{TAG} | OnResize(), width : {Screen.width}, height : {Screen.height}");
+            fWidth = fSize * Screen.width / Screen.height;
+        }
+
+    #endregion  // webgl support callback
     }
 }

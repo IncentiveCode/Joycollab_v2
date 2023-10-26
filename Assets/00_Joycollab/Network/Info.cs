@@ -75,6 +75,11 @@ namespace Joycollab.v2
     public class Seq 
     {
         public int seq;
+
+        public Seq(int seq) 
+        {
+            this.seq = seq;
+        }
     }
 
     [Serializable] 

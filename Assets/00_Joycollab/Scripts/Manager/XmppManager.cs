@@ -1,17 +1,20 @@
 /// <summary>
 /// Xmpp 관련 매니저 클래스 
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 31
+/// @last update    : 2023. 10. 26
 /// @version        : 0.2
 /// @update
-///     v0.1 (2023. 07. 18) : Joycollab 에서 사용하던 것, 일부 수정해서 작성.
+///     v0.1 (2023. 07. 18) : v1 에서 사용하던 것, 일부 수정해서 작성.
 ///     v0.2 (2023. 07. 31) : public variables (isXmpp, isWebView, isArrange) 주석 처리.
+///     v0.3 (2023. 10. 26) : XmppLib 적용. World 에 적용.
 /// </summary>
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 
@@ -33,11 +36,12 @@ namespace Joycollab.v2
         public const string TASK_SPLITTER = "_P__!!!__S_";
 
         // singleton
-        public static XmppManager singleton { get; private set; } 
+        // public static XmppManager singleton { get; private set; } 
 
         // xmpp client, for connection check
         private XmppClientConnection xmppClient;
-        private string __id, __pw;
+        [SerializeField] private string __id; 
+        [SerializeField] private string __pw;
 
         // message queue
         private Queue<string> webglQueue;
@@ -48,12 +52,19 @@ namespace Joycollab.v2
         // public bool isWebView = false;
         // public bool isArrange = false;
 
+        // TODO. 추후 사용할 때 주석 해제할 것.
+        // instant alarm
+        // private int seqForInstantAlarm;
+        // private string txtForInstantAlarm;
+        // private string typeForInstantAlarm;
+
 
     #region Unity functions
 
         private void Awake() 
         {
             xmppClient = null;
+            __id = __pw = string.Empty;
 
         #if UNITY_WEBGL && !UNITY_EDITOR
             webglQueue = new Queue<string>();
@@ -61,26 +72,35 @@ namespace Joycollab.v2
             queue = new Queue<Action>();
         #endif
 
-            InitSingleton();
+            // TODO. 추후 사용할 때 주석 해제할 것.
+            // seqForInstantAlarm = 0;
+            // txtForInstantAlarm = typeForInstantAlarm = string.Empty;
+
+            // InitSingleton();
         }
 
         private void Update() 
         {
         #if UNITY_WEBGL && !UNITY_EDITOR
+
             if (webglQueue.Count > 0)
             {
                 string msg = webglQueue.Dequeue();
                 HandleMessage(msg);
             }
+
         #else 
+
             if (xmppClient != null && queue.Count > 0) 
             {
                 Action act = queue.Dequeue();
                 act();
             }
+
         #endif
         }
 
+        /**
         #if UNITY_ANDROID && !UNITY_EDITOR
         private void OnApplicationPause(bool pauseStatus) 
         {
@@ -98,6 +118,7 @@ namespace Joycollab.v2
             }
         }
         #endif
+         */
 
     #endregion  // Unity functions
 
@@ -107,32 +128,15 @@ namespace Joycollab.v2
 
         public void XmppLoginForWebGL(int memberSeq, string password) 
         {
-            Debug.Log($"{TAG} | XmppLoginForWebGL(), XMPP login.");
-            // string url = string.Format(URL.XMPP_CLIENT_URL, memberSeq, password);
-            // WebGLXmppLogin(gameObject.name, "XmppOnMsgForWebGL", url);
-
-            // TODO. WebGL 용 Xmpp Login 연결. JsLib 통해서 진행할 것.
+            string url = string.Format(URL.XMPP_AUTH, memberSeq, password);
+            Debug.Log($"{TAG} | XmppLoginForWebGL(), url : {url}");
+            XmppLib.XmppLogin(this.name, url, "XmppOnMsgForWebGL");
         }
 
         public void XmppOnMsgForWebGL(string data) 
         {
             Debug.Log($"{TAG} | XmppOnMsgForWebGL(), received message : {data}");
             webglQueue.Enqueue(data);
-        }
-
-        public void XmppRefreshForWebGL() 
-        {
-            Debug.Log($"{TAG} | XmppRefreshForWebGL(), XMPP refresh.");
-
-            // TODO. WebGL 용 Xmpp Refresh 연결. JsLib 통해서 진행할 것.
-
-        }
-
-        public void XmppLogoutForWebGl() 
-        {
-            Debug.Log($"{TAG} | XmppLogoutForWebGL(), XMPP logout.");
-
-            // TODO. WebGL 용 Xmpp Logout 연결. JsLib 통해서 진행할 것.
         }
 
     #endif
@@ -145,8 +149,8 @@ namespace Joycollab.v2
         {
             if (xmppClient == null)
             {
-                Debug.Log($"{TAG} | Init(), XMPP client init.");
                 xmppClient = new XmppClientConnection();
+                Debug.Log($"{TAG} | Init(), XMPP client init.");
 
                 // HANDLER SETTINGS
                 xmppClient.OnSaslStart += new SaslEventHandler(XmppClientOnSaslStart);
@@ -183,7 +187,12 @@ namespace Joycollab.v2
 
         public void XmppLogin(string username, string password) 
         {
-            if (xmppClient == null) return;
+            if (xmppClient == null) 
+            {
+                Debug.Log($"{TAG} | XmppLogin() call, but client is null.");
+                return;
+            }
+            Debug.Log($"{TAG} | XmppLogin() call");
 
             xmppClient.Username = username;
             xmppClient.Server = URL.XMPP_SERVER;
@@ -192,10 +201,10 @@ namespace Joycollab.v2
             __id = username;
             __pw = password;
 
-        #if UNITY_ANDROID || UNITY_IOS 
-            xmppClient.Resource = S.WORKSPACE;
-        #else
+        #if (UNITY_ANDROID || UNITY_IOS) && !UNITY_EDITOR
             xmppClient.Resource = S.WORKSPACE_MOBILE;
+        #else
+            xmppClient.Resource = S.WORKSPACE;
         #endif
             
             xmppClient.Open();
@@ -213,6 +222,7 @@ namespace Joycollab.v2
 
     #region private functions
 
+        /**
         private void InitSingleton() 
         {
             if (singleton != null && singleton == this) return;
@@ -225,6 +235,7 @@ namespace Joycollab.v2
             singleton = this;
             DontDestroyOnLoad(gameObject);
         }
+         */
 
     #endregion  // private functions
 
@@ -243,12 +254,12 @@ namespace Joycollab.v2
 
         private void XmppClientOnLogin(object sender)
         {
-            Debug.Log($"{TAG} | XmppClientOnLogin(), sender : {sender.ToString()}");
+            Debug.Log($"{TAG} | XmppClientOnLogin(), sender : {sender}");
         }
 
         private void XmppClientOnClose(object sender)
         {
-            Debug.Log($"{TAG} | XmppClientOnClose(), sender : {sender.ToString()}");
+            Debug.Log($"{TAG} | XmppClientOnClose(), sender : {sender}");
 
         #if UNITY_ANDROID && !UNITY_EDITOR
             // TODO. 모바일의 경우, 의도하지 않은 끊어짐이 발생시 재로그인 시도.
@@ -257,53 +268,53 @@ namespace Joycollab.v2
 
         private void XmppClientOnPresence(object sender, Presence e)
         {
-            // Debug.Log($"{TAG} | XmppClientOnPresence(), sender : {sender.ToString()}, Status : {e.Status}, Show : {e.Show}, priority : {e.Priority}");
+            // Debug.Log($"{TAG} | XmppClientOnPresence(), sender : {sender}, Status : {e.Status}, Show : {e.Show}, priority : {e.Priority}");
         }
 
         private void XmppClientOnMessage(object sender, Message m)
         {
-            Debug.Log($"{TAG} | XmppClientOnMessage(), sender : {sender.ToString()}, message : {m.Body}");
+            Debug.Log($"{TAG} | XmppClientOnMessage(), sender : {sender}, message : {m.Body}");
             HandleMessage(m.Body);
         }
 
         private void XmppClientOnAuthError(object sender, Element e)
         {
-            Debug.LogError($"{TAG} | XmppClientOnAuthError(), sender : {sender.ToString()}, tag : {e.TagName}, prefix : {e.Prefix}, attr : {e.Attributes.ToString()}, value : {e.InnerXml}");
+            Debug.LogError($"{TAG} | XmppClientOnAuthError(), sender : {sender}, tag : {e.TagName}, prefix : {e.Prefix}, attr : {e.Attributes}, value : {e.InnerXml}");
         }
 
         private void XmppClientOnSaslStart(object sender, SaslEventArgs e)
         {
-            Debug.Log($"{TAG} | XmppClientOnSaslStart(), sender : {sender.ToString()}, log : {e.ToString()}");
+            Debug.Log($"{TAG} | XmppClientOnSaslStart(), sender : {sender}, log : {e}");
         }
 
         private void XmppClientOnError(object sender, Exception e) 
         {
-            Debug.LogError($"{TAG} | XmppClientOnError(), sender : {sender.ToString()}, exception : {e.Message}, stacktrace : {e.StackTrace}");
+            Debug.LogError($"{TAG} | XmppClientOnError(), sender : {sender}, exception : {e.Message}, stacktrace : {e.StackTrace}");
         }
 
         private void XmppClientOnSocketError(object sender, Exception e)
         {
-            Debug.LogError($"{TAG} | XmppClientOnSocketError(), sender : {sender.ToString()}, exception : {e.Message}, stacktrace : {e.StackTrace}");
+            Debug.LogError($"{TAG} | XmppClientOnSocketError(), sender : {sender}, exception : {e.Message}, stacktrace : {e.StackTrace}");
         }
 
         private void XmppClientOnStreamError(object sender, Element e)
         {
-            Debug.LogError($"{TAG} | XmppClientOnStreamError(), sender : {sender.ToString()}, tag : {e.TagName}, prefix : {e.Prefix}, attr : {e.Attributes.ToString()}, value : {e.InnerXml}");
+            Debug.LogError($"{TAG} | XmppClientOnStreamError(), sender : {sender}, tag : {e.TagName}, prefix : {e.Prefix}, attr : {e.Attributes}, value : {e.InnerXml}");
         }
 
         private void XmppClientOnConnectionStateChanged(object sender, XmppConnectionState state) 
         {
-            Debug.Log($"{TAG} | XmppClientOnConnectionStateChanged(), sender : {sender.ToString()}, xmpp state : {state.ToString()}");
+            Debug.Log($"{TAG} | XmppClientOnConnectionStateChanged(), sender : {sender}, xmpp state : {state}");
         }
 
         private void XmppClientOnStreamStart(object sender, Xmpp.Xml.Dom.Node e)
         {
-            Debug.Log($"{TAG} | XmppClientOnStreamStart(), sender : {sender.ToString()}, node : {e.ToString()}");
+            Debug.Log($"{TAG} | XmppClientOnStreamStart(), sender : {sender}, node : {e}");
         }
 
         private void XmppClientOnStreamEnd(object sender, Xmpp.Xml.Dom.Node e) 
         {
-            Debug.Log($"{TAG} | XmppClientOnStreamEnd(), sender : {sender.ToString()}, node : {e.ToString()}");
+            Debug.Log($"{TAG} | XmppClientOnStreamEnd(), sender : {sender}, node : {e}");
         }
 
         private void XmppClientOnIq(object sender, IQ iq) 
@@ -332,7 +343,7 @@ namespace Joycollab.v2
             );
             pong.SetAttribute("id", id);
 
-            // Debug.Log($"{TAG} | XmppClientOnIqAnswer(), answer : {pong.ToString()}");
+            // Debug.Log($"{TAG} | XmppClientOnIqAnswer(), answer : {pong}");
             xmppClient.Send(pong);
         }
 
@@ -365,9 +376,6 @@ namespace Joycollab.v2
             string typeForInstantAlarm = string.Empty;
             string txtForInstantAlarm = string.Empty;
 
-            // locale check
-            Locale currentLocale = LocalizationSettings.SelectedLocale;
-
             // xmpp message parse
             eXmppType type = Util.StringToEnum<eXmppType>(alarmType);
             switch (type) 
@@ -385,20 +393,20 @@ namespace Joycollab.v2
                         if (arr.Length > 1) 
                         {
                             key = "Kanban."+ arr[0];
-                            value = LocalizationSettings.StringDatabase.GetLocalizedString("Alarm", key, currentLocale);
+                            value = LocalizationSettings.StringDatabase.GetLocalizedString("Alarm", key, R.singleton.CurrentLocale);
                             title = string.Format(value, arr[1]); 
                         }
                         else
                         {
                             key = "Kanban."+ content;
-                            title = LocalizationSettings.StringDatabase.GetLocalizedString("Alarm", key, currentLocale);
+                            title = LocalizationSettings.StringDatabase.GetLocalizedString("Alarm", key, R.singleton.CurrentLocale);
                         }
 
                         if (arrContent.Length > 1) 
                         {
                             title += " ";
 
-                            value = LocalizationSettings.StringDatabase.GetLocalizedString("Alarm", "Kanban.여러 항목 수정", currentLocale);
+                            value = LocalizationSettings.StringDatabase.GetLocalizedString("Alarm", "Kanban.여러 항목 수정", R.singleton.CurrentLocale);
                             title += string.Format(value, (arrContent.Length - 1)); 
                         }
                     }

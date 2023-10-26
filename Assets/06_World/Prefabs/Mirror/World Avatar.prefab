@@ -561,6 +561,7 @@ GameObject:
   - component: {fileID: 7111134659227511927}
   - component: {fileID: 7111134659227511921}
   - component: {fileID: 7111134659227511920}
+  - component: {fileID: 7429491921947316631}
   m_Layer: 6
   m_Name: World Avatar
   m_TagString: Player
@@ -703,8 +704,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0.1
-  _spriteDefault: {fileID: 21300000, guid: 82f61e6f15c6a445c91f619b2b3290fa, type: 3}
   isMovable: 0
+  isFly: 0
   speed: 5
   _txtName: {fileID: 4209627691863048469}
   _rendererProfile: {fileID: 152348406488048098}
@@ -716,7 +717,38 @@ MonoBehaviour:
   avatarPhoto: 
   avatarMemberType: 
   avatarChat: 
-  cam: {fileID: 0}
+--- !u!114 &7429491921947316631
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7111134659227511931}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 545fd6928a2c9a0408f8cec3429b4844, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _objectType: 3
+  _rendererType: 0
+  _menuItems:
+  - "\uC0C1\uC138\uBCF4\uAE30"
+  - "\uCC44\uD305"
+  - "\uC74C\uC131 \uD1B5\uD654"
+  _alphaValueOnEnter: 1
+  _alphaValueOnExit: 1
+  _soBuildingData: {fileID: 0}
+  _imgTag: {fileID: 0}
+  _alwaysOpenTag: 0
+  _goElevatorMenu: {fileID: 0}
+  _goInformation: {fileID: 0}
+  _floorNo: 0
+  _goBoard: {fileID: 0}
+  _goNotice: {fileID: 0}
+  _goSeminar: {fileID: 0}
+  _goMeeting: {fileID: 0}
+  _goDisplay: {fileID: 0}
+  _goDummyMenu: {fileID: 0}
 --- !u!1 &7542954244493377297
 GameObject:
   m_ObjectHideFlags: 0

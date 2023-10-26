@@ -39,6 +39,10 @@ namespace Joycollab.v2
         [SerializeField] public Transform pfChatBubble;
         [SerializeField] public GameObject pfWorldAlarmSoundItem;
 
+        // xmpp manager
+        private XmppManager xmpp;
+        public XmppManager XMPP => xmpp;
+
         // audio
         private AudioSource audioSource;
 
@@ -59,6 +63,9 @@ namespace Joycollab.v2
 
             // set local variables
             timezoneList = new TimezoneList();
+
+            // manager initialize
+            xmpp = GetComponent<XmppManager>();
         }
 
         private async UniTaskVoid Start() 
@@ -68,6 +75,8 @@ namespace Joycollab.v2
         #else
             Application.targetFrameRate = 30;
         #endif
+
+            xmpp.Init();
 
             var (repoRes, timezoneRes) = await UniTask.WhenAll(
                 R.singleton.Init(),
@@ -425,5 +434,40 @@ namespace Joycollab.v2
 		}            
 
     #endregion  // Timezone 
+
+
+    #region communication 
+
+        public async UniTaskVoid CallOneToOne(int targetMemberSeq) 
+        {
+            string url = string.Format(URL.MAKE_CALL, R.singleton.workspaceSeq);
+
+            ReqCallInfo info = new ReqCallInfo();
+            info.members.Add(new Seq(R.singleton.memberSeq));
+            info.members.Add(new Seq(targetMemberSeq));
+            string body = JsonUtility.ToJson(info);
+            Debug.Log($"CallOneToOne(), body : {body}");
+
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.POST, body, R.singleton.token);
+            Debug.Log($"CallOneToOne(), result : {JsonUtility.ToJson(res)}");
+            if (! string.IsNullOrEmpty(res.message)) 
+            {
+                PopupBuilder.singleton.OpenAlert(res.message);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(res.stringData)) 
+            {
+                PopupBuilder.singleton.OpenAlert("결과값이 비어있음.");
+                return;
+            }
+
+            string[] split = res.stringData.Split('/');
+            int.TryParse(split[split.Length - 1], out int callSeq);
+            string callLink = string.Format(URL.CALL_LINK, R.singleton.workspaceSeq, callSeq, R.singleton.memberSeq, R.singleton.Region);
+            JsLib.OpenVoiceCall(this.name, callLink, "StopAudioClip");
+        }
+
+    #endregion  // communication
     }
 }

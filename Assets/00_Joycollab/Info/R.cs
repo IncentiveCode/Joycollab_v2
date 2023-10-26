@@ -457,6 +457,9 @@ namespace Joycollab.v2
         public float myLon {
             get { return _memberInfo.lng; }
         }
+        public string myXmppId {
+            get { return string.Format("jc-user-{0}", memberSeq); }
+        }
         public string myXmppPw {
             get { return _memberInfo.xmppPw; }
         }

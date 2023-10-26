@@ -79,7 +79,7 @@ namespace Joycollab.v2
 
         private void DisplayAvatarInfo() 
         {
-            // EditorGUILayout.PropertyField(serializedObject.FindProperty("_soAvatarData"));
+
         }
 
         private void DisplayElevator() 

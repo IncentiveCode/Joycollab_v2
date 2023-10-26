@@ -37,6 +37,8 @@ namespace Joycollab.v2
         {
             Debug.Log("> connect to server.");
             base.OnClientConnect();
+
+            
         }
 
         public override void OnClientDisconnect() 

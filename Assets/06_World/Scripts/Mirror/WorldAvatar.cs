@@ -9,6 +9,7 @@
 /// </summary>
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 using Mirror;
 using TMPro;
@@ -87,7 +88,7 @@ namespace Joycollab.v2
         {
             if (! isOwned) return;
 
-            if (Input.GetMouseButtonUp(0))
+            if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
             {
                 v3Target = cam.ScreenToWorldPoint(Input.mousePosition);
                 Debug.Log($"{TAG} | click position : {v3Target}");
@@ -160,7 +161,6 @@ namespace Joycollab.v2
 
             // TODO. animation 을 사용하는 경우에 적용 예정.
             // bool isMove = false;
-            Debug.Log($"{TAG} | current state : {isFly}");
 
             if (isFly) 
             {
