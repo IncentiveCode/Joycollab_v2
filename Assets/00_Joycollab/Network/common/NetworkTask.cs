@@ -1,8 +1,8 @@
 /// <summary>
 /// Network 통신 라이브러리  
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 06
-/// @version        : 0.7
+/// @last update    : 2023. 10. 27
+/// @version        : 0.8
 /// @update
 ///     v0.1 (2023. 02. 20) : UniTask 사용해서 최초 생성.
 ///     v0.2 (2023. 03. 31) : int 형태로 리턴되는 결과를 처리하기 위해, PsResponse 안에 int 형 data 추가.
@@ -12,6 +12,7 @@
 ///     v0.6 (2023. 07. 31) : return 앞에 req.Dispose() 추가.
 ///     v0.7 (2023. 09. 06) : 중복되는 req.Dispose() 를 finally 로 이동. FileDownload function 추가.
 ///                           token refresh 가 없는 GoogleDriveAsync() 추가.
+///     v0.8 (2023. 10. 27) : location 값을 리턴 받을 수 있도록 RequestAsync() 수정.
 /// </summary>
 
 using System;
@@ -642,13 +643,13 @@ namespace Joycollab.v2
 
     #region Common Request
 
-        public static async UniTask<PsResponse<T>> RequestAsync<T>(string url, eMethodType type, string body="", string token="") 
+        public static async UniTask<PsResponse<T>> RequestAsync<T>(string url, eMethodType type, string body="", string token="", bool locationOpt=false) 
         {
             byte[] bodyRaw = Encoding.UTF8.GetBytes(body);
-            return await RequestAsync<T>(url, type, bodyRaw, token);
+            return await RequestAsync<T>(url, type, bodyRaw, token, locationOpt);
         }
     
-        private static async UniTask<PsResponse<T>> RequestAsync<T>(string url, eMethodType type, byte[] bodyRaw, string token="") 
+        private static async UniTask<PsResponse<T>> RequestAsync<T>(string url, eMethodType type, byte[] bodyRaw, string token="", bool locationOpt=false) 
         {
             // 0. test
             // await UniTask.Delay(TimeSpan.FromSeconds(2f));
@@ -690,14 +691,32 @@ namespace Joycollab.v2
 
                 if (data.Length == 0)
                 {
-                    return new PsResponse<T>(code, string.Empty);
+                    if (locationOpt) 
+                    {
+                        Dictionary<string, string> headers = req.GetResponseHeaders();
+                        headers.TryGetValue("location", out string location);
+                        return new PsResponse<T>(code, string.Empty, location);
+                    }
+                    else
+                    {
+                        return new PsResponse<T>(code, string.Empty);
+                    }
                 }
 
                 // json 형태가 아니라면, data 를 그대로 리턴한다.
                 string first = data.Substring(0, 1);
                 if (! first.Equals("[") && ! first.Equals("{")) 
                 {
-                    return new PsResponse<T>(code, string.Empty, data);
+                    if (locationOpt) 
+                    {
+                        Dictionary<string, string> headers = req.GetResponseHeaders();
+                        headers.TryGetValue("location", out string location);
+                        return new PsResponse<T>(code, string.Empty, location);
+                    }
+                    else
+                    {
+                        return new PsResponse<T>(code, string.Empty, data);
+                    }
                 }
 
                 // 첫글자가 [ 로 시작하면, list 를 붙여준다.
@@ -716,7 +735,7 @@ namespace Joycollab.v2
                     Debug.LogError($"{TAG} | RequestAsync() timeout exception : {ce.Message}");
 
                     // re-try
-                    return await RequestAsync<T>(url, type, bodyRaw, token);
+                    return await RequestAsync<T>(url, type, bodyRaw, token, locationOpt);
                 }
             }
             catch (Exception e) 

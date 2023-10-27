@@ -38,6 +38,7 @@ namespace Joycollab.v2
         [Header("world assets")]
         [SerializeField] public Transform pfChatBubble;
         [SerializeField] public GameObject pfWorldAlarmSoundItem;
+        [SerializeField] public GameObject pfBuildingInfo;
 
         // xmpp manager
         private XmppManager xmpp;
@@ -438,18 +439,18 @@ namespace Joycollab.v2
 
     #region communication 
 
-        public async UniTaskVoid CallOneToOne(int targetMemberSeq) 
+        public async UniTaskVoid CallOnTheSpot(List<int> seqs) 
         {
             string url = string.Format(URL.MAKE_CALL, R.singleton.workspaceSeq);
 
             ReqCallInfo info = new ReqCallInfo();
-            info.members.Add(new Seq(R.singleton.memberSeq));
-            info.members.Add(new Seq(targetMemberSeq));
-            string body = JsonUtility.ToJson(info);
-            Debug.Log($"CallOneToOne(), body : {body}");
+            foreach (int seq in seqs) 
+            {
+                info.members.Add(new Seq(seq));
+            }
 
-            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.POST, body, R.singleton.token);
-            Debug.Log($"CallOneToOne(), result : {JsonUtility.ToJson(res)}");
+            string body = JsonUtility.ToJson(info);
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.POST, body, R.singleton.token, true);
             if (! string.IsNullOrEmpty(res.message)) 
             {
                 PopupBuilder.singleton.OpenAlert(res.message);
@@ -466,6 +467,53 @@ namespace Joycollab.v2
             int.TryParse(split[split.Length - 1], out int callSeq);
             string callLink = string.Format(URL.CALL_LINK, R.singleton.workspaceSeq, callSeq, R.singleton.memberSeq, R.singleton.Region);
             JsLib.OpenVoiceCall(this.name, callLink, "StopAudioClip");
+        }
+
+        public async UniTaskVoid MeetingOnTheSpot(List<int> seqs) 
+        {
+            string url = string.Format(URL.CREATE_MEETING, R.singleton.workspaceSeq);
+
+            List<Seq> members = new List<Seq>();
+            members.Clear();
+            foreach (int seq in seqs) 
+            {
+                members.Add(new Seq(seq));
+            }
+
+            ReqMeetingInfo info = new ReqMeetingInfo();
+            info.title = LocalizationSettings.StringDatabase.GetLocalizedString("word", "즉석회의", R.singleton.CurrentLocale);
+            info.useYn = "Y";
+            info.members = members;
+            info.email = false;
+            info.sms = false;
+            info.run = true;
+            info.pin = string.Empty;
+            info.isPrivate = false;
+            info.isOpen = false;
+            var datetime = DateTime.Now;
+            info.dt = datetime.ToString("yyyy-MM-dd");
+            info.stm = datetime.ToString("HH:mm");
+            datetime = datetime.AddHours(1);
+            info.etm = datetime.ToString("HH:mm");
+            string body = JsonUtility.ToJson(info);
+
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.POST, body, R.singleton.token, true);
+            if (! string.IsNullOrEmpty(res.message)) 
+            {
+                PopupBuilder.singleton.OpenAlert(res.message);
+                return;
+            }
+
+            if (string.IsNullOrEmpty(res.stringData)) 
+            {
+                PopupBuilder.singleton.OpenAlert("결과값이 비어있음.");
+                return;
+            }
+
+            string[] split = res.stringData.Split('/');
+            int.TryParse(split[split.Length - 1], out int meetingSeq);
+            string meetingLink = string.Format(URL.MEETING_LINK, R.singleton.workspaceSeq, meetingSeq, R.singleton.memberSeq, R.singleton.Region);
+            JsLib.OpenWebview(meetingLink, "meeting");
         }
 
     #endregion  // communication

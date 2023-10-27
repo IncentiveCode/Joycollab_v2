@@ -50,7 +50,7 @@ namespace Joycollab.v2
             });
             _btnLog.onClick.AddListener(() => JsLib.Log("Console.log"));
             _btnRedirect.onClick.AddListener(() => JsLib.Redirection("https://jcollab.com"));
-            _btnOpenWebview.onClick.AddListener(() => JsLib.OpenWebview("https://jcollab.com", "Home"));
+            _btnOpenWebview.onClick.AddListener(() => JsLib.OpenWebview("https://jcollab.com", "homepage"));
             _btnCheckBrowser.onClick.AddListener(() => JsLib.CheckBrowser(objectName, "PostCheckcBrowser"));
             _btnCheckSystem.onClick.AddListener(() => JsLib.CheckSystem(objectName, "PostCheckSystem"));
 

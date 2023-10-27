@@ -123,6 +123,8 @@ namespace Joycollab.v2
             avatarName = info.nickNm;
             avatarPhoto = info.photo;
             avatarMemberType = info.memberType;
+
+            _imgState.color = C.ONLINE;
         }
 
         public void UpdateAvatarChat(string chat) 

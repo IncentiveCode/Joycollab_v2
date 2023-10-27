@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
@@ -280,11 +281,6 @@ namespace Joycollab.v2
 
         private void SetBuildingInfo() 
         {
-            if (_soBuildingData != null) 
-            {
-
-            }
-
             if (_imgTag != null) 
             {
                 _imgTag.gameObject.SetActive(_alwaysOpenTag);
@@ -293,9 +289,17 @@ namespace Joycollab.v2
 
         private void BuildingLeftClick(PointerEventData data) 
         {
-            PopupBuilder.singleton.OpenAlert(
-                LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "기능 준비 안내", R.singleton.CurrentLocale)
-            );
+            var pop = Instantiate(SystemManager.singleton.pfBuildingInfo, Vector3.zero, Quaternion.identity);
+            if (pop.TryGetComponent<BuildingInfo>(out BuildingInfo popInfo)) 
+            {
+                var transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
+                pop.transform.SetParent(transform, false);
+                popInfo.Open(_soBuildingData, data.position);
+            }
+            else 
+            {
+                Destroy(pop.gameObject);
+            }
         }
 
         private void BuildingRightClick(PointerEventData data) 
@@ -313,17 +317,24 @@ namespace Joycollab.v2
                 return;
             }
 
-            // TODO. 건물 정보 설정 후 이름 출력할 것.
-            ctrl.Init("Menu");
+            ctrl.Init(_soBuildingData.BuildingName);
             foreach (var item in _menuItems) 
             {
                 ctrl.AddMenu(item, () => {
                     switch (item) 
                     {
                         case S.MENU_DETAILS :
-                            PopupBuilder.singleton.OpenAlert(
-                                LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "기능 준비 안내", R.singleton.CurrentLocale)
-                            );
+                            var pop = Instantiate(SystemManager.singleton.pfBuildingInfo, Vector3.zero, Quaternion.identity);
+                            if (pop.TryGetComponent<BuildingInfo>(out BuildingInfo popInfo)) 
+                            {
+                                var transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
+                                pop.transform.SetParent(transform, false);
+                                popInfo.Open(_soBuildingData, data.position);
+                            }
+                            else 
+                            {
+                                Destroy(pop.gameObject);
+                            }
                             break;
 
                         case S.MENU_ENTER :
@@ -390,6 +401,7 @@ namespace Joycollab.v2
                 if (string.IsNullOrEmpty(item)) continue;
                 if (isMyMenu && item.Equals(S.MENU_CHAT)) continue;
                 if (isMyMenu && item.Equals(S.MENU_CALL)) continue;
+                if (isMyMenu && item.Equals(S.MENU_MEETING)) continue;
 
                 ctrl.AddMenu(item, () => {
                     switch (item) 
@@ -406,7 +418,16 @@ namespace Joycollab.v2
                             break;
 
                         case S.MENU_CALL :
-                            SystemManager.singleton.CallOneToOne(_worldAvatarInfo.avatarSeq).Forget();
+                            List<int> callTarget = new List<int> {
+                                R.singleton.memberSeq,
+                                _worldAvatarInfo.avatarSeq
+                            };
+                            SystemManager.singleton.CallOnTheSpot(callTarget).Forget();
+                            break;
+
+                        case S.MENU_MEETING :
+                            List<int> meetingTarget = new List<int> { _worldAvatarInfo.avatarSeq };
+                            SystemManager.singleton.MeetingOnTheSpot(meetingTarget).Forget();
                             break;
                         
                         default :
