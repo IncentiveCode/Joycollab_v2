@@ -2,10 +2,11 @@
 /// [world]
 /// Floating bar 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 18 
-/// @version        : 0.1
+/// @last update    : 2023. 10. 30 
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 09. 18) : v1 에서 사용하던 항목 수정 후 적용. (진행 중)
+///     v0.1 (2023. 10. 30) : Expandable 적용. meeting, seminar 버튼 추가.
 /// </summary>
 
 using UnityEngine;
@@ -43,8 +44,10 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnAlarm;
         [SerializeField] private Button _btnBookmark;
         [SerializeField] private Button _btnChat;
-        [SerializeField] private Button _btnSettings;
+        [SerializeField] private Button _btnMeeting;
+        [SerializeField] private Button _btnSeminar;
         [SerializeField] private Button _btnUserList;
+        [SerializeField] private Button _btnSettings;
 
         // local variables
         private string myPhoto;
@@ -75,8 +78,14 @@ namespace Joycollab.v2
                 string url = string.Format(URL.CHAT_LINK, R.singleton.memberSeq, R.singleton.Region);
                 JsLib.OpenChat(url);
             });
-            _btnSettings.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_Settings));
+            _btnMeeting.onClick.AddListener(() => {
+                Debug.Log($"{TAG} | meeting panel open.");
+            });
+            _btnSeminar.onClick.AddListener(() => {
+                Debug.Log($"{TAG} | seminar panel open.");
+            });
             _btnUserList.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_UserList));
+            _btnSettings.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_Settings));
 
 
             // set local variables

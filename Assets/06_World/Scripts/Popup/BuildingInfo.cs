@@ -18,10 +18,11 @@ namespace Joycollab.v2
     {
         private const string TAG = "BuildingInfo";
 
-        [Header("title, button")] 
+        [Header("common")] 
         [SerializeField] private Image _imgPanel;
         [SerializeField] private TMP_Text _txtName;
 
+        [Header("button")] 
         [SerializeField] private Button _btnOffice;
         [SerializeField] private Button _btnHomepage;
         [SerializeField] private Button _btnBookmark;

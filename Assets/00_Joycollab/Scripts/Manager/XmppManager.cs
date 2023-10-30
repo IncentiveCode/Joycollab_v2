@@ -10,12 +10,8 @@
 /// </summary>
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
 
 using Xmpp;
@@ -34,9 +30,6 @@ namespace Joycollab.v2
         private const string MSG_PREFIX = "__HIDDEN__";
         public const string CONTENT_SPLITTER = "_P__!__S_";
         public const string TASK_SPLITTER = "_P__!!!__S_";
-
-        // singleton
-        // public static XmppManager singleton { get; private set; } 
 
         // xmpp client, for connection check
         private XmppClientConnection xmppClient;
@@ -82,21 +75,17 @@ namespace Joycollab.v2
         private void Update() 
         {
         #if UNITY_WEBGL && !UNITY_EDITOR
-
             if (webglQueue.Count > 0)
             {
                 string msg = webglQueue.Dequeue();
                 HandleMessage(msg);
             }
-
         #else 
-
             if (xmppClient != null && queue.Count > 0) 
             {
                 Action act = queue.Dequeue();
                 act();
             }
-
         #endif
         }
 
