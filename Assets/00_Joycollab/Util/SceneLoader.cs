@@ -1,10 +1,11 @@
 /// <summary>
 /// Scene 전환 관리자
 /// @author         : HJ Lee
-/// @last update    : 2023. 02. 22
-/// @version        : 0.1
+/// @last update    : 2023. 10. 31
+/// @version        : 0.2
 /// @update
-///     v0.1 (2023. 02. 22) : Joycollab 에서 사용하던 클래스 정리.
+///     v0.1 (2023. 02. 22) : v1 에서 사용하던 클래스 정리.
+///     v0.2 (2023. 10. 31) : world, square scene 을 사용하고 있는지 확인하는 함수 추가.
 /// </summary>
 
 using UnityEngine;
@@ -22,6 +23,10 @@ namespace Joycollab.v2
         {
             nextScene = scene;
             SceneManager.LoadSceneAsync((int)eScenes.Loading);
+        }
+        public static bool isWorld()
+        {
+            return (nextScene == eScenes.Map || nextScene == eScenes.Square || nextScene == eScenes.Room);
         }
         public static bool isGraphicUI() 
         {

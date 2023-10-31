@@ -469,6 +469,11 @@ namespace Joycollab.v2
             JsLib.OpenVoiceCall(this.name, callLink, "StopAudioClip");
         }
 
+        public void ReceiveCall(string link) 
+        {
+            JsLib.OpenVoiceCall(this.name, link, "StopAudioClip");
+        }
+
         public async UniTaskVoid MeetingOnTheSpot(List<int> seqs) 
         {
             string url = string.Format(URL.CREATE_MEETING, R.singleton.workspaceSeq);

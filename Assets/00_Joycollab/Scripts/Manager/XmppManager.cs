@@ -1,12 +1,13 @@
 /// <summary>
 /// Xmpp 관련 매니저 클래스 
 /// @author         : HJ Lee
-/// @last update    : 2023. 10. 26
-/// @version        : 0.2
+/// @last update    : 2023. 10. 31
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 07. 18) : v1 에서 사용하던 것, 일부 수정해서 작성.
 ///     v0.2 (2023. 07. 31) : public variables (isXmpp, isWebView, isArrange) 주석 처리.
 ///     v0.3 (2023. 10. 26) : XmppLib 적용. World 에 적용.
+///     v0.4 (2023. 10. 31) : world 에서는 권한 체크 안하게끔 조치.
 /// </summary>
 
 using System;
@@ -477,24 +478,38 @@ namespace Joycollab.v2
                 case eXmppType.회의시작 :
                 case eXmppType.회의예약 :
                 case eXmppType.회의멤버변경 :
-                    if (R.singleton.CheckHasAuth(R.singleton.MeetingRoomSeq, S.AUTH_READ_MEETING)) 
+                    if (SceneLoader.isWorld()) 
                     {
-                        Debug.Log($"{TAG} | HandleMessage(), 회의실 업데이트 필요.");
+                        Debug.Log($"{TAG} | HandleMessage(), World 에서는 무조건 회의실 업데이트.");
                     }
                     else 
                     {
-                        Debug.Log($"{TAG} | HandleMessage(), 회의 조회 권한이 없기에, 회의실 업데이트를 하지 않습니다.");
+                        if (R.singleton.CheckHasAuth(R.singleton.MeetingRoomSeq, S.AUTH_READ_MEETING)) 
+                        {
+                            Debug.Log($"{TAG} | HandleMessage(), 회의실 업데이트 필요.");
+                        }
+                        else 
+                        {
+                            Debug.Log($"{TAG} | HandleMessage(), 회의 조회 권한이 없기에, 회의실 업데이트를 하지 않습니다.");
+                        }
                     }
                     break;
 
                 case eXmppType.회의종료 :
-                    if (R.singleton.CheckHasAuth(R.singleton.MeetingRoomSeq, S.AUTH_READ_MEETING)) 
+                    if (SceneLoader.isWorld()) 
                     {
-                        Debug.Log($"{TAG} | HandleMessage(), 회의실 업데이트 필요.");
+                        Debug.Log($"{TAG} | HandleMessage(), World 에서는 무조건 회의실 업데이트.");
                     }
                     else 
                     {
-                        Debug.Log($"{TAG} | HandleMessage(), 회의 조회 권한이 없기에, 회의 종료 알림을 전달 하지 않습니다.");
+                        if (R.singleton.CheckHasAuth(R.singleton.MeetingRoomSeq, S.AUTH_READ_MEETING)) 
+                        {
+                            Debug.Log($"{TAG} | HandleMessage(), 회의실 업데이트 필요.");
+                        }
+                        else 
+                        {
+                            Debug.Log($"{TAG} | HandleMessage(), 회의 조회 권한이 없기에, 회의 종료 알림을 전달 하지 않습니다.");
+                        }
                     }
                     break;
 
@@ -502,13 +517,14 @@ namespace Joycollab.v2
                     int workspaceSeq = R.singleton.workspaceSeq;
                     int memberSeq = R.singleton.memberSeq; 
                     string lan = R.singleton.Region;
-                    string link = string.Empty;
+                    string callLink = string.Empty;
 
-                #if UNITY_WEBGL 
+                #if UNITY_WEBGL
+
                     // TODO. 음성통화 소리 출력
-
-                    link = string.Format(URL.CALL_LINK, workspaceSeq, xcMsg.seq, memberSeq, lan);
-                    WebviewBuilder.singleton.OpenMobileWebview(link, eWebviewType.VoiceCall);
+                    callLink = string.Format(URL.CALL_LINK, workspaceSeq, xcMsg.seq, memberSeq, lan);
+                    Debug.Log($"{TAG} | 음성통화 링크 : {callLink}");
+                    SystemManager.singleton.ReceiveCall(callLink);
 
                 #elif UNITY_ANDROID
 
@@ -520,8 +536,10 @@ namespace Joycollab.v2
 
                         WebviewBuilder.singleton.OpenMobileWebview(link, eWebviewType.VoiceCall);
                     }).Forget();
-                
-                #elif UNITY_IOS
+
+                #else
+
+
 
                 #endif
                     break;

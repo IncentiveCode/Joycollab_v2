@@ -2,11 +2,12 @@
 /// [world]
 /// Floating bar 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 10. 30 
-/// @version        : 0.2
+/// @last update    : 2023. 10. 31 
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 09. 18) : v1 에서 사용하던 항목 수정 후 적용. (진행 중)
-///     v0.1 (2023. 10. 30) : Expandable 적용. meeting, seminar 버튼 추가.
+///     v0.2 (2023. 10. 30) : Expandable 적용. meeting, seminar 버튼 추가.
+///     v0.3 (2023. 10. 31) : 모임방 버튼 추가.
 /// </summary>
 
 using UnityEngine;
@@ -46,6 +47,7 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnChat;
         [SerializeField] private Button _btnMeeting;
         [SerializeField] private Button _btnSeminar;
+        [SerializeField] private Button _btnGathering;
         [SerializeField] private Button _btnUserList;
         [SerializeField] private Button _btnSettings;
 
@@ -65,8 +67,7 @@ namespace Joycollab.v2
                 );
             });
             _btnMicControl.onClick.AddListener(() => {
-                // 임시로 사용 중.
-                // WindowManager.singleton.Push(S.WorldScene_RoomList);
+                Debug.Log($"{TAG} | mic option change.");
             });
             _btnAlarm.onClick.AddListener(() => {
                 Debug.Log($"{TAG} | alarm panel open.");
@@ -83,6 +84,10 @@ namespace Joycollab.v2
             });
             _btnSeminar.onClick.AddListener(() => {
                 Debug.Log($"{TAG} | seminar panel open.");
+            });
+            _btnGathering.onClick.AddListener(() => {
+                Debug.Log($"{TAG} | gathering panel open.");
+                WindowManager.singleton.Push(S.WorldScene_RoomList);
             });
             _btnUserList.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_UserList));
             _btnSettings.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_Settings));
