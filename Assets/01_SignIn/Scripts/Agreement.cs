@@ -218,12 +218,12 @@ namespace Joycollab.v2
             data.agreeToAll = _toggleAll.isOn;
             data.agreeToTerms = _toggleTerms.isOn;
             data.agreeToPrivacy = _togglePrivacy.isOn;
-            data.agreeToAgeLimit = isWorld ? false : _toggleAgeLimit.isOn;
+            data.agreeToAgeLimit = isWorld ? _toggleAgeLimit.isOn : false;
             data.agreeToMarketing = _toggleMarketing.isOn;
             data.agreeToReceiveSMS = _toggleSms.isOn;
             data.agreeToReceiveMail = _toggleMail.isOn;
 
-            PlayerPrefs.SetString(S.CURRENT_AGREEMENT, currentData.ToJson());
+            PlayerPrefs.SetString(S.CURRENT_AGREEMENT, data.ToJson());
         }
 
         private void Next()
@@ -265,13 +265,13 @@ namespace Joycollab.v2
 
         public string ToJson() 
         {
-            // Debug.Log("[TEST] save | data : "+ JsonUtility.ToJson(this));
+            Debug.Log("[TEST] save | data : "+ JsonUtility.ToJson(this));
             return JsonUtility.ToJson(this);
         }
 
         public void LoadFromJson(string json) 
         {
-            // Debug.Log("[TEST] load | data : "+ json);
+            Debug.Log("[TEST] load | data : "+ json);
             JsonUtility.FromJsonOverwrite(json, this);
         }
     }

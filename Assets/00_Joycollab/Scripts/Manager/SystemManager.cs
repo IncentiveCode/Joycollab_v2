@@ -56,6 +56,9 @@ namespace Joycollab.v2
 
         private void Awake() 
         {
+            // test only
+            PlayerPrefs.DeleteAll();
+
             InitSingleton();
             SetTransform();
 

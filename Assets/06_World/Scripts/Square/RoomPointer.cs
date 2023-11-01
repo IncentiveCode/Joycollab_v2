@@ -7,7 +7,6 @@
 ///     v0.1 (2023. 10. 24) : 신규 생성
 /// </summary>
 
-using System;
 using UnityEngine;
 
 namespace Joycollab.v2

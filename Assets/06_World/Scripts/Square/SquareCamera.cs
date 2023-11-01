@@ -1,12 +1,13 @@
 /// <summary>
 /// Square 에서 사용할 카메라 제어 클래스 
 /// @author         : HJ Lee
-/// @last update    : 2023. 10. 26 
-/// @version        : 0.3
+/// @last update    : 2023. 11. 01 
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 03. 07) : 최초 생성, mirror-test 에서 작업한 항목 migration.
 ///     v0.2 (2023. 10. 24) : Teleport 시 fade out / fade in 추가.
 ///     v0.3 (2023. 10. 26) : WebGLSupport 의 ResizeEvent 추가.
+///     v0.4 (2023. 11. 01) : fade out / fade in 수치 조정.
 /// </summary>
 
 using UnityEngine;
@@ -47,7 +48,7 @@ namespace Joycollab.v2
         [SerializeField] private Vector3[] arrRoomPos;
         
         // for blocker
-        private const float TIME = 1.5f;
+        private const float TIME = 0.8f;
         private const int DELAY_TIME = 500;
         private bool isMove;
         [SerializeField] private CanvasGroup blocker;
@@ -116,10 +117,11 @@ namespace Joycollab.v2
             if (floorNo == no) return;
 
             isMove = true;
-            blocker.alpha = 1f;
+            blocker.DOFade(1f, TIME);
             blocker.interactable = true;
             blocker.blocksRaycasts = true;
             
+            await UniTask.Delay(DELAY_TIME);
             playerTransform.position = arrMapPos[no - 1];
             floorNo = no;
             await UniTask.Delay(DELAY_TIME);
@@ -136,10 +138,11 @@ namespace Joycollab.v2
             if (roomNo == no) return;
 
             isMove = true;
-            blocker.alpha = 1f;
+            blocker.DOFade(1f, TIME);
             blocker.interactable = true;
             blocker.blocksRaycasts = true;
             
+            await UniTask.Delay(DELAY_TIME);
             playerTransform.position = no == 0 ? arrMapPos[floorNo - 1] : arrRoomPos[no - 1];
             roomNo = no;
             await UniTask.Delay(DELAY_TIME);
@@ -156,10 +159,11 @@ namespace Joycollab.v2
             if (roomNo == no) return;
             
             isMove = true;
-            blocker.alpha = 1f;
+            blocker.DOFade(1f, TIME);
             blocker.interactable = true;
             blocker.blocksRaycasts = true;
 
+            await UniTask.Delay(DELAY_TIME);
             playerTransform.position = pos;
             roomNo = no;
             await UniTask.Delay(DELAY_TIME);

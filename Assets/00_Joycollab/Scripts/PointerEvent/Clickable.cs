@@ -1,3 +1,15 @@
+/// <summary>
+/// click 이 가능한 object 의 기능을 부여하는 클래스.
+/// @author         : HJ Lee
+/// @last update    : 2023. 11. 01
+/// @version        : 0.4
+/// @update         :
+///     v0.1 (2023. 04. 19) : 최초 생성. v1 에서 사용했던 것들 가지고 와서 수정 후 적용.
+/// 	v0.2 (2023. 09. 25) : world 에 적용하는 작업 시작.
+/// 	v0.3 (2023. 10. 21) : Building, World Avatar 에 사용할 기능 적용.
+///     v0.4 (2023. 11. 01) : summary 추가 및 기능 일부 정리.
+/// </summary>
+
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,6 +22,7 @@ namespace Joycollab.v2
     {
         private const string TAG = "Clickable"; 
         
+        [Header("common")]
         [SerializeField] private eClickableObjectType _objectType;
         [SerializeField] private eRendererType _rendererType;
         [SerializeField] private string[] _menuItems;
@@ -249,7 +262,7 @@ namespace Joycollab.v2
         private void OnMouseUp() 
         {
             if (_rendererType != eRendererType.SpriteRenderer) return;
-            if (EventSystem.current.IsPointerOverGameObject()) return;  //2023. 03. 29 박성일 - 위에 UI가 가리고 있으면 리턴
+            if (EventSystem.current.IsPointerOverGameObject()) return;  
 
             PointerEventData data = new PointerEventData(EventSystem.current); 
             switch (_objectType) 
@@ -443,6 +456,7 @@ namespace Joycollab.v2
 
 
     #region 'Seminar' Click event
+
         private void SeminarLeftClick(PointerEventData data) 
         {
             Debug.Log("seminar kiosk 가 클릭되었습니다. 세미나 정보를 출력합시다.");
@@ -455,9 +469,12 @@ namespace Joycollab.v2
             GameEvents.Instance.RequestMeetingNSeminarWorld(ID.MEETING_AND_SEMINAR, true);
              */
         }
+
     #endregion  // 'Seminar' Click event
     
-    #region 'Seminar' Click event
+    
+    #region 'Meeting' Click event
+
         private void MeetingLeftClick(PointerEventData data) 
         {
             Debug.Log("meeting board 가 클릭되었습니다. 회의 정보를 출력합시다.");
@@ -470,13 +487,17 @@ namespace Joycollab.v2
             GameEvents.Instance.RequestMeetingNSeminarWorld(ID.MEETING_AND_SEMINAR, false);
             */
         }
-    #endregion  // 'Seminar' Click event
+
+    #endregion  // 'Meeting' Click event
+
 
     #region 'Display' Click event
+
         private void DisplayLeftClick(PointerEventData data) 
         {
             Debug.Log("display 가 클릭되었습니다. 광고 영역을 출력합시다.");
         }
+
     #endregion  // 'Display' Click event
     }
 }

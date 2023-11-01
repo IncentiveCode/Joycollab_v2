@@ -1,5 +1,4 @@
 /// <summary>
-/// [world]
 /// 모임방 리스트 class
 /// @author         : HJ Lee
 /// @last update    : 2023. 09. 14
@@ -65,6 +64,8 @@ namespace Joycollab.v2
         {
             base.Init();
             viewID = ID.ROOM_LIST_W;
+            viewData = new WindowViewData();
+            viewDataKey = $"view_data_{viewID}";
 
 
             // set infinite scrollview
@@ -87,7 +88,11 @@ namespace Joycollab.v2
 
             // set button listener
             _btnCreate.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_CreateRoom));
-            _btnClose.onClick.AddListener(() => Hide());
+            _btnClose.onClick.AddListener(() => {
+                base.SaveViewData(viewData); 
+                Hide();
+            });
+
 
 
             // set local variables
@@ -97,6 +102,9 @@ namespace Joycollab.v2
         public async override UniTaskVoid Show() 
         {
             base.Show().Forget();
+
+            // load view data
+            base.LoadViewData();
 
             if (R.singleton != null) 
             {

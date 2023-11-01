@@ -289,6 +289,15 @@ namespace Joycollab.v2
             WorldChatBubble.Create(_transformBubble, Vector3.zero, chat);
         }
 
+        private void OnTriggerEnter2D(Collider2D other) 
+        {
+            if (isFly && other.tag.Equals("Room pointer"))
+            {
+                Debug.Log($"{TAG} | room pointer 도달. 일단 멈춤.");
+                isFly = false;
+            } 
+        }
+
     #endregion  // AVatar info
     }
 }
