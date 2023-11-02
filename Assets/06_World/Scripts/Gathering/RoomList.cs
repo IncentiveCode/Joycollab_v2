@@ -52,7 +52,6 @@ namespace Joycollab.v2
         {
             Init();
             base.Reset();
-            Debug.Log($"{TAG} | Awake() call.");
         }
 
     #endregion  // Unity functions

@@ -1,8 +1,8 @@
 /// <summary>
 /// 사용자 Sign In 화면
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 21.
-/// @version        : 1.4
+/// @last update    : 2023. 11. 02.
+/// @version        : 1.5
 /// @update
 ///     v0.1 : UI Canvas 최적화 (static canvas, active canvas 분리)
 ///     v0.2 : Tab key 로 input field 이동할 수 있게 수정.
@@ -14,11 +14,12 @@
 ///     v0.7 (2023. 04. 14) : Popup Builder 적용
 ///     v0.8 (2023. 04. 22) : FixedView 적용
 ///     v0.9 (2023. 05. 10) : LoginModule 분리 및 적용
-///     v1.0 (2023. 08. 04) : InputSubmitDetector -> TmpInputField 로 변경. 
-///     v1.1 (2023. 08. 16) : tab key 처리 수정.
-///     v1.2 (2023. 08. 23) : file name, class name 변경. (Login -> SignIn)
-///     v1.3 (2023. 08. 28) : SignInW, v1 에서 만들었던 world login 과 통합.
-///     v1.4 (2023. 09. 21) : world -> joycollab 으로 돌아가는 버튼과 테스트 버튼 추가.
+///     v0.10 (2023. 08. 04) : InputSubmitDetector -> TmpInputField 로 변경. 
+///     v0.11 (2023. 08. 16) : tab key 처리 수정.
+///     v0.12 (2023. 08. 23) : file name, class name 변경. (Login -> SignIn)
+///     v0.13 (2023. 08. 28) : SignInW, v1 에서 만들었던 world login 과 통합.
+///     v0.14 (2023. 09. 21) : world -> joycollab 으로 돌아가는 버튼과 테스트 버튼 추가.
+///     v0.15 (2023. 11. 02) : id, password rule 확인하는 기능 추가.
 /// </summary>
 
 using UnityEngine;
@@ -249,7 +250,10 @@ namespace Joycollab.v2
 
         private async UniTaskVoid SignInAsync() 
         {
-            if (string.IsNullOrEmpty(_inputId.text)) 
+            string id = _inputId.text;
+            string pw = _inputPw.text;
+
+            if (string.IsNullOrEmpty(id)) 
             {
                 PopupBuilder.singleton.OpenAlert(
                     LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "이메일 없음", R.singleton.CurrentLocale)
@@ -257,7 +261,15 @@ namespace Joycollab.v2
                 return;
             }
 
-            if (string.IsNullOrEmpty(_inputPw.text)) 
+            if (! RegExp.MatchEmail(id)) 
+            {
+                PopupBuilder.singleton.OpenAlert(
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "이메일 정규식검사 실패", R.singleton.CurrentLocale)
+                );
+                return;
+            }
+
+            if (string.IsNullOrEmpty(pw)) 
             {
                 PopupBuilder.singleton.OpenAlert(
                     LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호 없음", R.singleton.CurrentLocale)
@@ -265,8 +277,13 @@ namespace Joycollab.v2
                 return;
             }
 
-            string id = _inputId.text;
-            string pw = _inputPw.text;
+            if (! RegExp.MatchPasswordRule(pw)) 
+            {
+                PopupBuilder.singleton.OpenAlert(
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "비밀번호 안내", R.singleton.CurrentLocale)
+                );
+                return;
+            }
 
             PsResponse<ResToken> res = await _module.SignInAsync(id, pw);
             if (! string.IsNullOrEmpty(res.message)) 

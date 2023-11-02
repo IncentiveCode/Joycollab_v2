@@ -13,9 +13,9 @@
 ///     v0.7 (2023. 08. 16) : WorldScene view name 수정.
 ///     v0.8 (2023. 08. 23) : 일부 클래스 이름 변경으로 인해 상수값 수정.
 ///     v0.9 (2023. 08. 24) : Management Scene 상수값 추가.
-///     v1.0 (2023. 08. 25) : URL.GET_CODE 에서 사용하는 Top Code 상수값 추가. 
-///     v1.1 (2023. 09. 14) : World 에서 사용할 WindowView 이름 정리 (진행 중)
-///     v1.2 (2023. 10. 06) : Popup menu string 정리
+///     v0.10 (2023. 08. 25) : URL.GET_CODE 에서 사용하는 Top Code 상수값 추가. 
+///     v0.11 (2023. 09. 14) : World 에서 사용할 WindowView 이름 정리 (진행 중)
+///     v0.12 (2023. 10. 06) : Popup menu string 정리
 /// </summary>
 
 namespace Joycollab.v2
@@ -227,6 +227,7 @@ namespace Joycollab.v2
         public const string WorldScene_UserList = "user list_w";
         public const string WorldScene_RoomList = "room list_w";
         public const string WorldScene_CreateRoom = "create room_w";
+        public const string WorldScene_MemberProfile = "member profile_w";
 
     #endregion  // World WindowView Name
 

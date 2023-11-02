@@ -1,11 +1,12 @@
 /// <summary>
 /// 윈도우 형태의 창의 속성을 관리하기 위한 추상 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 01
-/// @version        : 0.2
+/// @last update    : 2023. 11. 02
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 09. 12) : 최초 생성
 ///     v0.2 (2023. 11. 01) : minWidth, minHeight 추가. WindowViewData, Data Key 추가.
+///     v0.3 (2023. 11. 02) : Show(int seq, Vector2 pos) 추가.
 /// </summary>
 
 using System;
@@ -116,6 +117,12 @@ namespace Joycollab.v2
             visibleState = eVisibleState.Appearing;
             await UniTask.Yield();
         }
+        
+        public async virtual UniTaskVoid Show(int seq, Vector2 pos) 
+        {
+            visibleState = eVisibleState.Appearing;
+            await UniTask.Yield();
+        }
 
         public virtual void SetAsLastSibling() 
         {
@@ -125,6 +132,14 @@ namespace Joycollab.v2
         protected virtual void Appearing() 
         {
             if (canvasGroup == null) return;
+
+            if (visibleState == eVisibleState.Appeared)
+            {
+                canvasGroup.alpha = 1f;
+                canvasGroup.interactable = true;
+                canvasGroup.blocksRaycasts = true;
+                return;
+            }
 
             if (visibleState != eVisibleState.Appearing) 
                 visibleState = eVisibleState.Appearing;

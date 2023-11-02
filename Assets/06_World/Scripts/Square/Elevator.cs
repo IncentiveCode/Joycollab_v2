@@ -53,7 +53,7 @@ namespace Joycollab.v2
         {
             // set button listener
             _btnCurrent.onClick.AddListener(() => {
-                Debug.Log($"{isOn} -> {!isOn}");
+                // Debug.Log($"{isOn} -> {!isOn}");
                 if (isOn)   HideFloorList();
                 else        ShowFloorList();
             });

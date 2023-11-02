@@ -212,10 +212,11 @@ namespace Joycollab.v2
 		// UI Window List - FLOAT
 
 		public const int FLOATING_BAR_W = 20000;
-		public const int ALARM_W = 20001;
-		public const int BOOKMARK_W = 20002;
-		public const int SETTINGS_W = 20003;
+		public const int MY_PROFILE_W = 20001;
+		public const int ALARM_W = 20002;
+		public const int BOOKMARK_W = 20003;
 		public const int USER_LIST_W = 20004;
+		public const int SETTINGS_W = 20005;
 
 
 		// ---------- ---------- ----------

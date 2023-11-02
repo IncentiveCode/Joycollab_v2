@@ -13,10 +13,10 @@
 ///     v0.7 (2023. 07. 03) : Joycollab 에서 사용하던 URL 정리. (UserApi - OKR)
 ///     v0.8 (2023. 07. 06) : Joycollab 에서 사용하던 URL 정리. (UserApi - Board)
 ///     v0.9 (2023. 07. 07) : Joycollab 에서 사용하던 URL 정리. (UserApi - Bookmark)
-///     v1.0 (2023. 08. 01) : Joycollab 에서 사용하던 URL 정리. (UserApi - Attendance)
-///     v1.1 (2023. 08. 30) : v1 에서 사용하던 URL 정리 완료. World API 정리
-///     v1.2 (2023. 09. 01) : File API V2 정리
-///     v1.3 (2023. 09. 06) : google token 조회 및 연동 해제 부분의 parameter 삭제.
+///     v0.10 (2023. 08. 01) : Joycollab 에서 사용하던 URL 정리. (UserApi - Attendance)
+///     v0.11 (2023. 08. 30) : v1 에서 사용하던 URL 정리 완료. World API 정리
+///     v0.12 (2023. 09. 01) : File API V2 정리
+///     v0.13 (2023. 09. 06) : google token 조회 및 연동 해제 부분의 parameter 삭제.
 /// </summary>
 
 #define DEV // Dev Server

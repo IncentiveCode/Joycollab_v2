@@ -2,9 +2,9 @@
 /// 프로그레스 다이얼로그 제어 스크립트
 /// @author         : HJ Lee
 /// @last update    : 2023. 03. 07 
-/// @version        : 1.0
+/// @version        : 0.1
 /// @update
-///     - v1.0 (2023. 03. 07) : 최초 생성
+///     v0.1 (2023. 03. 07) : 최초 생성
 /// </summary>
 
 using UnityEngine;

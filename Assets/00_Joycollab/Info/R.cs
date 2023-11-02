@@ -13,10 +13,10 @@
 ///     v0.7 (2023. 07. 07) : To-Do, OKR 등 임시로 저장하는 항목은 Tmp 로 이동. Bookmark 저장소 추가.
 ///     v0.8 (2023. 07. 18) : 기존에 사용했던 member state 관리 추가.
 ///     v0.9 (2023. 07. 19) : 읽지 않은 채팅 카운트를 위해 변수와 getter 추가.
-///     v1.0 (2023. 08. 10) : Localization Init 을 위해 Init() 을 async 로 변경.
-///     v1.1 (2023. 08. 28) : Locale 을 반환하는 public 변수 추가.
-///     v1.2 (2023. 09. 15) : Google, Zoom 관련 getter 추가.
-///     v1.3 (2023. 09. 19) : ResMemberInfo 에 추가된 필드들에 대한 getter 추가 
+///     v0.10 (2023. 08. 10) : Localization Init 을 위해 Init() 을 async 로 변경.
+///     v0.11 (2023. 08. 28) : Locale 을 반환하는 public 변수 추가.
+///     v0.12 (2023. 09. 15) : Google, Zoom 관련 getter 추가.
+///     v0.13 (2023. 09. 19) : ResMemberInfo 에 추가된 필드들에 대한 getter 추가 
 /// </summary>
 
 using System;

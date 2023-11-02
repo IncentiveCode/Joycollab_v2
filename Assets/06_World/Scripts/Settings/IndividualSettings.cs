@@ -10,7 +10,6 @@
 
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
 using TMPro;
 
@@ -50,10 +49,11 @@ namespace Joycollab.v2
         [Header("button")]
         [SerializeField] private Button _btnSearchAddress;
 
-        // local variables
+        // tools 
         private ImageUploader imageUploader;
         private ImageLoader imageLoader;
 
+        // local variables
         private ReqMemberInfo memberInfo;
         private ReqMemberCompanyInfo companyInfo;
         private float lat, lng;

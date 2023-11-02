@@ -14,8 +14,9 @@
 ///     v0.7 (2023. 09. 15) : ResUserInfo 에 zoom id, zoom e-mail 필드 추가.
 ///     v0.8 (2023. 09. 19) : ResMemberInfo 에 추가된 필드 추가 (fcmToken, plan, sdt, businessNum, compName, business, tel, ceoNm, mainBusiness, homepage)
 ///     v0.9 (2023. 09. 21) : Request 용 class 추가 (ReqMemberInfo, ReqMemberCompanyInfo, ReqMemberEnvironmentInfo, ReqMemberAlarmInfo and...)
-///     v1.0 (2023. 10. 06) : Infinite scroll data 추가. (WorldAvatarData)
-///     v1.1 (2023. 10. 26) : 전화를 걸기 위한 ReqCallInfo class 추가.
+///     v0.10 (2023. 10. 06) : Infinite scroll data 추가. (WorldAvatarData)
+///     v0.11 (2023. 10. 26) : 전화를 걸기 위한 ReqCallInfo class 추가.
+///     v0.12 (2023. 11. 02) : WorkspaceMemberInfo 에 회사 정보 추가. (API 업데이트)
 /// </summary>
 
 using System;
@@ -333,6 +334,13 @@ namespace Joycollab.v2
         public string setMemberYn;
         public TpsInfo status;
         public TpsInfo emotion;
+        public string businessNum;
+        public string compName;
+        public string business;
+        public string tel;
+        public string ceoNm;
+        public string mainBusiness;
+        public string homepage;
     }
 
     [Serializable] 

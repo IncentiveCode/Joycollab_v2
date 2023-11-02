@@ -420,9 +420,7 @@ namespace Joycollab.v2
                     switch (item) 
                     {
                         case S.MENU_DETAILS :
-                            PopupBuilder.singleton.OpenAlert(
-                                LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "기능 준비 안내", R.singleton.CurrentLocale)
-                            );
+                            WindowManager.singleton.Push(S.WorldScene_MemberProfile, _worldAvatarInfo.avatarSeq, data.position.x, data.position.y);
                             break;
 
                         case S.MENU_CHAT :

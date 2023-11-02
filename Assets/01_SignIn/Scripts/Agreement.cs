@@ -260,18 +260,19 @@ namespace Joycollab.v2
 
         public void Init() 
         {
-            agreeToAll = agreeToTerms = agreeToPrivacy = agreeToAgeLimit = agreeToMarketing = agreeToReceiveSMS = agreeToReceiveMail = false;
+            agreeToAll = agreeToTerms = agreeToPrivacy = agreeToAgeLimit = false; 
+            agreeToMarketing = agreeToReceiveSMS = agreeToReceiveMail = false;
         }
 
         public string ToJson() 
         {
-            Debug.Log("[TEST] save | data : "+ JsonUtility.ToJson(this));
+            // Debug.Log("[TEST] save | data : "+ JsonUtility.ToJson(this));
             return JsonUtility.ToJson(this);
         }
 
         public void LoadFromJson(string json) 
         {
-            Debug.Log("[TEST] load | data : "+ json);
+            // Debug.Log("[TEST] load | data : "+ json);
             JsonUtility.FromJsonOverwrite(json, this);
         }
     }
