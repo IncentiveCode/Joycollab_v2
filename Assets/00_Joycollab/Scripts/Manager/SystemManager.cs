@@ -2,8 +2,8 @@
 /// Joycollab 통합 매니저 클래스 
 /// - singleton 남용을 막고, 기존 manager 클래스들에서 중복되어 있는 내용들을 수정/정리/최적화 하기 위해 작성.
 /// @author         : HJ Lee
-/// @last update    : 2023. 10. 11
-/// @version        : 0.9
+/// @last update    : 2023. 11. 03
+/// @version        : 0.10
 /// @update
 ///     v0.1 (2023. 04. 07) : 최초 작성.
 ///     v0.2 (2023. 04. 19) : singleton pattern 수정
@@ -14,6 +14,7 @@
 ///     v0.7 (2023. 08. 28) : Localization 사용 방식 변경.
 ///     v0.8 (2023. 09. 21) : AudioSource 추가. AudioClip 관련 함수 추가.
 ///     v0.9 (2023. 10. 11) : Timezone 관련 기능 추가.
+///     v0.10 (2023. 11. 03) : avatar state 관련 정보 정리. (R class 에 만들어 두었던 것과 통합)
 /// </summary>
 
 using System;
@@ -51,13 +52,21 @@ namespace Joycollab.v2
         private TimezoneList timezoneList;
         private TimezoneItem timezoneSeoul;
 
+        [Header("avatar state")]
+        [SerializeField] private List<StateData> _listStateData;
+        private TpsList avatarStateList;
+
+        // ping sender
+        private bool isPingRun;
+        private const int PING_DELAY = 60000;
+
 
     #region Unity functions
 
         private void Awake() 
         {
             // test only
-            PlayerPrefs.DeleteAll();
+            // PlayerPrefs.DeleteAll();
 
             InitSingleton();
             SetTransform();
@@ -67,6 +76,7 @@ namespace Joycollab.v2
 
             // set local variables
             timezoneList = new TimezoneList();
+            avatarStateList = new TpsList();
 
             // manager initialize
             xmpp = GetComponent<XmppManager>();
@@ -82,23 +92,14 @@ namespace Joycollab.v2
 
             xmpp.Init();
 
-            var (repoRes, timezoneRes) = await UniTask.WhenAll(
-                R.singleton.Init(),
-                InitTimezone()
-            );
-
+            bool repoRes = await R.singleton.Init();
             if (repoRes == false) 
             {
                 Debug.Log($"{TAG} | Start(), R class init fail.");
-            }
-
-            if (! string.IsNullOrEmpty(timezoneRes)) 
-            {
-                PopupBuilder.singleton.OpenAlert(timezoneRes);
                 return;
             }
 
-            GetSystemNotice().Forget();
+            GetSystemNoticeAsync().Forget();
         }
 
         private void OnEnable() 
@@ -113,6 +114,12 @@ namespace Joycollab.v2
             WebGLWindow.OnFocusEvent -= OnFocus;
             WebGLWindow.OnBlurEvent -= OnBlur;
             WebGLWindow.OnResizeEvent -= OnResize;
+        }
+
+        private void OnDestroy() 
+        {
+            // stop ping sender
+            isPingRun = false;
         }
 
     #endregion  // Unity functions
@@ -142,47 +149,7 @@ namespace Joycollab.v2
         #endif
         }
 
-        private async UniTask<string> InitTimezone() 
-        {
-            if (timezoneList.list.Count > 0) 
-            {
-                Debug.Log($"{TAG} | InitTimezone(), 이미 초기화가 되어 있는 상태.");
-                timezoneList.list.Clear();
-            }
-
-            await UniTask.Yield();
-            return string.Empty;
-
-            // TODO. api 추가되면 반영할 것.
-            /** 
-            PsResponse<TimezoneList> res = await NetworkTask.RequestAsync<TimezoneList>(URL.TIMEZONE_LIST, eMethodType.GET);
-            if (res.message.Equals(string.Empty)) 
-            {
-                timezoneList = res.data;                 
-                foreach (var ti in timezoneList.list) 
-                {
-                    if (ti.id.Equals("Asia/Seoul"))
-                    {
-                        timezoneSeoul = ti;
-                        break;
-                    }
-                } 
-            }
-            else 
-            {
-                Debug.Log($"{TAG} | InitTimezone(), code : {res.code}, error : {res.message}");
-            }
-
-            return res.message;
-             */
-        }
-
-    #endregion  // Initialize
-
-
-    #region First Act (공지사항 확인 후 URL parsing)
-
-        private async UniTaskVoid GetSystemNotice() 
+        private async UniTaskVoid GetSystemNoticeAsync() 
         {
             PsResponse<UpdateNoticeList> res = await NetworkTask.RequestAsync<UpdateNoticeList>(URL.SYSTEM_NOTICE_PATH, eMethodType.GET);
             if (res.message.Equals(string.Empty)) 
@@ -217,6 +184,71 @@ namespace Joycollab.v2
                 Debug.Log($"{TAG} | GetSystemNotice(), code : {res.code}, error : {res.message}");
             }
         }
+
+        public async UniTask<int> Init() 
+        {
+            var (timezoneRes, stateRes) = await UniTask.WhenAll(
+                InitTimezoneAsync(),
+                GetStateListAsync()
+            );
+
+            if (! string.IsNullOrEmpty(timezoneRes)) 
+            {
+                PopupBuilder.singleton.OpenAlert(timezoneRes);
+                return -1;
+            }
+
+            if (! string.IsNullOrEmpty(stateRes))
+            {
+                PopupBuilder.singleton.OpenAlert(stateRes);
+                return -2;
+            }
+
+            // ping sender : start
+            StartPingSender(); 
+            return 0;
+        }
+
+    #endregion  // Initialize
+
+
+    #region ping sender
+
+        public void StartPingSender() 
+        {
+            if (isPingRun) return;
+            isPingRun = true;
+
+            Debug.Log($"{TAG} | start ping send");
+            SendPing().Forget();
+        } 
+
+        private async UniTaskVoid SendPing() 
+        {
+            string url = string.Format(URL.SEND_PING, R.singleton.memberSeq);
+            PsResponse<string> res = null;
+
+            while (isPingRun) 
+            {
+                res = await NetworkTask.RequestAsync<string>(url, eMethodType.PATCH, string.Empty, R.singleton.token); 
+                if (! string.IsNullOrEmpty(res.message)) 
+                {
+                    Debug.LogError(DateTime.Now.ToString("HH:mm:ss") +" - "+ res.message);
+                }
+
+                await UniTask.Delay(PING_DELAY);
+            }
+        }
+
+        public void StopPingSender() 
+        {
+            isPingRun = false;
+        } 
+
+    #endregion  // ping sender
+
+
+    #region Post system notice check & URL parsing
 
         private void ShowSystemUpdate(string title, string content) 
         {
@@ -280,7 +312,7 @@ namespace Joycollab.v2
             SceneLoader.Load(nextScene.Contains(S.WORLD) ? eScenes.World : eScenes.SignIn);
         }
 
-    #endregion  // First Act (공지사항 확인 후 URL parsing)
+    #endregion  // Post system notice check & URL parsing
 
 
     #region URL parsing 
@@ -395,7 +427,42 @@ namespace Joycollab.v2
     #endregion AudioSource
 
 
-    #region Timezone 
+    #region Timezone
+
+        private async UniTask<string> InitTimezoneAsync() 
+        {
+            if (timezoneList.list.Count > 0) 
+            {
+                Debug.Log($"{TAG} | InitTimezoneAsync(), 이미 초기화가 되어 있는 상태.");
+                timezoneList.list.Clear();
+            }
+
+            await UniTask.Yield();
+            return string.Empty;
+
+            // TODO. api 추가되면 반영할 것.
+            /** 
+            PsResponse<TimezoneList> res = await NetworkTask.RequestAsync<TimezoneList>(URL.TIMEZONE_LIST, eMethodType.GET);
+            if (res.message.Equals(string.Empty)) 
+            {
+                timezoneList = res.data;                 
+                foreach (var ti in timezoneList.list) 
+                {
+                    if (ti.id.Equals("Asia/Seoul"))
+                    {
+                        timezoneSeoul = ti;
+                        break;
+                    }
+                } 
+            }
+            else 
+            {
+                Debug.Log($"{TAG} | InitTimezone(), code : {res.code}, error : {res.message}");
+            }
+
+            return res.message;
+             */
+        }
 
 		public DateTime GetSeoulTime() 
 		{
@@ -438,6 +505,74 @@ namespace Joycollab.v2
 		}            
 
     #endregion  // Timezone 
+
+
+    #region avatar state
+
+        private async UniTask<string> GetStateListAsync() 
+        {
+            string url = string.Format(URL.GET_CODE, S.TC_MEMBER_STATUS);
+            PsResponse<TpsList> res = await NetworkTask.RequestAsync<TpsList>(url, eMethodType.GET, string.Empty, R.singleton.token);
+            if (! string.IsNullOrEmpty(res.message)) 
+            {
+                Debug.Log($"{TAG} | GetStateListAsync(), error : {res.message}");
+                return res.message;
+            }
+           
+            avatarStateList = res.data;
+            Debug.Log($"{TAG} | GetStateListAsync(), list count : {avatarStateList.list.Count}");
+            return string.Empty;  
+        }
+
+        public TpsInfo GetState(int cd) 
+        {
+            TpsInfo result = null;
+            foreach (var t in avatarStateList.list) 
+            {
+                if (t.cd == cd) 
+                {
+                    result = t;
+                    break;
+                }
+            }
+
+            if (result == null) Debug.Log($"{TAG} | GetState(), state info 획득 실패.");
+            return result;
+        }
+
+        public int GetStateCode(string id) 
+        {
+            int result = -1;
+            foreach (var t in avatarStateList.list) 
+            {
+                if (t.id.Equals(id)) 
+                {
+                    result = t.cd;
+                    break;
+                }
+            }
+
+            if (result == -1) Debug.Log($"{TAG} | GetStateCode(), state code 획득 실패.");
+            return result;
+        }
+
+        public Sprite GetStateIcon(string id) 
+        {
+            Sprite s = null;
+            foreach (var t in _listStateData) 
+            {
+                if (t.StateId.Equals(id)) 
+                {
+                    s = t.StateIcon;
+                    break;
+                }
+            }
+
+            if (s == null) Debug.Log($"{TAG} | GetStateIcon(), state icon 획득 실패.");
+            return s;
+        }
+
+    #endregion  // avatar state 
 
 
     #region communication 

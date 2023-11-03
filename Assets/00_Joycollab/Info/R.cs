@@ -1,8 +1,8 @@
 /// <summary>
 /// 시스템 상 저장 공간 (Repository) 
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 19
-/// @version        : 1.3
+/// @last update    : 2023. 11. 03
+/// @version        : 1.4
 /// @update
 ///     v0.1 (2023. 03. 17) : 파일 생성, Joycollab 에서 사용하는 것들 정리 시작.
 ///     v0.2 (2023. 03. 31) : SimpleWorkspace, Alarm 관련 항목 정리 시작, Notify 에서 generic <T> 제거.
@@ -17,6 +17,7 @@
 ///     v0.11 (2023. 08. 28) : Locale 을 반환하는 public 변수 추가.
 ///     v0.12 (2023. 09. 15) : Google, Zoom 관련 getter 추가.
 ///     v0.13 (2023. 09. 19) : ResMemberInfo 에 추가된 필드들에 대한 getter 추가 
+///     v0.14 (2023. 11. 03) : avatar state 관련 정보를 System manager 로 이관.
 /// </summary>
 
 using System;
@@ -56,10 +57,6 @@ namespace Joycollab.v2
             listBookmark = new List<Bookmark>();
             listBookmark.Clear(); 
 
-            // for member state
-            listMemberState = new List<TpsInfo>();
-            listMemberState.Clear();
-
             // for temp dictionary
             dictPhoto = new Dictionary<int, Texture2D>();
             dictPhoto.Clear();
@@ -94,9 +91,6 @@ namespace Joycollab.v2
             // for bookmark
             ClearBookmark();
 
-            // for member state
-            ClearMemberState();
-
             // for temp dictionary
             ClearPhotoDict();
             ClearSpaceDict();
@@ -113,16 +107,17 @@ namespace Joycollab.v2
             bool exist = isExist(observer, key);
             if (exist) return; 
 
+            // Debug.Log($"{TAG} | RegisterObserver(), observer : {observer}, key : {key}");
             listObserver.Add(Tuple.Create(observer, key));
         }
 
         public void UnregisterObserver(iRepositoryObserver observer, eStorageKey key) 
         {
             bool exist = isExist(observer, key);
-            if (exist)
-            {
-                listObserver.Remove(Tuple.Create(observer, key));  
-            }
+            if (! exist) return;
+
+            // Debug.Log($"{TAG} | UnregisterObserver(), observer : {observer}, key : {key}");
+            listObserver.Remove(Tuple.Create(observer, key));  
         }
 
         public void RequestInfo(iRepositoryObserver observer, eStorageKey key) 
@@ -154,9 +149,9 @@ namespace Joycollab.v2
         {
             switch (key) 
             {
-                case eStorageKey.UserInfo :
-                    if (_memberInfo != null) observer.UpdateInfo(key);
-                    break;
+                case eStorageKey.MemberInfo :
+                    // if (_memberInfo != null) observer.UpdateInfo(key);
+                    // break;
 
                 case eStorageKey.Alarm :
                 case eStorageKey.InstantAlarm :
@@ -166,6 +161,7 @@ namespace Joycollab.v2
                 case eStorageKey.Elevator :
                 case eStorageKey.WindowRefresh :
                 case eStorageKey.UserCount :
+                case eStorageKey.UserInfo :
                     observer.UpdateInfo(key);
                     break;
 
@@ -270,7 +266,6 @@ namespace Joycollab.v2
             set {
                 _elevatorOpt = Mathf.Clamp(value, 0, 10);
                 NotifyAll(eStorageKey.Elevator);
-                Debug.Log($"{TAG} | elevator opt : {_elevatorOpt}");
             }
         }
 
@@ -398,7 +393,11 @@ namespace Joycollab.v2
         private ResMemberInfo _memberInfo = null;
 
         public ResMemberInfo MemberInfo {
-            set { _memberInfo = value; }
+            set { 
+                _memberInfo = value; 
+                Debug.Log($"{TAG} | member info notify all");
+                NotifyAll(eStorageKey.MemberInfo);
+            }
         }
         public string myMemberType {
             get { return _memberInfo.memberType; }
@@ -657,46 +656,6 @@ namespace Joycollab.v2
     #endregion  // Bookmark Info
 
 
-    #region Member states
-
-        private List<TpsInfo> listMemberState;
-
-        public void AddMemberState(TpsInfo info) => listMemberState.Add(info);
-        public TpsInfo GetMemberState(int code)
-        {
-            TpsInfo result = null;
-
-            foreach (TpsInfo ti in listMemberState) 
-            {
-                if (ti.cd == code) 
-                {
-                    result = ti;
-                    break;
-                }
-            }
-
-            return result;
-        }
-        public int GetOnlineStateCode() 
-        {
-            int result = 0;
-
-            foreach (TpsInfo ti in listMemberState) 
-            {
-                if (ti.id.Equals(S.ONLINE)) 
-                {
-                    result = ti.cd;
-                    break;
-                }
-            }
-
-            return result;
-        }
-        public void ClearMemberState() => listMemberState.Clear();
-
-    #endregion  // Member states
-
-
     #region for temp dectionary
 
         private Dictionary<int, Texture2D> dictPhoto;
@@ -718,6 +677,14 @@ namespace Joycollab.v2
                 return dictPhoto[seq];
             else
                 return null;
+        }
+        public void RemovePhoto(int seq) 
+        {
+            Debug.Log($"{TAG} | Remove Photo()... seq : {seq}");
+            if (dictPhoto.ContainsKey(seq))
+                dictPhoto.Remove(seq);
+
+            Debug.Log($"{TAG} | Remove Photo() after : {dictPhoto.ContainsKey(seq)}");
         }
         private void ClearPhotoDict() => dictPhoto.Clear();
 

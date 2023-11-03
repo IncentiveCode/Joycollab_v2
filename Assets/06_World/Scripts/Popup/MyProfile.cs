@@ -43,8 +43,8 @@ namespace Joycollab.v2
         [SerializeField] private TMP_InputField _inputOffice;
         [SerializeField] private TMP_InputField _inputGrade;
         [SerializeField] private TMP_InputField _inputPhone;
-        [SerializeField] private TMP_InputField _inputTag;
         [SerializeField] private Toggle _togglePhoneOpen;
+        [SerializeField] private TMP_InputField _inputTag;
         [SerializeField] private Button _btnSearchAddress;
         [SerializeField] private TMP_InputField _inputAddress1;
         [SerializeField] private TMP_InputField _inputAddress2;
@@ -55,8 +55,6 @@ namespace Joycollab.v2
         private StringBuilder builder;
 
         // local variables
-        [SerializeField] private bool isEditMode;
-        private bool isMine;
         private ReqMemberInfo memberInfo;
         private ReqMemberCompanyInfo companyInfo;
         private float lat, lng;
@@ -78,17 +76,40 @@ namespace Joycollab.v2
         protected override void Init() 
         {
             base.Init();
+            viewID = ID.MY_PROFILE_W;
+            viewData = new WindowViewData();
+            viewDataKey = $"view_data_{viewID}";
 
 
             // set button listener
-            _btnSave.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | 저장 후 새로고침.");
+            _btnSave.onClick.AddListener(async () => {
+                base.SaveViewData(viewData);
+
+                canvasGroup.interactable = false;
+                Debug.Log($"{TAG} | 저장 시작.");
+
+                string res = await UpdateMyInfo();
+                if (! string.IsNullOrEmpty(res))
+                {
+                    PopupBuilder.singleton.OpenAlert(res);
+                    return;
+                }
+
+                R.singleton.AddPhoto(R.singleton.memberSeq, (Texture2D)_imgProfile.texture); 
+
+                PopupBuilder.singleton.OpenAlert(
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "환경설정.변경 완료 안내", R.singleton.CurrentLocale)
+                );
+                Show().Forget();
+
+                Debug.Log($"{TAG} | 저장 종료.");
+                canvasGroup.interactable = true;
             });
             _btnClose.onClick.AddListener(() => {
+                base.SaveViewData(viewData);
+
                 Debug.Log($"{TAG} | 수정 중지. confirm 창 출력 후, 동의하면 창 닫기.");
-            });
-            _btnProfile.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | 이미지 업로드 준비.");
+                Hide();
             });
             _btnSearchAddress.onClick.AddListener(() => JsLib.SearchAddress(this.name, CALLBACK));
 
@@ -104,6 +125,9 @@ namespace Joycollab.v2
         public async override UniTaskVoid Show() 
         {
             base.Show().Forget();
+
+            // load view data
+            base.LoadViewData();
 
             await Refresh();
             base.Appearing();
@@ -192,7 +216,7 @@ namespace Joycollab.v2
             _txtInfo.text = builder.ToString();
 
             // state
-            // _imgState.sprite = null;
+            _imgState.sprite = SystemManager.singleton.GetStateIcon(info.status.id);
             _txtState.StringReference.SetReference("Word", $"상태.{info.status.id}");
 
             // input field

@@ -252,6 +252,7 @@ namespace Joycollab.v2
                     case S.LINE_BUSY :          _imgState.color = C.LINE_BUSY;          break;
                     case S.BUSY :               _imgState.color = C.BUSY;               break;
                     case S.OUT_ON_BUSINESS :    _imgState.color = C.OUT_ON_BUSINESS;    break;
+                    case S.OUTING :             _imgState.color = C.OUT_ON_BUSINESS;    break;
                     case S.NOT_HERE :           _imgState.color = C.NOT_HERE;           break;
                     case S.DO_NOT_DISTURB :     _imgState.color = C.DO_NOT_DISTURB;     break;
                     case S.VACATION :           _imgState.color = C.VACATION;           break;

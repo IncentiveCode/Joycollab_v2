@@ -83,7 +83,7 @@ namespace Joycollab.v2
                 GetAlarmListAsync(),
                 // GetSpaceListAsync(),
                 GetBookmarkListAsync(),
-                GetStateListAsync(),
+                // GetStateListAsync(),
                 GetUnreadCountAsync()
             );
 
@@ -264,6 +264,7 @@ namespace Joycollab.v2
         }
 
         // 7. get member states
+        /**
         private async UniTask<string> GetStateListAsync() 
         {
             string token = R.singleton.token;
@@ -286,6 +287,7 @@ namespace Joycollab.v2
 
             return string.Empty;
         }
+         */
 
         // 8. get unread chat count
         private async UniTask<string> GetUnreadCountAsync() 

@@ -364,6 +364,14 @@ namespace Joycollab.v2
             SystemManager.singleton.XMPP.XmppLogin(R.singleton.myXmppId, R.singleton.myXmppPw);
         #endif
 
+            // system manager init 
+            int initRes = await SystemManager.singleton.Init();
+            if (initRes != 0)
+            {
+                Debug.Log($"{TAG} | system manager init() 중에 오류 발생.");
+                return;
+            }
+
             if (_toggleGoToCenter.isOn)
             {
                 var manager = WorldNetworkManager.singleton;

@@ -84,7 +84,7 @@ namespace Joycollab.v2
             imageLoader = _imgProfile.GetComponent<ImageLoader>();
 
             // set event variables
-            eMemberKey = eStorageKey.UserInfo;
+            eMemberKey = eStorageKey.MemberInfo;
             mySpaceName = myName = myPhoto = myGrade = string.Empty;
 
             eAlarmKey = eStorageKey.Alarm;

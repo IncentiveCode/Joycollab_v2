@@ -228,6 +228,7 @@ namespace Joycollab.v2
         public const string WorldScene_RoomList = "room list_w";
         public const string WorldScene_CreateRoom = "create room_w";
         public const string WorldScene_MemberProfile = "member profile_w";
+        public const string WorldScene_MyProfile = "my profile_w";
 
     #endregion  // World WindowView Name
 
@@ -333,6 +334,7 @@ namespace Joycollab.v2
         public const string LINE_BUSY = "통화중";
         public const string BUSY = "바쁨";
         public const string OUT_ON_BUSINESS = "외근중";
+        public const string OUTING = "외출중";
         public const string NOT_HERE = "자리비움";
         public const string DO_NOT_DISTURB = "방해금지";
         public const string VACATION = "휴가중";

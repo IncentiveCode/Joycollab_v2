@@ -61,11 +61,7 @@ namespace Joycollab.v2
         private void Awake() 
         {
             // set button listener
-            _btnProfile.onClick.AddListener(() => {
-                PopupBuilder.singleton.OpenAlert(
-                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "기능 준비 안내", R.singleton.CurrentLocale)
-                );
-            });
+            _btnProfile.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_MyProfile));
             _btnMicControl.onClick.AddListener(() => {
                 Debug.Log($"{TAG} | mic option change.");
             });
@@ -85,10 +81,7 @@ namespace Joycollab.v2
             _btnSeminar.onClick.AddListener(() => {
                 Debug.Log($"{TAG} | seminar panel open.");
             });
-            _btnGathering.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | gathering panel open.");
-                WindowManager.singleton.Push(S.WorldScene_RoomList);
-            });
+            _btnGathering.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_RoomList));
             _btnUserList.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_UserList));
             _btnSettings.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_Settings));
 
@@ -100,7 +93,7 @@ namespace Joycollab.v2
 
 
             // register event
-            R.singleton.RegisterObserver(this, eStorageKey.UserInfo);
+            R.singleton.RegisterObserver(this, eStorageKey.MemberInfo);
             R.singleton.RegisterObserver(this, eStorageKey.Alarm);
             R.singleton.RegisterObserver(this, eStorageKey.Chat);
             R.singleton.RegisterObserver(this, eStorageKey.UserCount);
@@ -110,19 +103,19 @@ namespace Joycollab.v2
         {
             if (R.singleton != null) 
             {
-                R.singleton.RequestInfo(this, eStorageKey.UserInfo);
+                R.singleton.RequestInfo(this, eStorageKey.MemberInfo);
                 R.singleton.RequestInfo(this, eStorageKey.Alarm);
                 R.singleton.RequestInfo(this, eStorageKey.Chat);
                 R.singleton.RequestInfo(this, eStorageKey.UserCount);
             }
-        }
+        } 
 
         private void OnDestroy() 
         {
             // unregister event
             if (R.singleton != null)
             {
-                R.singleton.UnregisterObserver(this, eStorageKey.UserInfo);
+                R.singleton.UnregisterObserver(this, eStorageKey.MemberInfo);
                 R.singleton.UnregisterObserver(this, eStorageKey.Alarm);
                 R.singleton.UnregisterObserver(this, eStorageKey.Chat);
                 R.singleton.UnregisterObserver(this, eStorageKey.UserCount);
@@ -136,17 +129,17 @@ namespace Joycollab.v2
 
         public void UpdateInfo(eStorageKey key) 
         {
-            Debug.Log($"{TAG} | UpdateInfo() call. key : {key}");
+            // Debug.Log($"{TAG} | UpdateInfo() call. key : {key}");
             switch (key) 
             {
-                case eStorageKey.UserInfo :
-                    Debug.Log($"{TAG} | UpdateInfo (UserInfo) - photo : {myPhoto}");
+                case eStorageKey.MemberInfo :
+                    // Debug.Log($"{TAG} | UpdateInfo (MemberInfo) - photo : {myPhoto}, photo in R : {R.singleton.myPhoto}");
                     if (!myPhoto.Equals(R.singleton.myPhoto)) 
                     {
                         myPhoto = R.singleton.myPhoto;
 
                         string url = $"{URL.SERVER_PATH}{myPhoto}";
-                        Debug.Log($"{TAG} | photo url : {url}");
+                        // Debug.Log($"{TAG} | photo url : {url}");
                         int seq = R.singleton.memberSeq;
                         loader.LoadProfile(url, seq).Forget();
                     }

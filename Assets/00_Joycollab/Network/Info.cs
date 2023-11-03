@@ -19,6 +19,12 @@ namespace Joycollab.v2
     public class TpsList
     {
         public List<TpsInfo> list;
+
+        public TpsList() 
+        {
+            list = new List<TpsInfo>();
+            list.Clear();
+        }
     }
 
     [Serializable]

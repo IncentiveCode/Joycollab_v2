@@ -190,11 +190,11 @@ namespace Joycollab.v2
     /// </summary>
     public enum eStorageKey 
     {
-        UserInfo, Alarm, InstantAlarm, Chat,
+        MemberInfo, Alarm, InstantAlarm, Chat,
 
         FontSize, Locale, Elevator,
         
-        WindowRefresh, UserCount,
+        WindowRefresh, UserCount, UserInfo,
 
         Test
     }

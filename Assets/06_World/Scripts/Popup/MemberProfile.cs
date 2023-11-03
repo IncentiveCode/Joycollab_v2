@@ -9,6 +9,7 @@
 /// </summary>
 
 using System.Text;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Localization.Settings;
@@ -46,6 +47,9 @@ namespace Joycollab.v2
         private ImageLoader loader; 
         private StringBuilder builder;
 
+        // local variables
+        private int targetMemberSeq;
+
 
     #region Unity functions
 
@@ -67,11 +71,24 @@ namespace Joycollab.v2
 
             // set button listener
             _btnEdit.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | edit mode 로 전환.");
-            });
-            _btnClose.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | edit mode 로 전환.");
+                WindowManager.singleton.Push(S.WorldScene_MyProfile);
                 Hide();
+            });
+            _btnClose.onClick.AddListener(Hide);
+            _btnMeeting.onClick.AddListener(() => {
+                List<int> meetingTarget = new List<int> { targetMemberSeq };
+                SystemManager.singleton.MeetingOnTheSpot(meetingTarget).Forget();
+            });
+            _btnCall.onClick.AddListener(() => {
+                List<int> callTarget = new List<int> {
+                    R.singleton.memberSeq,
+                    targetMemberSeq
+                };
+                SystemManager.singleton.CallOnTheSpot(callTarget).Forget();
+            });
+            _btnChat.onClick.AddListener(() => {
+                string chatLink = string.Format(URL.CHATVIEW_LINK, R.singleton.memberSeq, targetMemberSeq, R.singleton.Region);
+                JsLib.OpenChat(chatLink, targetMemberSeq);
             });
 
 
@@ -109,6 +126,7 @@ namespace Joycollab.v2
                 return -1;
             }
 
+            targetMemberSeq = memberSeq;
             DisplayInfo(memberInfo.data);
             
             return 0;
@@ -135,7 +153,7 @@ namespace Joycollab.v2
             );
 
             // state
-            // _imgState.sprite = null;
+            _imgState.sprite = SystemManager.singleton.GetStateIcon(info.status.id);
             _txtState.StringReference.SetReference("Word", $"상태.{info.status.id}");
 
             // button

@@ -448,7 +448,8 @@ namespace Joycollab.v2
                     }
                     else 
                     {
-                        TpsInfo info = R.singleton.GetMemberState(xcMsg.cd);
+                        // TpsInfo info = R.singleton.GetMemberState(xcMsg.cd);
+                        TpsInfo info = SystemManager.singleton.GetState(xcMsg.cd);
                         if (info != null) 
                         {
                             Debug.Log($"{TAG} | HandleMessage(), update avatar seq : {xcMsg.seq}, state : {info.id}");
