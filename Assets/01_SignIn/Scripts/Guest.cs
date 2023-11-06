@@ -1,10 +1,11 @@
 /// <summary>
 /// 게스트가 특정 회사에 들어가거나 월드에 진입하는 화면
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 23.
-/// @version        : 0.1
+/// @last update    : 2023. 11. 06.
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 08. 23) : v1 에서 만들었던 GuestLogin 수정 후 적용.
+///     v0.2 (2023. 11. 06) : world seqeuence 를 확인 후, world 진입할 수 있도록 연결.
 /// </summary>
 
 using UnityEngine;
@@ -92,8 +93,8 @@ namespace Joycollab.v2
                 }
                 else if (isWorld) 
                 {
-
                     Debug.Log($"{TAG} | 광장으로 로그인.");
+                    GuestSignInAsync().Forget();
                 }
             });
             _btnSignIn.onClick.AddListener(() => {
@@ -158,11 +159,15 @@ namespace Joycollab.v2
 
         private async UniTask<int> Refresh() 
         {
-            // set text
+            // set info
             if (isOffice) 
             {
                 string t = LocalizationSettings.StringDatabase.GetLocalizedString("Sentences", "환영인사 게스트", R.singleton.CurrentLocale);
                 _txtDesc.text = string.Format(t, R.singleton.GetParam(Key.WORKSPACE_NAME));
+
+                string logoPath = R.singleton.GetParam(Key.WORKSPACE_LOGO);
+                string url = $"{URL.SERVER_PATH}{logoPath}";
+                imageLoader.LoadImage(url).Forget();
             }
             else if (isWorld)
             {
@@ -176,14 +181,6 @@ namespace Joycollab.v2
 
             // reset uploader
             uploader.Clear(); 
-
-            // set office logo
-            if (isOffice) 
-            {
-                string logoPath = R.singleton.GetParam(Key.WORKSPACE_LOGO);
-                string url = $"{URL.SERVER_PATH}{logoPath}";
-                imageLoader.LoadImage(url).Forget();
-            }
 
             await UniTask.Yield();
             return 0;
@@ -204,8 +201,17 @@ namespace Joycollab.v2
                 return;
             }
 
+            // get 'workspace seq'
             int workspaceSeq = 0;
-            int.TryParse(R.singleton.GetParam(Key.WORKSPACE_SEQ), out workspaceSeq);
+            if (isOffice) 
+            {
+                int.TryParse(R.singleton.GetParam(Key.WORKSPACE_SEQ), out workspaceSeq);
+            }
+            else if (isWorld) 
+            {
+                workspaceSeq = await _module.GetWorldSequenceAsync();
+            }
+
             if (workspaceSeq <= 0) 
             {
                 PopupBuilder.singleton.OpenAlert(
@@ -242,17 +248,58 @@ namespace Joycollab.v2
             JsLib.SetCookie(Key.ACCESS_TOKEN, resToken.data.access_token);
             JsLib.SetCookie(Key.WORKSPACE_SEQ, workspaceSeq.ToString());
 
-            // send alarm and enter workspace
-            string email = R.singleton.GetParam(Key.EMAIL); 
-            string url = string.Format(URL.SEND_GUEST_ALARM, resGuest.data.seq, email);
-            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.PATCH, string.Empty, R.singleton.token);
-            if (! string.IsNullOrEmpty(res.message)) 
+            // 후속조치
+            if (isOffice) 
             {
-                PopupBuilder.singleton.OpenAlert(res.message);
-                return;
-            }
+                // send alarm and enter workspace
+                string email = R.singleton.GetParam(Key.EMAIL); 
+                string url = string.Format(URL.SEND_GUEST_ALARM, resGuest.data.seq, email);
+                PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.PATCH, string.Empty, R.singleton.token);
+                if (! string.IsNullOrEmpty(res.message)) 
+                {
+                    PopupBuilder.singleton.OpenAlert(res.message);
+                    return;
+                }
 
-            SceneLoader.Load(eScenes.GraphicUI);
+                SceneLoader.Load(eScenes.GraphicUI);
+            }
+            else if (isWorld) 
+            {
+                // world avata 정보 설정
+                WorldAvatarInfo info = new WorldAvatarInfo(
+                    resGuest.data.seq,
+                    _inputName.text,
+                    uploader.imageInfo,
+                    S.GUEST
+                );
+                WorldAvatar.localPlayerInfo = info;
+                WorldChatView.localPlayerInfo = info;  
+
+                // 사용자 정보 로드
+                string resMyInfo = await _module.GetMyInfoAsync();
+                if (! string.IsNullOrEmpty(resMyInfo)) 
+                {
+                    PopupBuilder.singleton.OpenAlert(resMyInfo);                   
+                    return;
+                }
+
+                // xmpp login
+            #if UNITY_WEBGL && !UNITY_EDITOR
+                SystemManager.singleton.XMPP.XmppLoginForWebGL(R.singleton.memberSeq, R.singleton.myXmppPw);
+            #else
+                SystemManager.singleton.XMPP.XmppLogin(R.singleton.myXmppId, R.singleton.myXmppPw);
+            #endif
+
+                // system manager init 
+                int initRes = await SystemManager.singleton.Init();
+                if (initRes != 0)
+                {
+                    Debug.Log($"{TAG} | system manager init() 중에 오류 발생.");
+                    return;
+                }
+
+                SceneLoader.Load(eScenes.Map);
+            }
         }
 
     #endregion  // guest sign-in

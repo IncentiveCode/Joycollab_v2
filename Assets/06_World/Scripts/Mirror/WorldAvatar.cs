@@ -53,6 +53,9 @@ namespace Joycollab.v2
         public string avatarPhoto;
         [SyncVar]
         public string avatarMemberType;
+        [SyncVar]
+        public string avatarState;
+
         [SyncVar(hook = nameof(SetAvatarChat_Hook))] 
         public string avatarChat;
 
@@ -123,6 +126,7 @@ namespace Joycollab.v2
             avatarName = info.nickNm;
             avatarPhoto = info.photo;
             avatarMemberType = info.memberType;
+            avatarState = info.stateId;
 
             _imgState.color = C.ONLINE;
         }

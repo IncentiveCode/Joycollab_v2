@@ -137,6 +137,7 @@ namespace Joycollab.v2
             return res;
         }
 
+
         /// <summary>
         /// 회원 정보 업데이트
         /// </summary>
@@ -182,7 +183,7 @@ namespace Joycollab.v2
         }
 
         // - step 1. 'world' 의 workspace seq check
-        private async UniTask<int> GetWorldSequenceAsync() 
+        public async UniTask<int> GetWorldSequenceAsync() 
         {
             int result = -1;
 

@@ -2,12 +2,13 @@
 /// [world]
 /// Floating bar 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 10. 31 
-/// @version        : 0.3
+/// @last update    : 2023. 11. 06 
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 09. 18) : v1 에서 사용하던 항목 수정 후 적용. (진행 중)
 ///     v0.2 (2023. 10. 30) : Expandable 적용. meeting, seminar 버튼 추가.
 ///     v0.3 (2023. 10. 31) : 모임방 버튼 추가.
+///     v0.4 (2023. 11. 06) : guest 를 위한 Floating bar 구성 추가.
 /// </summary>
 
 using UnityEngine;
@@ -22,7 +23,7 @@ namespace Joycollab.v2
 
         [Header("panel")]
         [SerializeField] private Image _imgPanel;
-
+        
         [Header("profile")]
         [SerializeField] private RawImage _imgProfile;
         private ImageLoader loader;
@@ -50,6 +51,11 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnGathering;
         [SerializeField] private Button _btnUserList;
         [SerializeField] private Button _btnSettings;
+
+        [Header("Expandable")]
+        [SerializeField] private Expandable _expandable;
+        [SerializeField] private Button _btnExpand;
+        [SerializeField] private Button _btnClose;
 
         // local variables
         private string myPhoto;
@@ -84,6 +90,8 @@ namespace Joycollab.v2
             _btnGathering.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_RoomList));
             _btnUserList.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_UserList));
             _btnSettings.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_Settings));
+            _btnExpand.onClick.AddListener(() => _expandable.RequestExpand());
+            _btnClose.onClick.AddListener(() => _expandable.RequestClose());
 
 
             // set local variables
@@ -101,6 +109,22 @@ namespace Joycollab.v2
 
         private void OnEnable() 
         {
+            // member, guest check
+            bool isGuest = R.singleton.myMemberType.Equals(S.GUEST);
+            _btnProfile.interactable = (! isGuest);
+            _btnMicControl.gameObject.SetActive(true);
+            _btnAlarm.gameObject.SetActive(! isGuest);
+            _btnBookmark.gameObject.SetActive(! isGuest);
+            _btnChat.gameObject.SetActive(! isGuest);
+            _btnMeeting.gameObject.SetActive(! isGuest);
+            _btnSeminar.gameObject.SetActive(! isGuest);
+            _btnGathering.gameObject.SetActive(! isGuest);
+            _btnUserList.gameObject.SetActive(true);
+            _btnSettings.gameObject.SetActive(! isGuest);
+            _btnExpand.gameObject.SetActive(! isGuest);
+            _btnClose.gameObject.SetActive(! isGuest);
+
+
             if (R.singleton != null) 
             {
                 R.singleton.RequestInfo(this, eStorageKey.MemberInfo);

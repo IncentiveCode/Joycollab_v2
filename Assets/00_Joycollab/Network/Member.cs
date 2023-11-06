@@ -1,8 +1,8 @@
 /// <summary>
 /// Network 통신 - 사용자, 워크스페이스 멤버 관련 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 10. 26
-/// @version        : 1.1
+/// @last update    : 2023. 11. 06
+/// @version        : 0.13
 /// @update
 ///     v0.1 (2023. 02. 23) : Joycollab 에서 사용하던 클래스 정리 및 통합.
 ///     v0.2 (2023. 06. 14) : MemberSeq 클래스 추가.
@@ -17,6 +17,7 @@
 ///     v0.10 (2023. 10. 06) : Infinite scroll data 추가. (WorldAvatarData)
 ///     v0.11 (2023. 10. 26) : 전화를 걸기 위한 ReqCallInfo class 추가.
 ///     v0.12 (2023. 11. 02) : WorkspaceMemberInfo 에 회사 정보 추가. (API 업데이트)
+///     v0.13 (2023. 11. 06) : WorldAvatarInfo 에 상태 관련 코드 추가.
 /// </summary>
 
 using System;
@@ -32,11 +33,12 @@ namespace Joycollab.v2
         public string nickNm;
         public string photo;
         public string memberType;
+        public string stateId;
 
         public WorldAvatarInfo() 
         {
             seq = -1;
-            nickNm = photo = memberType = string.Empty;
+            nickNm = photo = memberType = stateId = string.Empty;
         }
 
         public WorldAvatarInfo(int seq, string nickNm, string photo, string memberType)
@@ -45,6 +47,7 @@ namespace Joycollab.v2
             this.nickNm = nickNm;
             this.photo = photo;
             this.memberType = memberType;
+            this.stateId = S.ONLINE;
         }
     }
 
