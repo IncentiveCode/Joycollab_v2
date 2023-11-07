@@ -22,7 +22,7 @@ namespace Joycollab.v2
         public static void Load(eScenes scene) 
         {
             nextScene = scene;
-            SceneManager.LoadSceneAsync((int)eScenes.Loading);
+            SceneManager.LoadSceneAsync((int)eScenes.SceneLoader);
         }
         public static bool isWorld()
         {

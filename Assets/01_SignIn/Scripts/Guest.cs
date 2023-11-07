@@ -270,7 +270,8 @@ namespace Joycollab.v2
                     resGuest.data.seq,
                     _inputName.text,
                     uploader.imageInfo,
-                    S.GUEST
+                    S.GUEST,
+                    S.ONLINE
                 );
                 WorldAvatar.localPlayerInfo = info;
                 WorldChatView.localPlayerInfo = info;  

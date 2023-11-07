@@ -16,6 +16,8 @@ namespace Joycollab.v2
 {
     public class WorldAuthenticator : NetworkAuthenticator
     {
+        private const string TAG = "WorldAuthenticator";
+
         readonly HashSet<NetworkConnection> connectionsPendingDisconnect = new HashSet<NetworkConnection>(); 
         private NetworkIdentity identity;
 
@@ -97,6 +99,7 @@ namespace Joycollab.v2
             {
                 WorldAvatarList.avatarInfos.Add(message.info);
                 conn.authenticationData = message.info;
+                Debug.Log($"{TAG} | WorldAvatarList count : {WorldAvatarList.avatarInfos.Count}");
 
                 AuthResponseMessage res = new AuthResponseMessage
                 {

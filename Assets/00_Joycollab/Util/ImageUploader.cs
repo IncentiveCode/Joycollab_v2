@@ -99,6 +99,7 @@ namespace Joycollab.v2
 
             if (! string.IsNullOrEmpty(url))
             {
+                Debug.Log($"{TAG} | OnImageUplaod(), url : {url}, name : {name}");
                 GetImageTexture(url, name).Forget();
             }
         }
@@ -146,7 +147,7 @@ namespace Joycollab.v2
             res.filterMode = FilterMode.Point;
             res.Apply();
 
-            Debug.Log($"{TAG} | ResizeTest() - path : {path}, ext : {ext}, width : {width}, height : {height}");
+            Debug.Log($"{TAG} | GetImageTexture() - path : {path}, name : {name}, ext : {ext}, width : {width}, height : {height}");
             _imgUpload.texture = res;
             Util.ResizeRawImage(rect, _imgUpload, width, height);
             

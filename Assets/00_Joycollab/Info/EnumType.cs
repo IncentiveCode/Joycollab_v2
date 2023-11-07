@@ -21,7 +21,7 @@ namespace Joycollab.v2
     public enum eScenes
     {
         Init = 0,
-        Loading, 
+        SceneLoader, 
         SignIn,
         LoadInfo,
         GraphicUI, TextUI,

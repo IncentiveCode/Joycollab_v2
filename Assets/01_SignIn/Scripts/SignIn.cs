@@ -339,16 +339,6 @@ namespace Joycollab.v2
             R.singleton.domainName = res.data.workspace.domain;
             R.singleton.uiType = res.data.uiType;
 
-            // world avatar 정보 설정.
-            WorldAvatarInfo info = new WorldAvatarInfo(
-                res.data.seq, 
-                res.data.nickNm,
-                res.data.photo,
-                res.data.memberType
-            );
-            WorldAvatar.localPlayerInfo = info;
-            WorldChatView.localPlayerInfo = info;
-
             // 사용자 정보 로드 
             string resMyInfo = await _module.GetMyInfoAsync();
             if (! string.IsNullOrEmpty(resMyInfo)) 
@@ -356,6 +346,17 @@ namespace Joycollab.v2
                 PopupBuilder.singleton.OpenAlert(resMyInfo);
                 return;
             }
+
+            // world avatar 정보 설정.
+            WorldAvatarInfo info = new WorldAvatarInfo(
+                res.data.seq, 
+                res.data.nickNm,
+                res.data.photo,
+                res.data.memberType,
+                S.ONLINE
+            );
+            WorldAvatar.localPlayerInfo = info;
+            WorldChatView.localPlayerInfo = info;
 
             // xmpp login
         #if UNITY_WEBGL && !UNITY_EDITOR

@@ -2,11 +2,12 @@
 /// [world]
 /// 사용자 리스트 Script
 /// @author         : HJ Lee
-/// @last update    : 2023. 10. 06
-/// @version        : 0.2
+/// @last update    : 2023. 11. 07
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 09. 18) : 최초 생성
 ///     v0.2 (2023. 10. 06) : world avatar data class 에 정보 담아서 리스트 출력
+///     v0.3 (2023. 11. 07) : WindowViewData 적용
 /// </summary>
 
 using UnityEngine;
@@ -56,6 +57,8 @@ namespace Joycollab.v2
         {
             base.Init();
             viewID = ID.USER_LIST_W;
+            viewData = new WindowViewData();
+            viewDataKey = $"view_data_{viewID}";
 
 
             // set infinite scrollview
@@ -73,12 +76,18 @@ namespace Joycollab.v2
 
 
             // set button listener
-            _btnClose.onClick.AddListener(() => Hide());
+            _btnClose.onClick.AddListener(() => {
+                base.SaveViewData(viewData);
+                Hide();
+            });
         }
 
         public async override UniTaskVoid Show() 
         {
             base.Show().Forget();
+
+            // load view data
+            base.LoadViewData();
 
             if (R.singleton != null) 
             {
@@ -111,6 +120,7 @@ namespace Joycollab.v2
             WorldAvatarData t;
 
             _scrollView.Clear();
+            Debug.Log($"{TAG} | avatar list count : {WorldAvatarList.avatarInfos.Count}");
             foreach (var info in WorldAvatarList.avatarInfos) 
             {
                 t = new WorldAvatarData(info);

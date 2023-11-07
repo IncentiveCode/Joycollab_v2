@@ -41,13 +41,13 @@ namespace Joycollab.v2
             nickNm = photo = memberType = stateId = string.Empty;
         }
 
-        public WorldAvatarInfo(int seq, string nickNm, string photo, string memberType)
+        public WorldAvatarInfo(int seq, string nickNm, string photo, string memberType, string stateId)
         {
             this.seq = seq;
             this.nickNm = nickNm;
             this.photo = photo;
             this.memberType = memberType;
-            this.stateId = S.ONLINE;
+            this.stateId = stateId;
         }
     }
 

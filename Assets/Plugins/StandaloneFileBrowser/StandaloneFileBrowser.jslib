@@ -9,9 +9,9 @@ var StandaloneFileBrowserWebGLPlugin = {
     //     Custom: ".plist, .xml, .yaml"
     // multiselect: Allows multiple file selection
     UploadFile: function(gameObjectNamePtr, methodNamePtr, filterPtr, multiselect) {
-        gameObjectName = Pointer_stringify(gameObjectNamePtr);
-        methodName = Pointer_stringify(methodNamePtr);
-        filter = Pointer_stringify(filterPtr);
+        var gameObjectName = UTF8ToString(gameObjectNamePtr);
+        var methodName = UTF8ToString(methodNamePtr);
+        var filter = UTF8ToString(filterPtr);
 
         // Delete if element exist
         var fileInput = document.getElementById(gameObjectName)
@@ -22,8 +22,8 @@ var StandaloneFileBrowserWebGLPlugin = {
         fileInput = document.createElement('input');
         fileInput.setAttribute('id', gameObjectName);
         fileInput.setAttribute('type', 'file');
-        fileInput.setAttribute('style','display:none;');
-        fileInput.setAttribute('style','visibility:hidden;');
+        fileInput.setAttribute('style','display:none; visibility:hidden');
+
         if (multiselect) {
             fileInput.setAttribute('multiple', '');
         }
@@ -39,9 +39,10 @@ var StandaloneFileBrowserWebGLPlugin = {
             var urls = [];
             for (var i = 0; i < event.target.files.length; i++) {
                 urls.push(URL.createObjectURL(event.target.files[i]));
+			    urls.push(event.target.files[i].name);
             }
             // File selected
-            SendMessage(gameObjectName, methodName, urls.join());
+            SendMessage(gameObjectName, methodName, urls.join('|'));
 
             // Remove after file selected
             document.body.removeChild(fileInput);

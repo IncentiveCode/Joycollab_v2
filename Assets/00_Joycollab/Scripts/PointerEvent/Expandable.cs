@@ -15,6 +15,8 @@ namespace Joycollab.v2
 {
     public class Expandable : MonoBehaviour
     {
+        private const string TAG = "Expandable";
+
         [Header("Element")]
         [SerializeField] private LayoutElement _element;
         [SerializeField] private float _closedHeight; 
@@ -43,6 +45,7 @@ namespace Joycollab.v2
 
 
             // init 
+            isExpand = false;
             ClosePanel();
         }
 
@@ -80,6 +83,7 @@ namespace Joycollab.v2
 
         private void ClosePanel() 
         {
+            Debug.Log($"{TAG} | ClosePanel() call");
             if (_element != null)
             {
                 _element.preferredHeight = _closedHeight;

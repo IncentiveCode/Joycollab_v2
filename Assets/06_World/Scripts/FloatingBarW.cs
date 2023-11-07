@@ -106,24 +106,34 @@ namespace Joycollab.v2
             R.singleton.RegisterObserver(this, eStorageKey.Chat);
             R.singleton.RegisterObserver(this, eStorageKey.UserCount);
         }
-
+        
         private void OnEnable() 
         {
             // member, guest check
             bool isGuest = R.singleton.myMemberType.Equals(S.GUEST);
-            _btnProfile.interactable = (! isGuest);
-            _btnMicControl.gameObject.SetActive(true);
-            _btnAlarm.gameObject.SetActive(! isGuest);
-            _btnBookmark.gameObject.SetActive(! isGuest);
-            _btnChat.gameObject.SetActive(! isGuest);
-            _btnMeeting.gameObject.SetActive(! isGuest);
-            _btnSeminar.gameObject.SetActive(! isGuest);
-            _btnGathering.gameObject.SetActive(! isGuest);
-            _btnUserList.gameObject.SetActive(true);
-            _btnSettings.gameObject.SetActive(! isGuest);
-            _btnExpand.gameObject.SetActive(! isGuest);
-            _btnClose.gameObject.SetActive(! isGuest);
 
+            // common setting
+            _btnProfile.interactable = !isGuest;
+            if (isGuest) 
+            {
+                _btnMicControl.gameObject.SetActive(true);
+                _btnUserList.gameObject.SetActive(true);
+                _btnAlarm.gameObject.SetActive(false);
+                _btnBookmark.gameObject.SetActive(false);
+                _btnChat.gameObject.SetActive(false);
+                _btnMeeting.gameObject.SetActive(false);
+                _btnSeminar.gameObject.SetActive(false);
+                _btnGathering.gameObject.SetActive(false);
+                _btnSettings.gameObject.SetActive(false);
+                _btnExpand.gameObject.SetActive(false);
+                _btnClose.gameObject.SetActive(false);
+            }
+            else
+            {
+                _btnAlarm.gameObject.SetActive(true);
+                _btnChat.gameObject.SetActive(true);
+                _expandable.RequestClose();
+            }
 
             if (R.singleton != null) 
             {

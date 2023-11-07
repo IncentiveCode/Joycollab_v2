@@ -1,19 +1,20 @@
 /// <summary>
 /// World 에서 사용할 Avatar 움직임 제어 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 10. 25 
-/// @version        : 0.2
+/// @last update    : 2023. 11. 07 
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 03. 07) : 최초 생성, mirror-test 에서 작업한 항목 migration.
 ///     v0.2 (2023. 10. 25) : UI 변경 test
+///     v0.3 (2023. 11. 07) : 상태 관련 값, Hook function 추가.
 /// </summary>
 
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.UI;
+using UnityEngine.Localization.Components;
 using Mirror;
 using TMPro;
-using Cysharp.Threading.Tasks;
 
 namespace Joycollab.v2
 {
@@ -34,30 +35,28 @@ namespace Joycollab.v2
         private Vector3 v3Target = Vector3.zero;
 
         [Header("UI")]
+        [SerializeField] private Image _imgNameArea;
+        private RectTransform rectNameArea;
         [SerializeField] private TMP_Text _txtName;
-        [SerializeField] private SpriteRenderer _rendererProfile;
-        [SerializeField] private Transform _transformBubble;
-
-        [Header("test")]
+        [SerializeField] private LocalizeStringEvent _txtState;
         [SerializeField] private RawImage _imgProfile;
         [SerializeField] private Image _imgState;
         private ImageLoader loader;
 
+        [Header("chat")]
+        [SerializeField] private Transform _transformBubble;
+
+        // sprite render 를 사용하는 경우
+        // [SerializeField] private SpriteRenderer _rendererProfile;
+
         [Header("Avatar info")]
         internal static WorldAvatarInfo localPlayerInfo;
-        [SyncVar]
-        public int avatarSeq;
-        [SyncVar(hook = nameof(SetAvatarName_Hook))] 
-        public string avatarName; 
-        [SyncVar(hook = nameof(SetAvatarPhoto_Hook))]
-        public string avatarPhoto;
-        [SyncVar]
-        public string avatarMemberType;
-        [SyncVar]
-        public string avatarState;
-
-        [SyncVar(hook = nameof(SetAvatarChat_Hook))] 
-        public string avatarChat;
+        [SyncVar] public int avatarSeq;
+        [SyncVar(hook = nameof(SetAvatarName_Hook))] public string avatarName; 
+        [SyncVar(hook = nameof(SetAvatarPhoto_Hook))] public string avatarPhoto;
+        [SyncVar] public string avatarMemberType;
+        [SyncVar(hook = nameof(SetAvatarState_Hook))] public string avatarState;
+        [SyncVar(hook = nameof(SetAvatarChat_Hook))] public string avatarChat;
 
         // main camera
         private Camera cam;
@@ -69,6 +68,11 @@ namespace Joycollab.v2
         {
             isMovable = false;
             isFly = false;
+
+            if (_imgNameArea != null)
+            {
+                rectNameArea = _imgNameArea.GetComponent<RectTransform>();
+            }
 
             if (_imgProfile != null) 
             {
@@ -82,7 +86,7 @@ namespace Joycollab.v2
 
             cam = Camera.main;
             cam.transform.position = transform.position;
-            cam.GetComponent<SquareCamera>().UpdateCameraInfo(transform, 4f);
+            cam.GetComponent<SquareCamera>().UpdateCameraInfo(transform, 5f);
 
             isMovable = true;
         }
@@ -108,11 +112,6 @@ namespace Joycollab.v2
         private void OnDestroy() 
         {
             if (! isOwned) return;
-
-            /**
-            if (_rendererProfile.sprite.texture != null && string.IsNullOrEmpty(_rendererProfile.sprite.texture.name))
-                Destroy(_rendererProfile.sprite.texture);
-             */
         }
 
     #endregion  // Unity functions
@@ -127,8 +126,6 @@ namespace Joycollab.v2
             avatarPhoto = info.photo;
             avatarMemberType = info.memberType;
             avatarState = info.stateId;
-
-            _imgState.color = C.ONLINE;
         }
 
         public void UpdateAvatarChat(string chat) 
@@ -221,6 +218,10 @@ namespace Joycollab.v2
             // avatar 에 이름 반영.
             _txtName.text = newName;
 
+            // name length limiter
+            Canvas.ForceUpdateCanvases();
+            float rectWidth = rectNameArea.rect.width;
+
             // server 쪽에 이름 반영.
             CmdSetAvatarName(newName);
         }
@@ -233,8 +234,6 @@ namespace Joycollab.v2
 
         public void SetAvatarPhoto_Hook(string _, string newPhoto) 
         {
-            // Debug.Log($"[player] SetAvatarPhoto_Hook() call. newName : {newPhoto}");
-
             // avatar 에 사진 반영.
             string url = $"{URL.SERVER_PATH}{newPhoto}"; 
             // GetAvatarPhoto(url).Forget();
@@ -243,49 +242,24 @@ namespace Joycollab.v2
             // server 쪽에 사진 반영.
             CmdSetAvatarPhoto(newPhoto);
         }
-
-        private async UniTaskVoid GetAvatarPhoto(string url) 
-        {
-            Texture2D res = await NetworkTask.GetTextureAsync(url);
-            if (res == null) 
-            {
-                Debug.LogError("AvatarMover | 이미지 로딩 실패.");
-                return;
-            }
-
-            res.hideFlags = HideFlags.HideAndDontSave;
-            res.filterMode = FilterMode.Point;
-            res.Apply(); 
-
-            Sprite s = Sprite.Create(res, new Rect(0, 0, res.width, res.height), new Vector2(0.5f, 0.5f), 16f, 0, SpriteMeshType.FullRect);
-            if (_rendererProfile.sprite.texture != null && string.IsNullOrEmpty(_rendererProfile.sprite.texture.name))
-                Destroy(_rendererProfile.sprite.texture);
-
-            // change texture scale
-            float ratio, rw, rh;
-            if (res.width >= res.height)
-            {
-                ratio = (float) res.height / (float) res.width;
-                rw = 14f / (float) res.width;
-                rh = 14f / (float) res.height * ratio;
-            }
-            else 
-            {
-                ratio = (float) res.width / (float) res.height;
-                rw = 14f / (float) res.width * ratio;
-                rh = 14f / (float) res.height;
-            }
-
-            _rendererProfile.transform.localScale = new Vector3(rw, rh, 1f);
-            _rendererProfile.sprite = s;
-        }
-
         [Command(requiresAuthority = false)]
         public void CmdSetAvatarPhoto(string photo) 
         {
             string url = $"{URL.SERVER_PATH}{photo}";
-            // GetAvatarPhoto(url).Forget();
             loader.LoadImage(url).Forget();
+        }
+
+        public void SetAvatarState_Hook(string _, string id) 
+        {
+            ChangeState(id);
+
+            // server 쪽에 상태 반영.
+            CmdSetAvatarState(id);
+        }
+        [Command(requiresAuthority = false)]
+        public void CmdSetAvatarState(string id) 
+        {
+            ChangeState(id);
         }
 
         public void SetAvatarChat_Hook(string _, string chat) 
@@ -303,5 +277,74 @@ namespace Joycollab.v2
         }
 
     #endregion  // AVatar info
+
+
+    #region Avatar State
+
+        private void ChangeState(string id) 
+        {
+            switch (id) 
+            {
+                case S.OFFLINE :
+                    _imgNameArea.color = C.OFFLINE;
+                    _imgState.color = C.OFFLINE;
+                    break;
+
+                case S.MEETING :
+                    _imgNameArea.color = C.MEETING;
+                    _imgState.color = C.MEETING;
+                    break;
+
+                case S.LINE_BUSY :
+                    _imgNameArea.color = C.LINE_BUSY;
+                    _imgState.color = C.LINE_BUSY;
+                    break;
+
+                case S.BUSY :
+                    _imgNameArea.color = C.BUSY;
+                    _imgState.color = C.BUSY;
+                    break;
+
+                case S.OUT_ON_BUSINESS :
+                    _imgNameArea.color = C.OUT_ON_BUSINESS;
+                    _imgState.color = C.OUT_ON_BUSINESS;
+                    break;
+
+                case S.OUTING :
+                    _imgNameArea.color = C.OUTING;
+                    _imgState.color = C.OUTING;
+                    break;
+
+                case S.NOT_HERE :
+                    _imgNameArea.color = C.NOT_HERE;
+                    _imgState.color = C.NOT_HERE;
+                    break;
+
+                case S.DO_NOT_DISTURB :
+                    _imgNameArea.color = C.DO_NOT_DISTURB;
+                    _imgState.color = C.DO_NOT_DISTURB;
+                    break;
+
+                case S.VACATION :
+                    _imgNameArea.color = C.VACATION;
+                    _imgState.color = C.VACATION;
+                    break;
+
+                case S.NOT_AVAILABLE :
+                    _imgNameArea.color = C.NOT_AVAILABLE;
+                    _imgState.color = C.NOT_AVAILABLE;
+                    break;
+
+                case S.ONLINE :
+                default :
+                    _imgNameArea.color = C.ONLINE;
+                    _imgState.color = C.ONLINE;
+                    break;
+            } 
+
+            _txtState.StringReference.SetReference("Word", $"상태.{id}");
+        }
+
+    #endregion  // Avatar State
     }
 }

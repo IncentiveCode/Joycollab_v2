@@ -1,12 +1,13 @@
 /// <summary>
 /// 자주 사용하는 color 값 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 10 
-/// @version        : 0.3
+/// @last update    : 2023. 11. 07 
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 04. 14) : 최초 생성. 상태 색상, 버튼 색상 정리  
 ///     v0.2 (2023. 07. 31) : Plan 색상 추가.
 ///     v0.3 (2023. 08. 10) : World 에서 사용하는 색상 추가.
+///     v0.4 (2023. 11. 07) : state color 에 outing 추가
 /// </summary>
 
 using UnityEngine;
@@ -46,6 +47,11 @@ namespace Joycollab.v2
 		/// avatar state - 외근중 - #8AC7FF
 		/// </summary>
         public static readonly Color OUT_ON_BUSINESS = new Color(0.5411765f, 0.7803922f, 1f, 1f);
+
+		/// <summary>
+		/// avatar state - 외출중 - #8AC7FF
+		/// </summary>
+        public static readonly Color OUTING = new Color(0.5411765f, 0.7803922f, 1f, 1f);
 
 		/// <summary>
 		/// avatar state - 자리비움 - #0E9EEF

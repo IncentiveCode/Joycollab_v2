@@ -137,7 +137,36 @@
 
 		<!-- run library, module -->
 		<script>
+			const module = {};
 
+		  	// Queue - 참고 : https://sub0709.tistory.com/147 
+		  	function Queue() {
+			  	this.data = [];
+		  	}
+		  	Queue.prototype.enqueue = function(v) {
+			  	this.data.push(v);
+		  	}
+		  	Queue.prototype.dequeue = function() {
+			  	return this.data.shift() || null;
+		  	}
+		  	Queue.prototype.size = function() {
+			  	return this.data.length;
+		  	}
+		
+      		var msgQueue = new Queue();
+	    	window.onMsg = function (msg) {
+	      		msgQueue.enqueue(msg);
+      		}
+		
+		  	function Interval() {
+			  	if (msgQueue.size() != 0) {
+			    	var msg = msgQueue.dequeue();
+
+		        	document.getElementById("unity-xmpp-msg").value = msg;
+		        	$('#unity-xmpp-msg').change();
+				}
+		  	}
+		  	setInterval(Interval, 50);
 		</script>
 		<!-- // run library, module -->
 	</body>

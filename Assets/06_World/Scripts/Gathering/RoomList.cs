@@ -93,7 +93,6 @@ namespace Joycollab.v2
             });
 
 
-
             // set local variables
             req = new RequestForClas();
         }
