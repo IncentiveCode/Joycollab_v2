@@ -51,6 +51,9 @@ namespace Joycollab.v2
 
         [Header("Avatar info")]
         internal static WorldAvatarInfo localPlayerInfo;
+        public WorldAvatarInfo AvatarInfo => avatarInfo;
+
+        private WorldAvatarInfo avatarInfo;
         [SyncVar] public int avatarSeq;
         [SyncVar(hook = nameof(SetAvatarName_Hook))] public string avatarName; 
         [SyncVar(hook = nameof(SetAvatarPhoto_Hook))] public string avatarPhoto;
@@ -121,6 +124,8 @@ namespace Joycollab.v2
 
         public void UpdateAvatarInfo(WorldAvatarInfo info) 
         {
+            avatarInfo = info;
+
             avatarSeq = info.seq;
             avatarName = info.nickNm;
             avatarPhoto = info.photo;

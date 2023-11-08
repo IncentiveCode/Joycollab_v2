@@ -15,6 +15,7 @@ using UnityEngine.UI;
 using Gpm.Ui;
 using Cysharp.Threading.Tasks;
 using TMPro;
+using Mirror;
 
 namespace Joycollab.v2
 {
@@ -121,10 +122,15 @@ namespace Joycollab.v2
 
             _scrollView.Clear();
             Debug.Log($"{TAG} | avatar list count : {WorldAvatarList.avatarInfos.Count}");
-            foreach (var info in WorldAvatarList.avatarInfos) 
+            Debug.Log($"{TAG} | connection list count : {WorldNetworkManager.singleton.numPlayers}");
+
+            foreach (var info in NetworkServer.connections.Values) 
             {
-                t = new WorldAvatarData(info);
-                _scrollView.InsertData(t);
+                if (info.identity.TryGetComponent(out WorldAvatar avatar))
+                {
+                    t = new WorldAvatarData(avatar.AvatarInfo);
+                    _scrollView.InsertData(t);
+                }
             }
             _scrollView.UpdateAllData();
 

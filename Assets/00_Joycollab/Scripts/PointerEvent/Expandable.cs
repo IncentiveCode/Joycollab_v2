@@ -83,7 +83,6 @@ namespace Joycollab.v2
 
         private void ClosePanel() 
         {
-            Debug.Log($"{TAG} | ClosePanel() call");
             if (_element != null)
             {
                 _element.preferredHeight = _closedHeight;

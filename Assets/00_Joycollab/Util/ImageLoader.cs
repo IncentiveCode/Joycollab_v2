@@ -1,10 +1,11 @@
 /// <summary>
 /// 서버의 이미지를 불러오는 기능을 전담하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 06. 28
-/// @version        : 0.1
+/// @last update    : 2023. 11. 08
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 06. 28) : 최초 생성, mobile scene 에 적용 실험.
+///     v0.2 (2023. 11. 08) : Resize() 추가.
 /// </summary>
 
 using UnityEngine;
@@ -128,6 +129,11 @@ namespace Joycollab.v2
         public void SetDefault() 
         {
             img.texture = _texDefault;
+            Util.ResizeRawImage(rect, img, _v2Size.x, _v2Size.y);
+        }
+
+        public void Resize() 
+        {
             Util.ResizeRawImage(rect, img, _v2Size.x, _v2Size.y);
         }
 

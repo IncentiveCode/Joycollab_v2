@@ -19,13 +19,13 @@ namespace Joycollab.v2
     {
         private const string TAG = "SettingsW";
 
-        [Header("page")]
-        [SerializeField] private IndividualSettings _pageIndividual;
-        [SerializeField] private Configuration _pageConfiguration;
-
         [Header("toggle")]
         [SerializeField] private Toggle _toggleIndividual;
         [SerializeField] private Toggle _toggleConfiguration;
+
+        [Header("page")]
+        [SerializeField] private IndividualSettings _pageIndividual;
+        [SerializeField] private Configuration _pageConfiguration;
 
         [Header("button")]
         [SerializeField] private Button _btnClose;

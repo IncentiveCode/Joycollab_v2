@@ -400,6 +400,11 @@ namespace Joycollab.v2
         public const string ALARM_UPDATE_SPACE = "공간 배치 변경";
         public const string ALARM_UPDATE_SEAT = "멤버 배치 변경";
 
+        public const string ALARM_ICON_CALL = "/icon/음성 ";
+        public const string ALARM_ICON_MEETING = "/icon/회의 ";
+        public const string ALARM_ICON_SEMINAR = "/icon/세미나 ";
+        public const string ALARM_ICON_TO_DO = "/icon/todo.png";
+
     #endregion  // alarm contents
 
 

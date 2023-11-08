@@ -1,8 +1,8 @@
 /// <summary>
 /// 시스템 상 저장 공간 (Repository) 
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 03
-/// @version        : 1.4
+/// @last update    : 2023. 11. 08
+/// @version        : 0.15
 /// @update
 ///     v0.1 (2023. 03. 17) : 파일 생성, Joycollab 에서 사용하는 것들 정리 시작.
 ///     v0.2 (2023. 03. 31) : SimpleWorkspace, Alarm 관련 항목 정리 시작, Notify 에서 generic <T> 제거.
@@ -18,12 +18,14 @@
 ///     v0.12 (2023. 09. 15) : Google, Zoom 관련 getter 추가.
 ///     v0.13 (2023. 09. 19) : ResMemberInfo 에 추가된 필드들에 대한 getter 추가 
 ///     v0.14 (2023. 11. 03) : avatar state 관련 정보를 System manager 로 이관.
+///     v0.15 (2023. 11. 08) : time format 확인 함수와 culture info list 추가.
 /// </summary>
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Globalization;
 using UnityEngine;
 using UnityEngine.Localization;
 using UnityEngine.Localization.Settings;
@@ -45,6 +47,12 @@ namespace Joycollab.v2
             // for common 
             listObserver = new List<Tuple<iRepositoryObserver, eStorageKey>>();
             listObserver.Clear();
+
+            listCulture = new List<CultureInfo>();
+            listCulture.Clear();
+            listCulture.Add(new CultureInfo("ko-KR"));
+            listCulture.Add(new CultureInfo("en-US"));
+            listCulture.Add(new CultureInfo("ja-JP"));
 
             dictParams = new Dictionary<string, string>();
             dictParams.Clear();
@@ -177,6 +185,8 @@ namespace Joycollab.v2
     #region Language, region
 
         private string _region;
+        private List<CultureInfo> listCulture;
+        private CultureInfo _culture;
         private bool isChanging;
 
         public string Region 
@@ -206,12 +216,14 @@ namespace Joycollab.v2
                 return LocalizationSettings.SelectedLocale;
             }
         }
+        public CultureInfo CurrentCulture => _culture;
         public bool isKorean 
         {
             get {
                 return Region.Equals(S.REGION_KOREAN);
             }
         }
+
         public void ChangeLocale(int locale) 
         {
             if (isChanging) return; 
@@ -223,6 +235,8 @@ namespace Joycollab.v2
 
             yield return LocalizationSettings.InitializationOperation;
             LocalizationSettings.SelectedLocale = LocalizationSettings.AvailableLocales.Locales[locale];
+
+            _culture = listCulture[locale]; 
 
             Region = locale switch {
                 0 => S.REGION_KOREAN,
@@ -455,6 +469,9 @@ namespace Joycollab.v2
         }
         public float myLon {
             get { return _memberInfo.lng; }
+        }
+        public bool isTimeFormatEquals24 {
+            get { return _memberInfo.hourFormatStr.Equals("HH"); }
         }
         public string myStateId {
             get { return _memberInfo.status.id; }

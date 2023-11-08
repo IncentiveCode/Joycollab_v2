@@ -71,9 +71,7 @@ namespace Joycollab.v2
             _btnMicControl.onClick.AddListener(() => {
                 Debug.Log($"{TAG} | mic option change.");
             });
-            _btnAlarm.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | alarm panel open.");
-            });
+            _btnAlarm.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_AlarmList));
             _btnBookmark.onClick.AddListener(() => {
                 Debug.Log($"{TAG} | bookmark panel open.");
             });
@@ -163,7 +161,7 @@ namespace Joycollab.v2
 
         public void UpdateInfo(eStorageKey key) 
         {
-            // Debug.Log($"{TAG} | UpdateInfo() call. key : {key}");
+            Debug.Log($"{TAG} | UpdateInfo() call. key : {key}");
             switch (key) 
             {
                 case eStorageKey.MemberInfo :
