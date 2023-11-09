@@ -668,7 +668,7 @@ namespace Joycollab.v2
         public void AddBookmark(Bookmark info) => listBookmark.Add(info);
         public bool Marked(eBookmarkType type, int seq) 
         {
-            int index = listBookmark.FindIndex(item => item.postSeq == seq && item.type == type);
+            int index = listBookmark.FindIndex(item => item.seq == seq && item.type == type);
             return (index != -1);
         }
         public void ClearBookmark() => listBookmark.Clear();

@@ -1,10 +1,11 @@
 /// <summary>
 /// Plan parse class 를 test 하기 위한 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 12
-/// @version        : 0.1
+/// @last update    : 2023. 11. 09
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 09. 12) : 최초 생성. PlanParser 에서 분리.
+///     v0.2 (2023. 11. 09) : 각 언어별 가격 정보 추가.
 /// </summary>
 
 using UnityEngine;
@@ -27,6 +28,9 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnBasic;
         [SerializeField] private Button _btnStandard;
         [SerializeField] private Button _btnPremium;
+        [SerializeField] private Text _txtFee;
+        [SerializeField] private Toggle _toggleMonthly;
+        [SerializeField] private Toggle _toggleYearly;
 
         [Header("display part")]
         [SerializeField] private Transform _transform;
@@ -34,6 +38,7 @@ namespace Joycollab.v2
 
         // local variable
         private Color color;
+        private PlanData currentData;
 
 
     #region Unity functions
@@ -56,6 +61,15 @@ namespace Joycollab.v2
             _btnBasic.onClick.AddListener(() => Parse(_planBasic));
             _btnStandard.onClick.AddListener(() => Parse(_planStandard));
             _btnPremium.onClick.AddListener(() => Parse(_planPremium));
+
+            _toggleMonthly.onValueChanged.AddListener((isOn) => {
+                if (! isOn) return;
+                _txtFee.text = currentData.GetFee(false); 
+            });
+            _toggleYearly.onValueChanged.AddListener((isOn) => {
+                if (! isOn) return;
+                _txtFee.text = currentData.GetFee(true);
+            });
         }
 
         private void OnEnable() 
@@ -70,10 +84,13 @@ namespace Joycollab.v2
 
         public void Parse(PlanData data) 
         {
+            currentData = data;
             color = data.PlanColor;
 
             ClearContent();
             ChangeContent(data);
+
+            _txtFee.text = data.GetFee(_toggleYearly.isOn);
         }
 
     #endregion  // public function

@@ -214,7 +214,8 @@ namespace Joycollab.v2
     /// </summary>
     public enum eBookmarkType 
     {
-        Notice, Board    
+        Notice, Board, Member, Meeting,
+        None
     }
 
 

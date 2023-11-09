@@ -1,11 +1,12 @@
 /// <summary>
 /// Network 통신 - Board 관련 요청과 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 07
-/// @version        : 0.2
+/// @last update    : 2023. 11. 09
+/// @version        : 0.3
 /// @update
-///     v0.1 (2023. 06. 15) : Joycollab 에서 사용하던 클래스 정리 및 통합, infinite scroll data 추가.
-///     v0.2 (2023. 07. 07) : Joycollab 에서 사용하던 클래스 정리 및 추가 (Notice, Bookmark 관련 정보 추가)
+///     v0.1 (2023. 06. 15) : v1 에서 사용하던 클래스 정리 및 통합, infinite scroll data 추가.
+///     v0.2 (2023. 07. 07) : v1 에서 사용하던 클래스 정리 및 추가 (Notice, Bookmark 관련 정보 추가)
+///     v0.3 (2023. 11. 09) : Bookmark 분리.
 /// </summary>
 
 using System;
@@ -14,9 +15,6 @@ using Gpm.Ui;
 
 namespace Joycollab.v2
 {
-
-#region Board
-
     [Serializable]
     public class ReqBoardInfo
     {
@@ -111,8 +109,6 @@ namespace Joycollab.v2
         }
     }
 
-#endregion  // Board
-
 
 #region Notice
 
@@ -126,67 +122,4 @@ namespace Joycollab.v2
 
 
 #endregion  // System notice
-
-
-#region Bookmark
-
-    [Serializable]
-    public class ResBookmarkList 
-    {
-        public List<ResBookmarkInfo> list;
-    }
-
-    [Serializable]
-    public class ResBookmarkInfo 
-    {
-        public string useYn;
-        public int seq;
-        public BookmarkContent board;
-        public BookmarkContent noti;
-        public string regDtm;
-    }
-
-    [Serializable]
-    public class BookmarkContent 
-    {
-        public string useYn;
-        public int seq;
-        public string title;
-        public string content;
-        public string sdtm;
-        public string edtm;
-        public SimpleMemberInfo createMember;
-        public string createdDate;
-        public SpaceSeq space;
-    }
-
-    [Serializable]
-    public class Bookmark 
-    {
-        public eBookmarkType type;
-        public int bookmarkSeq;
-        public int postSeq;
-
-        public Bookmark(eBookmarkType type, int bookmarkSeq, int postSeq) 
-        {
-            this.type = type;
-            this.bookmarkSeq = bookmarkSeq;
-            this.postSeq = postSeq;
-        }
-    }
-
-
-    public class BookmarkData : InfiniteScrollData 
-    {
-        public BookmarkContent info;
-
-        public BookmarkData(BookmarkContent info) 
-        {
-            this.info = info;
-        }
-    }
-    
-#endregion  // Bookmark
-
-
 }

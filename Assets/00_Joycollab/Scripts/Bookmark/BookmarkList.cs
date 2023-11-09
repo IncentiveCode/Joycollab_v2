@@ -26,13 +26,11 @@ namespace Joycollab.v2
         [SerializeField] private Toggle _toggleSeminar;
         [SerializeField] private Toggle _toggleBoard;
 
-        [Header("page")]
-        [SerializeField] private BookmarkMember _pageMember;
-        [SerializeField] private BookmarkSeminar _pageSeminar;
-        [SerializeField] private BookmarkBoard _pageBoard;
-
         [Header("button")]
         [SerializeField] private Button _btnClose;
+
+        [Header("contents")]
+        [SerializeField] private InfiniteScroll _scrollView;
 
 
     #region Unity functions

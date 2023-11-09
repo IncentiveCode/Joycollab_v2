@@ -242,15 +242,44 @@ namespace Joycollab.v2
 
             if (string.IsNullOrEmpty(res.message)) 
             {
-                Bookmark t;
+                Bookmark t = null;
+                eBookmarkType type = eBookmarkType.None;
+                int targetSeq = 0;
+                string title = string.Empty;
+                string desc = string.Empty;
+
                 foreach (var info in res.data.list) 
                 {
-                    t = new Bookmark(
-                        info.noti != null ? eBookmarkType.Notice : eBookmarkType.Board,
-                        info.seq,
-                        info.noti != null ? info.noti.seq : info.board.seq
-                    );
+                    if (info.noti != null) 
+                    {
+                        type = eBookmarkType.Notice;
+                        targetSeq = info.noti.seq;
+                        title = info.noti.title;
+                        desc = LocalizationSettings.StringDatabase.GetLocalizedString("Menu", "공지사항", R.singleton.CurrentLocale);
+                    }
+                    else if (info.board != null) 
+                    {
+                        type = eBookmarkType.Board;
+                        targetSeq = info.board.seq;
+                        title = info.board.title;
+                        desc = info.board.createMember.nickNm;
+                    }
+                    else if (info.member != null) 
+                    {
+                        type = eBookmarkType.Member;
+                        targetSeq = info.member.seq;
+                        title = info.member.nickNm;
+                        desc = info.member.jobGrade;
+                    }
+                    else if (info.meeting != null) 
+                    {
+                        type = eBookmarkType.Meeting;
+                        targetSeq = info.meeting.seq;
+                        title = info.meeting.title;
+                        desc = $"{info.meeting.createMember.nickNm} {info.meeting.createMember.jobGrade}";
+                    }
 
+                    t = new Bookmark( type, info.seq, targetSeq, title, desc );
                     R.singleton.AddBookmark(t);
                 }
             }

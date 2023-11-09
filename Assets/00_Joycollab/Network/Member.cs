@@ -1,8 +1,8 @@
 /// <summary>
 /// Network 통신 - 사용자, 워크스페이스 멤버 관련 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 06
-/// @version        : 0.13
+/// @last update    : 2023. 11. 09
+/// @version        : 0.14
 /// @update
 ///     v0.1 (2023. 02. 23) : Joycollab 에서 사용하던 클래스 정리 및 통합.
 ///     v0.2 (2023. 06. 14) : MemberSeq 클래스 추가.
@@ -18,6 +18,7 @@
 ///     v0.11 (2023. 10. 26) : 전화를 걸기 위한 ReqCallInfo class 추가.
 ///     v0.12 (2023. 11. 02) : WorkspaceMemberInfo 에 회사 정보 추가. (API 업데이트)
 ///     v0.13 (2023. 11. 06) : WorldAvatarInfo 에 상태 관련 코드 추가.
+///     v0.14 (2023. 11. 09) : ResMemberInfo 에 몇 가지 항목 추가. (hiddenTel, 활동지수 등)
 /// </summary>
 
 using System;
@@ -171,9 +172,15 @@ namespace Joycollab.v2
         public string compName;
         public string business;
         public string tel;
+        public bool hiddenTel;
         public string ceoNm;
         public string mainBusiness;
         public string homepage;
+        public string tag;
+        public int boardCnt;
+        public int commentCnt;
+        public int loginCnt;
+        public int score;
     }
 
     [Serializable]
