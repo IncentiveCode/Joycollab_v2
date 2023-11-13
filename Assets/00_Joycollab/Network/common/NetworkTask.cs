@@ -163,15 +163,21 @@ namespace Joycollab.v2
                     break;
 
                 case HTTP_STATUS_CODE_NOT_FOUND :  
-                    ResBadRequest notFound = JsonUtility.FromJson<ResBadRequest>(data); 
-                    msg = notFound.Message;
-                    if (string.IsNullOrEmpty(msg)) 
+                    if (string.IsNullOrEmpty(data))
                     {
                         result = "Not Found";
                     }
                     else 
                     {
-                        result = msg;
+                        ResBadRequest notFound = JsonUtility.FromJson<ResBadRequest>(data); 
+                        if (string.IsNullOrEmpty(notFound.Message)) 
+                        {
+                            result = "Not Found";
+                        }
+                        else 
+                        {
+                            result = notFound.Message;
+                        }
                     }
                     break;
 

@@ -2,13 +2,14 @@
 /// [world]
 /// Floating bar 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 06 
+/// @last update    : 2023. 11. 13 
 /// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 09. 18) : v1 에서 사용하던 항목 수정 후 적용. (진행 중)
 ///     v0.2 (2023. 10. 30) : Expandable 적용. meeting, seminar 버튼 추가.
 ///     v0.3 (2023. 10. 31) : 모임방 버튼 추가.
 ///     v0.4 (2023. 11. 06) : guest 를 위한 Floating bar 구성 추가.
+///     v0.5 (2203. 11. 13) : Map scene 에서 사용하기 위한 Floating bar 구성 추가.
 /// </summary>
 
 using UnityEngine;
@@ -51,6 +52,7 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnGathering;
         [SerializeField] private Button _btnUserList;
         [SerializeField] private Button _btnSettings;
+        [SerializeField] private Button _btnSignOut;
 
         [Header("Expandable")]
         [SerializeField] private Expandable _expandable;
@@ -88,6 +90,7 @@ namespace Joycollab.v2
             _btnGathering.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_RoomList));
             _btnUserList.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_UserList));
             _btnSettings.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_Settings));
+            _btnSignOut.onClick.AddListener(() => WorldNetworkManager.singleton.StopClient());
             _btnExpand.onClick.AddListener(() => _expandable.RequestExpand());
             _btnClose.onClick.AddListener(() => _expandable.RequestClose());
 
@@ -98,46 +101,25 @@ namespace Joycollab.v2
             alarmCount = chatCount = userCount = -1;
 
 
-            // register event
-            R.singleton.RegisterObserver(this, eStorageKey.MemberInfo);
-            R.singleton.RegisterObserver(this, eStorageKey.Alarm);
-            R.singleton.RegisterObserver(this, eStorageKey.Chat);
-            R.singleton.RegisterObserver(this, eStorageKey.UserCount);
+            // register event 
+            if (R.singleton != null)
+            {
+                R.singleton.RegisterObserver(this, eStorageKey.MemberInfo);
+                R.singleton.RegisterObserver(this, eStorageKey.Alarm);
+                R.singleton.RegisterObserver(this, eStorageKey.Chat);
+                R.singleton.RegisterObserver(this, eStorageKey.WindowRefresh);
+                R.singleton.RegisterObserver(this, eStorageKey.UserCount);
+            }
         }
         
         private void OnEnable() 
         {
-            // member, guest check
-            bool isGuest = R.singleton.myMemberType.Equals(S.GUEST);
-
-            // common setting
-            _btnProfile.interactable = !isGuest;
-            if (isGuest) 
-            {
-                _btnMicControl.gameObject.SetActive(true);
-                _btnUserList.gameObject.SetActive(true);
-                _btnAlarm.gameObject.SetActive(false);
-                _btnBookmark.gameObject.SetActive(false);
-                _btnChat.gameObject.SetActive(false);
-                _btnMeeting.gameObject.SetActive(false);
-                _btnSeminar.gameObject.SetActive(false);
-                _btnGathering.gameObject.SetActive(false);
-                _btnSettings.gameObject.SetActive(false);
-                _btnExpand.gameObject.SetActive(false);
-                _btnClose.gameObject.SetActive(false);
-            }
-            else
-            {
-                _btnAlarm.gameObject.SetActive(true);
-                _btnChat.gameObject.SetActive(true);
-                _expandable.RequestClose();
-            }
-
             if (R.singleton != null) 
             {
                 R.singleton.RequestInfo(this, eStorageKey.MemberInfo);
                 R.singleton.RequestInfo(this, eStorageKey.Alarm);
                 R.singleton.RequestInfo(this, eStorageKey.Chat);
+                R.singleton.RequestInfo(this, eStorageKey.WindowRefresh);
                 R.singleton.RequestInfo(this, eStorageKey.UserCount);
             }
         } 
@@ -150,6 +132,7 @@ namespace Joycollab.v2
                 R.singleton.UnregisterObserver(this, eStorageKey.MemberInfo);
                 R.singleton.UnregisterObserver(this, eStorageKey.Alarm);
                 R.singleton.UnregisterObserver(this, eStorageKey.Chat);
+                R.singleton.UnregisterObserver(this, eStorageKey.WindowRefresh);
                 R.singleton.UnregisterObserver(this, eStorageKey.UserCount);
             }
         }
@@ -165,13 +148,13 @@ namespace Joycollab.v2
             switch (key) 
             {
                 case eStorageKey.MemberInfo :
-                    // Debug.Log($"{TAG} | UpdateInfo (MemberInfo) - photo : {myPhoto}, photo in R : {R.singleton.myPhoto}");
+                    Debug.Log($"{TAG} | UpdateInfo (MemberInfo) - photo : {myPhoto}, photo in R : {R.singleton.myPhoto}");
                     if (!myPhoto.Equals(R.singleton.myPhoto)) 
                     {
                         myPhoto = R.singleton.myPhoto;
 
                         string url = $"{URL.SERVER_PATH}{myPhoto}";
-                        // Debug.Log($"{TAG} | photo url : {url}");
+                        Debug.Log($"{TAG} | photo url : {url}");
                         int seq = R.singleton.memberSeq;
                         loader.LoadProfile(url, seq).Forget();
                     }
@@ -195,6 +178,10 @@ namespace Joycollab.v2
                     }
                     break; 
 
+                case eStorageKey.WindowRefresh :
+                    RefreshPanel();
+                    break;
+
                 case eStorageKey.UserCount :
                     if (userCount != R.singleton.CurrentUserCount)
                     {
@@ -207,6 +194,54 @@ namespace Joycollab.v2
                 default :
                     Debug.Log($"{TAG} | 여기에서 사용하지 않는 항목. key : {key}");
                     break;
+            }
+        }
+
+        private void RefreshPanel() 
+        {
+            // member, guest check
+            bool isGuest = R.singleton.myMemberType.Equals(S.GUEST);
+
+            // map scene check
+            bool isMap = SceneLoader.isMap();
+            bool isSquare = SceneLoader.isSquare();
+            Debug.Log($"{TAG} | isMap ? {isMap}, isSquare ? {isSquare}");
+
+            // common setting
+            _btnProfile.interactable = !isGuest;
+            if (isGuest) 
+            {
+                _btnMicControl.gameObject.SetActive(true);
+                _btnUserList.gameObject.SetActive(true);
+                _btnAlarm.gameObject.SetActive(false);
+                _btnBookmark.gameObject.SetActive(false);
+                _btnChat.gameObject.SetActive(false);
+                _btnMeeting.gameObject.SetActive(false);
+                _btnSeminar.gameObject.SetActive(false);
+                _btnGathering.gameObject.SetActive(false);
+                _btnSettings.gameObject.SetActive(false);
+                _btnSignOut.gameObject.SetActive(true);
+                _btnExpand.gameObject.SetActive(false);
+                _btnClose.gameObject.SetActive(false);
+            }
+            else
+            {
+                _btnAlarm.gameObject.SetActive(true);
+                _btnChat.gameObject.SetActive(true);
+                _expandable.RequestClose();
+
+                if (isMap) 
+                {
+                    _btnExpand.gameObject.SetActive(false);
+                    _btnClose.gameObject.SetActive(false);
+                    _btnSignOut.gameObject.SetActive(true);
+                }
+                else if (isSquare) 
+                {
+                    _btnExpand.gameObject.SetActive(true);
+                    _btnClose.gameObject.SetActive(false);
+                    _btnSignOut.gameObject.SetActive(false);
+                }
             }
         }
 

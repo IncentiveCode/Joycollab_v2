@@ -37,12 +37,19 @@ namespace Joycollab.v2
         {
             _text = GetComponent<Text>();
 
-            R.singleton.RegisterObserver(this, eStorageKey.FontSize);
+            if (R.singleton != null)
+            {
+                R.singleton.RegisterObserver(this, eStorageKey.FontSize);
+            }
         }
 
         private void OnEnable() 
         {
-            UpdateInfo(eStorageKey.FontSize);    
+            // UpdateInfo(eStorageKey.FontSize);
+            if (R.singleton != null) 
+            {
+                R.singleton.RequestInfo(this, eStorageKey.FontSize);
+            }
         }
 
         private void OnDestroy() 
