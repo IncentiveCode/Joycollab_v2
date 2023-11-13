@@ -50,6 +50,56 @@ namespace Joycollab.v2
         {
             base.Init();
             viewID = ID.BOOKMARK_W;
+            viewData = new WindowViewData();
+            viewDataKey = $"view_data_{viewID}";
+
+
+            // set button listener
+            _btnClose.onClick.AddListener(() => {
+                base.SaveViewData(viewData);
+                Hide();
+            });
+
+
+            // set toggle listener
+            _toggleMember.onValueChanged.AddListener((isOn) => {
+                if (!isOn) return;
+                Debug.Log($"{TAG} | open member list.");
+            });
+            _toggleSeminar.onValueChanged.AddListener((isOn) => {
+                if (!isOn) return;
+                Debug.Log($"{TAG} | open seminar list.");
+            });
+            _toggleBoard.onValueChanged.AddListener((isOn) => {
+                if (!isOn) return;
+                Debug.Log($"{TAG} | open board list.");
+            });
+        }
+
+        public override async UniTaskVoid Show() 
+        {
+            base.Show().Forget();
+
+            // load view data
+            base.LoadViewData();
+
+            if (R.singleton != null) 
+            {
+                R.singleton.RegisterObserver(this, eStorageKey.WindowRefresh);
+            }
+
+            await Refresh();
+            base.Appearing();
+        }
+
+        public override void Hide() 
+        {
+            base.Hide();
+
+            if (R.singleton != null) 
+            {
+                R.singleton.RegisterObserver(this, eStorageKey.WindowRefresh);
+            }
         }
 
     #endregion  // WindowView functions

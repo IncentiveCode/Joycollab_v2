@@ -46,14 +46,14 @@ namespace Joycollab.v2
             viewID = ID.MobileScene_Chat;
         }
 
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
             await Refresh();
             base.Appearing();
         }
 
-        public async override UniTaskVoid Show(string opt) 
+        public override async UniTaskVoid Show(string opt) 
         {
             base.Show(opt).Forget();
             await Refresh(opt);

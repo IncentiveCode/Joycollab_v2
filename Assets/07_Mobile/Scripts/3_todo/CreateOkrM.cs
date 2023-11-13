@@ -212,7 +212,7 @@ namespace Joycollab.v2
         /// <summary>
         /// 새 OKR 등록.
         /// </summary>
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
 
@@ -224,7 +224,7 @@ namespace Joycollab.v2
         /// <summary>
         /// 기존 OKR 수정.
         /// </summary>
-        public async override UniTaskVoid Show(int seq) 
+        public override async UniTaskVoid Show(int seq) 
         {
             base.Show().Forget();
 

@@ -108,7 +108,7 @@ namespace Joycollab.v2
             _btnNext.onClick.AddListener(() => UpdateUserInfo().Forget());
         }
 
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
             await Refresh();

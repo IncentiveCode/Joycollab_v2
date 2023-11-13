@@ -89,7 +89,7 @@ namespace Joycollab.v2
             _btnBack.onClick.AddListener(() => ViewManager.singleton.Pop());
         }
 
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
             await Refresh();

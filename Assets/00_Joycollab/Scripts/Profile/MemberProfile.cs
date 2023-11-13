@@ -98,7 +98,7 @@ namespace Joycollab.v2
             builder.Clear();
         }
 
-        public async override UniTaskVoid Show(int memberSeq, Vector2 pos) 
+        public override async UniTaskVoid Show(int memberSeq, Vector2 pos) 
         {
             base.Show(memberSeq, pos).Forget();
             viewRect.anchoredPosition = WindowManager.singleton.CalculatePosition(pos, viewRect.sizeDelta);

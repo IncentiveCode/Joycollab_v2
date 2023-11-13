@@ -148,7 +148,7 @@ namespace Joycollab.v2
             imageLoader = _imgOfficeLogo.GetComponent<ImageLoader>();
         }
 
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
             await Refresh();

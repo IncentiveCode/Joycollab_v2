@@ -52,7 +52,7 @@ namespace Joycollab.v2
             viewID = ID.MobileScene_LoadInfo;
         }
 
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
 

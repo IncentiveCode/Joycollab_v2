@@ -99,7 +99,7 @@ namespace Joycollab.v2
             filterList = new List<ContactData>();
         }
 
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
             await Refresh();

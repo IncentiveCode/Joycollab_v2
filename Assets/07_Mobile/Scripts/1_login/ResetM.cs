@@ -157,7 +157,7 @@ namespace Joycollab.v2
             _btnCancel.onClick.AddListener(() => BackProcess());
         }
 
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
 

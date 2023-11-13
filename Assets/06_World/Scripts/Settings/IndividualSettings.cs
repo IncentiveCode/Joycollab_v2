@@ -89,7 +89,7 @@ namespace Joycollab.v2
             _btnSearchAddress.onClick.AddListener(() => JsLib.SearchAddress(this.name, CALLBACK));
         }
 
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
 

@@ -83,7 +83,7 @@ namespace Joycollab.v2
             // init local variables
         }
 
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
             await Refresh();

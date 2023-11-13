@@ -242,7 +242,7 @@ namespace Joycollab.v2
         /// <summary>
         /// 새 할 일 등록.
         /// </summary>
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
 
@@ -254,7 +254,7 @@ namespace Joycollab.v2
         /// <summary>
         /// 기존 할 일 수정.
         /// </summary>
-        public async override UniTaskVoid Show(int seq) 
+        public override async UniTaskVoid Show(int seq) 
         {
             base.Show().Forget();
 

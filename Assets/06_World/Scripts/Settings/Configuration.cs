@@ -232,7 +232,7 @@ namespace Joycollab.v2
             });
         }
 
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             Debug.Log($"{TAG} | Show() call.");
             base.Show().Forget();

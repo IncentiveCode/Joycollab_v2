@@ -112,7 +112,7 @@ namespace Joycollab.v2
             });
         }
 
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
             await Refresh(string.Empty);
@@ -126,7 +126,7 @@ namespace Joycollab.v2
             base.Appearing();
         }
 
-        public async override UniTaskVoid Show(string opt) 
+        public override async UniTaskVoid Show(string opt) 
         {
             base.Show().Forget();
             await Refresh(opt);

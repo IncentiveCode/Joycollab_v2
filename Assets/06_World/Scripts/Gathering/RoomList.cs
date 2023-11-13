@@ -97,7 +97,7 @@ namespace Joycollab.v2
             req = new RequestForClas();
         }
 
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
 

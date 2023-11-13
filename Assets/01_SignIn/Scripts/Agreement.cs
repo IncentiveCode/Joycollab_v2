@@ -143,7 +143,7 @@ namespace Joycollab.v2
             PlayerPrefs.SetString(S.CURRENT_AGREEMENT, currentData.ToJson());
         }
 
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
             await Refresh();

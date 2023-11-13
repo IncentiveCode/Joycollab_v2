@@ -104,7 +104,7 @@ namespace Joycollab.v2
             req = new RequestForBoard();
         }
 
-        public async override UniTaskVoid Show(string opt) 
+        public override async UniTaskVoid Show(string opt) 
         {
             base.Show().Forget();
 
@@ -152,7 +152,7 @@ namespace Joycollab.v2
             base.Appearing();
         }
 
-        public async override UniTaskVoid Show(bool refresh) 
+        public override async UniTaskVoid Show(bool refresh) 
         {
             base.Show().Forget();
             // GetList(refresh).Forget();

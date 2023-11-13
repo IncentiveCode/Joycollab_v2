@@ -62,13 +62,13 @@ namespace Joycollab.v2
             viewDataKey = $"view_data_{viewID}";
 
 
-            // set infinite scrollview
+            // set infinite scroll view
             _scrollView.AddSelectCallback((data) => {
                 Debug.Log($"{TAG} | 해당 사용자의 정보 출력. user seq : {((WorldAvatarData)data).info.seq}, name : {((WorldAvatarData)data).info.nickNm}");
             });
 
 
-            // set 'search' inputfield listener
+            // set 'search' input field listener
             _inputSearch.onSubmit.AddListener((value) => Debug.Log($"{TAG} | search, {value}"));
             _btnClear.onClick.AddListener(() => {
                 _inputSearch.text = string.Empty;
@@ -83,7 +83,7 @@ namespace Joycollab.v2
             });
         }
 
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
 

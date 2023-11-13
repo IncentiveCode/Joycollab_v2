@@ -97,7 +97,7 @@ namespace Joycollab.v2
             alarmCount = -1;
         }
 
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
 

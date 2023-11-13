@@ -51,7 +51,7 @@ namespace Joycollab.v2
             _btnBack.onClick.AddListener(() => ViewManager.singleton.Pop());
         }
 
-        public async override UniTaskVoid Show(string opt) 
+        public override async UniTaskVoid Show(string opt) 
         {
             base.Show().Forget();
             await Refresh(opt);

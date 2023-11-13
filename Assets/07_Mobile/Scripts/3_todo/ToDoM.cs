@@ -247,7 +247,7 @@ namespace Joycollab.v2
             firstRequest = true;
         }
 
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
             Debug.Log($"{TAG} | Show()");
@@ -255,7 +255,7 @@ namespace Joycollab.v2
             base.Appearing();
         }
 
-        public async override UniTaskVoid Show(int seq) 
+        public override async UniTaskVoid Show(int seq) 
         {
             base.Show().Forget();
             Debug.Log($"{TAG} | Show({seq})");
@@ -275,7 +275,7 @@ namespace Joycollab.v2
             base.Appearing();
         }
 
-        public async override UniTaskVoid Show(bool refresh) 
+        public override async UniTaskVoid Show(bool refresh) 
         {
             base.Show().Forget();
             Debug.Log($"{TAG} | Show({refresh})");

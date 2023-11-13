@@ -78,7 +78,7 @@ namespace Joycollab.v2
             });
         }
 
-        public async override UniTaskVoid Show() 
+        public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
 

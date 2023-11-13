@@ -96,7 +96,7 @@ namespace Joycollab.v2
             isKeyResult = sub = false;
         }
 
-        public async override UniTaskVoid Show(int seq) 
+        public override async UniTaskVoid Show(int seq) 
         {
             base.Show().Forget();
 
