@@ -109,6 +109,7 @@ namespace Joycollab.v2
                 R.singleton.RegisterObserver(this, eStorageKey.Chat);
                 R.singleton.RegisterObserver(this, eStorageKey.WindowRefresh);
                 R.singleton.RegisterObserver(this, eStorageKey.UserCount);
+                R.singleton.RegisterObserver(this, eStorageKey.UserPhoto);
             }
         }
         
@@ -121,6 +122,7 @@ namespace Joycollab.v2
                 R.singleton.RequestInfo(this, eStorageKey.Chat);
                 R.singleton.RequestInfo(this, eStorageKey.WindowRefresh);
                 R.singleton.RequestInfo(this, eStorageKey.UserCount);
+                R.singleton.RequestInfo(this, eStorageKey.UserPhoto);
             }
         } 
 
@@ -134,6 +136,7 @@ namespace Joycollab.v2
                 R.singleton.UnregisterObserver(this, eStorageKey.Chat);
                 R.singleton.UnregisterObserver(this, eStorageKey.WindowRefresh);
                 R.singleton.UnregisterObserver(this, eStorageKey.UserCount);
+                R.singleton.UnregisterObserver(this, eStorageKey.UserPhoto);
             }
         }
 
@@ -157,6 +160,7 @@ namespace Joycollab.v2
                         Debug.Log($"{TAG} | photo url : {url}");
                         int seq = R.singleton.memberSeq;
                         loader.LoadProfile(url, seq).Forget();
+                        // loader.LoadImage(url).Forget();
                     }
                     break;
 
@@ -191,6 +195,9 @@ namespace Joycollab.v2
                     }
                     break;
 
+                case eStorageKey.UserPhoto :
+                    break;
+
                 default :
                     Debug.Log($"{TAG} | 여기에서 사용하지 않는 항목. key : {key}");
                     break;
@@ -202,10 +209,11 @@ namespace Joycollab.v2
             // member, guest check
             bool isGuest = R.singleton.myMemberType.Equals(S.GUEST);
 
-            // map scene check
+            // map, square, room scene check
             bool isMap = SceneLoader.isMap();
             bool isSquare = SceneLoader.isSquare();
-            Debug.Log($"{TAG} | isMap ? {isMap}, isSquare ? {isSquare}");
+            bool isRoom = SceneLoader.isRoom();
+            // Debug.Log($"{TAG} | isMap ? {isMap}, isSquare ? {isSquare}, isRoom ? {isRoom}");
 
             // common setting
             _btnProfile.interactable = !isGuest;

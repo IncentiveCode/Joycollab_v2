@@ -95,7 +95,7 @@ namespace Joycollab.v2
                     return;
                 }
 
-                R.singleton.AddPhoto(R.singleton.memberSeq, (Texture2D)_imgProfile.texture); 
+                R.singleton.AddPhoto(R.singleton.memberSeq, string.Empty, (Texture2D)_imgProfile.texture); 
 
                 PopupBuilder.singleton.OpenAlert(
                     LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "환경설정.변경 완료 안내", R.singleton.CurrentLocale)

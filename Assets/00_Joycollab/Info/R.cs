@@ -1,8 +1,8 @@
 /// <summary>
 /// 시스템 상 저장 공간 (Repository) 
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 08
-/// @version        : 0.15
+/// @last update    : 2023. 11. 14
+/// @version        : 0.16
 /// @update
 ///     v0.1 (2023. 03. 17) : 파일 생성, Joycollab 에서 사용하는 것들 정리 시작.
 ///     v0.2 (2023. 03. 31) : SimpleWorkspace, Alarm 관련 항목 정리 시작, Notify 에서 generic <T> 제거.
@@ -19,6 +19,7 @@
 ///     v0.13 (2023. 09. 19) : ResMemberInfo 에 추가된 필드들에 대한 getter 추가 
 ///     v0.14 (2023. 11. 03) : avatar state 관련 정보를 System manager 로 이관.
 ///     v0.15 (2023. 11. 08) : time format 확인 함수와 culture info list 추가.
+///     v0.16 (2023. 11. 14) : photo dict 형태 변경. Dictionary<int, texture2d> 에서 Dictionary <int, Tuple<string, texture2d>> 로 변경.
 /// </summary>
 
 using System;
@@ -66,7 +67,7 @@ namespace Joycollab.v2
             listBookmark.Clear(); 
 
             // for temp dictionary
-            dictPhoto = new Dictionary<int, Texture2D>();
+            dictPhoto = new Dictionary<int, Tuple<string, Texture2D>>();
             dictPhoto.Clear();
             dictSpace = new Dictionary<int, ResSpaceInfo>();
             dictSpace.Clear();
@@ -170,6 +171,7 @@ namespace Joycollab.v2
                 case eStorageKey.WindowRefresh :
                 case eStorageKey.UserCount :
                 case eStorageKey.UserInfo :
+                case eStorageKey.UserPhoto :
                     observer.UpdateInfo(key);
                     break;
 
@@ -678,23 +680,30 @@ namespace Joycollab.v2
 
     #region for temp dectionary
 
-        private Dictionary<int, Texture2D> dictPhoto;
-        public void AddPhoto(int seq, Texture2D photo) 
+        private Dictionary<int, Tuple<string, Texture2D>> dictPhoto;
+        public void AddPhoto(int seq, string path, Texture2D photo) 
         {
             if (dictPhoto.ContainsKey(seq)) 
             {
-                if (dictPhoto[seq] != null) Destroy(dictPhoto[seq]);
-                dictPhoto[seq] = photo;
+                if (dictPhoto[seq] != null) Destroy(dictPhoto[seq].Item2);
+                dictPhoto[seq] = Tuple.Create(path, photo); 
             }
             else 
             {
-                dictPhoto.Add(seq, photo);
+                dictPhoto.Add(seq, Tuple.Create(path, photo));
             }
+        }
+        public string GetPhotoPath(int seq) 
+        {
+            if (dictPhoto.ContainsKey(seq))
+                return dictPhoto[seq].Item1;
+            else
+                return string.Empty;
         }
         public Texture2D GetPhoto(int seq) 
         {
             if (dictPhoto.ContainsKey(seq))
-                return dictPhoto[seq];
+                return dictPhoto[seq].Item2;
             else
                 return null;
         }

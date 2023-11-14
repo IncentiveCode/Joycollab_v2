@@ -64,10 +64,10 @@ namespace Joycollab.v2
             cameraMoveSpeed = 4f;
             isSet = isMove = false;
 
-            v2SquareSize = new Vector2(20.48f, 11.52f);
+            v2SquareSize = new Vector2(30.72f, 17.28f);
             floorNo = 1;
 
-            v2RoomSize = new Vector2(9.6f, 5.4f);
+            v2RoomSize = new Vector2(19.2f, 10.8f);
             roomNo = 0;
             
             blocker.DOFade(0f, TIME);
@@ -196,8 +196,8 @@ namespace Joycollab.v2
                 ly = v2SquareSize.y - fSize;
 
                 clampY = Mathf.Clamp(mainCam.transform.position.y, 
-                    -ly + ((floorNo == 1) ? 0 : 35), 
-                    ly + ((floorNo == 1) ? 0 : 35)); 
+                    -ly + ((floorNo == 1) ? 0 : 45), 
+                    ly + ((floorNo == 1) ? 0 : 45)); 
                 v3CameraPos.y = clampY;
             }
             else 
@@ -205,7 +205,7 @@ namespace Joycollab.v2
                 lx = v2RoomSize.x - fWidth;
                 ly = v2RoomSize.y - fSize;
 
-                float ty = ((roomNo - 1) * 15) + 60;
+                float ty = ((roomNo - 1) * 30) + 80;
                 clampY = Mathf.Clamp(mainCam.transform.position.y, 
                     -ly + ty, 
                     ly + ty); 

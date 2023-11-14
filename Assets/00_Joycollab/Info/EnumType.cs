@@ -194,7 +194,7 @@ namespace Joycollab.v2
 
         FontSize, Locale, Elevator,
         
-        WindowRefresh, UserCount, UserInfo,
+        WindowRefresh, UserCount, UserInfo, UserPhoto,
 
         Test
     }

@@ -1,20 +1,21 @@
 /// <summary>
 /// click 이 가능한 object 의 기능을 부여하는 클래스.
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 01
-/// @version        : 0.4
+/// @last update    : 2023. 11. 14
+/// @version        : 0.5
 /// @update         :
 ///     v0.1 (2023. 04. 19) : 최초 생성. v1 에서 사용했던 것들 가지고 와서 수정 후 적용.
 /// 	v0.2 (2023. 09. 25) : world 에 적용하는 작업 시작.
 /// 	v0.3 (2023. 10. 21) : Building, World Avatar 에 사용할 기능 적용.
 ///     v0.4 (2023. 11. 01) : summary 추가 및 기능 일부 정리.
+///     v0.5 (2023. 11. 14) : enter, exit color 추가.
 /// </summary>
 
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using UnityEngine.Localization.Settings;
+using Cysharp.Threading.Tasks;
 
 namespace Joycollab.v2
 {
@@ -26,7 +27,9 @@ namespace Joycollab.v2
         [SerializeField] private eClickableObjectType _objectType;
         [SerializeField] private eRendererType _rendererType;
         [SerializeField] private string[] _menuItems;
+        [SerializeField] private Color _colorOnEnter;
         [SerializeField, Range(0, 1)] private float _alphaValueOnEnter;
+        [SerializeField] private Color _colorOnExit;
         [SerializeField, Range(0, 1)] private float _alphaValueOnExit;
 
         [Header("type : Building")]
@@ -40,12 +43,12 @@ namespace Joycollab.v2
         [Header("type : Elevator")]
         [SerializeField] private GameObject _goElevatorMenu;
 
-        [Header("type : Information")]
-        [SerializeField] private GameObject _goInformation;
-        [SerializeField] private int _floorNo;
+        // [Header("type : Information")]
+        // [SerializeField] private GameObject _goInformation;
+        // [SerializeField] private int _floorNo;
 
-        [Header("type : Board")] 
-        [SerializeField] private GameObject _goBoard;
+        // [Header("type : Board")] 
+        // [SerializeField] private GameObject _goBoard;
 
         [Header("type : Notice")]
         [SerializeField] private GameObject _goNotice;
@@ -53,8 +56,8 @@ namespace Joycollab.v2
         [Header("type : Seminar")]
         [SerializeField] private GameObject _goSeminar;
         
-        [Header("type : Meeting")]
-        [SerializeField] private GameObject _goMeeting;
+        // [Header("type : Meeting")]
+        // [SerializeField] private GameObject _goMeeting;
 
         [Header("type : Display")]
         [SerializeField] private GameObject _goDisplay;
@@ -77,7 +80,8 @@ namespace Joycollab.v2
                 case eRendererType.UI_Image :
                     if (TryGetComponent<Image>(out image)) 
                     {
-                        temp = image.color;
+                        // temp = image.color;
+                        temp = _colorOnExit;
                         temp.a = _alphaValueOnExit;
                         image.color = temp;
                     }
@@ -86,7 +90,8 @@ namespace Joycollab.v2
                 case eRendererType.SpriteRenderer :
                     if (TryGetComponent<SpriteRenderer>(out spriteRenderer))
                     {
-                        temp = spriteRenderer.color;
+                        // temp = spriteRenderer.color;
+                        temp = _colorOnExit;
                         temp.a = _alphaValueOnExit;
                         spriteRenderer.color = temp;
                     }
@@ -123,6 +128,7 @@ namespace Joycollab.v2
             if (_rendererType != eRendererType.UI_Image) return;
 
             // TODO. object type 에 따라 Pointer Enter 이벤트 처리.
+            temp = _colorOnEnter;
             temp.a = _alphaValueOnEnter;
             switch (_objectType) 
             {
@@ -148,6 +154,7 @@ namespace Joycollab.v2
             if (_rendererType != eRendererType.UI_Image) return;
 
             // TODO. object type 에 따라 Pointer Enter 이벤트 처리.
+            temp = _colorOnExit;
             temp.a = _alphaValueOnExit;
             switch (_objectType) 
             {
@@ -209,13 +216,11 @@ namespace Joycollab.v2
         {
             if (_rendererType != eRendererType.SpriteRenderer) return;
 
+            temp = _colorOnEnter;
             temp.a = _alphaValueOnEnter;
             switch (_objectType) 
             {
                 case eClickableObjectType.Building :
-                    spriteRenderer.color = temp;
-                    break;
-
                 case eClickableObjectType.Information :
                 case eClickableObjectType.Board :
                 case eClickableObjectType.Notice :
@@ -236,13 +241,11 @@ namespace Joycollab.v2
         {
             if (_rendererType != eRendererType.SpriteRenderer) return;
 
+            temp = _colorOnExit;
             temp.a = _alphaValueOnExit;
             switch (_objectType) 
             {
                 case eClickableObjectType.Building :
-                    spriteRenderer.color = temp;
-                    break;
-
                 case eClickableObjectType.Information :
                 case eClickableObjectType.Board :
                 case eClickableObjectType.Notice :
@@ -351,9 +354,7 @@ namespace Joycollab.v2
                             break;
 
                         case S.MENU_ENTER :
-                            var manager = WorldNetworkManager.singleton;
-                            manager.networkAddress = "dev.jcollab.com";
-                            manager.StartClient();
+                            Enter().Forget();
                             break;
                         
                         case S.MENU_MOVE_TO_OFFICE :
@@ -379,6 +380,35 @@ namespace Joycollab.v2
         private void BuildingWheelClick(PointerEventData data) 
         {
 
+        }
+
+        private async UniTaskVoid Enter() 
+        {
+            // 사용자 정보 로드 
+            string url = string.Format(URL.MEMBER_INFO, R.singleton.memberSeq);
+            PsResponse<ResMemberInfo> res = await NetworkTask.RequestAsync<ResMemberInfo>(url, eMethodType.GET, string.Empty, R.singleton.token);
+            if (! string.IsNullOrEmpty(res.message)) 
+            {
+                PopupBuilder.singleton.OpenAlert(res.message);
+                return;
+            }
+
+            // world avatar 정보 설정.
+            R.singleton.MemberInfo = res.data;
+            WorldAvatarInfo info = new WorldAvatarInfo(
+                res.data.seq, 
+                res.data.nickNm,
+                res.data.photo,
+                res.data.memberType,
+                S.ONLINE
+            );
+            WorldAvatar.localPlayerInfo = info;
+            WorldChatView.localPlayerInfo = info;
+
+            // 광장 접속
+            var manager = WorldNetworkManager.singleton;
+            manager.networkAddress = "dev.jcollab.com";
+            manager.StartClient();
         }
         
     #endregion  // about 'Building' 
@@ -475,7 +505,7 @@ namespace Joycollab.v2
 
         private void MeetingLeftClick(PointerEventData data) 
         {
-            Debug.Log("meeting board 가 클릭되었습니다. 회의 정보를 출력합시다.");
+            Debug.Log($"{TAG} | meeting panel open.");
 
             /**
             if(SquareSceneManager.Instance.meetingSelect != null)  //2023. 03. 29 박성일 - 세미나 선택창이 있으면 세미나 선택창 제거

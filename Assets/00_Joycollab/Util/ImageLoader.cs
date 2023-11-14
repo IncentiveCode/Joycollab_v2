@@ -37,6 +37,7 @@ namespace Joycollab.v2
             img.texture = _texDefault;
         }
 
+        /**
         private void OnDestroy() 
         {
             if (res != null)
@@ -44,6 +45,7 @@ namespace Joycollab.v2
                 Destroy(res);
             }
         }
+         */
 
     #endregion  // Unity functions
         
@@ -54,9 +56,18 @@ namespace Joycollab.v2
         {
             // check 'null'
             if (img == null) img = GetComponent<RawImage>();
+            if (img == null) 
+            {
+                Debug.Log($"{TAG} | LoadProfile(), raw image 를 확인할 수 없음.");
+                return;
+            }
             if (rect == null) rect = GetComponent<RectTransform>();
 
+            // clear
+            img.texture = null;
+
             // check 'url'
+            Debug.Log($"{TAG} | LoadProfile(), step 1 - check url : {url}"); 
             if (string.IsNullOrEmpty(url))
             {
                 img.texture = _texDefault;
@@ -65,15 +76,21 @@ namespace Joycollab.v2
             }
 
             // check 'R'
-            res = R.singleton.GetPhoto(seq);
-            if (res != null) 
+            string photoPath = R.singleton.GetPhotoPath(seq);
+            Debug.Log($"{TAG} | LoadProfile(), step 2 - photo path in R : {photoPath}"); 
+            if (photoPath.Equals(url)) 
             {
-                img.texture = res;
-                Util.ResizeRawImage(rect, img, _v2Size.x, _v2Size.y);
-                return;
+                res = R.singleton.GetPhoto(seq);
+                if (res != null) 
+                {
+                    img.texture = res;
+                    Util.ResizeRawImage(rect, img, _v2Size.x, _v2Size.y);
+                    return;
+                }
             }
 
             // request
+            Debug.Log($"{TAG} | LoadProfile(), step 3 - request photo"); 
             res = await NetworkTask.GetTextureAsync(url);
             if (res == null) 
             {
@@ -82,13 +99,11 @@ namespace Joycollab.v2
                 return;
             }
 
-            img.texture = null;
-
             res.hideFlags = HideFlags.HideAndDontSave;
             res.filterMode = FilterMode.Point;
             res.Apply();
 
-            R.singleton.AddPhoto(seq, res);
+            R.singleton.AddPhoto(seq, url, res);
             img.texture = res;
             Util.ResizeRawImage(rect, img, _v2Size.x, _v2Size.y);
         }
@@ -97,6 +112,11 @@ namespace Joycollab.v2
         {
             // check 'null'
             if (img == null) img = GetComponent<RawImage>();
+            if (img == null) 
+            {
+                Debug.Log($"{TAG} | LoadImage(), raw image 를 확인할 수 없음.");
+                return;
+            }
             if (rect == null) rect = GetComponent<RectTransform>();
 
             // check 'url'

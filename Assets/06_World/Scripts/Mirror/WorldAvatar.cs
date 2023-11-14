@@ -101,7 +101,7 @@ namespace Joycollab.v2
             if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
             {
                 v3Target = cam.ScreenToWorldPoint(Input.mousePosition);
-                Debug.Log($"{TAG} | click position : {v3Target}");
+                // Debug.Log($"{TAG} | click position : {v3Target}");
                 v3Target.z = 0f;
                 Fly(v3Target);
             }
@@ -177,7 +177,7 @@ namespace Joycollab.v2
                 transform.position += v3Dir * speed * Time.deltaTime;
                 if (Mathf.Abs(v3Dir.x) <= 0.1f && Mathf.Abs(v3Dir.y) <= 0.1f) 
                 {
-                    Debug.Log($"{TAG} | 마우스 클릭 지점 근처까지 이동 완료.");
+                    // Debug.Log($"{TAG} | 마우스 클릭 지점 근처까지 이동 완료.");
                     isFly = false;
                 }
 
@@ -185,7 +185,7 @@ namespace Joycollab.v2
                 vertical = Input.GetAxis("Vertical");
                 if (horizontal != 0f || vertical != 0f)
                 {
-                    Debug.Log($"{TAG} | 마우스 클릭 지점까지 이동하다가 방향키 입력 들어와서 멈춤.");
+                    // Debug.Log($"{TAG} | 마우스 클릭 지점까지 이동하다가 방향키 입력 들어와서 멈춤.");
                     isFly = false;
 
                     v3Dir = Vector3.ClampMagnitude(new Vector3(horizontal, vertical, 0f), 1f);
@@ -242,7 +242,8 @@ namespace Joycollab.v2
             // avatar 에 사진 반영.
             string url = $"{URL.SERVER_PATH}{newPhoto}"; 
             // GetAvatarPhoto(url).Forget();
-            loader.LoadImage(url).Forget();
+            // loader.LoadImage(url).Forget();
+            loader.LoadProfile(url, avatarSeq).Forget();
 
             // server 쪽에 사진 반영.
             CmdSetAvatarPhoto(newPhoto);

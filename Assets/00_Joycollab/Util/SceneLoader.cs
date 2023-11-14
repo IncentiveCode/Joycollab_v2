@@ -6,7 +6,7 @@
 /// @update
 ///     v0.1 (2023. 02. 22) : v1 에서 사용하던 클래스 정리.
 ///     v0.2 (2023. 10. 31) : world, square scene 을 사용하고 있는지 확인하는 함수 추가.
-///     v0.3 (2023. 11. 13) : Map, Square scene 확인 함수 추가.
+///     v0.3 (2023. 11. 13) : Map, Square, room scene 확인 함수 추가.
 /// </summary>
 
 using UnityEngine;
@@ -39,6 +39,11 @@ namespace Joycollab.v2
         {
             int currentIndex = SceneManager.GetActiveScene().buildIndex;
             return currentIndex == (int)eScenes.Square;
+        }
+        public static bool isRoom() 
+        {
+            int currentIndex = SceneManager.GetActiveScene().buildIndex;
+            return currentIndex == (int)eScenes.Room;
         }
         public static bool isGraphicUI() 
         {
