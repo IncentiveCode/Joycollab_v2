@@ -97,19 +97,37 @@ namespace Joycollab.v2
         private void Update() 
         {
             if (! isOwned) return;
-
-            if (Input.GetMouseButtonUp(0) && !EventSystem.current.IsPointerOverGameObject())
-            {
-                v3Target = cam.ScreenToWorldPoint(Input.mousePosition);
-                // Debug.Log($"{TAG} | click position : {v3Target}");
-                v3Target.z = 0f;
-                Fly(v3Target);
-            }
         }
 
         private void FixedUpdate() 
         {
-            Move();
+            if (! isOwned) return;
+
+            if (Input.GetMouseButtonUp(0)) 
+            {
+                v3Target = cam.ScreenToWorldPoint(Input.mousePosition);
+                RaycastHit2D hit = Physics2D.Raycast(v3Target, Vector2.zero, 1, LayerMask.GetMask("ClickableObject"));
+                if (hit.collider != null) 
+                {
+                    // Debug.Log($"{TAG} | clickable object click. no move");
+                    return;
+                }
+                else if (EventSystem.current.IsPointerOverGameObject()) 
+                {
+                    // Debug.Log($"{TAG} | UI click. no move");
+                    return;
+                }
+                else 
+                {
+                    // Debug.Log($"{TAG} | click position : {v3Target}");
+                    v3Target.z = 0f;
+                    Fly(v3Target);
+                }
+            }
+            else 
+            {
+                Move();
+            }
         }
 
         private void OnDestroy() 

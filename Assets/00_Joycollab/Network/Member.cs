@@ -1,8 +1,8 @@
 /// <summary>
 /// Network 통신 - 사용자, 워크스페이스 멤버 관련 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 09
-/// @version        : 0.14
+/// @last update    : 2023. 11. 15
+/// @version        : 0.15
 /// @update
 ///     v0.1 (2023. 02. 23) : Joycollab 에서 사용하던 클래스 정리 및 통합.
 ///     v0.2 (2023. 06. 14) : MemberSeq 클래스 추가.
@@ -18,7 +18,8 @@
 ///     v0.11 (2023. 10. 26) : 전화를 걸기 위한 ReqCallInfo class 추가.
 ///     v0.12 (2023. 11. 02) : WorkspaceMemberInfo 에 회사 정보 추가. (API 업데이트)
 ///     v0.13 (2023. 11. 06) : WorldAvatarInfo 에 상태 관련 코드 추가.
-///     v0.14 (2023. 11. 09) : ResMemberInfo 에 몇 가지 항목 추가. (hiddenTel, 활동지수 등)
+///     v0.14 (2023. 11. 09) : ResMemberInfo 에 몇 가지 항목 추가. (hiddenTel, tag 및 활동지수 등)
+///     v0.15 (2023. 11. 15) : ReqMemberInfo 와 WorkspaceMemberInfo 에 몇 가지 항목 추가 (hiddenTel, tag 및 활동 지수 관련)
 /// </summary>
 
 using System;
@@ -197,6 +198,8 @@ namespace Joycollab.v2
         public string nickNm;
         public string photo;
         public string tel;
+        public bool hiddenTel;
+        public string tag;
 
         public ReqMemberInfo(ResMemberInfo info) 
         {
@@ -209,6 +212,8 @@ namespace Joycollab.v2
             nickNm = info.nickNm;
             photo = info.photo;
             tel = info.user.tel;
+            hiddenTel = info.hiddenTel;
+            tag = info.tag;
 
             lat = info.lat;
             lng = info.lng;
@@ -348,9 +353,15 @@ namespace Joycollab.v2
         public string compName;
         public string business;
         public string tel;
+        public bool hiddenTel;
         public string ceoNm;
         public string mainBusiness;
         public string homepage;
+        public string tag;
+        public int boardCnt;
+        public int commentCnt;
+        public int loginCnt;
+        public int score;
     }
 
     [Serializable] 

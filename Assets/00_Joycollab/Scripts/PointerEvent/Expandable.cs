@@ -32,7 +32,7 @@ namespace Joycollab.v2
         [SerializeField] private List<GameObject> _body;
 
         // local variables
-        private bool isExpand;
+        // private bool isExpand;
 
     
     #region Unity functions
@@ -45,7 +45,7 @@ namespace Joycollab.v2
 
 
             // init 
-            isExpand = false;
+            // isExpand = false;
             ClosePanel();
         }
 
@@ -54,15 +54,9 @@ namespace Joycollab.v2
 
     #region Expand functions
 
-        public void RequestExpand() 
-        {
-            if (! isExpand) ExpandPanel();
-        }
+        public void RequestExpand() => ExpandPanel();
 
-        public void RequestClose()
-        {
-            if (isExpand) ClosePanel();
-        }
+        public void RequestClose() => ClosePanel();
 
         private void ExpandPanel() 
         {
@@ -78,7 +72,7 @@ namespace Joycollab.v2
             _btnClose.gameObject.SetActive(true);
             foreach (var item in _body) item.SetActive(true);
 
-            isExpand = true;
+            // isExpand = true;
         }
 
         private void ClosePanel() 
@@ -92,7 +86,7 @@ namespace Joycollab.v2
             _btnClose.gameObject.SetActive(false);
             foreach (var item in _body) item.SetActive(false);
 
-            isExpand = false;
+            // isExpand = false;
         }
 
     #endregion  // Expand functions

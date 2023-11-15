@@ -2,8 +2,8 @@
 /// Joycollab 통합 매니저 클래스 
 /// - singleton 남용을 막고, 기존 manager 클래스들에서 중복되어 있는 내용들을 수정/정리/최적화 하기 위해 작성.
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 03
-/// @version        : 0.10
+/// @last update    : 2023. 11. 15
+/// @version        : 0.11
 /// @update
 ///     v0.1 (2023. 04. 07) : 최초 작성.
 ///     v0.2 (2023. 04. 19) : singleton pattern 수정
@@ -15,6 +15,7 @@
 ///     v0.8 (2023. 09. 21) : AudioSource 추가. AudioClip 관련 함수 추가.
 ///     v0.9 (2023. 10. 11) : Timezone 관련 기능 추가.
 ///     v0.10 (2023. 11. 03) : avatar state 관련 정보 정리. (R class 에 만들어 두었던 것과 통합)
+///     v0.11 (2023. 11. 15) : 로그아웃 기능 추가.
 /// </summary>
 
 using System;
@@ -31,6 +32,9 @@ namespace Joycollab.v2
         private const string TAG = "SystemManager";
 
         public static SystemManager singleton { get; private set; }
+
+        [Header("test url")]
+        [SerializeField] private string testURL;
 
         [Header("guide popup")]
         [SerializeField] private Transform _transform;
@@ -299,12 +303,17 @@ namespace Joycollab.v2
         {
             R.singleton.ClearParamValues();
 
-            string testURL = string.Empty;
-            // testURL = URL.INDEX;
-            testURL = URL.WORLD_INDEX;
+            if (string.IsNullOrEmpty(testURL)) 
+            {
+                // testURL = URL.INDEX;
+                testURL = URL.WORLD_INDEX;
+            }
 
             // font size 조절.
             SetFontOpt(1);
+
+            // TODO. TOKEN CHECK
+            //
 
             string absURL = Application.isEditor ? testURL : Application.absoluteURL; 
             if (string.IsNullOrEmpty(absURL)) absURL = URL.INDEX;
@@ -660,5 +669,86 @@ namespace Joycollab.v2
         }
 
     #endregion  // communication
+
+
+    #region sign out
+
+        public async UniTaskVoid SignOut() 
+        {
+            // for world 
+            if (SceneLoader.isWorld()) 
+            {
+                Debug.Log("${TAG} | World SignOut(), here?");
+                string message = await SignOutProcess();
+                if (string.IsNullOrEmpty(message)) 
+                {
+                    SignOutPostExecute();
+                }
+                else 
+                {
+                    PopupBuilder.singleton.OpenAlert(message);
+                }
+            }
+            // for office
+            else 
+            {
+                Debug.Log("${TAG} | OfficeSignOut(), here?");
+                await UniTask.Yield();
+                return;
+            }
+        }
+
+        // 1. 상태 확인. world 에서는 따로 하지 않는다.
+        private async UniTask<bool> SetStatus(int code) 
+        {
+            string url = string.Format(URL.SET_STATUS2, R.singleton.memberSeq, code);
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.PATCH, string.Empty, R.singleton.token);
+            if (! string.IsNullOrEmpty(res.message)) 
+            {
+                PopupBuilder.singleton.OpenAlert(res.message);
+                return false;
+            }
+
+            // TODO. 내 아바타 상태 업데이트.
+            return true;
+        } 
+
+        // 2. sign out process (api call, 후속 조치까지 진행)
+        private async UniTask<string> SignOutProcess() 
+        {
+            bool isGuest = R.singleton.myMemberType.Equals(S.GUEST);
+            if (! isGuest) 
+            {
+                // TODO. 카메라 값 저장
+
+                // TODO. 내 아바타 제 자리에 이동
+            }
+
+            string url = string.Format(URL.USER_LOGOUT, R.singleton.myId);
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.DELETE, string.Empty, R.singleton.token);
+            return res.message;
+        }
+
+        // 3. 후속 조치
+        private void SignOutPostExecute() 
+        {
+            // token 정보 제거.
+            JsLib.ClearTokenCookie();
+
+            // R class clear
+            R.singleton.Clear();
+
+            // xmpp, ping 등 중지
+            xmpp.XmppLogout();
+            StopPingSender();
+
+            // redirect
+            string absURL = Application.isEditor ? testURL : Application.absoluteURL; 
+            if (string.IsNullOrEmpty(absURL)) absURL = URL.INDEX;
+            string nextScene = ParseUrl(absURL);
+            SceneLoader.Load(nextScene.Contains(S.WORLD) ? eScenes.World : eScenes.SignIn);
+        }
+
+    #endregion  // sign out
     }
 }

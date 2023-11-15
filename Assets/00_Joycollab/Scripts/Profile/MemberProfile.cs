@@ -1,11 +1,12 @@
 /// <summary>
 /// 사용자 정보 팝업
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 02.
-/// @version        : 0.2
+/// @last update    : 2023. 11. 15.
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 10. 30) : v1 에서 만들었던 PopupUserInfo 를 수정 후 적용.
 ///     v0.2 (2023. 11. 02) : UI 작업 후 기능 수정 및 추가.
+///     v0.3 (2023. 11. 15) : TAG 와 hiddenTel 기능 추가.
 /// </summary>
 
 using System.Text;
@@ -143,25 +144,43 @@ namespace Joycollab.v2
             builder.Clear();
             builder.Append($"{info.compName} / {info.jobGrade} \n");
             builder.Append($"{info.user.id} \n");
-            // TODO. 공개 여부 체크.
-            builder.Append(info.user.tel);
+            if (info.hiddenTel == false)
+            {
+                builder.Append(info.user.tel);
+            }
             _txtInfo.text = builder.ToString();
 
             // member action index
-            _txtActionIndex.text = LocalizationSettings.StringDatabase.GetLocalizedString(
-                "Alert", "기능 준비 안내", R.singleton.CurrentLocale
-            );
+            if (info.memberType.Equals(S.GUEST)) 
+            {
+                _txtActionIndex.text = string.Empty;
+            }
+            else 
+            {
+                builder.Clear();
+                builder.Append(LocalizationSettings.StringDatabase.GetLocalizedString("Word", "등급", R.singleton.CurrentLocale));
+                builder.Append(" : [등급] | ");
+                builder.Append(LocalizationSettings.StringDatabase.GetLocalizedString("Word", "방문.횟수", R.singleton.CurrentLocale));
+                builder.Append($" : {info.loginCnt} | ");
+                builder.Append(LocalizationSettings.StringDatabase.GetLocalizedString("Word", "게시글.횟수", R.singleton.CurrentLocale));
+                builder.Append($" : {info.boardCnt} | ");
+                builder.Append(LocalizationSettings.StringDatabase.GetLocalizedString("Word", "댓글.횟수", R.singleton.CurrentLocale));
+                builder.Append($" : {info.commentCnt}");
+                _txtActionIndex.text = builder.ToString();
+            }
 
             // state
             _imgState.sprite = SystemManager.singleton.GetStateIcon(info.status.id);
             _txtState.StringReference.SetReference("Word", $"상태.{info.status.id}");
 
-            // button
+            // button... 수정 버튼 외의 버튼들은 주석처리
             bool isMine = R.singleton.memberSeq == info.seq;
             _btnEdit.gameObject.SetActive(isMine);
+            /**
             _btnMeeting.interactable = !isMine;
             _btnCall.interactable = !isMine;
             _btnChat.interactable = !isMine;
+             */
         }
 
     #endregion  // Event handling

@@ -2,18 +2,20 @@
 /// [world]
 /// Floating bar 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 13 
-/// @version        : 0.4
+/// @last update    : 2023. 11. 15 
+/// @version        : 0.5
 /// @update
 ///     v0.1 (2023. 09. 18) : v1 에서 사용하던 항목 수정 후 적용. (진행 중)
 ///     v0.2 (2023. 10. 30) : Expandable 적용. meeting, seminar 버튼 추가.
 ///     v0.3 (2023. 10. 31) : 모임방 버튼 추가.
 ///     v0.4 (2023. 11. 06) : guest 를 위한 Floating bar 구성 추가.
 ///     v0.5 (2203. 11. 13) : Map scene 에서 사용하기 위한 Floating bar 구성 추가.
+///     v0.6 (2023. 11. 15) : last sibling 기능 추가.
 /// </summary>
 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using UnityEngine.Localization.Settings;
 
 namespace Joycollab.v2
@@ -23,7 +25,7 @@ namespace Joycollab.v2
         private const string TAG = "FloatingBarW"; 
 
         [Header("panel")]
-        [SerializeField] private Image _imgPanel;
+        [SerializeField] private RectTransform _rect;
         
         [Header("profile")]
         [SerializeField] private RawImage _imgProfile;
@@ -69,30 +71,62 @@ namespace Joycollab.v2
         private void Awake() 
         {
             // set button listener
-            _btnProfile.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_MyProfile));
+            _btnProfile.onClick.AddListener(() => {
+                OnPointerDown();
+                WindowManager.singleton.Push(S.WorldScene_MyProfile);
+            });
             _btnMicControl.onClick.AddListener(() => {
+                OnPointerDown();
                 Debug.Log($"{TAG} | mic option change.");
             });
-            _btnAlarm.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_AlarmList));
+            _btnAlarm.onClick.AddListener(() => {
+                OnPointerDown();
+                WindowManager.singleton.Push(S.WorldScene_AlarmList);
+            });
             _btnBookmark.onClick.AddListener(() => {
+                OnPointerDown();
                 Debug.Log($"{TAG} | bookmark panel open.");
             });
             _btnChat.onClick.AddListener(() => {
+                OnPointerDown();
                 string url = string.Format(URL.CHAT_LINK, R.singleton.memberSeq, R.singleton.Region);
                 JsLib.OpenChat(url);
             });
             _btnMeeting.onClick.AddListener(() => {
+                OnPointerDown();
                 Debug.Log($"{TAG} | meeting panel open.");
             });
             _btnSeminar.onClick.AddListener(() => {
+                OnPointerDown();
                 Debug.Log($"{TAG} | seminar panel open.");
             });
-            _btnGathering.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_RoomList));
-            _btnUserList.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_UserList));
-            _btnSettings.onClick.AddListener(() => WindowManager.singleton.Push(S.WorldScene_Settings));
-            _btnSignOut.onClick.AddListener(() => WorldNetworkManager.singleton.StopClient());
-            _btnExpand.onClick.AddListener(() => _expandable.RequestExpand());
-            _btnClose.onClick.AddListener(() => _expandable.RequestClose());
+            _btnGathering.onClick.AddListener(() => {
+                OnPointerDown();
+                WindowManager.singleton.Push(S.WorldScene_RoomList);
+            });
+            _btnUserList.onClick.AddListener(() => {
+                OnPointerDown();
+                WindowManager.singleton.Push(S.WorldScene_UserList);
+            });
+            _btnSettings.onClick.AddListener(() => {
+                OnPointerDown();
+                WindowManager.singleton.Push(S.WorldScene_Settings);
+            });
+            _btnSignOut.onClick.AddListener(() => {
+                OnPointerDown();
+                PopupBuilder.singleton.OpenConfirm(
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "로그아웃 확인", R.singleton.CurrentLocale),
+                    () => SystemManager.singleton.SignOut().Forget()
+                );
+            });
+            _btnExpand.onClick.AddListener(() => {
+                OnPointerDown();
+                _expandable.RequestExpand();
+            });
+            _btnClose.onClick.AddListener(() => {
+                OnPointerDown();
+                _expandable.RequestClose();
+            });
 
 
             // set local variables
@@ -213,7 +247,7 @@ namespace Joycollab.v2
             bool isMap = SceneLoader.isMap();
             bool isSquare = SceneLoader.isSquare();
             bool isRoom = SceneLoader.isRoom();
-            // Debug.Log($"{TAG} | isMap ? {isMap}, isSquare ? {isSquare}, isRoom ? {isRoom}");
+            Debug.Log($"{TAG} | isMap ? {isMap}, isSquare ? {isSquare}, isRoom ? {isRoom}");
 
             // common setting
             _btnProfile.interactable = !isGuest;
@@ -241,16 +275,21 @@ namespace Joycollab.v2
                 if (isMap) 
                 {
                     _btnExpand.gameObject.SetActive(false);
-                    _btnClose.gameObject.SetActive(false);
                     _btnSignOut.gameObject.SetActive(true);
                 }
                 else if (isSquare) 
                 {
                     _btnExpand.gameObject.SetActive(true);
-                    _btnClose.gameObject.SetActive(false);
                     _btnSignOut.gameObject.SetActive(false);
                 }
             }
+        }
+
+        public void OnPointerDown() 
+        {
+            if (_rect == null) return;
+
+            _rect.SetAsLastSibling();
         }
 
     #endregion  // Event handling

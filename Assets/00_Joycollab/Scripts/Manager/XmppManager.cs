@@ -205,6 +205,7 @@ namespace Joycollab.v2
             if (xmppClient == null) return;
 
             xmppClient.Close();
+            __id = __pw = string.Empty;
         }
 
     #endregion  // public functions

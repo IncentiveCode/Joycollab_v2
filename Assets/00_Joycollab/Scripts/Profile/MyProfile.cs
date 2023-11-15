@@ -1,10 +1,11 @@
 /// <summary>
 /// 내 정보 팝업
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 02.
-/// @version        : 0.1
+/// @last update    : 2023. 11. 15.
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 11. 02) : MemberProfile 에서 edit 가능한 파트를 분리. 
+///     v0.2 (2023. 11. 15) : TAG 와 hiddenTel 기능 추가.
 /// </summary>
 
 using System.Text;
@@ -43,7 +44,7 @@ namespace Joycollab.v2
         [SerializeField] private TMP_InputField _inputOffice;
         [SerializeField] private TMP_InputField _inputGrade;
         [SerializeField] private TMP_InputField _inputPhone;
-        [SerializeField] private Toggle _togglePhoneOpen;
+        [SerializeField] private Toggle _toggleHiddenTel;
         [SerializeField] private TMP_InputField _inputTag;
         [SerializeField] private Button _btnSearchAddress;
         [SerializeField] private TMP_InputField _inputAddress1;
@@ -95,7 +96,11 @@ namespace Joycollab.v2
                     return;
                 }
 
-                R.singleton.AddPhoto(R.singleton.memberSeq, string.Empty, (Texture2D)_imgProfile.texture); 
+                if (!string.IsNullOrEmpty(uploader.ImageUrl))
+                {
+                    Debug.Log($"{TAG} | 변경된 사진 정보가 있다면 R 에 저장. url : {uploader.ImageUrl}");
+                    R.singleton.AddPhoto(R.singleton.memberSeq, uploader.ImageUrl, (Texture2D)_imgProfile.texture); 
+                }
 
                 PopupBuilder.singleton.OpenAlert(
                     LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "환경설정.변경 완료 안내", R.singleton.CurrentLocale)
@@ -167,6 +172,7 @@ namespace Joycollab.v2
             _inputOffice.gameObject.SetActive(isOn);
             _inputGrade.gameObject.SetActive(isOn);
             _inputPhone.gameObject.SetActive(isOn);
+            _inputTag.gameObject.SetActive(isOn);
             _inputAddress1.gameObject.SetActive(isOn);
             _inputAddress2.gameObject.SetActive(isOn);
         }
@@ -200,6 +206,7 @@ namespace Joycollab.v2
         private void DisplayInfo(ResMemberInfo info) 
         {
             R.singleton.MemberInfo = info;
+            Debug.Log($"{TAG} | tag : {info.tag}");
             memberInfo = new ReqMemberInfo(info);
             companyInfo = new ReqMemberCompanyInfo(info);
 
@@ -224,6 +231,8 @@ namespace Joycollab.v2
             _inputOffice.text = companyInfo.compName;
             _inputGrade.text = memberInfo.jobGrade;
             _inputPhone.text = memberInfo.tel;
+            _toggleHiddenTel.isOn = memberInfo.hiddenTel;
+            _inputTag.text = memberInfo.tag;
             _inputAddress1.text = memberInfo.addr;
             _inputAddress2.text = memberInfo.addrDtl;
         }
@@ -236,6 +245,8 @@ namespace Joycollab.v2
             memberInfo.nickNm = _inputName.text;
             memberInfo.jobGrade = _inputGrade.text;
             memberInfo.tel = RegExp.ReplaceOnlyNumber(_inputPhone.text);
+            memberInfo.hiddenTel = _toggleHiddenTel.isOn;
+            memberInfo.tag = _inputTag.text;
             memberInfo.addr = _inputAddress1.text;
             memberInfo.addrDtl = _inputAddress2.text;
             memberInfo.lat = lat;

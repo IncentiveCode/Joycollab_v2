@@ -8,7 +8,7 @@
 /// 	v0.2 (2023. 09. 25) : world 에 적용하는 작업 시작.
 /// 	v0.3 (2023. 10. 21) : Building, World Avatar 에 사용할 기능 적용.
 ///     v0.4 (2023. 11. 01) : summary 추가 및 기능 일부 정리.
-///     v0.5 (2023. 11. 14) : enter, exit color 추가.
+///     v0.5 (2023. 11. 14) : alpha value 대신 enter, exit color 추가. 
 /// </summary>
 
 using System.Collections.Generic;
@@ -28,9 +28,9 @@ namespace Joycollab.v2
         [SerializeField] private eRendererType _rendererType;
         [SerializeField] private string[] _menuItems;
         [SerializeField] private Color _colorOnEnter;
-        [SerializeField, Range(0, 1)] private float _alphaValueOnEnter;
+        // [SerializeField, Range(0, 1)] private float _alphaValueOnEnter;
         [SerializeField] private Color _colorOnExit;
-        [SerializeField, Range(0, 1)] private float _alphaValueOnExit;
+        // [SerializeField, Range(0, 1)] private float _alphaValueOnExit;
 
         [Header("type : Building")]
         [SerializeField] private BuildingData _soBuildingData;   
@@ -81,9 +81,9 @@ namespace Joycollab.v2
                     if (TryGetComponent<Image>(out image)) 
                     {
                         // temp = image.color;
-                        temp = _colorOnExit;
-                        temp.a = _alphaValueOnExit;
-                        image.color = temp;
+                        // temp.a = _alphaValueOnExit;
+                        // image.color = temp;
+                        image.color = _colorOnExit;
                     }
                     break;
 
@@ -91,9 +91,9 @@ namespace Joycollab.v2
                     if (TryGetComponent<SpriteRenderer>(out spriteRenderer))
                     {
                         // temp = spriteRenderer.color;
-                        temp = _colorOnExit;
-                        temp.a = _alphaValueOnExit;
-                        spriteRenderer.color = temp;
+                        // temp.a = _alphaValueOnExit;
+                        // spriteRenderer.color = temp;
+                        spriteRenderer.color = _colorOnExit;
                     }
                     break;
 
@@ -128,12 +128,13 @@ namespace Joycollab.v2
             if (_rendererType != eRendererType.UI_Image) return;
 
             // TODO. object type 에 따라 Pointer Enter 이벤트 처리.
-            temp = _colorOnEnter;
-            temp.a = _alphaValueOnEnter;
+            // temp = _colorOnEnter;
+            // temp.a = _alphaValueOnEnter;
             switch (_objectType) 
             {
                 case eClickableObjectType.Building :
-                    image.color = temp;
+                    // image.color = temp;
+                    image.color = _colorOnEnter;
                     if (_imgTag != null) 
                     {
                         _imgTag.gameObject.SetActive(true);
@@ -154,12 +155,13 @@ namespace Joycollab.v2
             if (_rendererType != eRendererType.UI_Image) return;
 
             // TODO. object type 에 따라 Pointer Enter 이벤트 처리.
-            temp = _colorOnExit;
-            temp.a = _alphaValueOnExit;
+            // temp = _colorOnExit;
+            // temp.a = _alphaValueOnExit;
             switch (_objectType) 
             {
                 case eClickableObjectType.Building :
-                    image.color = temp;
+                    // image.color = temp;
+                    image.color = _colorOnExit;
                     if (_imgTag != null)
                     {
                         _imgTag.gameObject.SetActive(_alwaysOpenTag);
@@ -201,6 +203,11 @@ namespace Joycollab.v2
                         DisplayLeftClick(data);
                     break;
 
+                case eClickableObjectType.Meeting :
+                    if (data.button == PointerEventData.InputButton.Left)
+                        MeetingLeftClick(data);
+                    break;
+
                 default :
                     Debug.Log($"현재 Clickable object 의 타입 : {_objectType.ToString()}, 클릭 처리 준비 중...");
                     break;
@@ -216,8 +223,8 @@ namespace Joycollab.v2
         {
             if (_rendererType != eRendererType.SpriteRenderer) return;
 
-            temp = _colorOnEnter;
-            temp.a = _alphaValueOnEnter;
+            // temp = _colorOnEnter;
+            // temp.a = _alphaValueOnEnter;
             switch (_objectType) 
             {
                 case eClickableObjectType.Building :
@@ -228,7 +235,8 @@ namespace Joycollab.v2
                 case eClickableObjectType.Display :
                 case eClickableObjectType.Meeting :
                 case eClickableObjectType.FileBox :
-                    spriteRenderer.color = temp;
+                    // spriteRenderer.color = temp;
+                    spriteRenderer.color = _colorOnEnter;
                     break;
 
                 default :
@@ -241,8 +249,8 @@ namespace Joycollab.v2
         {
             if (_rendererType != eRendererType.SpriteRenderer) return;
 
-            temp = _colorOnExit;
-            temp.a = _alphaValueOnExit;
+            // temp = _colorOnExit;
+            // temp.a = _alphaValueOnExit;
             switch (_objectType) 
             {
                 case eClickableObjectType.Building :
@@ -253,7 +261,8 @@ namespace Joycollab.v2
                 case eClickableObjectType.Display :
                 case eClickableObjectType.Meeting :
                 case eClickableObjectType.FileBox :
-                    spriteRenderer.color = temp;
+                    // spriteRenderer.color = temp;
+                    spriteRenderer.color = _colorOnExit;
                     break;
 
                 default :

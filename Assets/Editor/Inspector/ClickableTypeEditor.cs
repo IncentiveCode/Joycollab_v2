@@ -8,7 +8,7 @@
 /// 	v0.2 (2023. 09. 25) : world 에 적용하는 작업 시작.
 /// 	v0.3 (2023. 10. 21) : Building, World Avatar 에 사용할 기능 적용.
 ///     v0.4 (2023. 11. 01) : summary 추가 및 기능 일부 정리.
-///     v0.5 (2023. 11. 14) : enter, exit color 추가.
+///     v0.5 (2023. 11. 14) : alpha value 대신 enter, exit color 추가. 
 /// </summary>
 
 using UnityEditor;
@@ -22,9 +22,9 @@ namespace Joycollab.v2
         private SerializedProperty _rendererType;
         private SerializedProperty _menuItems;
         private SerializedProperty _colorOnEnter;
-        private SerializedProperty _alphaValueOnEnter;
+        // private SerializedProperty _alphaValueOnEnter;
         private SerializedProperty _colorOnExit;
-        private SerializedProperty _alphaValueOnExit;
+        // private SerializedProperty _alphaValueOnExit;
 
         protected virtual void OnEnable() 
         {
@@ -32,9 +32,9 @@ namespace Joycollab.v2
             _rendererType = this.serializedObject.FindProperty("_rendererType");     
             _menuItems = this.serializedObject.FindProperty("_menuItems");     
             _colorOnEnter = this.serializedObject.FindProperty("_colorOnEnter");     
-            _alphaValueOnEnter = this.serializedObject.FindProperty("_alphaValueOnEnter");     
+            // _alphaValueOnEnter = this.serializedObject.FindProperty("_alphaValueOnEnter");     
             _colorOnExit = this.serializedObject.FindProperty("_colorOnExit");     
-            _alphaValueOnExit = this.serializedObject.FindProperty("_alphaValueOnExit");     
+            // _alphaValueOnExit = this.serializedObject.FindProperty("_alphaValueOnExit");     
         }
 
         public override void OnInspectorGUI() 
@@ -45,9 +45,9 @@ namespace Joycollab.v2
             EditorGUILayout.PropertyField(_objectType);
             EditorGUILayout.PropertyField(_rendererType);
             EditorGUILayout.PropertyField(_colorOnEnter);
-            EditorGUILayout.PropertyField(_alphaValueOnEnter);
+            // EditorGUILayout.PropertyField(_alphaValueOnEnter);
             EditorGUILayout.PropertyField(_colorOnExit);
-            EditorGUILayout.PropertyField(_alphaValueOnExit);
+            // EditorGUILayout.PropertyField(_alphaValueOnExit);
             EditorGUILayout.PropertyField(_menuItems);
 
             int t = _objectType.enumValueIndex;

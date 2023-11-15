@@ -1,15 +1,17 @@
 /// <summary>
 /// Elevaltor controller class 
 /// @author         : HJ Lee
-/// @last update    : 2023. 10. 04
-/// @version        : 0.1
+/// @last update    : 2023. 11. 15
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 10. 04) : v1 과 tp 에서 사용하던 항목들 정리 후 적용. 
+///     v0.2 (2023. 11. 15) : last sibling 기능 추가.
 /// </summary>
 
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using UnityEngine.Localization.Components;
 using DG.Tweening;
 
@@ -20,6 +22,9 @@ namespace Joycollab.v2
         private const string TAG = "Elevator";
         private const string TABLE = "Word";
         private const float TRANSITION_TIME = 0.5f;
+
+        [Header("panel")]
+        [SerializeField] private RectTransform _rect;
 
         [Header("floor data")]
         [SerializeField] private List<FloorData> _listFloorData;
@@ -53,6 +58,8 @@ namespace Joycollab.v2
         {
             // set button listener
             _btnCurrent.onClick.AddListener(() => {
+                _rect.SetAsLastSibling();
+
                 // Debug.Log($"{isOn} -> {!isOn}");
                 if (isOn)   HideFloorList();
                 else        ShowFloorList();
@@ -124,35 +131,14 @@ namespace Joycollab.v2
 
         public void PostSelection(int order) 
         {
+            _rect.SetAsLastSibling();
+
             if (isOn)   HideFloorList();
             else        ShowFloorList();
 
             SetInfo(order);
         }
 
-        /**
-        public void PostSelection(int no) 
-        {
-            ToggleSelector(false);
-
-            // update info
-            _txtFloor.text = $"{no}F";
-            _txtDescription.text = $"{no}F content";
-        }
-
-        private void ToggleSelector(bool on) 
-        {
-            StartCoroutine(ToggleCoroutine(on));
-            isOn = on;
-        }
-
-        private IEnumerator ToggleCoroutine(bool on) 
-        {
-            btn.interactable = false;
-            yield return StartCoroutine(_subPanel.Move(on));
-            btn.interactable = true;
-        }
-         */
 
     #region Event handling
 
