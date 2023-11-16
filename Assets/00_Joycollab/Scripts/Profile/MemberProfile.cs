@@ -44,6 +44,9 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnCall;
         [SerializeField] private Button _btnChat;
 
+        [Header("toggle")]
+        [SerializeField] private Toggle _toggleBookmark;
+
         // tools
         private ImageLoader loader; 
         private StringBuilder builder;
@@ -93,6 +96,20 @@ namespace Joycollab.v2
             });
 
 
+            // set toggle listener
+            _toggleBookmark.onValueChanged.AddListener((isOn) => {
+                // TODO. bookmark 기능 정리
+                if (isOn) 
+                {
+
+                }
+                else 
+                {
+
+                }
+            });
+
+
             // init local variables
             loader = _imgProfile.GetComponent<ImageLoader>();
             builder = new StringBuilder();
@@ -135,6 +152,8 @@ namespace Joycollab.v2
 
         private void DisplayInfo(WorkspaceMemberInfo info) 
         {
+            bool isMine = (info.seq == R.singleton.memberSeq);
+
             // profile image
             string photoPath = $"{URL.SERVER_PATH}{info.photo}";
             loader.LoadProfile(photoPath, info.seq).Forget();
@@ -144,7 +163,7 @@ namespace Joycollab.v2
             builder.Clear();
             builder.Append($"{info.compName} / {info.jobGrade} \n");
             builder.Append($"{info.user.id} \n");
-            if (info.hiddenTel == false)
+            if (info.hiddenTel == false || isMine)
             {
                 builder.Append(info.user.tel);
             }
@@ -174,13 +193,13 @@ namespace Joycollab.v2
             _txtState.StringReference.SetReference("Word", $"상태.{info.status.id}");
 
             // button... 수정 버튼 외의 버튼들은 주석처리
-            bool isMine = R.singleton.memberSeq == info.seq;
             _btnEdit.gameObject.SetActive(isMine);
             /**
             _btnMeeting.interactable = !isMine;
             _btnCall.interactable = !isMine;
             _btnChat.interactable = !isMine;
              */
+            _toggleBookmark.gameObject.SetActive(! isMine);
         }
 
     #endregion  // Event handling

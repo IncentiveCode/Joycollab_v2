@@ -64,7 +64,7 @@ namespace Joycollab.v2
             if (rect == null) rect = GetComponent<RectTransform>();
 
             // clear
-            img.texture = null;
+            // img.texture = null;
 
             // check 'url'
             Debug.Log($"{TAG} | LoadProfile(), step 1 - check url : {url}"); 
@@ -76,17 +76,19 @@ namespace Joycollab.v2
             }
 
             // check 'R'
-            string photoPath = R.singleton.GetPhotoPath(seq);
-            Debug.Log($"{TAG} | LoadProfile(), step 2 - photo path in R : {photoPath}"); 
-            if (photoPath.Equals(url)) 
+            Debug.Log($"{TAG} | LoadProfile(), step 2 - photo in R (check)"); 
+            // Texture2D res = R.singleton.GetPhoto(url);
+            Texture2D res = R.singleton.GetPhoto(seq);
+            if (res != null) 
             {
-                res = R.singleton.GetPhoto(seq);
-                if (res != null) 
-                {
-                    img.texture = res;
-                    Util.ResizeRawImage(rect, img, _v2Size.x, _v2Size.y);
-                    return;
-                }
+                Debug.Log($"{TAG} | LoadProfile(), step 2 (1) - photo in R (is exist)"); 
+                img.texture = res;
+                Util.ResizeRawImage(rect, img, _v2Size.x, _v2Size.y);
+                return;
+            }
+            else 
+            {
+                Debug.Log($"{TAG} | LoadProfile(), step 2 (2) - photo in R (is not exist)"); 
             }
 
             // request
@@ -103,9 +105,11 @@ namespace Joycollab.v2
             res.filterMode = FilterMode.Point;
             res.Apply();
 
-            R.singleton.AddPhoto(seq, url, res);
             img.texture = res;
             Util.ResizeRawImage(rect, img, _v2Size.x, _v2Size.y);
+
+            // R.singleton.AddPhoto(url, res);
+            R.singleton.AddPhoto(seq, res);
         }
 
         public async UniTaskVoid LoadImage(string url) 
@@ -118,6 +122,9 @@ namespace Joycollab.v2
                 return;
             }
             if (rect == null) rect = GetComponent<RectTransform>();
+
+            // clear
+            // img.texture = null;
 
             // check 'url'
             if (string.IsNullOrEmpty(url))
@@ -135,8 +142,6 @@ namespace Joycollab.v2
                 Util.ResizeRawImage(rect, img, _v2Size.x, _v2Size.y);
                 return;
             }
-
-            img.texture = null;
 
             res.hideFlags = HideFlags.HideAndDontSave;
             res.filterMode = FilterMode.Point;

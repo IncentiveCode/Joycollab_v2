@@ -15,7 +15,6 @@
 
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 using UnityEngine.Localization.Settings;
 
 namespace Joycollab.v2
@@ -85,7 +84,7 @@ namespace Joycollab.v2
             });
             _btnBookmark.onClick.AddListener(() => {
                 OnPointerDown();
-                Debug.Log($"{TAG} | bookmark panel open.");
+                WindowManager.singleton.Push(S.WorldScene_Bookmark);
             });
             _btnChat.onClick.AddListener(() => {
                 OnPointerDown();
@@ -143,7 +142,6 @@ namespace Joycollab.v2
                 R.singleton.RegisterObserver(this, eStorageKey.Chat);
                 R.singleton.RegisterObserver(this, eStorageKey.WindowRefresh);
                 R.singleton.RegisterObserver(this, eStorageKey.UserCount);
-                R.singleton.RegisterObserver(this, eStorageKey.UserPhoto);
             }
         }
         
@@ -156,7 +154,6 @@ namespace Joycollab.v2
                 R.singleton.RequestInfo(this, eStorageKey.Chat);
                 R.singleton.RequestInfo(this, eStorageKey.WindowRefresh);
                 R.singleton.RequestInfo(this, eStorageKey.UserCount);
-                R.singleton.RequestInfo(this, eStorageKey.UserPhoto);
             }
         } 
 
@@ -170,7 +167,6 @@ namespace Joycollab.v2
                 R.singleton.UnregisterObserver(this, eStorageKey.Chat);
                 R.singleton.UnregisterObserver(this, eStorageKey.WindowRefresh);
                 R.singleton.UnregisterObserver(this, eStorageKey.UserCount);
-                R.singleton.UnregisterObserver(this, eStorageKey.UserPhoto);
             }
         }
 
@@ -185,7 +181,7 @@ namespace Joycollab.v2
             switch (key) 
             {
                 case eStorageKey.MemberInfo :
-                    Debug.Log($"{TAG} | UpdateInfo (MemberInfo) - photo : {myPhoto}, photo in R : {R.singleton.myPhoto}");
+                    Debug.Log($"{TAG} | UpdateInfo (UserPhoto) - photo : {myPhoto}, photo in R : {R.singleton.myPhoto}");
                     if (!myPhoto.Equals(R.singleton.myPhoto)) 
                     {
                         myPhoto = R.singleton.myPhoto;
@@ -194,8 +190,7 @@ namespace Joycollab.v2
                         Debug.Log($"{TAG} | photo url : {url}");
                         int seq = R.singleton.memberSeq;
                         loader.LoadProfile(url, seq).Forget();
-                        // loader.LoadImage(url).Forget();
-                    }
+                    }     
                     break;
 
                 case eStorageKey.Alarm :
@@ -221,15 +216,12 @@ namespace Joycollab.v2
                     break;
 
                 case eStorageKey.UserCount :
-                    if (userCount != R.singleton.CurrentUserCount)
+                   if (userCount != R.singleton.CurrentUserCount)
                     {
                         userCount = R.singleton.CurrentUserCount;
                         _txtUserCount.text = userCount > 99 ? "99+" : $"{userCount}";
                         _imgUserPanel.gameObject.SetActive(userCount != 0);
                     }
-                    break;
-
-                case eStorageKey.UserPhoto :
                     break;
 
                 default :
@@ -270,16 +262,15 @@ namespace Joycollab.v2
             {
                 _btnAlarm.gameObject.SetActive(true);
                 _btnChat.gameObject.SetActive(true);
-                _expandable.RequestClose();
 
                 if (isMap) 
                 {
-                    _btnExpand.gameObject.SetActive(false);
+                    _expandable.RequestCloseForMap();
                     _btnSignOut.gameObject.SetActive(true);
                 }
                 else if (isSquare) 
                 {
-                    _btnExpand.gameObject.SetActive(true);
+                    _expandable.RequestClose();
                     _btnSignOut.gameObject.SetActive(false);
                 }
             }

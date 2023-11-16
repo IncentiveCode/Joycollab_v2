@@ -1,8 +1,8 @@
 /// <summary>
 /// NetworkTask 를 위한 API URL 정리 문서 
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 06
-/// @version        : 1.3
+/// @last update    : 2023. 11. 16
+/// @version        : 0.14
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리
 ///     v0.2 (2023. 03. 20) : Tray app 관련 URL 추가
@@ -17,6 +17,7 @@
 ///     v0.11 (2023. 08. 30) : v1 에서 사용하던 URL 정리 완료. World API 정리
 ///     v0.12 (2023. 09. 01) : File API V2 정리
 ///     v0.13 (2023. 09. 06) : google token 조회 및 연동 해제 부분의 parameter 삭제.
+///     v0.14 (2023. 11. 16) : 방명록 링크 추가.
 /// </summary>
 
 #define DEV // Dev Server
@@ -322,6 +323,15 @@ namespace Joycollab.v2
         ///     {0} : language (빈 값이면 한글 튜토리얼 / _EN 이 붙으면 영문 튜토리얼)
         /// </summary>
         public const string TUTORIAL_PATH = PATH +"/help/help{0}.html";
+
+        /// <summary>
+        /// desc : 게스트 방명록 화면
+        /// param 
+        ///     {0} : token
+        ///     {1} : member seq
+        ///     {2} : language (ko, en, ja)
+        /// </summary>
+        public const string GUEST_BOOK_PATH = PATH +"/guest_book/main?token={0}&memberSeq={1}&lan={2}";
 
         /// <summary>
         /// desc : 결제창 링크

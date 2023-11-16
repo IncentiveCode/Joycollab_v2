@@ -4,7 +4,7 @@
 /// @last update    : 2023. 10. 26 
 /// @version        : 0.1
 /// @update
-///     v0.1 (2023. 02. 22) : v1 에서 사용하던 클래스 정리 및 통합.
+///     v0.1 (2023. 10. 26) : v1 에서 사용하던 클래스 정리 및 통합.
 /// </summary>
 
 #if UNITY_WEBGL && !UNITY_EDITOR

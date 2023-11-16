@@ -358,13 +358,6 @@ namespace Joycollab.v2
             WorldAvatar.localPlayerInfo = info;
             WorldChatView.localPlayerInfo = info;
 
-            // xmpp login
-        #if UNITY_WEBGL && !UNITY_EDITOR
-            SystemManager.singleton.XMPP.XmppLoginForWebGL(R.singleton.memberSeq, R.singleton.myXmppPw);
-        #else
-            SystemManager.singleton.XMPP.XmppLogin(R.singleton.myXmppId, R.singleton.myXmppPw);
-        #endif
-
             // system manager init 
             int initRes = await SystemManager.singleton.Init();
             if (initRes != 0)

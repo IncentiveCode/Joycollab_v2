@@ -2,8 +2,8 @@
 /// Joycollab 통합 매니저 클래스 
 /// - singleton 남용을 막고, 기존 manager 클래스들에서 중복되어 있는 내용들을 수정/정리/최적화 하기 위해 작성.
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 15
-/// @version        : 0.11
+/// @last update    : 2023. 11. 16
+/// @version        : 0.12
 /// @update
 ///     v0.1 (2023. 04. 07) : 최초 작성.
 ///     v0.2 (2023. 04. 19) : singleton pattern 수정
@@ -16,6 +16,7 @@
 ///     v0.9 (2023. 10. 11) : Timezone 관련 기능 추가.
 ///     v0.10 (2023. 11. 03) : avatar state 관련 정보 정리. (R class 에 만들어 두었던 것과 통합)
 ///     v0.11 (2023. 11. 15) : 로그아웃 기능 추가.
+///     v0.12 (2023. 11. 16) : checkToken 기능 추가.
 /// </summary>
 
 using System;
@@ -32,6 +33,9 @@ namespace Joycollab.v2
         private const string TAG = "SystemManager";
 
         public static SystemManager singleton { get; private set; }
+
+        [Header("module")]
+        [SerializeField] private SignInModule module;
 
         [Header("test url")]
         [SerializeField] private string testURL;
@@ -208,6 +212,13 @@ namespace Joycollab.v2
                 return -2;
             }
 
+            // xmpp login
+        #if UNITY_WEBGL && !UNITY_EDITOR
+            xmpp.XmppLoginForWebGL(R.singleton.memberSeq, R.singleton.myXmppPw);
+        #else
+            xmpp.XmppLogin(R.singleton.myXmppId, R.singleton.myXmppPw);
+        #endif
+
             // ping sender : start
             StartPingSender(); 
             return 0;
@@ -252,7 +263,7 @@ namespace Joycollab.v2
     #endregion  // ping sender
 
 
-    #region Post system notice check & URL parsing
+    #region Post system notice check & URL check
 
         private void ShowSystemUpdate(string title, string content) 
         {
@@ -287,19 +298,19 @@ namespace Joycollab.v2
             
             if (browserType.Contains(S.TRUE) || browserType.Equals(S.EDITOR)) 
             {
-                CheckUrlParams();
+                CheckUrlParams().Forget();
             }
             else 
             {
                 string content = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "브라우저 안내", R.singleton.CurrentLocale);
                 PopupBuilder.singleton.OpenAlert(
                     content,
-                    () => CheckUrlParams()
+                    () => CheckUrlParams().Forget()
                 );
             }
         }
 
-        private void CheckUrlParams() 
+        private async UniTaskVoid CheckUrlParams() 
         {
             R.singleton.ClearParamValues();
 
@@ -312,19 +323,66 @@ namespace Joycollab.v2
             // font size 조절.
             SetFontOpt(1);
 
-            // TODO. TOKEN CHECK
-            //
-
+            // next scene check
             string absURL = Application.isEditor ? testURL : Application.absoluteURL; 
             if (string.IsNullOrEmpty(absURL)) absURL = URL.INDEX;
-            string nextScene = ParseUrl(absURL);
-            SceneLoader.Load(nextScene.Contains(S.WORLD) ? eScenes.World : eScenes.SignIn);
+            string next = ParseUrl(absURL);
+
+            // -----
+            // TOKEN CHECK
+            PsResponse<ResCheckToken> res = await module.CheckTokenAsync();
+            if (res == null) 
+            {
+                JsLib.ClearTokenCookie();
+                SceneLoader.Load(next.Contains(S.WORLD) ? eScenes.World : eScenes.SignIn);
+                return;
+            }
+            if (! string.IsNullOrEmpty(res.message)) 
+            {
+                JsLib.ClearTokenCookie();
+                SceneLoader.Load(next.Contains(S.WORLD) ? eScenes.World : eScenes.SignIn);
+                return;
+            }
+            Debug.Log($"{TAG} | token : {res.extra}");
+
+            // check token info
+            R.singleton.TokenInfo = new ResToken();
+            R.singleton.tokenType = JsLib.GetCookie(Key.TOKEN_TYPE);
+            R.singleton.accessToken = JsLib.GetCookie(Key.ACCESS_TOKEN);
+            
+            // check workspace seq
+            int.TryParse(JsLib.GetCookie(Key.WORKSPACE_SEQ), out int workspaceSeq);
+            string paramWorkspaceSeq = R.singleton.GetParam(Key.WORKSPACE_SEQ);
+            if (! string.IsNullOrEmpty(paramWorkspaceSeq))
+            {
+                int.TryParse(paramWorkspaceSeq, out workspaceSeq);
+            }
+            Debug.Log($"{TAG} | workspace seq : {workspaceSeq}");
+            bool result = await module.CheckWorkspaceAsync(workspaceSeq, res.extra);
+            if (! result) 
+            {
+                JsLib.ClearTokenCookie();
+                SceneLoader.Load(next.Contains(S.WORLD) ? eScenes.World : eScenes.SignIn);
+                return;
+            }
+
+            // check my info
+            string msg = await module.GetMyInfoAsync(); 
+            if (! string.IsNullOrEmpty(msg))
+            {
+                JsLib.ClearTokenCookie();
+                SceneLoader.Load(next.Contains(S.WORLD) ? eScenes.World : eScenes.SignIn);
+                return;
+            }
+
+            await Init();
+            SceneLoader.Load(next.Contains(S.WORLD) ? eScenes.Map : eScenes.LoadInfo);
         }
 
-    #endregion  // Post system notice check & URL parsing
+    #endregion  // Post system notice check & URL check
 
 
-    #region URL parsing 
+    #region URL parsing & token check
 
         private string ParseUrl(string url) 
         {
@@ -368,7 +426,40 @@ namespace Joycollab.v2
             return scene;
         }
 
-    #endregion  // URL parsing 
+        private async UniTask<bool> CheckToken() 
+        {
+            string type = JsLib.GetCookie(Key.TOKEN_TYPE);
+            string token = JsLib.GetCookie(Key.ACCESS_TOKEN);
+            string workspaceSeq = JsLib.GetCookie(Key.WORKSPACE_SEQ);
+            string memberSeq = JsLib.GetCookie(Key.MEMBER_SEQ);
+
+            // 1. cookie check
+            if (string.IsNullOrEmpty(type) || string.IsNullOrEmpty(token) || string.IsNullOrEmpty(workspaceSeq) || string.IsNullOrEmpty(memberSeq))
+            {
+                Debug.Log($"{TAG} | CheckToken(), without token");
+                return false;
+            }
+
+            // 2. check
+            WWWForm form = new WWWForm();
+            form.AddField(NetworkTask.AUTHORIZATION, NetworkTask.BASIC_TOKEN);
+            form.AddField(Key.TOKEN, token);
+
+            string url = string.Format(URL.CHECK_TOKEN, token);
+            PsResponse<ResCheckToken> res = await NetworkTask.PostAsync<ResCheckToken>(url, form, NetworkTask.CONTENT_JSON, NetworkTask.BASIC_TOKEN);
+            if (string.IsNullOrEmpty(res.message)) 
+            {
+                Debug.Log($"{TAG} | CheckToken(), Token check success.");
+                return true; 
+            }
+            else 
+            {
+                Debug.LogError($"{TAG} | CheckToken(), Token check fail... code : {res.code}, error : {res.message}");
+                return false;
+            }
+        }
+
+    #endregion  // URL parsing & token check
 
 
     #region focus callback
@@ -739,7 +830,11 @@ namespace Joycollab.v2
             R.singleton.Clear();
 
             // xmpp, ping 등 중지
+        #if UNITY_WEBGL && !UNITY_EDITOR
+            xmpp.XmppLogoutForWebGL();
+        #else
             xmpp.XmppLogout();
+        #endif
             StopPingSender();
 
             // redirect

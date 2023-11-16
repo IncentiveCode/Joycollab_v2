@@ -67,7 +67,7 @@ namespace Joycollab.v2
             v2SquareSize = new Vector2(30.72f, 17.28f);
             floorNo = 1;
 
-            v2RoomSize = new Vector2(19.2f, 10.8f);
+            v2RoomSize = new Vector2(14.4f, 8.1f);
             roomNo = 0;
             
             blocker.DOFade(0f, TIME);
@@ -124,6 +124,7 @@ namespace Joycollab.v2
             await UniTask.Delay(DELAY_TIME);
             playerTransform.position = arrMapPos[no - 1];
             floorNo = no;
+            roomNo = 0;
             await UniTask.Delay(DELAY_TIME);
 
             blocker.DOFade(0f, TIME);

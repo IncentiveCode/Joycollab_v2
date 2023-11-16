@@ -46,9 +46,6 @@ namespace Joycollab.v2
         [Header("chat")]
         [SerializeField] private Transform _transformBubble;
 
-        // sprite render 를 사용하는 경우
-        // [SerializeField] private SpriteRenderer _rendererProfile;
-
         [Header("Avatar info")]
         internal static WorldAvatarInfo localPlayerInfo;
         public WorldAvatarInfo AvatarInfo => avatarInfo;
@@ -57,7 +54,7 @@ namespace Joycollab.v2
         [SyncVar] public int avatarSeq;
         [SyncVar(hook = nameof(SetAvatarName_Hook))] public string avatarName; 
         [SyncVar(hook = nameof(SetAvatarPhoto_Hook))] public string avatarPhoto;
-        [SyncVar] public string avatarMemberType;
+        [SyncVar(hook = nameof(SetAvatarMemberType_Hook))] public string avatarMemberType;
         [SyncVar(hook = nameof(SetAvatarState_Hook))] public string avatarState;
         [SyncVar(hook = nameof(SetAvatarChat_Hook))] public string avatarChat;
 
@@ -127,6 +124,28 @@ namespace Joycollab.v2
             else 
             {
                 Move();
+            }
+
+            // information check
+            if (! avatarPhoto.Equals(R.singleton.myPhoto))
+            {
+                Debug.Log($"{TAG} | FixedUpdate(), photo : {avatarPhoto}, photo in R : {R.singleton.myPhoto}");
+                CmdSetAvatarPhoto(R.singleton.myPhoto);
+            }
+            if (! avatarName.Equals(R.singleton.myName))
+            {
+                Debug.Log($"{TAG} | FixedUpdate(), name : {avatarName}, name in R : {R.singleton.myName}");
+                CmdSetAvatarName(R.singleton.myName);
+            }   
+            if (! avatarMemberType.Equals(R.singleton.myMemberType))
+            {
+                Debug.Log($"{TAG} | FixedUpdate(), name : {avatarMemberType}, member type in R : {R.singleton.myMemberType}");
+                CmdSetAvatarMemberType(R.singleton.myMemberType);
+            }
+            if (! avatarState.Equals(R.singleton.myStateId))
+            {
+                Debug.Log($"{TAG} | FixedUpdate(), state id : {avatarState}, state id in R : {R.singleton.myStateId}");
+                CmdSetAvatarState(R.singleton.myStateId); 
             }
         }
 
@@ -238,6 +257,8 @@ namespace Joycollab.v2
 
         public void SetAvatarName_Hook(string _, string newName) 
         {
+            Debug.Log($"{TAG} | SetAvatarName_Hook()");
+
             // avatar 에 이름 반영.
             _txtName.text = newName;
 
@@ -246,44 +267,63 @@ namespace Joycollab.v2
             float rectWidth = rectNameArea.rect.width;
 
             // server 쪽에 이름 반영.
-            CmdSetAvatarName(newName);
+            // CmdSetAvatarName(newName);
         }
-
         [Command(requiresAuthority = false)]
         public void CmdSetAvatarName(string name) 
         {
-            _txtName.text = name;
+            Debug.Log($"{TAG} | cmdSetAvatarName(), new name : {name}");
+            avatarName = name;
+
+            // _txtName.text = name;
         }
 
         public void SetAvatarPhoto_Hook(string _, string newPhoto) 
         {
+            Debug.Log($"{TAG} | SetAvatarPhoto_Hook()");
+
             // avatar 에 사진 반영.
             string url = $"{URL.SERVER_PATH}{newPhoto}"; 
-            // GetAvatarPhoto(url).Forget();
-            // loader.LoadImage(url).Forget();
             loader.LoadProfile(url, avatarSeq).Forget();
 
             // server 쪽에 사진 반영.
-            CmdSetAvatarPhoto(newPhoto);
+            // CmdSetAvatarPhoto(newPhoto);
         }
         [Command(requiresAuthority = false)]
         public void CmdSetAvatarPhoto(string photo) 
         {
-            string url = $"{URL.SERVER_PATH}{photo}";
-            loader.LoadImage(url).Forget();
+            Debug.Log($"{TAG} | cmdSetAvatarPhoto(), new photo : {photo}");
+            avatarPhoto = photo;
+
+            // string url = $"{URL.SERVER_PATH}{photo}";
+            // loader.LoadProfile(url, avatarSeq).Forget();
         }
 
-        public void SetAvatarState_Hook(string _, string id) 
+        public void SetAvatarMemberType_Hook(string _, string newType) 
         {
-            ChangeState(id);
-
-            // server 쪽에 상태 반영.
-            CmdSetAvatarState(id);
+            Debug.Log($"{TAG} | SetAvatarMemberType_Hook()");
         }
         [Command(requiresAuthority = false)]
-        public void CmdSetAvatarState(string id) 
+        public void CmdSetAvatarMemberType(string newType) 
         {
-            ChangeState(id);
+            Debug.Log($"{TAG} | cmdSetAvatarMemberType(), new type : {newType}");
+            avatarMemberType = newType;
+        }
+
+        public void SetAvatarState_Hook(string _, string stateId) 
+        {
+            Debug.Log($"{TAG} | SetAvatarState_Hook()");
+            ChangeState(stateId);
+
+            // server 쪽에 상태 반영.
+            // CmdSetAvatarState(id);
+        }
+        [Command(requiresAuthority = false)]
+        public void CmdSetAvatarState(string stateId) 
+        {
+            Debug.Log($"{TAG} | cmdSetAvatarState(), state : {stateId}");
+
+            // ChangeState(stateId);
         }
 
         public void SetAvatarChat_Hook(string _, string chat) 
@@ -303,7 +343,7 @@ namespace Joycollab.v2
     #endregion  // AVatar info
 
 
-    #region Avatar State
+    #region Event handling
 
         private void ChangeState(string id) 
         {
@@ -369,6 +409,6 @@ namespace Joycollab.v2
             _txtState.StringReference.SetReference("Word", $"상태.{id}");
         }
 
-    #endregion  // Avatar State
+    #endregion  // Event handling
     }
 }

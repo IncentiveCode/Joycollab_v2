@@ -24,6 +24,12 @@ namespace Joycollab.v2
         public string refresh_token;
         public int expires_in;
         public string scope;
+
+        public ResToken() 
+        {
+            access_token = token_type = refresh_token = scope = string.Empty;
+            expires_in = 0;
+        }
     }
     
     [Serializable]

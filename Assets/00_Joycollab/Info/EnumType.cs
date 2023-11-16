@@ -1,8 +1,8 @@
 /// <summary>
 /// 열거형 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 01
-/// @version        : 0.7
+/// @last update    : 2023. 11. 16
+/// @version        : 0.8
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리.
 ///     v0.2 (2023. 07. 18) : Xmpp type, Webview type 추가.
@@ -11,6 +11,7 @@
 ///     v0.5 (2023. 09. 25) : Scene type 추가. clickable type 추가 (eScenes.Room, eClickableObjectType.FileBox 추가.)
 ///     v0.6 (2023. 10. 04) : storage key 추가 (elevator)
 ///     v0.7 (2023. 11. 01) : Resize direction 추가.
+///     v0.8 (2023. 11. 16) : clickable object type 변경 및 일부 항목 통폐합. clickableLinkType 추가.
 /// </summary>
 
 namespace Joycollab.v2
@@ -107,13 +108,14 @@ namespace Joycollab.v2
     public enum eClickableObjectType 
     {
         // World 에서 사용할 항목들.
-        Building, Elevator, Information, WorldAvatar,
-        
-        // Joycollab 과 World 에서 공통으로 사용할 항목들.
-        Board, Notice, Seminar, Display, Meeting, FileBox,
+        Building, Elevator, WorldAvatar,
 
-        // 추후 object 는 상세하게 쪼개질 가능성 있음.
-        Object,
+        // web view 를 출력할 항목들. (링크 종류가 많아질 것 같아서, Link 로 통폐합)
+        // Information, Display, MiniMap, GuestBook,
+        Link,
+
+        // window 를 출력할 항목들.
+        Board, Notice, Seminar, Meeting, FileBox, 
 
         // Dummy 또는 추후에 사용하게 될 수도 있는 jayco 같은 마스코트.
         Dummy,
@@ -122,6 +124,16 @@ namespace Joycollab.v2
         Nothing
     }
 
+    /// <summary>
+    /// clickable object [Link] 구분
+    /// </summary>
+    public enum eClickableLinkType 
+    {
+        TV, 
+        Instagram, Youtube, Homepage,
+        Information, Tutorial, BuilletinBoard, MiniMap, GuestBook, Display,
+        Nothing
+    }
 
     /// <summary>
     /// Button object decoration 구분
@@ -194,7 +206,7 @@ namespace Joycollab.v2
 
         FontSize, Locale, Elevator,
         
-        WindowRefresh, UserCount, UserInfo, UserPhoto,
+        WindowRefresh, UserCount,  
 
         Test
     }

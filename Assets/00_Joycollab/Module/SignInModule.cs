@@ -1,8 +1,8 @@
 /// <summary>
 /// Sign In 기능만 독립적으로 분리한 모듈
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 29
-/// @version        : 0.6
+/// @last update    : 2023. 11. 16
+/// @version        : 0.7
 /// @update
 ///     v0.1 (2023. 05. 09) : 최초 생성
 ///     v0.2 (2023. 05. 10) : LoginScene 에서 사용하던 Login 관련 기능 정리.
@@ -10,9 +10,11 @@
 ///     v0.4 (2023. 08. 16) : Module 기능 추가 정리.
 ///     v0.5 (2023. 08. 23) : class name 변경. Module 기능 추가 정리.
 ///     v0.6 (2023. 08. 29) : Reset, Restore 관련 기능 추가.
+///     v0.7 (2023. 11. 16) : CheckWorkspaceAsync() 추가.
 /// </summary>
 
 using UnityEngine;
+using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
 
 namespace Joycollab.v2
@@ -56,6 +58,60 @@ namespace Joycollab.v2
             PsResponse<ResCheckToken> res = await NetworkTask.PostAsync<ResCheckToken>(url, form, NetworkTask.CONTENT_JSON, NetworkTask.BASIC_TOKEN);
             res.extra = $"{type} {token}";
             return res;
+        }
+
+        public async UniTask<bool> CheckWorkspaceAsync(int workspaceSeq, string token) 
+        {
+            if (workspaceSeq == 0) 
+            {
+                PopupBuilder.singleton.OpenAlert(
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "새로고침 안내", R.singleton.CurrentLocale)
+                );
+                return false;
+            }
+
+            PsResponse<ResWorkspaceList> res = await NetworkTask.RequestAsync<ResWorkspaceList>(URL.WORKSPACE_LIST, eMethodType.GET, string.Empty, token);
+            if (! string.IsNullOrEmpty(res.message)) 
+            {
+                PopupBuilder.singleton.OpenAlert(
+                    LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "정보 갱신 실패", R.singleton.CurrentLocale)
+                );
+                return false;
+            }
+
+            bool isExist = false;
+            bool isLeave = false;
+            string userId = string.Empty;
+            int memberSeq = 0;
+            string domain = string.Empty;
+            string uiType = string.Empty;
+
+            foreach (var info in res.data.list) 
+            {
+                if (info.workspace.seq == workspaceSeq) 
+                {
+                    isExist = true;
+                    isLeave = (info.useYn != "Y");
+                    memberSeq = info.seq;
+                    domain = info.workspace.domain;
+                    uiType = info.uiType;
+                    break;
+                }
+            }
+
+            if (isExist)
+            {
+                // save in jslib, R
+                JsLib.SetCookie(Key.WORKSPACE_SEQ, workspaceSeq.ToString());
+                JsLib.SetCookie(Key.MEMBER_SEQ, memberSeq.ToString());
+
+                R.singleton.workspaceSeq = workspaceSeq;
+                R.singleton.memberSeq = memberSeq;
+                R.singleton.domainName = domain;
+                R.singleton.uiType = uiType;
+            }
+
+            return isExist;
         }
 
 
@@ -163,7 +219,8 @@ namespace Joycollab.v2
             int workspaceSeq = await GetWorldSequenceAsync();
             if (workspaceSeq == -1) 
             {
-                return new PsResponse<WorkspaceInfo>(-1, string.Empty);
+                string msg = LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "도메인 탐색 실패", R.singleton.CurrentLocale);
+                return new PsResponse<WorkspaceInfo>(-1, msg);
             }
 
             // - step 2. member seq check
@@ -311,6 +368,7 @@ namespace Joycollab.v2
 
                 // Debug.Log($"{TAG} | current font size : {res.data.fontSize}");
                 R.singleton.FontSizeOpt = res.data.fontSize;
+                R.singleton.ID = res.data.user.id;
             }
             else 
             {

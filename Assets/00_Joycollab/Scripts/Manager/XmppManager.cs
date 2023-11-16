@@ -129,6 +129,11 @@ namespace Joycollab.v2
             webglQueue.Enqueue(data);
         }
 
+        public void XmppLogoutForWebGL() 
+        {
+            XmppLib.XmppLogout();
+        } 
+
     #endif
     #endregion  // public functions for WebGL
 

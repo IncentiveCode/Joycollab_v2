@@ -58,6 +58,8 @@ namespace Joycollab.v2
 
         public void RequestClose() => ClosePanel();
 
+        public void RequestCloseForMap() => ClosePanelForMap();
+
         private void ExpandPanel() 
         {
             if (_element != null) 
@@ -71,8 +73,6 @@ namespace Joycollab.v2
             _btnExpand.gameObject.SetActive(false);
             _btnClose.gameObject.SetActive(true);
             foreach (var item in _body) item.SetActive(true);
-
-            // isExpand = true;
         }
 
         private void ClosePanel() 
@@ -85,8 +85,18 @@ namespace Joycollab.v2
             _btnExpand.gameObject.SetActive(true);
             _btnClose.gameObject.SetActive(false);
             foreach (var item in _body) item.SetActive(false);
+        }
 
-            // isExpand = false;
+        private void ClosePanelForMap()
+        {
+            if (_element != null)
+            {
+                _element.preferredHeight = _closedHeight;
+            }
+
+            _btnExpand.gameObject.SetActive(false);
+            _btnClose.gameObject.SetActive(false);
+            foreach (var item in _body) item.SetActive(false);
         }
 
     #endregion  // Expand functions
