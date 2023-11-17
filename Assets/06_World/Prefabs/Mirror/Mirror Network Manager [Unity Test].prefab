@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &8624145296243729839
+--- !u!1 &1503931622356484252
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,25 +8,25 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 8624145296243729838}
-  - component: {fileID: 8624145296243729837}
-  - component: {fileID: 8624145296243729827}
-  - component: {fileID: 8624145296243729836}
-  - component: {fileID: 8624145296243729826}
+  - component: {fileID: 1503931622356484253}
+  - component: {fileID: 1503931622356484254}
+  - component: {fileID: 1503931622356484240}
+  - component: {fileID: 1503931622356484255}
+  - component: {fileID: 1503931622356484241}
   m_Layer: 0
-  m_Name: Mirror Network Manager
+  m_Name: Mirror Network Manager [Unity Test]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &8624145296243729838
+--- !u!4 &1503931622356484253
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8624145296243729839}
+  m_GameObject: {fileID: 1503931622356484252}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -35,13 +35,13 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &8624145296243729837
+--- !u!114 &1503931622356484254
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8624145296243729839}
+  m_GameObject: {fileID: 1503931622356484252}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 04421cd4caf74bb45821efc235b9abf5, type: 3}
@@ -49,17 +49,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   dontDestroyOnLoad: 1
   runInBackground: 1
-  autoStartServerBuild: 1
+  autoStartServerBuild: 0
   autoConnectClientBuild: 0
   sendRate: 30
   offlineScene: Assets/Scenes/Map.unity
   onlineScene: Assets/Scenes/Square.unity
-  transport: {fileID: 8624145296243729836}
+  transport: {fileID: 1503931622356484255}
   networkAddress: localhost
   maxConnections: 100
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
-  authenticator: {fileID: 8624145296243729827}
+  authenticator: {fileID: 1503931622356484240}
   playerPrefab: {fileID: 7111134659227511931, guid: 78d5ec1c4580812478fdacc60ba404b9, type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 1
@@ -77,13 +77,13 @@ MonoBehaviour:
     deliveryTimeEmaDuration: 2
   connectionQualityInterval: 3
   timeInterpolationGui: 0
---- !u!114 &8624145296243729827
+--- !u!114 &1503931622356484240
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8624145296243729839}
+  m_GameObject: {fileID: 1503931622356484252}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea8d82844d2e74a4f98ae684509e5a1a, type: 3}
@@ -95,13 +95,13 @@ MonoBehaviour:
   OnClientAuthenticated:
     m_PersistentCalls:
       m_Calls: []
---- !u!114 &8624145296243729836
+--- !u!114 &1503931622356484255
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8624145296243729839}
+  m_GameObject: {fileID: 1503931622356484252}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0110f245bfcfc7d459681f7bd9ebc590, type: 3}
@@ -118,19 +118,19 @@ MonoBehaviour:
   clientMaxMessagesPerTick: 1000
   batchSend: 1
   waitBeforeSend: 1
-  clientUseWss: 1
-  sslEnabled: 1
+  clientUseWss: 0
+  sslEnabled: 0
   sslCertJson: ./cert.json
-  sslProtocols: 3072
+  sslProtocols: 0
   _logLevels: 2
---- !u!114 &8624145296243729826
+--- !u!114 &1503931622356484241
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8624145296243729839}
-  m_Enabled: 0
+  m_GameObject: {fileID: 1503931622356484252}
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6442dc8070ceb41f094e44de0bf87274, type: 3}
   m_Name: 

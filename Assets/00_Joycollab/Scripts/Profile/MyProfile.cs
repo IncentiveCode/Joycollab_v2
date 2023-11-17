@@ -100,7 +100,8 @@ namespace Joycollab.v2
                 {
                     Debug.Log($"{TAG} | 변경된 사진 정보가 있다면 R 에 저장. url : {uploader.ImageUrl}");
                     // R.singleton.AddPhoto(uploader.ImageUrl, (Texture2D)_imgProfile.texture); 
-                    R.singleton.AddPhoto(R.singleton.memberSeq, (Texture2D)_imgProfile.texture); 
+                    // R.singleton.AddPhoto(R.singleton.memberSeq, (Texture2D)_imgProfile.texture); 
+                    R.singleton.AddPhoto(R.singleton.memberSeq, uploader.ImageUrl, (Texture2D)_imgProfile.texture);
                 }
 
                 PopupBuilder.singleton.OpenAlert(

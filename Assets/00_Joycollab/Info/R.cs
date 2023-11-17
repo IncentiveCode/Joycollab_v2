@@ -20,7 +20,7 @@
 ///     v0.14 (2023. 11. 03) : avatar state 관련 정보를 System manager 로 이관.
 ///     v0.15 (2023. 11. 08) : time format 확인 함수와 culture info list 추가.
 ///     v0.16 (2023. 11. 14) : photo dict 형태 변경. Dictionary<int, texture2d> 에서 Dictionary <int, Tuple<string, texture2d>> 로 변경.
-///     v0.17 (2023. 11. 16) : photo dict 형태 기존 형태로 변경. AddPhoto() 에서 있었던 오류 수정. 
+///     v0.17 (2023. 11. 16) : AddPhoto() 에서 있었던 오류 수정. 
 /// </summary>
 
 using System;
@@ -68,8 +68,7 @@ namespace Joycollab.v2
             listBookmark.Clear(); 
 
             // for temp dictionary
-            // dictPhoto = new Dictionary<string, Texture2D>();
-            dictPhoto = new Dictionary<int, Texture2D>();
+            dictPhoto = new Dictionary<int, Tuple<string, Texture2D>>();
             dictPhoto.Clear();
             dictSpace = new Dictionary<int, ResSpaceInfo>();
             dictSpace.Clear();
@@ -679,25 +678,26 @@ namespace Joycollab.v2
 
     #region for temp dectionary
 
-        private Dictionary<int, Texture2D> dictPhoto;
-        public void AddPhoto(int seq, Texture2D photo) 
+        private Dictionary<int, Tuple<string, Texture2D>> dictPhoto;
+        public void AddPhoto(int seq, string path, Texture2D photo) 
         {
             if (dictPhoto.ContainsKey(seq)) 
             {
                 if (dictPhoto[seq] != null) dictPhoto[seq] = null;
-                dictPhoto[seq] = photo; 
+                dictPhoto[seq] = Tuple.Create(path, photo); 
             }
             else 
             {
-                dictPhoto.Add(seq, photo);
+                dictPhoto.Add(seq, Tuple.Create(path, photo));
             }
+        }
+        public string GetPhotoPath(int seq) 
+        {
+            return dictPhoto.ContainsKey(seq) ? dictPhoto[seq].Item1 : string.Empty;
         }
         public Texture2D GetPhoto(int seq) 
         {
-            if (dictPhoto.ContainsKey(seq))
-                return dictPhoto[seq];
-            else
-                return null;
+            return dictPhoto.ContainsKey(seq) ? dictPhoto[seq].Item2 : null;
         } 
         private void ClearPhotoDict() => dictPhoto.Clear();
 

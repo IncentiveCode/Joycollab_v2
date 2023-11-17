@@ -1,8 +1,8 @@
 /// <summary>
 /// 열거형 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 16
-/// @version        : 0.8
+/// @last update    : 2023. 11. 17
+/// @version        : 0.9
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리.
 ///     v0.2 (2023. 07. 18) : Xmpp type, Webview type 추가.
@@ -12,6 +12,7 @@
 ///     v0.6 (2023. 10. 04) : storage key 추가 (elevator)
 ///     v0.7 (2023. 11. 01) : Resize direction 추가.
 ///     v0.8 (2023. 11. 16) : clickable object type 변경 및 일부 항목 통폐합. clickableLinkType 추가.
+///     v0.9 (2023. 11. 17) : Tutorial popup type 추가
 /// </summary>
 
 namespace Joycollab.v2
@@ -121,7 +122,7 @@ namespace Joycollab.v2
         Dummy,
 
         // 아직 정해지지 않은 항목들.
-        Nothing
+        None
     }
 
     /// <summary>
@@ -132,7 +133,7 @@ namespace Joycollab.v2
         TV, 
         Instagram, Youtube, Homepage,
         Information, Tutorial, BuilletinBoard, MiniMap, GuestBook, Display,
-        Nothing
+        None
     }
 
     /// <summary>
@@ -283,5 +284,15 @@ namespace Joycollab.v2
     {
         None = 0,
         Top, TopRight, Right, BottomRight, Bottom, BottomLeft, Left, TopLeft
+    }
+
+
+    /// <summary>
+    /// 튜토리얼 팝업 구분
+    /// </summary>
+    public enum eTutorialType
+    {
+        None = 0,
+        QuickLearning, MiniMap, 
     }
 }

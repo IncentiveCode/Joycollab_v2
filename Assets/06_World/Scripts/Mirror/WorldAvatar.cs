@@ -18,7 +18,7 @@ using TMPro;
 
 namespace Joycollab.v2
 {
-    public class WorldAvatar : NetworkBehaviour
+    public class WorldAvatar : NetworkBehaviour, iRepositoryObserver
     {
         private const string TAG = "WorldAvatar";
 
@@ -78,6 +78,11 @@ namespace Joycollab.v2
             {
                 loader = _imgProfile.GetComponent<ImageLoader>();
             }
+
+            if (R.singleton != null) 
+            {
+                R.singleton.RegisterObserver(this, eStorageKey.MemberInfo);
+            }
         }
 
         private void Start() 
@@ -125,33 +130,16 @@ namespace Joycollab.v2
             {
                 Move();
             }
-
-            // information check
-            if (! avatarPhoto.Equals(R.singleton.myPhoto))
-            {
-                Debug.Log($"{TAG} | FixedUpdate(), photo : {avatarPhoto}, photo in R : {R.singleton.myPhoto}");
-                CmdSetAvatarPhoto(R.singleton.myPhoto);
-            }
-            if (! avatarName.Equals(R.singleton.myName))
-            {
-                Debug.Log($"{TAG} | FixedUpdate(), name : {avatarName}, name in R : {R.singleton.myName}");
-                CmdSetAvatarName(R.singleton.myName);
-            }   
-            if (! avatarMemberType.Equals(R.singleton.myMemberType))
-            {
-                Debug.Log($"{TAG} | FixedUpdate(), name : {avatarMemberType}, member type in R : {R.singleton.myMemberType}");
-                CmdSetAvatarMemberType(R.singleton.myMemberType);
-            }
-            if (! avatarState.Equals(R.singleton.myStateId))
-            {
-                Debug.Log($"{TAG} | FixedUpdate(), state id : {avatarState}, state id in R : {R.singleton.myStateId}");
-                CmdSetAvatarState(R.singleton.myStateId); 
-            }
         }
 
         private void OnDestroy() 
         {
             if (! isOwned) return;
+
+            if (R.singleton != null) 
+            {
+                R.singleton.UnregisterObserver(this, eStorageKey.MemberInfo);
+            }
         }
 
     #endregion  // Unity functions
@@ -193,7 +181,7 @@ namespace Joycollab.v2
         private void Fly(Vector3 position) 
         {
             if (! isOwned) return;
-            if (WorldChatView.Instance.OnChat) return;
+            // if (WorldChatView.Instance.OnChat) return;
 
             isFly = true;
             v3Dir = position;
@@ -202,7 +190,7 @@ namespace Joycollab.v2
         private void Move() 
         {
             if (! isOwned || ! isMovable) return;
-            if (WorldChatView.Instance.OnChat) return;
+            // if (WorldChatView.Instance.OnChat) return;
 
             // TODO. animation 을 사용하는 경우에 적용 예정.
             // bool isMove = false;
@@ -231,6 +219,13 @@ namespace Joycollab.v2
             }
             else 
             {
+                var current = EventSystem.current.currentSelectedGameObject;
+                if (current != null) 
+                {
+                    // Debug.Log($"{TAG} | Move(), current selected object name : {current.name}");
+                    return;
+                }
+
                 horizontal = Input.GetAxis("Horizontal");
                 vertical = Input.GetAxis("Vertical");
                 v3Dir = Vector3.ClampMagnitude(new Vector3(horizontal, vertical, 0f), 1f);
@@ -265,17 +260,13 @@ namespace Joycollab.v2
             // name length limiter
             Canvas.ForceUpdateCanvases();
             float rectWidth = rectNameArea.rect.width;
-
-            // server 쪽에 이름 반영.
-            // CmdSetAvatarName(newName);
+            Debug.Log($"{TAG} | SetAvatarName_Hook(), name width : {rectWidth}");
         }
         [Command(requiresAuthority = false)]
         public void CmdSetAvatarName(string name) 
         {
             Debug.Log($"{TAG} | cmdSetAvatarName(), new name : {name}");
             avatarName = name;
-
-            // _txtName.text = name;
         }
 
         public void SetAvatarPhoto_Hook(string _, string newPhoto) 
@@ -285,18 +276,12 @@ namespace Joycollab.v2
             // avatar 에 사진 반영.
             string url = $"{URL.SERVER_PATH}{newPhoto}"; 
             loader.LoadProfile(url, avatarSeq).Forget();
-
-            // server 쪽에 사진 반영.
-            // CmdSetAvatarPhoto(newPhoto);
         }
         [Command(requiresAuthority = false)]
         public void CmdSetAvatarPhoto(string photo) 
         {
             Debug.Log($"{TAG} | cmdSetAvatarPhoto(), new photo : {photo}");
             avatarPhoto = photo;
-
-            // string url = $"{URL.SERVER_PATH}{photo}";
-            // loader.LoadProfile(url, avatarSeq).Forget();
         }
 
         public void SetAvatarMemberType_Hook(string _, string newType) 
@@ -314,16 +299,11 @@ namespace Joycollab.v2
         {
             Debug.Log($"{TAG} | SetAvatarState_Hook()");
             ChangeState(stateId);
-
-            // server 쪽에 상태 반영.
-            // CmdSetAvatarState(id);
         }
         [Command(requiresAuthority = false)]
         public void CmdSetAvatarState(string stateId) 
         {
             Debug.Log($"{TAG} | cmdSetAvatarState(), state : {stateId}");
-
-            // ChangeState(stateId);
         }
 
         public void SetAvatarChat_Hook(string _, string chat) 
@@ -344,6 +324,36 @@ namespace Joycollab.v2
 
 
     #region Event handling
+
+        public void UpdateInfo(eStorageKey key) 
+        {
+            if (! isOwned) return;
+
+            if (key == eStorageKey.MemberInfo) 
+            {
+                // information check
+                if (! avatarPhoto.Equals(R.singleton.myPhoto))
+                {
+                    Debug.Log($"{TAG} | FixedUpdate(), photo : {avatarPhoto}, photo in R : {R.singleton.myPhoto}");
+                    CmdSetAvatarPhoto(R.singleton.myPhoto);
+                }
+                if (! avatarName.Equals(R.singleton.myName))
+                {
+                    Debug.Log($"{TAG} | FixedUpdate(), name : {avatarName}, name in R : {R.singleton.myName}");
+                    CmdSetAvatarName(R.singleton.myName);
+                }   
+                if (! avatarMemberType.Equals(R.singleton.myMemberType))
+                {
+                    Debug.Log($"{TAG} | FixedUpdate(), name : {avatarMemberType}, member type in R : {R.singleton.myMemberType}");
+                    CmdSetAvatarMemberType(R.singleton.myMemberType);
+                }
+                if (! avatarState.Equals(R.singleton.myStateId))
+                {
+                    Debug.Log($"{TAG} | FixedUpdate(), state id : {avatarState}, state id in R : {R.singleton.myStateId}");
+                    CmdSetAvatarState(R.singleton.myStateId); 
+                }
+            }
+        }
 
         private void ChangeState(string id) 
         {

@@ -257,7 +257,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 2903627058086999355}
   m_HandleRect: {fileID: 4588800008854932285}
   m_Direction: 0
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -678,7 +678,6 @@ GameObject:
   - component: {fileID: 4410380553580362957}
   - component: {fileID: 4410380553580362944}
   - component: {fileID: 4410380553580362959}
-  - component: {fileID: 4410380553580362958}
   m_Layer: 5
   m_Name: background
   m_TagString: Untagged
@@ -744,21 +743,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4410380553580362958
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4410380553580362956}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0.93333334, g: 0.93333334, b: 0.93333334, a: 1}
-  m_EffectDistance: {x: 1, y: -1}
-  m_UseGraphicAlpha: 1
 --- !u!1 &4410380553664055635
 GameObject:
   m_ObjectHideFlags: 0

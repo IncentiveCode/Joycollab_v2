@@ -19,11 +19,11 @@ namespace Joycollab.v2
 {
     public class WorldChatView : NetworkBehaviour
     {
-        public static WorldChatView Instance;
-        public bool OnChat { get; private set; }
+        // public static WorldChatView Instance;
+        // public bool OnChat { get; private set; }
 
         [Header("Chat UI")]
-        [SerializeField] private Text _txtChatHistory;
+        [SerializeField] private TMP_Text _txtChatHistory;
         [SerializeField] private Scrollbar _scrollbar;
         [SerializeField] private TMP_InputField _inputMessage;
         [SerializeField] private Button _btnSend;
@@ -41,7 +41,7 @@ namespace Joycollab.v2
 
         private void Awake() 
         {
-            Instance = this;
+            // Instance = this;
             delay = new WaitForSeconds(1f);
             networkManager = WorldNetworkManager.singleton;
 
@@ -51,8 +51,8 @@ namespace Joycollab.v2
             _inputMessage.onValueChanged.AddListener((input) => {
                 _btnSend.interactable = !string.IsNullOrWhiteSpace(input);
             });
-            _inputMessage.onSelect.AddListener((input) => OnChat = true);
-            _inputMessage.onDeselect.AddListener((input) => OnChat = false);
+            // _inputMessage.onSelect.AddListener((input) => OnChat = true);
+            // _inputMessage.onDeselect.AddListener((input) => OnChat = false);
             _btnSend.onClick.AddListener(() => Send(_inputMessage.text.Trim()));
         }
 
@@ -77,6 +77,11 @@ namespace Joycollab.v2
 
 
     #region override functions
+
+        public override void OnStartAuthority()
+        {
+            gameObject.SetActive(true);
+        }
 
         public override void OnStartServer() 
         {
@@ -109,6 +114,7 @@ namespace Joycollab.v2
             _scrollbar.value = 0;
         }
 
+        [Client]
         private void Send(string msg) 
         {
             if (! string.IsNullOrWhiteSpace(msg)) 

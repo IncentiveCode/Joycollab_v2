@@ -296,16 +296,23 @@ namespace Joycollab.v2
 
         private void BuildingLeftClick(PointerEventData data) 
         {
-            var pop = Instantiate(SystemManager.singleton.pfBuildingInfo, Vector3.zero, Quaternion.identity);
-            if (pop.TryGetComponent<BuildingInfo>(out BuildingInfo popInfo)) 
+            if (_soBuildingData.BuildingName.Equals("Community City"))
             {
-                var transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
-                pop.transform.SetParent(transform, false);
-                popInfo.Open(_soBuildingData, data.position);
+                Enter().Forget();
             }
             else 
             {
-                Destroy(pop.gameObject);
+                var pop = Instantiate(SystemManager.singleton.pfBuildingInfo, Vector3.zero, Quaternion.identity);
+                if (pop.TryGetComponent<BuildingInfo>(out BuildingInfo popInfo)) 
+                {
+                    var transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
+                    pop.transform.SetParent(transform, false);
+                    popInfo.Open(_soBuildingData, data.position);
+                }
+                else 
+                {
+                    Destroy(pop.gameObject);
+                }
             }
         }
 
@@ -534,12 +541,12 @@ namespace Joycollab.v2
                 case eClickableLinkType.Instagram :
                 case eClickableLinkType.Youtube :
                 case eClickableLinkType.Homepage :
-                    Debug.Log($"{TAG} | SetLinkInfo(), type : {_linkType} : 환경설정 링크 참조. 현재는 고정값 사용.");
+                    // Debug.Log($"{TAG} | SetLinkInfo(), type : {_linkType} : 환경설정 링크 참조. 현재는 고정값 사용.");
                     break;
 
                 case eClickableLinkType.Information :
                 case eClickableLinkType.Tutorial :
-                    Debug.Log($"{TAG} | SetLinkInfo(), type : {_linkType} : 추후 튜토리얼 팝업 출력. 현재는 빈값 사용.");
+                    // Debug.Log($"{TAG} | SetLinkInfo(), type : {_linkType} : 추후 튜토리얼 팝업 출력. 현재는 빈값 사용.");
                     _linkPath = string.Empty;
                     break;
 
@@ -548,7 +555,7 @@ namespace Joycollab.v2
                     break;
 
                 case eClickableLinkType.MiniMap :
-                    Debug.Log($"{TAG} | SetLinkInfo(), type : {_linkType} : 추후 별도의 팝업 출력. 현재는 빈값 사용.");
+                    // Debug.Log($"{TAG} | SetLinkInfo(), type : {_linkType} : 추후 별도의 팝업 출력. 현재는 빈값 사용.");
                     _linkPath = string.Empty;
                     break;
 
@@ -557,13 +564,13 @@ namespace Joycollab.v2
                     break;
 
                 case eClickableLinkType.Display :
-                    Debug.Log($"{TAG} | SetLinkInfo(), type : {_linkType} : 추후 별도의 팝업 출력. 현재는 빈값 사용.");
+                    // Debug.Log($"{TAG} | SetLinkInfo(), type : {_linkType} : 추후 별도의 팝업 출력. 현재는 빈값 사용.");
                     _linkPath = string.Empty;
                     break;
 
-                case eClickableLinkType.Nothing :
+                case eClickableLinkType.None :
                 default :
-                    Debug.Log($"{TAG} | SetLinkInfo(), type : {_linkType} : 빈값 사용. 클릭해도 반응하지 않음.");
+                    // Debug.Log($"{TAG} | SetLinkInfo(), type : {_linkType} : 빈값 사용. 클릭해도 반응하지 않음.");
                     _linkPath = string.Empty;
                     break;
             }
@@ -578,7 +585,7 @@ namespace Joycollab.v2
                     Debug.Log($"{TAG} | LinkLeftClick(), type : {_linkType} : Tutorial popup 연결 예정.");
                     break;
 
-                case eClickableLinkType.Nothing :
+                case eClickableLinkType.None :
                     Debug.Log($"{TAG} | LinkLeftClick(), type : {_linkType} : 아무 것도 하지 않음.");
                     break;
 

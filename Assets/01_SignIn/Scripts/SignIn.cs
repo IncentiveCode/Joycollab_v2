@@ -56,6 +56,8 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnSample;
         [SerializeField] private Button _btnWorld;
         [SerializeField] private Button _btnJoycollab;
+
+        [Header("Button for test")] 
         [SerializeField] private Button _btnTest;
 
 
@@ -136,12 +138,17 @@ namespace Joycollab.v2
                 }
             });
             _btnResetPw.onClick.AddListener(() => ViewManager.singleton.Push(S.WorldScene_Reset));
+            _btnVersion.onClick.AddListener(() => {
+                // Debug.Log("TODO. ViewManager 생성 후, 패치 노트 화면으로 이동");
+
+                _inputId.text = "hjlee@pitchsolution.co.kr";
+                _inputPw.text = "Qwer!234";
+                SignInAsync().Forget();
+            });
 
             if (isOffice) 
             {
                 _btnNext.onClick.AddListener(() => MoveToSubSignInAsync(_inputDomain.text).Forget());
-                _btnVersion.onClick.AddListener(() => Debug.Log("TODO. ViewManager 생성 후, 패치 노트 화면으로 이동"));
-
                 _btnSample.onClick.AddListener(() => {
                     SystemManager.singleton.SetFontOpt(1);
                     SceneLoader.Load(eScenes.Sample);
@@ -172,7 +179,7 @@ namespace Joycollab.v2
                 if (_btnTest != null) 
                 {
                     _btnTest.onClick.AddListener(() => {
-                        _inputId.text = "hjlee@pitchsolution.co.kr";
+                        _inputId.text = "incentivecode@gmail.com";
                         _inputPw.text = "Qwer!234";
                         SignInAsync().Forget();
                     });

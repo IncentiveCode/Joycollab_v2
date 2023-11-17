@@ -43,6 +43,7 @@ namespace Joycollab.v2
         [Header("guide popup")]
         [SerializeField] private Transform _transform;
         [SerializeField] private GameObject _goUpdateGuide;
+        [SerializeField] private GameObject pfTutorialPopup;
 
         [Header("world assets")]
         [SerializeField] public Transform pfChatBubble;
@@ -330,6 +331,14 @@ namespace Joycollab.v2
 
             // -----
             // TOKEN CHECK
+        #if UNITY_EDITOR
+
+            Debug.Log($"{TAG} | editor. here?");
+            await UniTask.Yield();
+            SceneLoader.Load(next.Contains(S.WORLD) ? eScenes.World : eScenes.SignIn);
+        
+        #else 
+
             PsResponse<ResCheckToken> res = await module.CheckTokenAsync();
             if (res == null) 
             {
@@ -377,6 +386,8 @@ namespace Joycollab.v2
 
             await Init();
             SceneLoader.Load(next.Contains(S.WORLD) ? eScenes.Map : eScenes.LoadInfo);
+        
+        #endif
         }
 
     #endregion  // Post system notice check & URL check
@@ -676,6 +687,15 @@ namespace Joycollab.v2
 
 
     #region communication 
+
+        public void ShowTutorialPopup(eTutorialType type) 
+        {
+            if (_transform == null) _transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
+
+            GameObject popup = Instantiate(pfTutorialPopup, Vector3.zero, Quaternion.identity);
+            popup.GetComponent<TutorialPopup>().Init(type);
+            popup.transform.SetParent(_transform, false);
+        }
 
         public async UniTaskVoid CallOnTheSpot(List<int> seqs) 
         {

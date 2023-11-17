@@ -103,7 +103,7 @@ namespace Joycollab.v2
             float panelY = sizeDelta.y;
 
             v2Temp.x = Mathf.Clamp(v2Temp.x, 0, maxX - panelX);
-            v2Temp.y = Mathf.Clamp(v2Temp.y, 0, maxY - panelY);
+            v2Temp.y = Mathf.Clamp(v2Temp.y - panelY, 0, maxY - panelY);
             rect.anchoredPosition = v2Temp;
 
             gameObject.SetActive(true);

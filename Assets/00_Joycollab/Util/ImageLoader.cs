@@ -63,9 +63,6 @@ namespace Joycollab.v2
             }
             if (rect == null) rect = GetComponent<RectTransform>();
 
-            // clear
-            // img.texture = null;
-
             // check 'url'
             Debug.Log($"{TAG} | LoadProfile(), step 1 - check url : {url}"); 
             if (string.IsNullOrEmpty(url))
@@ -76,19 +73,19 @@ namespace Joycollab.v2
             }
 
             // check 'R'
-            Debug.Log($"{TAG} | LoadProfile(), step 2 - photo in R (check)"); 
-            // Texture2D res = R.singleton.GetPhoto(url);
-            Texture2D res = R.singleton.GetPhoto(seq);
-            if (res != null) 
+            Texture2D res = null;
+            string photoPath = R.singleton.GetPhotoPath(seq);
+            Debug.Log($"{TAG} | LoadProfile(), step 2 - photo path in R : {photoPath}"); 
+            if (photoPath.Equals(url)) 
             {
-                Debug.Log($"{TAG} | LoadProfile(), step 2 (1) - photo in R (is exist)"); 
-                img.texture = res;
-                Util.ResizeRawImage(rect, img, _v2Size.x, _v2Size.y);
-                return;
-            }
-            else 
-            {
-                Debug.Log($"{TAG} | LoadProfile(), step 2 (2) - photo in R (is not exist)"); 
+                res = R.singleton.GetPhoto(seq);
+                if (res != null) 
+                {
+                    Debug.Log($"{TAG} | LoadProfile(), step 2 (1) - photo in R (is exist)"); 
+                    img.texture = res;
+                    Util.ResizeRawImage(rect, img, _v2Size.x, _v2Size.y);
+                    return;
+                }
             }
 
             // request
@@ -109,7 +106,8 @@ namespace Joycollab.v2
             Util.ResizeRawImage(rect, img, _v2Size.x, _v2Size.y);
 
             // R.singleton.AddPhoto(url, res);
-            R.singleton.AddPhoto(seq, res);
+            // R.singleton.AddPhoto(seq, res);
+            R.singleton.AddPhoto(seq, url, res);
         }
 
         public async UniTaskVoid LoadImage(string url) 
