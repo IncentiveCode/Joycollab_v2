@@ -333,7 +333,6 @@ namespace Joycollab.v2
             // TOKEN CHECK
         #if UNITY_EDITOR
 
-            Debug.Log($"{TAG} | editor. here?");
             await UniTask.Yield();
             SceneLoader.Load(next.Contains(S.WORLD) ? eScenes.World : eScenes.SignIn);
         

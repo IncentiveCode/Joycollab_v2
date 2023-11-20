@@ -37,6 +37,9 @@ namespace Joycollab.v2
         [SerializeField] private Image _imgState;
         [SerializeField] private LocalizeStringEvent _txtState;
 
+        [Header("tag")] 
+        [SerializeField] private TagParse parser;
+
         [Header("button")]
         [SerializeField] private Button _btnEdit;
         [SerializeField] private Button _btnClose;
@@ -52,7 +55,8 @@ namespace Joycollab.v2
         private StringBuilder builder;
 
         // local variables
-        private int targetMemberSeq;
+        private RectTransform _rect;
+        private int _targetMemberSeq;
 
 
     #region Unity functions
@@ -61,6 +65,8 @@ namespace Joycollab.v2
         {
             Init();
             base.Reset();
+
+            _rect = transform.GetComponent<RectTransform>();
         }
 
     #endregion  // Unity functions
@@ -80,19 +86,19 @@ namespace Joycollab.v2
             });
             _btnClose.onClick.AddListener(Hide);
             _btnMeeting.onClick.AddListener(() => {
-                List<int> meetingTarget = new List<int> { targetMemberSeq };
+                List<int> meetingTarget = new List<int> { _targetMemberSeq };
                 SystemManager.singleton.MeetingOnTheSpot(meetingTarget).Forget();
             });
             _btnCall.onClick.AddListener(() => {
                 List<int> callTarget = new List<int> {
                     R.singleton.memberSeq,
-                    targetMemberSeq
+                    _targetMemberSeq
                 };
                 SystemManager.singleton.CallOnTheSpot(callTarget).Forget();
             });
             _btnChat.onClick.AddListener(() => {
-                string chatLink = string.Format(URL.CHATVIEW_LINK, R.singleton.memberSeq, targetMemberSeq, R.singleton.Region);
-                JsLib.OpenChat(chatLink, targetMemberSeq);
+                string chatLink = string.Format(URL.CHATVIEW_LINK, R.singleton.memberSeq, _targetMemberSeq, R.singleton.Region);
+                JsLib.OpenChat(chatLink, _targetMemberSeq);
             });
 
 
@@ -144,7 +150,7 @@ namespace Joycollab.v2
                 return -1;
             }
 
-            targetMemberSeq = memberSeq;
+            _targetMemberSeq = memberSeq;
             DisplayInfo(memberInfo.data);
             
             return 0;
@@ -191,6 +197,14 @@ namespace Joycollab.v2
             // state
             _imgState.sprite = SystemManager.singleton.GetStateIcon(info.status.id);
             _txtState.StringReference.SetReference("Word", $"상태.{info.status.id}");
+            
+            // tag
+            var isTagExist = string.IsNullOrEmpty(info.tag);
+            parser.gameObject.SetActive(!isTagExist);
+            
+            var size = _rect.sizeDelta;
+            _rect.sizeDelta = new Vector2(size.x, isTagExist ? 200f : 240f);
+            parser.Init(info.tag);
 
             // button... 수정 버튼 외의 버튼들은 주석처리
             _btnEdit.gameObject.SetActive(isMine);

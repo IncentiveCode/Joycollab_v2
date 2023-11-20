@@ -20,6 +20,7 @@
 ///     v0.13 (2023. 08. 28) : SignInW, v1 에서 만들었던 world login 과 통합.
 ///     v0.14 (2023. 09. 21) : world -> joycollab 으로 돌아가는 버튼과 테스트 버튼 추가.
 ///     v0.15 (2023. 11. 02) : id, password rule 확인하는 기능 추가.
+///     v0.16 (2023. 11. 20) : guest 로그인 처리 수정.
 /// </summary>
 
 using UnityEngine;
@@ -167,7 +168,7 @@ namespace Joycollab.v2
             }
             else if (isWorld) 
             {
-                _btnGuest.onClick.AddListener(() => ViewManager.singleton.Push(S.WorldScene_Guest));
+                _btnGuest.onClick.AddListener(() => ViewManager.singleton.Push(S.WorldScene_GuestAgreement));
                 _btnJoycollab.onClick.AddListener(() => {
                 #if UNITY_WEBGL && !UNITY_EDITOR
                     JsLib.Redirection(URL.INDEX);

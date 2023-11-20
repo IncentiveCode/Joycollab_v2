@@ -1,13 +1,14 @@
 /// <summary>
 /// 자주 사용하는 color 값 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 07 
-/// @version        : 0.4
+/// @last update    : 2023. 11. 20 
+/// @version        : 0.5
 /// @update
 ///     v0.1 (2023. 04. 14) : 최초 생성. 상태 색상, 버튼 색상 정리  
-///     v0.2 (2023. 07. 31) : Plan 색상 추가.
-///     v0.3 (2023. 08. 10) : World 에서 사용하는 색상 추가.
+///     v0.2 (2023. 07. 31) : Plan 색상 추가
+///     v0.3 (2023. 08. 10) : World 에서 사용하는 색상 추가
 ///     v0.4 (2023. 11. 07) : state color 에 outing 추가
+/// 	v0.5 (2023. 11. 20) : Link color 추가
 /// </summary>
 
 using UnityEngine;
@@ -147,6 +148,21 @@ namespace Joycollab.v2
 		/// Plan - Premium - icon and select area color
 		/// </summary>
 		public static readonly Color PREMIUM = new Color(0.0509804f, 0.6117647f, 0.6431373f, 1f);
+
+	#endregion	// plan color 
+
+
+	#region plan color 
+
+		/// <summary>
+		/// Link 
+		/// </summary>
+		public static readonly Color Link = new Color(0.1490196f, 0.4705883f, 0.5686275f, 1f);
+
+		/// <summary>
+		/// Plain text
+		/// </summary>
+		public static readonly Color Plain = new Color(0.2156863f, 0.2156863f, 0.2156863f, 1f);
 
 	#endregion	// plan color 
 	}

@@ -1,8 +1,8 @@
 /// <summary>
 /// 자주 사용하는 string 값 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 09
-/// @version        : 0.13
+/// @last update    : 2023. 11. 20
+/// @version        : 0.14
 /// @update
 ///     v0.1 (2023. 03. 20) : 최초 생성. Scene 이름, LoginView, MobileView 이름 정리
 ///     v0.2 (2023. 04. 07) : Language, region 관련 상수 정리 
@@ -17,6 +17,7 @@
 ///     v0.11 (2023. 09. 14) : World 에서 사용할 WindowView 이름 정리 (진행 중)
 ///     v0.12 (2023. 10. 06) : Popup menu string 정리
 ///     v0.13 (2023. 11. 09) : Bookmark type 정리
+///     v0.14 (2023. 11. 20) : World FixedView Name 정리 (guest agreement 추가)
 /// </summary>
 
 namespace Joycollab.v2
@@ -209,12 +210,13 @@ namespace Joycollab.v2
         public const string WorldScene_ViewTag = "WorldView";
 
         public const string WorldScene_SignIn = "sign in_w";
-        public const string WorldScene_Guest = "guest_w";
-        public const string WorldScene_Reset = "reset_w";
-        public const string WorldScene_Restore = "restore_w";
         public const string WorldScene_Agreement = "agreement_w";
         public const string WorldScene_Terms = "terms_w";
+        public const string WorldScene_GuestAgreement = "guest agreement_w";
+        public const string WorldScene_Guest = "guest_w";
         public const string WorldScene_SignUp = "sign up_w";
+        public const string WorldScene_Restore = "restore_w";
+        public const string WorldScene_Reset = "reset_w";
         public const string WorldScene_Info = "info_w";
 
     #endregion  // World FixedView Name

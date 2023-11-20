@@ -1,11 +1,12 @@
 /// <summary>
 /// 약관 동의 화면
 /// @author         : HJ Lee
-/// @last update    : 2023. 08. 28.
-/// @version        : 0.2
+/// @last update    : 2023. 11. 20.
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 08. 11) : v1 에서 만들었던 Agreement 수정 후 적용.
 ///     v0.2 (2023. 08. 28) : World 에서 추가된 나이 관련 옵션 추가.
+///     v0.3 (2023. 11. 20) : guest 용 agreement 추가.
 /// </summary>
 
 using System;
@@ -18,6 +19,9 @@ namespace Joycollab.v2
     public class Agreement : FixedView
     {
         private const string TAG = "Agreement";
+
+        [Header("target")]
+        [SerializeField] private eSignInType type;
 
         [Header("Agree to All")]
         [SerializeField] private Toggle _toggleAll;
@@ -85,7 +89,10 @@ namespace Joycollab.v2
                 {
                     _toggleAgeLimit.isOn = isOn;
                 }
-                _toggleMarketing.isOn = isOn;
+                if (_toggleMarketing != null)
+                {
+                    _toggleMarketing.isOn = isOn;
+                }
                 _btnNext.interactable = isOn;
             });
 
@@ -95,14 +102,17 @@ namespace Joycollab.v2
             {
                 _toggleAgeLimit.onValueChanged.AddListener((isOn) => CheckState());
             }
-            _toggleMarketing.onValueChanged.AddListener((isOn) => {
-                _toggleMail.isOn = isOn;
-                _toggleMail.interactable = isOn;
+            if (_toggleMarketing != null)
+            {
+                _toggleMarketing.onValueChanged.AddListener((isOn) => {
+                    _toggleMail.isOn = isOn;
+                    _toggleMail.interactable = isOn;
 
-                // TODO. 나중에 SMS 관련 기능이 생기면 그 때 반영.
-                // _toggleSms.isOn = isOn;
-                // _toggleSms.interactable = isOn;
-            });
+                    // TODO. 나중에 SMS 관련 기능이 생기면 그 때 반영.
+                    // _toggleSms.isOn = isOn;
+                    // _toggleSms.interactable = isOn;
+                });
+            }
 
 
             // set button listener
@@ -120,13 +130,16 @@ namespace Joycollab.v2
                     S.TERMS_OF_PRIVACY
                 );
             });
-            _btnMarketing.onClick.AddListener(() => {
-                SaveState(currentData);
-                ViewManager.singleton.Push(
-                    isWorld ? S.WorldScene_Terms : S.SignInScene_Terms,
-                    S.TERMS_OF_MARKETING
-                );
-            });
+            if (_btnMarketing != null) 
+            {
+                _btnMarketing.onClick.AddListener(() => {
+                    SaveState(currentData);
+                    ViewManager.singleton.Push(
+                        isWorld ? S.WorldScene_Terms : S.SignInScene_Terms,
+                        S.TERMS_OF_MARKETING
+                    );
+                });
+            }
             _btnBack.onClick.AddListener(() => { 
                 PlayerPrefs.DeleteKey(S.CURRENT_AGREEMENT);
 
@@ -135,7 +148,7 @@ namespace Joycollab.v2
                     isWorld ? S.WorldScene_SignIn : S.SignInScene_SignIn
                 );
             });
-            _btnNext.onClick.AddListener(() => Next());
+            _btnNext.onClick.AddListener(Next);
 
 
             // set local variable
@@ -174,11 +187,20 @@ namespace Joycollab.v2
             {
                 _toggleAgeLimit.isOn = currentData.agreeToAgeLimit;
             }
-            _toggleMarketing.isOn = currentData.agreeToMarketing;
-            _toggleMail.interactable = currentData.agreeToMarketing;;
-            _toggleMail.isOn = currentData.agreeToReceiveMail;
-            _toggleSms.interactable = currentData.agreeToMarketing;
-            _toggleSms.isOn = currentData.agreeToReceiveSMS;
+            if (_toggleMarketing != null)   
+            {
+                _toggleMarketing.isOn = currentData.agreeToMarketing;
+            }
+            if (_toggleMail != null)
+            {
+                _toggleMail.interactable = currentData.agreeToMarketing;;
+                _toggleMail.isOn = currentData.agreeToReceiveMail;
+            }
+            if (_toggleSms != null)
+            {
+                _toggleSms.interactable = currentData.agreeToMarketing;
+                _toggleSms.isOn = currentData.agreeToReceiveSMS;
+            }
             CheckState();
 
             if (isOffice)
@@ -219,7 +241,10 @@ namespace Joycollab.v2
             data.agreeToTerms = _toggleTerms.isOn;
             data.agreeToPrivacy = _togglePrivacy.isOn;
             data.agreeToAgeLimit = isWorld ? _toggleAgeLimit.isOn : false;
-            data.agreeToMarketing = _toggleMarketing.isOn;
+            if (_toggleMarketing != null)
+            {
+                data.agreeToMarketing = _toggleMarketing.isOn;
+            }
             data.agreeToReceiveSMS = _toggleSms.isOn;
             data.agreeToReceiveMail = _toggleMail.isOn;
 
@@ -237,7 +262,21 @@ namespace Joycollab.v2
             }
             else if (isWorld) 
             {
-                ViewManager.singleton.Push(S.WorldScene_SignUp);
+                switch (type) 
+                {
+                    case eSignInType.Guest :
+                        ViewManager.singleton.Push(S.WorldScene_Guest);
+                        break;
+
+                    case eSignInType.Invite :
+                        Debug.Log($"{TAG} | TODO. 초대 받은 사용자 처리.");
+                        break;
+
+                    case eSignInType.Member :
+                    default :
+                        ViewManager.singleton.Push(S.WorldScene_SignUp);
+                        break;
+                }
             }
         }
 

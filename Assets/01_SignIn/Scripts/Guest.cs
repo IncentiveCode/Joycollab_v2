@@ -1,11 +1,12 @@
 /// <summary>
 /// 게스트가 특정 회사에 들어가거나 월드에 진입하는 화면
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 06.
-/// @version        : 0.2
+/// @last update    : 2023. 11. 20.
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 08. 23) : v1 에서 만들었던 GuestLogin 수정 후 적용.
 ///     v0.2 (2023. 11. 06) : world seqeuence 를 확인 후, world 진입할 수 있도록 연결.
+///     v0.3 (2023. 11. 20) : 로그인/회원가입 버튼 주석처리, 뒤로가기 추가.
 /// </summary>
 
 using UnityEngine;
@@ -34,6 +35,7 @@ namespace Joycollab.v2
         [SerializeField] private TMP_InputField _inputName;
 
         [Header("Button")]
+        [SerializeField] private Button _btnBack;
         [SerializeField] private Button _btnEnter;
         [SerializeField] private Button _btnSignIn;
         [SerializeField] private Button _btnSignUp;
@@ -86,6 +88,15 @@ namespace Joycollab.v2
 
 
             // set button listener
+            if (_btnBack != null) 
+            {
+                _btnBack.onClick.AddListener(() => {
+                    ViewManager.singleton.PopAll();
+                    ViewManager.singleton.Push(
+                        isWorld ? S.WorldScene_SignIn : S.SignInScene_SignIn
+                    );
+                });
+            }
             _btnEnter.onClick.AddListener(() => {
                 if (isOffice) 
                 {
@@ -97,13 +108,9 @@ namespace Joycollab.v2
                     GuestSignInAsync().Forget();
                 }
             });
-            _btnSignIn.onClick.AddListener(() => {
-                if (ViewManager.singleton.GetStackCount() >= 1) 
-                {
-                    ViewManager.singleton.Pop();
-                }
-                else 
-                {
+            if (_btnSignIn != null) 
+            {
+                _btnSignIn.onClick.AddListener(() => {
                     if (isOffice) 
                     {
                 #if UNITY_WEBGL && !UNITY_EDITOR
@@ -118,21 +125,24 @@ namespace Joycollab.v2
                     {
                         ViewManager.singleton.Push(S.WorldScene_SignIn);
                     }
-                }
-            });
-            _btnSignUp.onClick.AddListener(() => {
-                if (isOffice) 
-                {
-                    PopupBuilder.singleton.OpenConfirm(
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "회원가입 안내", R.singleton.CurrentLocale),
-                        () => ViewManager.singleton.Push(isWorld ? S.WorldScene_SignUp : S.SignInScene_SignUp)
-                    );
-                }
-                else if (isWorld)
-                {
-                    ViewManager.singleton.Push(S.WorldScene_Agreement);
-                }
-            });
+                });
+            }
+            if (_btnSignUp != null) 
+            {
+                _btnSignUp.onClick.AddListener(() => {
+                    if (isOffice) 
+                    {
+                        PopupBuilder.singleton.OpenConfirm(
+                            LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "회원가입 안내", R.singleton.CurrentLocale),
+                            () => ViewManager.singleton.Push(isWorld ? S.WorldScene_SignUp : S.SignInScene_SignUp)
+                        );
+                    }
+                    else if (isWorld)
+                    {
+                        ViewManager.singleton.Push(S.WorldScene_Agreement);
+                    }
+                });
+            }
         }
 
         public override async UniTaskVoid Show() 

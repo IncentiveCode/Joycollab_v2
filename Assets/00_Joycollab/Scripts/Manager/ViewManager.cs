@@ -102,6 +102,7 @@ namespace Joycollab.v2
                     Push(S.MobileScene_Login);
                     break;
 
+                case S.SignInScene_ViewTag :
                 default :
                     Push(S.SignInScene_SignIn);
                     break;
