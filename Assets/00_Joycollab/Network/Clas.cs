@@ -1,18 +1,20 @@
 /// <summary>
 /// Network 통신 - 모임방 관련 요청과 응답
 /// @author         : HJ Lee
-/// @last update    : 2023. 10. 04 
-/// @version        : 0.4
+/// @last update    : 2023. 11. 21 
+/// @version        : 0.5
 /// @update
 ///     v0.1 (2023. 08. 31) : 최초 생성
 ///     v0.2 (2023. 09. 14) : InfiniteScrollData class 수정. Request class 추가.
 ///     v0.3 (2023. 09. 22) : 모임방 생성용 Request class 추가. (RequestCreateClas, RequestCreateClasDetail)
 ///     v0.4 (2023. 10. 04) : 모임방 카테고리 관련 InfiniteScrollData class 추가.
+///     v0.5 (2023. 11. 21) : 모임방 생성, 참여 등을 위한 match message struct 추가.
 /// </summary>
  
 using System;
 using System.Collections.Generic;
 using Gpm.Ui;
+using Mirror;
 
 namespace Joycollab.v2
 {
@@ -53,6 +55,9 @@ namespace Joycollab.v2
         public string addr;
         public string addrDtl;
         public ClasDetail clas;
+
+        // 추가가 필요할 수 있는 항목
+        public Guid roomId;
     }
 
     [Serializable]
@@ -161,4 +166,57 @@ namespace Joycollab.v2
             this.info = info;
         }
     }
+
+
+#region Network message 
+
+    /// <summary>
+    /// Match operation to execute on the server
+    /// </summary>
+    public enum ServerRoomOperation : byte
+    {
+        None,
+        Create,
+        Cancel,
+        Start,
+        Join,
+        Leave,
+        Ready
+    }
+
+    /// <summary>
+    /// Match operation to execute on the client
+    /// </summary>
+    public enum ClientRoomOperation : byte
+    {
+        None,
+        List,
+        Created,
+        Cancelled,
+        Joined,
+        Departed,
+        UpdateRoom,
+        Started
+    }
+
+    /// Room message to be sent to the server
+    /// </summary>
+    public struct ServerRoomMessage : NetworkMessage
+    {
+        public ServerRoomOperation serverRoomOperation;
+        public Guid roomId;
+    }
+
+    /// <summary>
+    /// Room message to be sent to the client
+    /// </summary>
+    public struct ClientRoomMessage : NetworkMessage
+    {
+        public ClientRoomOperation clientRoomOperation;
+        public Guid roomId;
+        public ClasInfo[] roomInfos;
+        public WorldAvatarInfo[] playerInfos;
+    }
+
+#endregion  // Network message 
 }

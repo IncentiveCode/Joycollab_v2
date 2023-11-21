@@ -59,7 +59,7 @@ namespace Joycollab.v2
             base.Init();
             viewID = ID.USER_LIST_W;
             viewData = new WindowViewData();
-            viewDataKey = $"view_data_{viewID}";
+            viewDataKey = $"view_data_{viewID}_{R.singleton.memberSeq}";
 
 
             // set infinite scroll view

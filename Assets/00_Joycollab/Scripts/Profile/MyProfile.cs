@@ -79,7 +79,7 @@ namespace Joycollab.v2
             base.Init();
             viewID = ID.MY_PROFILE_W;
             viewData = new WindowViewData();
-            viewDataKey = $"view_data_{viewID}";
+            viewDataKey = $"view_data_{viewID}_{R.singleton.memberSeq}";
 
 
             // set button listener

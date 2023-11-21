@@ -1,10 +1,11 @@
 /// <summary>
 /// 튜토리얼 / 월드 미니맵을 출력하기 위한 팝업 클래스 
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 17
-/// @version        : 0.1
+/// @last update    : 2023. 11. 21
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 11. 17) : v1 에서 가져와서 수정 후 적용
+///     v0.2 (2023. 11. 21) : 첫 Load 에서 이미지 크기를 제대로 받지 못하는 오류 수정
 /// </summary>
 
 using UnityEngine;
@@ -26,7 +27,7 @@ namespace Joycollab.v2
 
         [Header("Info")]
         [SerializeField] private eTutorialType type;
-        [SerializeField] private int _nPageCount;
+        [SerializeField] private int _pageCount;
         [SerializeField] private RawImage _imgPage;
 
         // local variables
@@ -49,19 +50,19 @@ namespace Joycollab.v2
             _btnClose.onClick.AddListener(() => Destroy(gameObject));
 
             _btnPrev.onClick.AddListener(() => {
-                nCurrentPage = Mathf.Clamp(--nCurrentPage, 0, (_nPageCount-1));
+                nCurrentPage = Mathf.Clamp(--nCurrentPage, 0, (_pageCount-1));
                 Load(nCurrentPage);
 
                 _btnPrev.gameObject.SetActive(nCurrentPage > 0);
-                _btnNext.gameObject.SetActive(nCurrentPage < (_nPageCount-1));
+                _btnNext.gameObject.SetActive(nCurrentPage < (_pageCount-1));
             });
 
             _btnNext.onClick.AddListener(() => {
-                nCurrentPage = Mathf.Clamp(++nCurrentPage, 0, (_nPageCount-1));
+                nCurrentPage = Mathf.Clamp(++nCurrentPage, 0, (_pageCount-1));
                 Load(nCurrentPage);
 
                 _btnPrev.gameObject.SetActive(nCurrentPage > 0);
-                _btnNext.gameObject.SetActive(nCurrentPage < (_nPageCount-1));
+                _btnNext.gameObject.SetActive(nCurrentPage < (_pageCount-1));
             });
 
 
@@ -83,13 +84,13 @@ namespace Joycollab.v2
                 case eTutorialType.QuickLearning :
                     string memberType = R.singleton.myMemberType;
                     bool isAdmin = memberType.Equals(S.ADMIN) || memberType.Equals(S.OWNER);
-                    _nPageCount = isAdmin ? 6 : 4;
-                    Debug.Log($"{TAG} | Awake(), Office 주요기능 튜토리얼 설정. is admin : {isAdmin}, page count : {_nPageCount}");
+                    _pageCount = isAdmin ? 6 : 4;
+                    Debug.Log($"{TAG} | Awake(), Office 주요기능 튜토리얼 설정. is admin : {isAdmin}, page count : {_pageCount}");
                     break;
 
                 case eTutorialType.MiniMap :
-                    _nPageCount = 2;
-                    Debug.Log($"{TAG} | World MiniMap 설정. page count : {_nPageCount}");
+                    _pageCount = 2;
+                    Debug.Log($"{TAG} | World MiniMap 설정. page count : {_pageCount}");
                     break;
                 
                 case eTutorialType.None :
@@ -111,15 +112,12 @@ namespace Joycollab.v2
             tempColor.a = 0;
             _imgPage.color = tempColor;
 
-            width = parentRect.rect.width - 32f;
-            height = parentRect.rect.height - 32f;
-            Debug.Log("TutorialPopup | width : "+ width +", height : "+ height);
-
             if (type == eTutorialType.QuickLearning)
                 sCurrentKey = string.Format("{0}_{1:00}", R.singleton.Region, page);
             else
-                sCurrentKey = string.Format("MiniMap_{0}f", page);
+                sCurrentKey = string.Format("MiniMap_{0}f", (page+1));
 
+            Debug.Log($"{TAG} | load({page}), key : {sCurrentKey}");
             LoadSprite(sCurrentKey);
         }
 
@@ -133,8 +131,11 @@ namespace Joycollab.v2
             switch (handle.Status) 
             {
                 case AsyncOperationStatus.Succeeded :
-                    // _imgPage.sprite = handle.Result;
                     _imgPage.texture = handle.Result;
+
+                    width = parentRect.rect.width - 32f;
+                    height = parentRect.rect.height - 32f;
+                    Debug.Log("TutorialPopup | width : "+ width +", height : "+ height);
                     Util.ResizeRawImage(rect, _imgPage, width, height);
 
                     Appearing().Forget();

@@ -556,7 +556,7 @@ namespace Joycollab.v2
 
                 case eClickableLinkType.MiniMap :
                     // Debug.Log($"{TAG} | SetLinkInfo(), type : {_linkType} : 추후 별도의 팝업 출력. 현재는 빈값 사용.");
-                    _linkPath = string.Empty;
+                    // _linkPath = string.Empty;
                     break;
 
                 case eClickableLinkType.GuestBook :
@@ -583,6 +583,10 @@ namespace Joycollab.v2
                 case eClickableLinkType.Information :
                 case eClickableLinkType.Tutorial :
                     Debug.Log($"{TAG} | LinkLeftClick(), type : {_linkType} : Tutorial popup 연결 예정.");
+                    break;
+
+                case eClickableLinkType.MiniMap :
+                    SystemManager.singleton.ShowTutorialPopup(eTutorialType.MiniMap);
                     break;
 
                 case eClickableLinkType.None :

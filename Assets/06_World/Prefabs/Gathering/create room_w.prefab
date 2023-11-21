@@ -5890,8 +5890,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   viewTag: WorldView
   isMultiple: 0
-  width: 650
-  height: 650
+  minWidth: 0
+  minHeight: 0
   _module: {fileID: 6249342011219856174, guid: 8db3979ed6b09f340a7ea79c0e31ec69, type: 3}
   _inputTitle: {fileID: 685529987379113024}
   _inputDetail: {fileID: 685529988262636592}
@@ -7325,7 +7325,6 @@ GameObject:
   - component: {fileID: 685529988473205695}
   - component: {fileID: 685529988473205690}
   - component: {fileID: 685529988473205693}
-  - component: {fileID: 685529988473205692}
   m_Layer: 5
   m_Name: background
   m_TagString: Untagged
@@ -7391,21 +7390,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &685529988473205692
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 685529988473205694}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e19747de3f5aca642ab2be37e372fb86, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_EffectColor: {r: 0.93333334, g: 0.93333334, b: 0.93333334, a: 1}
-  m_EffectDistance: {x: 1, y: -1}
-  m_UseGraphicAlpha: 1
 --- !u!1 &685529988482942071
 GameObject:
   m_ObjectHideFlags: 0
