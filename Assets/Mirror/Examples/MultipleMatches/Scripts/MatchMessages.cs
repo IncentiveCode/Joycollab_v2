@@ -20,6 +20,7 @@ namespace Mirror.Examples.MultipleMatch
         public Guid matchId;
         public MatchInfo[] matchInfos;
         public PlayerInfo[] playerInfos;
+        public PlayerInfo[] waitingInfos;
     }
 
     /// <summary>
@@ -78,7 +79,8 @@ namespace Mirror.Examples.MultipleMatch
         Joined,
         Departed,
         UpdateRoom,
-        Started
+        Started,
+        UpdateUser
     }
 
     //     A1 | B1 | C1

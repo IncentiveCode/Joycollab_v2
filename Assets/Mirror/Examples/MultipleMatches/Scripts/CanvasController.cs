@@ -38,6 +38,8 @@ namespace Mirror.Examples.MultipleMatch
         /// Network Connections that have neither started nor joined a match yet
         /// </summary>
         internal static readonly List<NetworkConnectionToClient> waitingConnections = new List<NetworkConnectionToClient>();
+        // internal static readonly Dictionary<NetworkConnection, PlayerInfo> waitingInfos = new Dictionary<NetworkConnection, PlayerInfo>();
+        internal static readonly Dictionary<int, PlayerInfo> waitingInfos = new Dictionary<int, PlayerInfo>();
 
         /// <summary>
         /// GUID of a match the local player has created
@@ -58,6 +60,8 @@ namespace Mirror.Examples.MultipleMatch
         int playerIndex = 1;
 
         [Header("GUI References")]
+        public GameObject userList;
+        public GameObject userPrefab;
         public GameObject matchList;
         public GameObject matchPrefab;
         public GameObject matchControllerPrefab;
@@ -77,6 +81,7 @@ namespace Mirror.Examples.MultipleMatch
             matchConnections.Clear();
             playerInfos.Clear();
             waitingConnections.Clear();
+            waitingInfos.Clear();
         }
 
         #region UI Functions
@@ -101,7 +106,7 @@ namespace Mirror.Examples.MultipleMatch
         void ResetCanvas()
         {
             InitializeData();
-            lobbyView.SetActive(false);
+            // lobbyView.SetActive(false);
             roomView.SetActive(false);
             gameObject.SetActive(false);
         }
@@ -162,9 +167,12 @@ namespace Mirror.Examples.MultipleMatch
         [ClientCallback]
         public void RequestLeaveMatch()
         {
-            if (localJoinedMatch == Guid.Empty) return;
+            // if (localJoinedMatch == Guid.Empty) return;
 
-            NetworkClient.Send(new ServerMatchMessage { serverMatchOperation = ServerMatchOperation.Leave, matchId = localJoinedMatch });
+            if (localJoinedMatch != Guid.Empty)
+                NetworkClient.Send(new ServerMatchMessage { serverMatchOperation = ServerMatchOperation.Leave, matchId = localJoinedMatch });
+            else if (localPlayerMatch != Guid.Empty)
+                NetworkClient.Send(new ServerMatchMessage { serverMatchOperation = ServerMatchOperation.Leave, matchId = localPlayerMatch });
         }
 
         /// <summary>
@@ -173,7 +181,7 @@ namespace Mirror.Examples.MultipleMatch
         [ClientCallback]
         public void RequestCancelMatch()
         {
-            if (localPlayerMatch == Guid.Empty) return;
+            // if (localPlayerMatch == Guid.Empty) return;
 
             NetworkClient.Send(new ServerMatchMessage { serverMatchOperation = ServerMatchOperation.Cancel });
         }
@@ -230,10 +238,15 @@ namespace Mirror.Examples.MultipleMatch
         internal void OnServerReady(NetworkConnectionToClient conn)
         {
             waitingConnections.Add(conn);
-            playerInfos.Add(conn, new PlayerInfo { playerIndex = this.playerIndex, ready = false });
+            PlayerInfo info = new PlayerInfo { playerIndex = this.playerIndex, ready = false };
+            playerInfos.Add(conn, info);
             playerIndex++;
 
+            // waitingInfos.Add(conn, info);
+            waitingInfos.Add(info.playerIndex, info);
+
             SendMatchList();
+            SendUserList();
         }
 
         [ServerCallback]
@@ -279,10 +292,24 @@ namespace Mirror.Examples.MultipleMatch
                     foreach (NetworkConnectionToClient playerConn in matchConnections[playerInfo.matchId])
                         if (playerConn != conn)
                             playerConn.Send(new ClientMatchMessage { clientMatchOperation = ClientMatchOperation.UpdateRoom, playerInfos = infos });
+
+                    // !! test
+                    foreach (var info in infos) 
+                    {
+                        if (waitingInfos.ContainsKey(info.playerIndex))
+                            waitingInfos.Remove(info.playerIndex);
+                    }
+                    // !! test
                 }
+            }
+            else 
+            {
+                if (waitingInfos.ContainsKey(playerInfo.playerIndex))
+                    waitingInfos.Remove(playerInfo.playerIndex);
             }
 
             SendMatchList();
+            SendUserList();
 
             yield return null;
         }
@@ -297,6 +324,8 @@ namespace Mirror.Examples.MultipleMatch
         internal void OnClientConnect()
         {
             playerInfos.Add(NetworkClient.connection, new PlayerInfo { playerIndex = this.playerIndex, ready = false });
+            // waitingInfos.Add(NetworkClient.connection, new PlayerInfo { playerIndex = this.playerIndex, ready = false });
+            waitingInfos.Add(this.playerIndex, new PlayerInfo { playerIndex = this.playerIndex, ready = false });
         }
 
         [ClientCallback]
@@ -403,7 +432,32 @@ namespace Mirror.Examples.MultipleMatch
             foreach (NetworkConnectionToClient playerConn in matchConnections[matchId])
                 playerConn.Send(new ClientMatchMessage { clientMatchOperation = ClientMatchOperation.UpdateRoom, playerInfos = infos });
 
+            // !! test - HashMap 에서 현재 연결 삭제
+            foreach (var playerConn in connections) 
+            {
+                if (conn == playerConn)
+                {
+                    Debug.Log("(Leave) HashMap 에서 현재 연결 삭제.");
+                    connections.Remove(conn);
+                    break;
+                }
+            }
+            // !! test                        
+
             SendMatchList();
+
+            // !! test
+            /**
+            foreach (var info in infos) 
+            {
+				if (! waitingInfos.ContainsKey(info.playerIndex))
+					waitingInfos.Add(info.playerIndex, info);
+            }
+             */
+            if (! waitingInfos.ContainsKey(playerInfo.playerIndex))
+                waitingInfos.Add(playerInfo.playerIndex, playerInfo);
+            SendUserList();
+            // !! test
 
             conn.Send(new ClientMatchMessage { clientMatchOperation = ClientMatchOperation.Departed });
         }
@@ -427,8 +481,16 @@ namespace Mirror.Examples.MultipleMatch
             PlayerInfo[] infos = matchConnections[newMatchId].Select(playerConn => playerInfos[playerConn]).ToArray();
 
             conn.Send(new ClientMatchMessage { clientMatchOperation = ClientMatchOperation.Created, matchId = newMatchId, playerInfos = infos });
-
             SendMatchList();
+
+            // !! test
+            foreach (var info in infos) 
+            {
+				if (waitingInfos.ContainsKey(info.playerIndex))
+					waitingInfos.Remove(info.playerIndex);
+            }
+            SendUserList();
+            // !! test
         }
 
         [ServerCallback]
@@ -442,7 +504,16 @@ namespace Mirror.Examples.MultipleMatch
             if (playerMatches.TryGetValue(conn, out matchId))
             {
                 playerMatches.Remove(conn);
-                openMatches.Remove(matchId);
+
+                // !! test, match remove 하지 말아보자. 인원수만 -1 시킴.
+                // openMatches.Remove(matchId);
+                MatchInfo matchInfo;
+                if (openMatches.TryGetValue(matchId, out matchInfo))
+                {
+                    matchInfo.players --;
+                    openMatches[matchId] = matchInfo;
+                }
+                // !! -----
 
                 foreach (NetworkConnectionToClient playerConn in matchConnections[matchId])
                 {
@@ -451,9 +522,26 @@ namespace Mirror.Examples.MultipleMatch
                     playerInfo.matchId = Guid.Empty;
                     playerInfos[playerConn] = playerInfo;
                     playerConn.Send(new ClientMatchMessage { clientMatchOperation = ClientMatchOperation.Departed });
+
+                    // !! test
+                    waitingInfos.Add(playerInfo.playerIndex, playerInfo);
+                    // !! test
                 }
 
+                // !! test - HashMap 에서 현재 연결 삭제
+                foreach (var playerConn in matchConnections[matchId]) 
+                {
+                    if (conn == playerConn)
+                    {
+                        Debug.Log("(Cancel) HashMap 에서 현재 연결 삭제.");
+                        matchConnections[matchId].Remove(conn);
+                        break;
+                    }
+                }
+                // !! test
+
                 SendMatchList();
+                SendUserList();
             }
         }
 
@@ -520,6 +608,15 @@ namespace Mirror.Examples.MultipleMatch
             PlayerInfo[] infos = matchConnections[matchId].Select(playerConn => playerInfos[playerConn]).ToArray();
             SendMatchList();
 
+            // !! test
+            foreach (var info in infos) 
+            {
+                if (waitingInfos.ContainsKey(info.playerIndex))
+					waitingInfos.Remove(info.playerIndex);
+            }
+            SendUserList();
+            // !! test
+
             conn.Send(new ClientMatchMessage { clientMatchOperation = ClientMatchOperation.Joined, matchId = matchId, playerInfos = infos });
 
             foreach (NetworkConnectionToClient playerConn in matchConnections[matchId])
@@ -534,10 +631,36 @@ namespace Mirror.Examples.MultipleMatch
         internal void SendMatchList(NetworkConnectionToClient conn = null)
         {
             if (conn != null)
+            {
                 conn.Send(new ClientMatchMessage { clientMatchOperation = ClientMatchOperation.List, matchInfos = openMatches.Values.ToArray() });
+            }
             else
+            {
                 foreach (NetworkConnectionToClient waiter in waitingConnections)
+                {
                     waiter.Send(new ClientMatchMessage { clientMatchOperation = ClientMatchOperation.List, matchInfos = openMatches.Values.ToArray() });
+                }
+            }
+        }
+
+        /// <summary>
+        /// 대기자 목록 업데이트 신호 전달
+        /// </summary>
+        /// <param name="conn"></param>
+        [ServerCallback]
+        internal void SendUserList(NetworkConnectionToClient conn = null)
+        {
+            if (conn != null)
+            {
+                conn.Send(new ClientMatchMessage { clientMatchOperation = ClientMatchOperation.UpdateUser, waitingInfos = waitingInfos.Values.ToArray() });
+            }
+            else
+            {
+                foreach (NetworkConnectionToClient waiter in waitingConnections)
+                {
+                    waiter.Send(new ClientMatchMessage { clientMatchOperation = ClientMatchOperation.UpdateUser, waitingInfos = waitingInfos.Values.ToArray() });
+                }
+            }
         }
 
         #endregion
@@ -569,6 +692,7 @@ namespace Mirror.Examples.MultipleMatch
                         ShowRoomView();
                         roomGUI.RefreshRoomPlayers(msg.playerInfos);
                         roomGUI.SetOwner(true);
+                        SendUserList();
                         break;
                     }
                 case ClientMatchOperation.Cancelled:
@@ -583,6 +707,14 @@ namespace Mirror.Examples.MultipleMatch
                         ShowRoomView();
                         roomGUI.RefreshRoomPlayers(msg.playerInfos);
                         roomGUI.SetOwner(false);
+
+                        // test
+                        foreach (var info in msg.playerInfos) 
+                        {
+                            if (waitingInfos.ContainsKey(info.playerIndex))
+					            waitingInfos.Remove(info.playerIndex);
+                        }
+                        SendUserList();
                         break;
                     }
                 case ClientMatchOperation.Departed:
@@ -598,8 +730,16 @@ namespace Mirror.Examples.MultipleMatch
                     }
                 case ClientMatchOperation.Started:
                     {
-                        lobbyView.SetActive(false);
+                        // lobbyView.SetActive(false);
                         roomView.SetActive(false);
+                        break;
+                    }
+                case ClientMatchOperation.UpdateUser:
+                    {
+                        waitingInfos.Clear();
+                        foreach (var info in msg.waitingInfos) 
+                            waitingInfos.Add(info.playerIndex, info);
+                        RefreshUserList();
                         break;
                     }
             }
@@ -608,7 +748,7 @@ namespace Mirror.Examples.MultipleMatch
         [ClientCallback]
         void ShowLobbyView()
         {
-            lobbyView.SetActive(true);
+            // lobbyView.SetActive(true);
             roomView.SetActive(false);
 
             foreach (Transform child in matchList.transform)
@@ -622,7 +762,7 @@ namespace Mirror.Examples.MultipleMatch
         [ClientCallback]
         void ShowRoomView()
         {
-            lobbyView.SetActive(false);
+            // lobbyView.SetActive(false);
             roomView.SetActive(true);
         }
 
@@ -644,6 +784,20 @@ namespace Mirror.Examples.MultipleMatch
                 toggle.group = toggleGroup;
                 if (matchInfo.matchId == selectedMatch)
                     toggle.isOn = true;
+            }
+        }
+
+        [ClientCallback]
+        void RefreshUserList() 
+        {
+            foreach (Transform child in userList.transform) 
+                Destroy(child.gameObject);
+
+            foreach (var info in waitingInfos.OrderBy(go => go.Value.playerIndex)) 
+            {
+                GameObject user = Instantiate(userPrefab, Vector3.zero, Quaternion.identity);
+                user.GetComponent<UserGUI>().SetPlayerInfo(info.Value);
+                user.transform.SetParent(userList.transform, false);
             }
         }
 

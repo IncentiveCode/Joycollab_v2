@@ -275,21 +275,29 @@ namespace Mirror.Examples.MultipleMatch
             {
                 NetworkServer.RemovePlayerForConnection(player1.connectionToClient, true);
                 CanvasController.waitingConnections.Add(player1.connectionToClient);
+                var info1 = CanvasController.playerInfos[player1.connectionToClient];
+                CanvasController.waitingInfos.Add(info1.playerIndex, info1);
 
                 NetworkServer.RemovePlayerForConnection(player2.connectionToClient, true);
                 CanvasController.waitingConnections.Add(player2.connectionToClient);
+                var info2 = CanvasController.playerInfos[player2.connectionToClient];
+                CanvasController.waitingInfos.Add(info2.playerIndex, info2);
             }
             else if (conn == player1.connectionToClient)
             {
                 // player1 has disconnected - send player2 back to Lobby
                 NetworkServer.RemovePlayerForConnection(player2.connectionToClient, true);
                 CanvasController.waitingConnections.Add(player2.connectionToClient);
+                var info2 = CanvasController.playerInfos[player2.connectionToClient];
+                CanvasController.waitingInfos.Add(info2.playerIndex, info2);
             }
             else if (conn == player2.connectionToClient)
             {
                 // player2 has disconnected - send player1 back to Lobby
                 NetworkServer.RemovePlayerForConnection(player1.connectionToClient, true);
                 CanvasController.waitingConnections.Add(player1.connectionToClient);
+                var info1 = CanvasController.playerInfos[player1.connectionToClient];
+                CanvasController.waitingInfos.Add(info1.playerIndex, info1);
             }
 
             // Skip a frame to allow the Removal(s) to complete
@@ -297,6 +305,7 @@ namespace Mirror.Examples.MultipleMatch
 
             // Send latest match list
             canvasController.SendMatchList();
+            canvasController.SendUserList();
 
             NetworkServer.Destroy(gameObject);
         }
