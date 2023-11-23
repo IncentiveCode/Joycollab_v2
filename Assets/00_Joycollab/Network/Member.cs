@@ -36,11 +36,13 @@ namespace Joycollab.v2
         public string photo;
         public string memberType;
         public string stateId;
+        public Guid roomId;
 
         public WorldAvatarInfo() 
         {
             seq = -1;
             nickNm = photo = memberType = stateId = string.Empty;
+            roomId = Guid.Empty;
         }
 
         public WorldAvatarInfo(int seq, string nickNm, string photo, string memberType, string stateId)
@@ -50,6 +52,7 @@ namespace Joycollab.v2
             this.photo = photo;
             this.memberType = memberType;
             this.stateId = stateId;
+            roomId = Guid.Empty;
         }
     }
 

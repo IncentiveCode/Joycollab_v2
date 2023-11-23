@@ -21,8 +21,8 @@ namespace Joycollab.v2
         CreateRoom,
         JoinRoom,
         LeaveRoom,
-        RemoveFromRoom,
         DeleteRoom,
+        RemoveFromRoom,
     }
 
     /// <summary>

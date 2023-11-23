@@ -5,7 +5,7 @@
 /// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 03. 07) : 최초 생성, mirror-test 에서 작업한 항목 migration.
-///     v0.2 (2023. 11. 21) : Mirror.Examples.MultipleMatch 참고해서 수정.
+///     v0.2 (2023. 11. 21) : Mirror.Examples.MultipleMatch 참고해서 수정. -> WorldController 로 분리.
 /// </summary>
 
 using System;
@@ -18,16 +18,7 @@ namespace Joycollab.v2
     public class WorldNetworkManager : NetworkManager
     {
         private const string TAG = "WorldNetworkManager";
-
-        /// <summary>
-        /// 모임방 내부 사용자 (Cross-reference of client)
-        /// </summary>
-        internal static readonly Dictionary<NetworkConnectionToClient, Guid> playerInRoom = new Dictionary<NetworkConnectionToClient, Guid>();
-
-        /// <summary>
-        /// 현재 모임방 리스트 (game 을 시작하지는 않을 예정)
-        /// </summary>
-        internal static readonly Dictionary<Guid, ClasInfo> openRooms = new Dictionary<Guid, ClasInfo>();
+        private WorldController worldController;
 
 
     #region override functions
@@ -35,12 +26,16 @@ namespace Joycollab.v2
         public override void Awake() 
         {
             base.Awake();
+
+            if (worldController != null) worldController.InitializeData();
         }
         
         public override void OnStartServer() 
         {
             Debug.Log($"{TAG} | server started.");
             base.OnStartServer();
+
+            if (worldController != null) worldController.OnStartServer();
         }
 
         public override void OnStopServer() 
@@ -53,12 +48,16 @@ namespace Joycollab.v2
         {
             Debug.Log($"{TAG} | connect to server.");
             base.OnClientConnect();
+
+            if (worldController != null) worldController.OnClientConnect();
         }
 
         public override void OnClientDisconnect() 
         {
             Debug.Log($"{TAG} | disconnect from server.");
             base.OnClientDisconnect();
+
+            // if (worldController != null) worldController.OnclientDisconnect();
         }
 
         public override void OnServerAddPlayer(NetworkConnectionToClient conn) 

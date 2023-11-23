@@ -323,6 +323,8 @@ namespace Mirror.Examples.MultipleMatch
         [ClientCallback]
         internal void OnClientConnect()
         {
+            Debug.Log($"CanvasController | OnClientConnect(), index : {this.playerIndex}");
+
             playerInfos.Add(NetworkClient.connection, new PlayerInfo { playerIndex = this.playerIndex, ready = false });
             // waitingInfos.Add(NetworkClient.connection, new PlayerInfo { playerIndex = this.playerIndex, ready = false });
             waitingInfos.Add(this.playerIndex, new PlayerInfo { playerIndex = this.playerIndex, ready = false });
