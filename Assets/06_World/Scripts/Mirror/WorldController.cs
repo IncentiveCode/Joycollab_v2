@@ -64,6 +64,9 @@ namespace Joycollab.v2
         /// GUID of a match the local player has created
         /// </summary>
         internal Guid selectRoomId = Guid.Empty;
+        
+        // local variables
+        internal static WorldAvatarInfo localPlayerInfo;
 
 
         [Header("GUI, World, Room")]
@@ -247,6 +250,7 @@ namespace Joycollab.v2
         [ServerCallback]
         internal void OnClientConnect() 
         {
+            Debug.Log($"CanvasController | OnClientConnect(), seq : {localPlayerInfo.seq}, name : {localPlayerInfo.nickNm}");
             // avatarInfos.Add(NetworkClient.connection, new 
         }
 
