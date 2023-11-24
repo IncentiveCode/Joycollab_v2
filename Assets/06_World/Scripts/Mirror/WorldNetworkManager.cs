@@ -18,7 +18,7 @@ namespace Joycollab.v2
     public class WorldNetworkManager : NetworkManager
     {
         private const string TAG = "WorldNetworkManager";
-        private WorldController worldController;
+        // private WorldController worldController;
 
 
     #region override functions
@@ -27,7 +27,9 @@ namespace Joycollab.v2
         {
             base.Awake();
 
+        /**
             if (worldController != null) worldController.InitializeData();
+         */
         }
         
         public override void OnStartServer() 
@@ -35,7 +37,9 @@ namespace Joycollab.v2
             Debug.Log($"{TAG} | server started.");
             base.OnStartServer();
 
+        /**
             if (worldController != null) worldController.OnStartServer();
+         */
         }
 
         public override void OnStopServer() 
@@ -49,7 +53,9 @@ namespace Joycollab.v2
             Debug.Log($"{TAG} | connect to server.");
             base.OnClientConnect();
 
+        /**
             if (worldController != null) worldController.OnClientConnect();
+         */
         }
 
         public override void OnClientDisconnect() 
@@ -57,11 +63,15 @@ namespace Joycollab.v2
             Debug.Log($"{TAG} | disconnect from server.");
             base.OnClientDisconnect();
 
-            // if (worldController != null) worldController.OnclientDisconnect();
+        /**
+            if (worldController != null) worldController.OnclientDisconnect();
+         */
         }
 
         public override void OnServerAddPlayer(NetworkConnectionToClient conn) 
         {
+            Debug.Log($"{TAG} | OnServerAddPlayer() | conn : {conn}");
+
             Transform start = GetStartPosition();
             Debug.Log($"{TAG} | OnServerAddPlayer() | transform : {start.position}");
 
