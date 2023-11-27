@@ -365,7 +365,7 @@ namespace Joycollab.v2
             );
             WorldAvatar.localPlayerInfo = info;
             WorldChatView.localPlayerInfo = info;
-            // WorldController.localPlayerInfo = info;
+            WorldController.localPlayerInfo = info;
 
             // system manager init 
             int initRes = await SystemManager.singleton.Init();

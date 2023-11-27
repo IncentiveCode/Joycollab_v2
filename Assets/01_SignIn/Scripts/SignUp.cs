@@ -236,7 +236,7 @@ namespace Joycollab.v2
 
                 case NetworkTask.HTTP_STATUS_CODE_NO_CONTENT :
                     PopupBuilder.singleton.OpenAlert(
-                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "사용 가능 계정", R.singleton.CurrentLocale)
+                        LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "사용 가능 계정 안내", R.singleton.CurrentLocale)
                     );
 
                     _btnCheck.interactable = false;

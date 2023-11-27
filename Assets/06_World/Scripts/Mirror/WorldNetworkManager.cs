@@ -9,6 +9,7 @@
 /// </summary>
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
@@ -18,7 +19,9 @@ namespace Joycollab.v2
     public class WorldNetworkManager : NetworkManager
     {
         private const string TAG = "WorldNetworkManager";
-        // private WorldController worldController;
+        private WorldController worldController;
+
+        public static new WorldNetworkManager singleton { get; private set; }
 
 
     #region override functions
@@ -26,20 +29,75 @@ namespace Joycollab.v2
         public override void Awake() 
         {
             base.Awake();
-
-        /**
+            singleton = this;
             if (worldController != null) worldController.InitializeData();
-         */
         }
-        
+
+    #endregion  // override functions
+
+
+    #region Server callbacks
+
+        // called on the server when a client is ready.
+        public override void OnServerReady(NetworkConnectionToClient conn)
+        {
+            Debug.Log($"{TAG} | server ready.");
+            base.OnServerReady(conn);
+
+            if (worldController != null) worldController.OnServerReady(conn);
+        }
+
+        // called on the server when a client disconnects.
+        public override void OnServerDisconnect(NetworkConnectionToClient conn) 
+        {
+            if (conn.authenticationData != null) 
+            {
+                Debug.Log($"{TAG} | OnServerDisconnect(), WorldAvatarList 에서 정보 삭제.");
+                WorldAvatarList.avatarInfos.Remove((WorldAvatarInfo) conn.authenticationData);
+            }
+
+            WorldChatView.playerNames.Remove(conn);
+            StartCoroutine(DoServerDisconnect(conn));
+        }
+
+        private IEnumerator DoServerDisconnect(NetworkConnectionToClient conn) 
+        {
+            yield return worldController.OnServerDisconnect(conn);
+            base.OnServerDisconnect(conn);
+        }
+
+    #endregion  // Server callbacks
+
+
+    #region Client callbacks
+
+        public override void OnClientConnect()
+        {
+            Debug.Log($"{TAG} | connect to server.");
+            base.OnClientConnect();
+
+            if (worldController != null) worldController.OnClientConnect();
+        }
+
+        public override void OnClientDisconnect() 
+        {
+            Debug.Log($"{TAG} | disconnect from server.");
+
+            if (worldController != null) worldController.OnClientDisconnect();
+            base.OnClientDisconnect();
+        }
+
+    #endregion  // Client callbacks
+    
+
+    #region start & stop callbacks
+
         public override void OnStartServer() 
         {
             Debug.Log($"{TAG} | server started.");
             base.OnStartServer();
 
-        /**
             if (worldController != null) worldController.OnStartServer();
-         */
         }
 
         public override void OnStopServer() 
@@ -48,24 +106,18 @@ namespace Joycollab.v2
             base.OnStopServer();
         }
 
-        public override void OnClientConnect()
+        public override void OnStartClient()
         {
-            Debug.Log($"{TAG} | connect to server.");
-            base.OnClientConnect();
+            Debug.Log($"{TAG} | client started.");
 
-        /**
-            if (worldController != null) worldController.OnClientConnect();
-         */
+            if (worldController != null) worldController.OnStartClient();
         }
 
-        public override void OnClientDisconnect() 
+        public override void OnStopClient() 
         {
-            Debug.Log($"{TAG} | disconnect from server.");
-            base.OnClientDisconnect();
+            Debug.Log($"{TAG} | client stoped.");
 
-        /**
-            if (worldController != null) worldController.OnclientDisconnect();
-         */
+            if (worldController != null) worldController.OnStopClient();
         }
 
         public override void OnServerAddPlayer(NetworkConnectionToClient conn) 
@@ -89,18 +141,6 @@ namespace Joycollab.v2
             WorldAvatarList.avatarInfos.Add(info);
         }
 
-        public override void OnServerDisconnect(NetworkConnectionToClient conn) 
-        {
-            if (conn.authenticationData != null) 
-            {
-                Debug.Log($"{TAG} | OnServerDisconnect(), WorldAvatarList 에서 정보 삭제.");
-                WorldAvatarList.avatarInfos.Remove((WorldAvatarInfo) conn.authenticationData);
-            }
-
-            WorldChatView.playerNames.Remove(conn);
-            base.OnServerDisconnect(conn);
-        }
-
-    #endregion  // override functions 
+    #endregion  // start & stop callbacks
     }
 }

@@ -55,7 +55,8 @@ namespace Joycollab.v2
     {
         public ClientOperation clientOperation;
         public Guid roomId;
-        public ClasInfo[] roomInfos;
-        public WorldAvatarInfo[] avatarInfos;
+        public ClasInfo[] roomList;
+        public WorldAvatarInfo[] avatarsInRoom;
+        public WorldAvatarInfo[] avatarsInCenter;
     }
 }
