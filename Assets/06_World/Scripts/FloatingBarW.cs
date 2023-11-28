@@ -153,12 +153,15 @@ namespace Joycollab.v2
                 R.singleton.RequestInfo(this, eStorageKey.Alarm);
                 R.singleton.RequestInfo(this, eStorageKey.Chat);
                 R.singleton.RequestInfo(this, eStorageKey.WindowRefresh);
-                R.singleton.RequestInfo(this, eStorageKey.UserCount);
+                // R.singleton.RequestInfo(this, eStorageKey.UserCount);
             }
         } 
 
         private void OnDestroy() 
         {
+            myPhoto = string.Empty;
+            alarmCount = chatCount = userCount = -1;
+
             // unregister event
             if (R.singleton != null)
             {
@@ -216,11 +219,17 @@ namespace Joycollab.v2
                     break;
 
                 case eStorageKey.UserCount :
-                   if (userCount != R.singleton.CurrentUserCount)
+                    if (SceneLoader.isSquare())
                     {
-                        userCount = R.singleton.CurrentUserCount;
-                        _txtUserCount.text = userCount > 99 ? "99+" : $"{userCount}";
-                        _imgUserPanel.gameObject.SetActive(userCount != 0);
+                        if (userCount != R.singleton.CurrentUserCount) 
+                        {
+                            _txtUserCount.text = userCount > 99 ? "99+" : $"{userCount}";
+                            _imgUserPanel.gameObject.SetActive(userCount > 0);
+                        }
+                    }
+                    else if (SceneLoader.isRoom()) 
+                    {
+                        // TODO. 모임방에서 인원수 표시 수정할 것.
                     }
                     break;
 
@@ -261,6 +270,8 @@ namespace Joycollab.v2
             else
             {
                 _btnAlarm.gameObject.SetActive(true);
+                
+
                 _btnChat.gameObject.SetActive(true);
 
                 if (isMap) 

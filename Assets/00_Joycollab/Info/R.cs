@@ -622,7 +622,10 @@ namespace Joycollab.v2
         }
 
         public int UnreadAlarmCount {
-            get { return unreadAlarmCount; }
+            get { 
+                Debug.Log($"{TAG} | Unread alarm count : {unreadAlarmCount}");
+                return unreadAlarmCount; 
+            }
             set { 
                 unreadAlarmCount = Mathf.Clamp(value, 0, 100);
                 NotifyAll(eStorageKey.Alarm);
@@ -640,10 +643,14 @@ namespace Joycollab.v2
             listAlarm.Clear();
             unreadAlarmCount = 0;
             unreadChatCount = 0;
+            currentUserCount = 0;
         }
 
         public int UnreadChatCount {
-            get { return unreadChatCount; }
+            get { 
+                Debug.Log($"{TAG} | Unread chat count : {unreadChatCount}");
+                return unreadChatCount; 
+            }
             set {
                 unreadChatCount = Mathf.Clamp(value, 0, 100);
                 NotifyAll(eStorageKey.Chat);
@@ -651,7 +658,10 @@ namespace Joycollab.v2
         }
 
         public int CurrentUserCount {
-            get { return currentUserCount; }
+            get { 
+                Debug.Log($"{TAG} | current user count : {currentUserCount}");
+                return currentUserCount; 
+            }
             set {
                 currentUserCount = Mathf.Clamp(value, 0, 100);
                 NotifyAll(eStorageKey.UserCount);

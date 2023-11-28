@@ -31,9 +31,7 @@ namespace Joycollab.v2
         [SerializeField] protected bool isMultiple;
         public bool AllowMultiple 
         {
-            get {
-                return isMultiple;
-            }
+            get { return isMultiple; }
         }
         protected eVisibleState visibleState;
         public bool isDisappeared 
@@ -46,7 +44,6 @@ namespace Joycollab.v2
         protected float fadeTime = 0.5f;
 
         // for view state
-        protected float posX, posY; 
         [SerializeField] protected float minWidth;
         [SerializeField] protected float minHeight;
         public float MinWidth => minWidth;
@@ -54,7 +51,7 @@ namespace Joycollab.v2
 
         public Vector2 CurrentPosition 
         {
-            get { return new Vector2(posX, posY); }
+            get { return viewRect.anchoredPosition; }
         } 
         public float CurrentWidth 
         {

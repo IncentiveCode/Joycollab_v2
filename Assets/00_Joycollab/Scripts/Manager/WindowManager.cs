@@ -124,7 +124,7 @@ namespace Joycollab.v2
 
         public void Push(string viewName, int seq, float posX=0f, float posY=0f) 
         {
-            Debug.Log($"{TAG} | Push(seq), request view : {viewName}, seq : {seq}");
+            Debug.Log($"{TAG} | Push(seq), request view : {viewName}, seq : {seq}, pos x : {posX}, pos y : {posY}");
 
             // 0. Get game object
             GameObject go = null;

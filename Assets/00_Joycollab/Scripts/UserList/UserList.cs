@@ -2,12 +2,13 @@
 /// [world]
 /// 사용자 리스트 Script
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 07
-/// @version        : 0.3
+/// @last update    : 2023. 11. 28
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 09. 18) : 최초 생성
 ///     v0.2 (2023. 10. 06) : world avatar data class 에 정보 담아서 리스트 출력
 ///     v0.3 (2023. 11. 07) : WindowViewData 적용
+///     v0.4 (2023. 11. 28) : mirror 일부 기능 연동 후, 아바타 정보 출력
 /// </summary>
 
 using UnityEngine;
@@ -15,7 +16,6 @@ using UnityEngine.UI;
 using Gpm.Ui;
 using Cysharp.Threading.Tasks;
 using TMPro;
-using Mirror;
 
 namespace Joycollab.v2
 {
@@ -35,10 +35,8 @@ namespace Joycollab.v2
         [SerializeField] private Button _btnClose;
 
         [Header("contents")]
+        [SerializeField] private Text _txtCount;
         [SerializeField] private InfiniteScroll _scrollView;
-
-        // local variables
-        private bool firstRequest;
 
 
     #region Unity functions
@@ -64,7 +62,8 @@ namespace Joycollab.v2
 
             // set infinite scroll view
             _scrollView.AddSelectCallback((data) => {
-                Debug.Log($"{TAG} | 해당 사용자의 정보 출력. user seq : {((WorldAvatarData)data).info.seq}, name : {((WorldAvatarData)data).info.nickNm}");
+                int seq = ((WorldAvatarData)data).info.seq;
+                WindowManager.singleton.Push(S.WorldScene_MemberProfile, seq, CurrentPosition.x, CurrentPosition.y);
             });
 
 
@@ -95,8 +94,6 @@ namespace Joycollab.v2
                 R.singleton.RegisterObserver(this, eStorageKey.WindowRefresh);
             }
 
-            firstRequest = true;
-
             await Refresh();
             base.Appearing();
         }
@@ -121,18 +118,15 @@ namespace Joycollab.v2
             WorldAvatarData t;
 
             _scrollView.Clear();
-            Debug.Log($"{TAG} | avatar list count : {WorldAvatarList.avatarInfos.Count}");
-            Debug.Log($"{TAG} | connection list count : {WorldNetworkManager.singleton.numPlayers}");
-
-            foreach (var info in NetworkServer.connections.Values) 
+            foreach (var info in WorldNetworkManager.singleton.GetAvatarListInCneter())
             {
-                if (info.identity.TryGetComponent(out WorldAvatar avatar))
-                {
-                    t = new WorldAvatarData(avatar.AvatarInfo);
-                    _scrollView.InsertData(t);
-                }
+                t = new WorldAvatarData(info);
+                _scrollView.InsertData(t);
             }
             _scrollView.UpdateAllData();
+
+            Debug.Log($"{TAG} | connection list count : {_scrollView.GetDataCount()}, dictionary count : {WorldNetworkManager.singleton.avatarCountInCenter}");
+            _txtCount.text = _scrollView.GetDataCount().ToString(); 
 
             await UniTask.Yield(); 
             _btnClear.gameObject.SetActive(! string.IsNullOrEmpty(_inputSearch.text));

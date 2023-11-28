@@ -1,10 +1,11 @@
 /// <summary>
 /// 내용을 받아서 태그를 분리하는 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 20
-/// @version        : 0.1
+/// @last update    : 2023. 11. 28
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 11. 20) : 최초 생성
+///     v0.2 (2023. 11. 28) : 출력 방식 수정 >> # 없어도 클릭 가능한 태그로 출력.
 /// </summary>
 
 using System;
@@ -24,7 +25,7 @@ namespace Joycollab.v2
         [SerializeField] private Button btnUpdate;
 
         [Header("display part")]
-        [SerializeField] private Transform transform;
+        [SerializeField] private Transform tagTransform;
         [SerializeField] private GameObject goTag;
 
         private string _originTag;
@@ -34,7 +35,7 @@ namespace Joycollab.v2
 
         private void Awake() 
         {
-            if (transform == null) 
+            if (tagTransform == null) 
             {
                 Debug.Log($"{Tag} | 태그가 출력될 transform 을 먼저 설정해야 테스트를 진행할 수 있습니다.");
                 return;
@@ -91,22 +92,22 @@ namespace Joycollab.v2
         {
             var c = Instantiate(goTag, Vector3.zero, Quaternion.identity);
             c.GetComponent<TagLink>().InitTag(str);
-            c.transform.SetParent(transform, false);
+            c.transform.SetParent(tagTransform, false);
         }
 
         private void CreatePlainBlock(string str) 
         {
             var c = Instantiate(goTag, Vector3.zero, Quaternion.identity);
             c.GetComponent<TagLink>().InitPlain(str);
-            c.transform.SetParent(transform, false);
+            c.transform.SetParent(tagTransform, false);
         }
 
         private void ClearTag() 
         {
-            var children = transform.GetComponentInChildren<Transform>();
+            var children = tagTransform.GetComponentInChildren<Transform>();
             foreach (Transform child in children) 
             {
-                if (child.name.Equals(transform.name)) continue;
+                if (child.name.Equals(tagTransform.name)) continue;
                 Destroy(child.gameObject);
             }
         }
@@ -123,39 +124,28 @@ namespace Joycollab.v2
                     break;
                 }
 
-                // 1. 문자열에 tag mark 가 있는지 확인.
-                if (t.Contains("#")) 
-                {
-                    // Debug.Log($" {t}");
-                    var spaceIdx = t.IndexOf(" ", StringComparison.Ordinal);
-                    var tabIdx = t.IndexOf("\t", StringComparison.Ordinal);
-                    var newLineIdx = t.IndexOf("\n", StringComparison.Ordinal);
+                // Debug.Log($" {t}");
+                var spaceIdx = t.IndexOf(" ", StringComparison.Ordinal);
+                var tabIdx = t.IndexOf("\t", StringComparison.Ordinal);
+                var newLineIdx = t.IndexOf("\n", StringComparison.Ordinal);
 
-                    var endIdx = -1;
-                    // Debug.Log($" > {endIdx}");
-                    endIdx = spaceIdx != -1 ? spaceIdx : endIdx;
-                    // Debug.Log($" >> {endIdx}");
-                    endIdx = (tabIdx != -1 && tabIdx < endIdx) ? tabIdx : endIdx;
-                    // Debug.Log($" >>> {endIdx}");
-                    endIdx = (newLineIdx != -1 && newLineIdx < endIdx) ? newLineIdx : endIdx;
-                    // Debug.Log($" >>> {endIdx}");
-                    var sub = endIdx == -1 ? t : t[..endIdx];
+                var endIdx = -1;
+                // Debug.Log($" > {endIdx}");
+                endIdx = spaceIdx != -1 ? spaceIdx : endIdx;
+                // Debug.Log($" >> {endIdx}");
+                endIdx = (tabIdx != -1 && tabIdx < endIdx) ? tabIdx : endIdx;
+                // Debug.Log($" >>> {endIdx}");
+                endIdx = (newLineIdx != -1 && newLineIdx < endIdx) ? newLineIdx : endIdx;
+                // Debug.Log($" >>> {endIdx}");
+                var sub = endIdx == -1 ? t : t[..endIdx];
 
-                    // Debug.Log($"tag block : {sub}");
-                    if (! string.IsNullOrWhiteSpace(sub)) CreateTagBlock(sub);
+                // Debug.Log($"tag block : {sub}");
+                if (! string.IsNullOrWhiteSpace(sub)) CreateTagBlock(sub);
 
-                    if (endIdx == -1) 
-                        break;
-                    else
-                        t = t[(endIdx + 1)..];
-                }
-                // 2. tag prefix 가 없다면 그냥 content block 을 출력하고 종료.
-                else 
-                {
-                    // Debug.Log($"content block : {t}, and break the loop");
-					if (! string.IsNullOrWhiteSpace(t)) CreatePlainBlock(t);
+                if (endIdx == -1) 
                     break;
-                }
+                else
+                    t = t[(endIdx + 1)..];
             }
         }
 

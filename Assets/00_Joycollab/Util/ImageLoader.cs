@@ -37,15 +37,10 @@ namespace Joycollab.v2
             img.texture = _texDefault;
         }
 
-        /**
         private void OnDestroy() 
         {
-            if (res != null)
-            {
-                Destroy(res);
-            }
+            img.texture = null;
         }
-         */
 
     #endregion  // Unity functions
         
@@ -64,7 +59,7 @@ namespace Joycollab.v2
             if (rect == null) rect = GetComponent<RectTransform>();
 
             // check 'url'
-            Debug.Log($"{TAG} | LoadProfile(), step 1 - check url : {url}"); 
+            // Debug.Log($"{TAG} | LoadProfile(), step 1 - check url : {url}"); 
             if (string.IsNullOrEmpty(url))
             {
                 img.texture = _texDefault;
@@ -75,13 +70,13 @@ namespace Joycollab.v2
             // check 'R'
             Texture2D res = null;
             string photoPath = R.singleton.GetPhotoPath(seq);
-            Debug.Log($"{TAG} | LoadProfile(), step 2 - photo path in R : {photoPath}"); 
+            // Debug.Log($"{TAG} | LoadProfile(), step 2 - photo path in R : {photoPath}"); 
             if (photoPath.Equals(url)) 
             {
                 res = R.singleton.GetPhoto(seq);
                 if (res != null) 
                 {
-                    Debug.Log($"{TAG} | LoadProfile(), step 2 (1) - photo in R (is exist)"); 
+                    // Debug.Log($"{TAG} | LoadProfile(), step 2 (1) - photo in R (is exist)"); 
                     img.texture = res;
                     Util.ResizeRawImage(rect, img, _v2Size.x, _v2Size.y);
                     return;
@@ -89,7 +84,7 @@ namespace Joycollab.v2
             }
 
             // request
-            Debug.Log($"{TAG} | LoadProfile(), step 3 - request photo"); 
+            // Debug.Log($"{TAG} | LoadProfile(), step 3 - request photo"); 
             res = await NetworkTask.GetTextureAsync(url);
             if (res == null) 
             {

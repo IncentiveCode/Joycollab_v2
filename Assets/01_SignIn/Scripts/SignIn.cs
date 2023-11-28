@@ -361,11 +361,12 @@ namespace Joycollab.v2
                 res.data.nickNm,
                 res.data.photo,
                 res.data.memberType,
-                S.ONLINE
+                S.ONLINE,
+                R.singleton.ourCompanyName,
+                R.singleton.myGrade
             );
             WorldAvatar.localPlayerInfo = info;
             WorldChatView.localPlayerInfo = info;
-            WorldController.localPlayerInfo = info;
 
             // system manager init 
             int initRes = await SystemManager.singleton.Init();

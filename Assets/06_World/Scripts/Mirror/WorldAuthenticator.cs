@@ -97,9 +97,8 @@ namespace Joycollab.v2
 
             if (! WorldAvatarList.avatarInfos.Contains(message.info)) 
             {
-                WorldAvatarList.avatarInfos.Add(message.info);
+                // WorldAvatarList.avatarInfos.Add(message.info);
                 conn.authenticationData = message.info;
-                Debug.Log($"{TAG} | WorldAvatarList count : {WorldAvatarList.avatarInfos.Count}");
 
                 AuthResponseMessage res = new AuthResponseMessage
                 {

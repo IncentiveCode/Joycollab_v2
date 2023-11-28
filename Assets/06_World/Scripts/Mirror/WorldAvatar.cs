@@ -199,6 +199,8 @@ namespace Joycollab.v2
             {
                 v3Distance = v3Target - transform.position;
                 v3Dir = Vector3.ClampMagnitude(v3Distance, 1f);
+                v3Dir.z = 0f;
+
                 transform.position += v3Dir * speed * Time.deltaTime;
                 if (Mathf.Abs(v3Dir.x) <= 0.1f && Mathf.Abs(v3Dir.y) <= 0.1f) 
                 {
@@ -229,6 +231,7 @@ namespace Joycollab.v2
                 horizontal = Input.GetAxis("Horizontal");
                 vertical = Input.GetAxis("Vertical");
                 v3Dir = Vector3.ClampMagnitude(new Vector3(horizontal, vertical, 0f), 1f);
+                v3Dir.z = 0f;
 
                 /**
                 // TODO. animation 을 사용하는 경우에 적용 예정.
@@ -260,6 +263,11 @@ namespace Joycollab.v2
             // name length limiter
             Canvas.ForceUpdateCanvases();
             float rectWidth = rectNameArea.rect.width;
+            float rectHeight = rectNameArea.rect.height;
+            if (rectWidth >= 150f) 
+            {
+                rectNameArea.sizeDelta = new Vector2(150f, rectHeight);
+            }
             Debug.Log($"{TAG} | SetAvatarName_Hook(), name width : {rectWidth}");
         }
         [Command(requiresAuthority = false)]

@@ -197,6 +197,7 @@ namespace Joycollab.v2
         private void OnMouseEnter()
         {
             if (_rendererType != eRendererType.SpriteRenderer) return;
+            if (EventSystem.current.IsPointerOverGameObject()) return;
 
             switch (_objectType) 
             {
@@ -219,6 +220,7 @@ namespace Joycollab.v2
         private void OnMouseExit() 
         {
             if (_rendererType != eRendererType.SpriteRenderer) return;
+            if (EventSystem.current.IsPointerOverGameObject()) return;
 
             switch (_objectType) 
             {
@@ -398,11 +400,12 @@ namespace Joycollab.v2
                 res.data.nickNm,
                 res.data.photo,
                 res.data.memberType,
-                S.ONLINE
+                S.ONLINE,
+                res.data.compName,
+                res.data.jobGrade
             );
             WorldAvatar.localPlayerInfo = info;
             WorldChatView.localPlayerInfo = info;
-            WorldController.localPlayerInfo = info;
 
             // 광장 접속
             var manager = WorldNetworkManager.singleton;

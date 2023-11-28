@@ -2,11 +2,12 @@
 /// [world]
 /// To-Do Item Script
 /// @author         : HJ Lee
-/// @last update    : 2023. 07. 25
-/// @version        : 0.2
+/// @last update    : 2023. 11. 28
+/// @version        : 0.3
 /// @update
-///     v0.1 (2022. 06. 14) : 최초 생성
-///     v0.2 (2022. 07. 25) : detail 로 넘어갈 때, string 이 아니라 int 형 인자를 넘기도록 수정.
+///     v0.1 (2023. 06. 16) : 최초 생성
+///     v0.2 (2023. 10. 06) : UI 작업 진행.
+///     v0.3 (2023. 11. 28) : WorldAvatarInfo 와 연동해서 회사 정보와 직급 정보 추가.
 /// </summary>
 
 using UnityEngine;
@@ -63,7 +64,7 @@ namespace Joycollab.v2
 
             // set text 
             _txtName.text = data.info.nickNm;
-            _txtDesc.text = $"회사명과 직급은 준비 중 입니다.";
+            _txtDesc.text = $"{data.info.compName} / {data.info.jobGrade}";
         }
 
     #endregion  // GPM functions
