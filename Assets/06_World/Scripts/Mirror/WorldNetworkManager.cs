@@ -147,6 +147,7 @@ namespace Joycollab.v2
             if (conn.authenticationData != null) 
             {
                 Debug.Log($"{TAG} | OnServerDisconnect(), 정보 삭제.");
+                WorldAuthenticator.playerInfos.Remove((WorldAvatarInfo)conn.authenticationData);
             }
 
             WorldChatView.playerNames.Remove(conn);
@@ -373,7 +374,7 @@ namespace Joycollab.v2
                     if (roomInfos.TryGetValue(avatarInfo.roomId, out clasInfo))
                     {
                         // ...
-                        Debug.Log($"{TAG} | OnServerDisconnect(), 원래는 여기에서 player 수를 줄이고 match 목록을 정리함.");
+                        Debug.Log($"{TAG} | ServerDisconnectProcess(), 원래는 여기에서 player 수를 줄이고 match 목록을 정리함.");
                     }
 
                     HashSet<NetworkConnectionToClient> connections;

@@ -208,7 +208,7 @@ namespace Joycollab.v2
         private void DisplayInfo(ResMemberInfo info) 
         {
             R.singleton.MemberInfo = info;
-            Debug.Log($"{TAG} | tag : {info.tag}");
+            // Debug.Log($"{TAG} | tag : {info.tag}");
             memberInfo = new ReqMemberInfo(info);
             companyInfo = new ReqMemberCompanyInfo(info);
 

@@ -1,10 +1,11 @@
 /// <summary>
 /// [Mirror] WorldScene - SquareScene 에서 사용할 사용자 인증 툴
 /// @author         : HJ Lee
-/// @last update    : 2023. 03. 07 
-/// @version        : 0.1
+/// @last update    : 2023. 12. 05 
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 03. 07) : 최초 생성, mirror-test 에서 작업한 항목 migration.
+///     v0.2 (2023. 11. 05) : SSL 을 사용할 때는 chat view 가 사라지는 문제 수정 (중)
 /// </summary>
 
 using System.Collections;
@@ -19,10 +20,10 @@ namespace Joycollab.v2
         private const string TAG = "WorldAuthenticator";
 
         readonly HashSet<NetworkConnection> connectionsPendingDisconnect = new HashSet<NetworkConnection>(); 
-        private NetworkIdentity identity;
+        internal static readonly HashSet<WorldAvatarInfo> playerInfos = new HashSet<WorldAvatarInfo>();
 
 
-	#region Messages
+	#region Messages 
 
 		public struct AuthRequestMessage : NetworkMessage 
 		{
@@ -35,17 +36,7 @@ namespace Joycollab.v2
 			public string message;
 		}
 
-	#endregion  // Messages	
-
-
-	#region Unity functions
-
-        public void Awake() 
-        {
-            identity = GetComponent<NetworkIdentity>();
-        }
-
-	#endregion	// Unity functions
+	#endregion  // Messages
 
 
 	#region override functions - for client
@@ -74,6 +65,12 @@ namespace Joycollab.v2
 
     #region override functions - for server
 
+        [UnityEngine.RuntimeInitializeOnLoadMethod]
+        static void ResetStatics()
+        {
+            playerInfos.Clear();
+        }
+
         public override void OnStartServer() 
         {
             NetworkServer.RegisterHandler<AuthRequestMessage>(OnAuthRequestMessage, false);
@@ -97,7 +94,8 @@ namespace Joycollab.v2
 
             if (! WorldAvatarList.avatarInfos.Contains(message.info)) 
             {
-                // WorldAvatarList.avatarInfos.Add(message.info);
+                playerInfos.Add(message.info);
+
                 conn.authenticationData = message.info;
 
                 AuthResponseMessage res = new AuthResponseMessage

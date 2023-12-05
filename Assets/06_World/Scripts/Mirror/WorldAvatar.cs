@@ -37,6 +37,7 @@ namespace Joycollab.v2
         [Header("UI")]
         [SerializeField] private Image _imgNameArea;
         private RectTransform rectNameArea;
+        private ContentSizeFitter fitterNameArea;
         [SerializeField] private TMP_Text _txtName;
         [SerializeField] private LocalizeStringEvent _txtState;
         [SerializeField] private RawImage _imgProfile;
@@ -72,6 +73,7 @@ namespace Joycollab.v2
             if (_imgNameArea != null)
             {
                 rectNameArea = _imgNameArea.GetComponent<RectTransform>();
+                fitterNameArea = _imgNameArea.GetComponent<ContentSizeFitter>();
             }
 
             if (_imgProfile != null) 
@@ -259,6 +261,7 @@ namespace Joycollab.v2
 
             // avatar 에 이름 반영.
             _txtName.text = newName;
+            fitterNameArea.enabled = true;
 
             // name length limiter
             Canvas.ForceUpdateCanvases();
@@ -266,9 +269,10 @@ namespace Joycollab.v2
             float rectHeight = rectNameArea.rect.height;
             if (rectWidth >= 150f) 
             {
+                fitterNameArea.enabled = false;
                 rectNameArea.sizeDelta = new Vector2(150f, rectHeight);
             }
-            Debug.Log($"{TAG} | SetAvatarName_Hook(), name width : {rectWidth}");
+            Debug.Log($"{TAG} | SetAvatarName_Hook(), name : {newName}, name area width : {rectWidth}");
         }
         [Command(requiresAuthority = false)]
         public void CmdSetAvatarName(string name) 
@@ -342,22 +346,25 @@ namespace Joycollab.v2
                 // information check
                 if (! avatarPhoto.Equals(R.singleton.myPhoto))
                 {
-                    Debug.Log($"{TAG} | FixedUpdate(), photo : {avatarPhoto}, photo in R : {R.singleton.myPhoto}");
+                    Debug.Log($"{TAG} | UpdateInfo(), photo : {avatarPhoto}, photo in R : {R.singleton.myPhoto}");
                     CmdSetAvatarPhoto(R.singleton.myPhoto);
                 }
                 if (! avatarName.Equals(R.singleton.myName))
                 {
-                    Debug.Log($"{TAG} | FixedUpdate(), name : {avatarName}, name in R : {R.singleton.myName}");
+                    Debug.Log($"{TAG} | UpdateInfo(), name : {avatarName}, name in R : {R.singleton.myName}");
                     CmdSetAvatarName(R.singleton.myName);
+
+                    WorldAvatar.localPlayerInfo.nickNm = R.singleton.myName;
+                    WorldChatView.localPlayerInfo.nickNm = R.singleton.myName;
                 }   
                 if (! avatarMemberType.Equals(R.singleton.myMemberType))
                 {
-                    Debug.Log($"{TAG} | FixedUpdate(), name : {avatarMemberType}, member type in R : {R.singleton.myMemberType}");
+                    Debug.Log($"{TAG} | UpdateInfo(), name : {avatarMemberType}, member type in R : {R.singleton.myMemberType}");
                     CmdSetAvatarMemberType(R.singleton.myMemberType);
                 }
                 if (! avatarState.Equals(R.singleton.myStateId))
                 {
-                    Debug.Log($"{TAG} | FixedUpdate(), state id : {avatarState}, state id in R : {R.singleton.myStateId}");
+                    Debug.Log($"{TAG} | UpdateInfo(), state id : {avatarState}, state id in R : {R.singleton.myStateId}");
                     CmdSetAvatarState(R.singleton.myStateId); 
                 }
             }

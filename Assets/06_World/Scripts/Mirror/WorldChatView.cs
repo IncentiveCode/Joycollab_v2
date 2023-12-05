@@ -19,6 +19,7 @@ namespace Joycollab.v2
 {
     public class WorldChatView : NetworkBehaviour
     {
+        private const string TAG = "WorldChatView";
         // public static WorldChatView Instance;
         // public bool OnChat { get; private set; }
 
@@ -55,23 +56,6 @@ namespace Joycollab.v2
             // _inputMessage.onDeselect.AddListener((input) => OnChat = false);
             _btnSend.onClick.AddListener(() => Send(_inputMessage.text.Trim()));
         }
-
-        /**
-        private void OnDestroy() 
-        {
-            // close host
-            if (NetworkServer.active && NetworkClient.isConnected) 
-            {
-                networkManager.StopClient();
-                networkManager.StopHost();
-            }
-            // close client
-            if (NetworkClient.isConnected) 
-            {
-                networkManager.StopClient();
-            }
-        }
-         */
 
     #endregion  // Unity functions
 
@@ -114,12 +98,11 @@ namespace Joycollab.v2
             _scrollbar.value = 0;
         }
 
-        [Client]
         private void Send(string msg) 
         {
             if (! string.IsNullOrWhiteSpace(msg)) 
             {
-                CommandSend(msg);
+                CmdSend(msg);
                 _inputMessage.text = string.Empty;
                 _inputMessage.ActivateInputField();
             }
@@ -131,7 +114,7 @@ namespace Joycollab.v2
     #region Command functions
 
         [Command(requiresAuthority = false)]
-        private void CommandSend(string message, NetworkConnectionToClient sender = null) 
+        private void CmdSend(string message, NetworkConnectionToClient sender = null) 
         {
             if (! sender.identity.TryGetComponent(out WorldAvatar avatar)) 
             {
@@ -139,19 +122,13 @@ namespace Joycollab.v2
                 return;
             }
 
-            /**
-            if (!playerNames.ContainsKey(sender)) 
-                playerNames.Add(sender, sender.identity.GetComponent<WorldAvatar>().avatarName);
-
-            if (!string.IsNullOrWhiteSpace(message)) 
-            {
-                RpcReceive(playerNames[sender], message.Trim());
-                sender.identity.GetComponent<WorldAvatar>().UpdateAvatarChat(message.Trim());
-            }
-             */
-
             if (!playerNames.ContainsKey(sender)) 
                 playerNames.Add(sender, avatar.avatarName);
+            else
+            {
+                if (! playerNames[sender].Equals(avatar.avatarName))
+                    playerNames[sender] = avatar.avatarName;
+            }
 
             if (!string.IsNullOrWhiteSpace(message)) 
             {
@@ -168,6 +145,7 @@ namespace Joycollab.v2
         [ClientRpc]
         private void RpcReceive(string playerName, string message) 
         {
+            Debug.Log($"{TAG} | RpcReceive(), palyer name : {playerName}, localPlayerInfo name : {localPlayerInfo.nickNm}");
             string msg = (playerName.Equals(localPlayerInfo.nickNm)) ? 
                 $"<color=red>{playerName}</color> : {message}" :
                 $"<color=blue>{playerName}</color> : {message}";

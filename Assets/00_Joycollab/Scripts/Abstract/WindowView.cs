@@ -215,19 +215,19 @@ namespace Joycollab.v2
             size = new Vector2(width, height);
 
             string json = JsonUtility.ToJson(this);
-            Debug.Log($"WindowViewData | Init(), result : {json}");
+            // Debug.Log($"WindowViewData | Init(), result : {json}");
         }
 
         public string ToJson() 
         {
             string json = JsonUtility.ToJson(this);
-            Debug.Log($"WindowViewData | ToJson(), result : {json}");
+            // Debug.Log($"WindowViewData | ToJson(), result : {json}");
             return json; 
         }
 
         public void LoadFromJson(string json) 
         {
-            Debug.Log($"WindowViewData | LoadFromJson(), load data : {json}");
+            // Debug.Log($"WindowViewData | LoadFromJson(), load data : {json}");
             JsonUtility.FromJsonOverwrite(json, this);
         }
     }
