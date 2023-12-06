@@ -270,8 +270,6 @@ namespace Joycollab.v2
             else
             {
                 _btnAlarm.gameObject.SetActive(true);
-                
-
                 _btnChat.gameObject.SetActive(true);
 
                 if (isMap) 

@@ -147,7 +147,7 @@ namespace Joycollab.v2
             if (conn.authenticationData != null) 
             {
                 Debug.Log($"{TAG} | OnServerDisconnect(), 정보 삭제.");
-                WorldAuthenticator.playerInfos.Remove((WorldAvatarInfo)conn.authenticationData);
+                // WorldAuthenticator.playerInfos.Remove((WorldAvatarInfo)conn.authenticationData);
             }
 
             WorldChatView.playerNames.Remove(conn);

@@ -58,7 +58,7 @@ namespace Joycollab.v2
 
         public void RequestClose() => ClosePanel();
 
-        public void RequestCloseForMap() => ClosePanelForMap();
+        public void RequestCloseForMap() => CloseForMap();
 
         private void ExpandPanel() 
         {
@@ -87,7 +87,7 @@ namespace Joycollab.v2
             foreach (var item in _body) item.SetActive(false);
         }
 
-        private void ClosePanelForMap()
+        private void CloseForMap()
         {
             if (_element != null)
             {

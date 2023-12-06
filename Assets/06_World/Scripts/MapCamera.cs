@@ -27,7 +27,7 @@ namespace Joycollab.v2
 
         // const value
         private const float fMinSize = 3f;
-        private const float fMaxSize = 10.4f;
+        private const float fMaxSize = 10f;
 
         // for map info
         private Vector2 v2MapSize;
@@ -85,7 +85,6 @@ namespace Joycollab.v2
             {
                 mainCamera.orthographicSize = fLastSize = fSize;
                 fWidth = fSize * Screen.width / Screen.height;
-
                 SetCameraLimit();
             }
         }
@@ -126,7 +125,6 @@ namespace Joycollab.v2
             v3CameraPos.y = clampY;
 
             v3CameraPos.z = fZ;
-
             mainCamera.transform.position = v3CameraPos;
         }
 
@@ -138,6 +136,7 @@ namespace Joycollab.v2
         private void OnResize() 
         {
             Debug.Log($"{TAG} | OnResize(), width : {Screen.width}, height : {Screen.height}");
+            fSize = mainCamera.orthographicSize;
             fWidth = fSize * Screen.width / Screen.height;
             SetCameraLimit();
         }

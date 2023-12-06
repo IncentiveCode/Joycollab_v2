@@ -12,14 +12,13 @@ GameObject:
   - component: {fileID: 4524024675839097134}
   - component: {fileID: 4524024675839097120}
   - component: {fileID: 4524024675839097135}
-  - component: {fileID: 4524024675839097121}
   m_Layer: 0
   m_Name: Mirror Network Manager [Client]
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &4524024675839097133
 Transform:
   m_ObjectHideFlags: 0
@@ -56,7 +55,7 @@ MonoBehaviour:
   onlineScene: Assets/Scenes/Square.unity
   transport: {fileID: 4524024675839097135}
   networkAddress: localhost
-  maxConnections: 100
+  maxConnections: 1000
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 4524024675839097120}
@@ -125,17 +124,3 @@ MonoBehaviour:
   sslCertJson: ./cert.json
   sslProtocols: 3072
   _logLevels: 2
---- !u!114 &4524024675839097121
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4524024675839097132}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6442dc8070ceb41f094e44de0bf87274, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  offsetX: 0
-  offsetY: 0

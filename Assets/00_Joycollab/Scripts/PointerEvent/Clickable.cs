@@ -18,6 +18,7 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
+using Mirror;
 
 namespace Joycollab.v2
 {
@@ -408,7 +409,7 @@ namespace Joycollab.v2
             WorldChatView.localPlayerInfo = info;
 
             // 센터 접속
-            var manager = WorldNetworkManager.singleton;
+            var manager = NetworkManager.singleton;
             manager.networkAddress = "dev.jcollab.com";
             manager.StartClient();
         }

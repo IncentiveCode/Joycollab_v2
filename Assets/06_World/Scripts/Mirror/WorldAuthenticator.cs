@@ -20,7 +20,7 @@ namespace Joycollab.v2
         private const string TAG = "WorldAuthenticator";
 
         readonly HashSet<NetworkConnection> connectionsPendingDisconnect = new HashSet<NetworkConnection>(); 
-        internal static readonly HashSet<WorldAvatarInfo> playerInfos = new HashSet<WorldAvatarInfo>();
+        // internal static readonly HashSet<WorldAvatarInfo> playerInfos = new HashSet<WorldAvatarInfo>();
 
 
 	#region Messages 
@@ -38,6 +38,13 @@ namespace Joycollab.v2
 
 	#endregion  // Messages
 
+        /**
+        private void Awake() 
+        {
+            connectionsPendingDisconnect.Clear();
+            playerInfos.Clear();
+        }
+         */
 
 	#region override functions - for client
 
@@ -65,12 +72,6 @@ namespace Joycollab.v2
 
     #region override functions - for server
 
-        [UnityEngine.RuntimeInitializeOnLoadMethod]
-        static void ResetStatics()
-        {
-            playerInfos.Clear();
-        }
-
         public override void OnStartServer() 
         {
             NetworkServer.RegisterHandler<AuthRequestMessage>(OnAuthRequestMessage, false);
@@ -94,7 +95,7 @@ namespace Joycollab.v2
 
             if (! WorldAvatarList.avatarInfos.Contains(message.info)) 
             {
-                playerInfos.Add(message.info);
+                // playerInfos.Add(message.info);
 
                 conn.authenticationData = message.info;
 
