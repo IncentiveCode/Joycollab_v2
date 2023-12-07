@@ -1,10 +1,11 @@
 /// <summary>
 /// Square, 모임방 예시를 위해 사용할 포인터 표시 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 10. 24 
-/// @version        : 0.1
+/// @last update    : 2023. 12. 07 
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 10. 24) : 신규 생성
+///     v0.2 (2023. 12. 07) : OnTriggerEnter2D() 에 WorldPlayer 관련 코드 추가.
 /// </summary>
 
 using UnityEngine;
@@ -89,11 +90,20 @@ namespace Joycollab.v2
         private void OnTriggerEnter2D(Collider2D other)
         {
             if (!other.tag.Equals("Player")) return;
-            
-            var mover = other.GetComponent<WorldAvatar>();
-            if (mover != null && mover.isOwned)
+
+            if (other.TryGetComponent<WorldAvatar>(out var mover))
             {
-                SquareCamera.singleton.TeleportForRoom(data.RoomNo, data.Target).Forget();
+                if (mover.isOwned)
+                {
+                    SquareCamera.singleton.TeleportForRoom(data.RoomNo, data.Target).Forget();
+                }
+            }
+            else if (other.TryGetComponent<WorldPlayer>(out var player))
+            {
+                if (player.isOwned)
+                {
+                    SquareCamera.singleton.TeleportForRoom(data.RoomNo, data.Target).Forget();
+                }
             }
         }
 

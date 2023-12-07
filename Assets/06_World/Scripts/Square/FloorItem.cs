@@ -10,6 +10,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Localization.Components;
+using Mirror;
 
 namespace Joycollab.v2
 {
@@ -45,7 +46,7 @@ namespace Joycollab.v2
             btn.onClick.AddListener(() => {
                 if (floorNo == 0) 
                 {
-                    var manager = WorldNetworkManager.singleton;
+                    var manager = NetworkManager.singleton;
                     manager.StopClient();
                     manager.StopServer();
                 }

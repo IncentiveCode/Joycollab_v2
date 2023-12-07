@@ -27,6 +27,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
+using Mirror;
 using TMPro;
 
 namespace Joycollab.v2
@@ -367,6 +368,7 @@ namespace Joycollab.v2
             );
             WorldAvatar.localPlayerInfo = info;
             WorldChatView.localPlayerInfo = info;
+            WorldPlayer.localPlayerInfo = info;
 
             // system manager init 
             int initRes = await SystemManager.singleton.Init();
@@ -378,7 +380,7 @@ namespace Joycollab.v2
 
             if (_toggleGoToCenter.isOn)
             {
-                var manager = WorldNetworkManager.singleton;
+                var manager = NetworkManager.singleton;
                 manager.networkAddress = "dev.jcollab.com";
                 manager.StartClient();
             }

@@ -623,7 +623,7 @@ namespace Joycollab.v2
 
         public int UnreadAlarmCount {
             get { 
-                Debug.Log($"{TAG} | Unread alarm count : {unreadAlarmCount}");
+                // Debug.Log($"{TAG} | Unread alarm count : {unreadAlarmCount}");
                 return unreadAlarmCount; 
             }
             set { 
@@ -648,7 +648,7 @@ namespace Joycollab.v2
 
         public int UnreadChatCount {
             get { 
-                Debug.Log($"{TAG} | Unread chat count : {unreadChatCount}");
+                // Debug.Log($"{TAG} | Unread chat count : {unreadChatCount}");
                 return unreadChatCount; 
             }
             set {
@@ -659,7 +659,7 @@ namespace Joycollab.v2
 
         public int CurrentUserCount {
             get { 
-                Debug.Log($"{TAG} | current user count : {currentUserCount}");
+                // Debug.Log($"{TAG} | current user count : {currentUserCount}");
                 return currentUserCount; 
             }
             set {

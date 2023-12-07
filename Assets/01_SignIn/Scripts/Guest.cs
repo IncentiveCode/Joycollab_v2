@@ -285,6 +285,7 @@ namespace Joycollab.v2
                 );
                 WorldAvatar.localPlayerInfo = info;
                 WorldChatView.localPlayerInfo = info;  
+                WorldPlayer.localPlayerInfo = info;
 
                 // 사용자 정보 로드
                 string resMyInfo = await _module.GetMyInfoAsync();

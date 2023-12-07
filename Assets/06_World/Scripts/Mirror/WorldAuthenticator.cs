@@ -5,7 +5,7 @@
 /// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 03. 07) : 최초 생성, mirror-test 에서 작업한 항목 migration.
-///     v0.2 (2023. 11. 05) : SSL 을 사용할 때는 chat view 가 사라지는 문제 수정 (중)
+///     v0.2 (2023. 12. 05) : SSL 을 사용할 때는 chat view 가 사라지는 문제 수정 (중)
 /// </summary>
 
 using System.Collections;
@@ -20,14 +20,17 @@ namespace Joycollab.v2
         private const string TAG = "WorldAuthenticator";
 
         readonly HashSet<NetworkConnection> connectionsPendingDisconnect = new HashSet<NetworkConnection>(); 
-        // internal static readonly HashSet<WorldAvatarInfo> playerInfos = new HashSet<WorldAvatarInfo>();
+        internal static readonly HashSet<string> playerNames = new HashSet<string>();
+
+        [Header("client user name")]
+        public string playerName;
 
 
 	#region Messages 
 
 		public struct AuthRequestMessage : NetworkMessage 
 		{
-			public WorldAvatarInfo info;
+			public string authUserName;
 		}
 
 		public struct AuthResponseMessage : NetworkMessage 
@@ -38,39 +41,14 @@ namespace Joycollab.v2
 
 	#endregion  // Messages
 
-        /**
-        private void Awake() 
-        {
-            connectionsPendingDisconnect.Clear();
-            playerInfos.Clear();
-        }
-         */
-
-	#region override functions - for client
-
-		public override void OnStartClient() 
-        {
-            NetworkClient.RegisterHandler<AuthResponseMessage>(OnAuthResponseMessage, false);
-        }
-
-        public override void OnStopClient() 
-        {
-            NetworkClient.UnregisterHandler<AuthResponseMessage>();
-        }
-
-        public override void OnClientAuthenticate() 
-        {
-            AuthRequestMessage req = new AuthRequestMessage
-            {
-                info = WorldAvatar.localPlayerInfo
-            };
-            NetworkClient.Send(req);
-        }
-
-	#endregion	// override functions - for client
-        
 
     #region override functions - for server
+
+        [UnityEngine.RuntimeInitializeOnLoadMethod]
+        static void ResetStatics() 
+        {
+            playerNames.Clear();
+        }
 
         public override void OnStartServer() 
         {
@@ -82,22 +60,22 @@ namespace Joycollab.v2
             NetworkServer.UnregisterHandler<AuthRequestMessage>();
         }
 
-    #endregion  // override functions - for server
-
-
-	#region private functions
+        public override void OnServerAuthenticate(NetworkConnectionToClient conn)
+        {
+            // do nothing...wait for AuthRequestMessage from client
+            Debug.Log($"{TAG} | OnServerAuthenticate()");
+        }
 
 		private void OnAuthRequestMessage(NetworkConnectionToClient conn, AuthRequestMessage message) 
         { 
-            Debug.Log($"Authentication Request: {message.info.nickNm}");
+            Debug.Log($"Authentication Request: {message.authUserName}");
 
             if (connectionsPendingDisconnect.Contains(conn)) return;
 
-            if (! WorldAvatarList.avatarInfos.Contains(message.info)) 
+            if (! playerNames.Contains(message.authUserName)) 
             {
-                // playerInfos.Add(message.info);
-
-                conn.authenticationData = message.info;
+                playerNames.Add(message.authUserName);
+                conn.authenticationData = message.authUserName;
 
                 AuthResponseMessage res = new AuthResponseMessage
                 {
@@ -123,7 +101,38 @@ namespace Joycollab.v2
             }
         }	
 
-		private void OnAuthResponseMessage(AuthResponseMessage message) 
+		private IEnumerator DelayedDisconnect(NetworkConnectionToClient conn, float delay) 
+        {
+            yield return new WaitForSeconds(delay);
+            ServerReject(conn);
+
+            yield return null;
+            connectionsPendingDisconnect.Remove(conn);
+        }
+
+    #endregion  // override functions - for server
+
+
+	#region override functions - for client
+
+		public override void OnStartClient() 
+        {
+            NetworkClient.RegisterHandler<AuthResponseMessage>(OnAuthResponseMessage, false);
+
+            SetPlayerName(R.singleton.myName);
+        }
+
+        public override void OnStopClient() 
+        {
+            NetworkClient.UnregisterHandler<AuthResponseMessage>();
+        }
+
+        public override void OnClientAuthenticate()
+        {
+            NetworkClient.Send(new AuthRequestMessage { authUserName = playerName });
+        }
+
+        private void OnAuthResponseMessage(AuthResponseMessage message) 
         {
             if (message.code == 100) 
             {
@@ -137,15 +146,16 @@ namespace Joycollab.v2
             }
         }
 
-		private IEnumerator DelayedDisconnect(NetworkConnectionToClient conn, float delay) 
-        {
-            yield return new WaitForSeconds(delay);
-            ServerReject(conn);
+	#endregion	// override functions - for client
+        
 
-            yield return null;
-            connectionsPendingDisconnect.Remove(conn);
+	#region other functions
+
+        public void SetPlayerName(string userName) 
+        {
+            playerName = userName;
         }
 
-	#endregion	// private functions
+	#endregion	// other functions
     }
 }

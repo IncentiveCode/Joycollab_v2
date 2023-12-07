@@ -57,12 +57,23 @@ namespace Joycollab.v2
         {
             if (! sender.identity.TryGetComponent(out WorldAvatar avatar)) 
             {
-                Debug.Log("WorldAvatar component 가 없음.");
-                return;
+                Debug.Log($"{TAG} | WorldAvatar component 가 없음.");
+            }
+            else 
+            {
+                Debug.Log($"{TAG} | call CommandFly()");
+                avatar.UpdateAVatarPosition(position);
             }
 
-            Debug.Log($"{TAG} | call CommandFly()");
-            avatar.UpdateAVatarPosition(position);
+            if (! sender.identity.TryGetComponent(out WorldPlayer player)) 
+            {
+                Debug.Log($"{TAG} | WorldPlayer component 가 없음.");  
+            }
+            else 
+            {
+                Debug.Log($"{TAG} | call CommandFly()");
+                player.UpdateAVatarPosition(position);
+            }
         }
 
     #endregion  // Command function

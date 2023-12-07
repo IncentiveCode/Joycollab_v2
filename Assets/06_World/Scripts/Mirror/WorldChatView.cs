@@ -1,13 +1,15 @@
 /// <summary>
 /// Square 에서 사용할 instant message chatting view class
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 19 
-/// @version        : 0.2
+/// @last update    : 2023. 12. 07 
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 03. 07) : 최초 생성, mirror-test 에서 작업한 항목 migration.
 ///     v0.2 (2023. 09. 19) : history chat 을 legacy text 로 변경.
+///     v0.3 (2023. 12. 07) : SSL 을 사용할 때는 chat view 가 사라지는 문제 수정 (중)
 /// </summary>
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -116,24 +118,37 @@ namespace Joycollab.v2
         [Command(requiresAuthority = false)]
         private void CmdSend(string message, NetworkConnectionToClient sender = null) 
         {
-            if (! sender.identity.TryGetComponent(out WorldAvatar avatar)) 
+            if (sender.identity.TryGetComponent(out WorldAvatar avatar)) 
             {
-                Debug.Log("WorldAvatar component 가 없음.");
-                return;
-            }
+                if (!playerNames.ContainsKey(sender)) 
+                    playerNames.Add(sender, avatar.avatarName);
+                else
+                {
+                    if (! playerNames[sender].Equals(avatar.avatarName))
+                        playerNames[sender] = avatar.avatarName;
+                }
 
-            if (!playerNames.ContainsKey(sender)) 
-                playerNames.Add(sender, avatar.avatarName);
-            else
-            {
-                if (! playerNames[sender].Equals(avatar.avatarName))
-                    playerNames[sender] = avatar.avatarName;
+                if (!string.IsNullOrWhiteSpace(message)) 
+                {
+                    RpcReceive(playerNames[sender], message.Trim());
+                    avatar.UpdateAvatarChat(message.Trim());
+                }
             }
-
-            if (!string.IsNullOrWhiteSpace(message)) 
+            else if (sender.identity.TryGetComponent(out WorldPlayer player)) 
             {
-                RpcReceive(playerNames[sender], message.Trim());
-                avatar.UpdateAvatarChat(message.Trim());
+                if (!playerNames.ContainsKey(sender)) 
+                    playerNames.Add(sender, player.avatarName);
+                else
+                {
+                    if (! playerNames[sender].Equals(player.avatarName))
+                        playerNames[sender] = player.avatarName;
+                }
+
+                if (!string.IsNullOrWhiteSpace(message)) 
+                {
+                    RpcReceive(playerNames[sender], message.Trim());
+                    player.UpdateAvatarChat(message.Trim());
+                }
             }
         }
 

@@ -76,7 +76,7 @@ namespace Joycollab.v2
             });
             _btnMicControl.onClick.AddListener(() => {
                 OnPointerDown();
-                Debug.Log($"{TAG} | mic option change.");
+                // Debug.Log($"{TAG} | mic option change.");
             });
             _btnAlarm.onClick.AddListener(() => {
                 OnPointerDown();
@@ -93,11 +93,11 @@ namespace Joycollab.v2
             });
             _btnMeeting.onClick.AddListener(() => {
                 OnPointerDown();
-                Debug.Log($"{TAG} | meeting panel open.");
+                // Debug.Log($"{TAG} | meeting panel open.");
             });
             _btnSeminar.onClick.AddListener(() => {
                 OnPointerDown();
-                Debug.Log($"{TAG} | seminar panel open.");
+                // Debug.Log($"{TAG} | seminar panel open.");
             });
             _btnGathering.onClick.AddListener(() => {
                 OnPointerDown();
@@ -180,17 +180,17 @@ namespace Joycollab.v2
 
         public void UpdateInfo(eStorageKey key) 
         {
-            Debug.Log($"{TAG} | UpdateInfo() call. key : {key}");
+            // Debug.Log($"{TAG} | UpdateInfo() call. key : {key}");
             switch (key) 
             {
                 case eStorageKey.MemberInfo :
-                    Debug.Log($"{TAG} | UpdateInfo (UserPhoto) - photo : {myPhoto}, photo in R : {R.singleton.myPhoto}");
+                    // Debug.Log($"{TAG} | UpdateInfo (UserPhoto) - photo : {myPhoto}, photo in R : {R.singleton.myPhoto}");
                     if (!myPhoto.Equals(R.singleton.myPhoto)) 
                     {
                         myPhoto = R.singleton.myPhoto;
 
                         string url = $"{URL.SERVER_PATH}{myPhoto}";
-                        Debug.Log($"{TAG} | photo url : {url}");
+                        // Debug.Log($"{TAG} | photo url : {url}");
                         int seq = R.singleton.memberSeq;
                         loader.LoadProfile(url, seq).Forget();
                     }     

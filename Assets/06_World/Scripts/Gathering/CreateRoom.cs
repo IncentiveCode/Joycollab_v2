@@ -104,12 +104,15 @@ namespace Joycollab.v2
                 _goThumbnailPopup.SetActive(true);
             });
             _btnCreate.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | Create calll.");
-                CreateAsync().Forget();
+                Debug.Log($"{TAG} | Create call.");
+                // CreateAsync().Forget();
+                WorldPlayer.localPlayer.CreateRoom(1, true);
             });
             _btnCancel.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | Cancel calll.");
-                Hide();
+                // Debug.Log($"{TAG} | Cancel call.");
+                // Hide();
+                string id = "room_1";
+                WorldPlayer.localPlayer.JoinRoom(id);
             });
 
             

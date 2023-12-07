@@ -27,7 +27,7 @@ namespace Joycollab.v2
         [SerializeField, SyncVar] private float speed = 5f;
 
         [Header("avatar info")]
-        internal WorldAvatarInfo localPlayerInfo;
+        internal static WorldAvatarInfo localPlayerInfo;
         private WorldAvatarInfo avatarInfo;
         [SyncVar] public int avatarSeq;
         [SyncVar(hook = nameof(SetAvatarName_Hook))] public string avatarName; 
@@ -35,6 +35,11 @@ namespace Joycollab.v2
         [SyncVar(hook = nameof(SetAvatarMemberType_Hook))] public string avatarMemberType;
         [SyncVar(hook = nameof(SetAvatarState_Hook))] public string avatarState;
         [SyncVar(hook = nameof(SetAvatarChat_Hook))] public string avatarChat;
+        [SyncVar] public string playerName;
+
+        [Header("room info")]
+        [SyncVar] public string roomID;
+        [SyncVar] public Room currentRoom;
 
         [Header("diagnostics")]
         private float horizontal;
@@ -56,9 +61,9 @@ namespace Joycollab.v2
         [Header("chat")]
         [SerializeField] private Transform _transformBubble;
 
-        [SyncVar] public string matchID;
         private Camera cam; 
         private NetworkMatch networkMatch;
+        private System.Guid netIdGuid;
 
 
     #region Unity functions
@@ -69,6 +74,7 @@ namespace Joycollab.v2
 
             // set local variables
             isMovable = isFly = false;
+            roomID = string.Empty;
 
             // get components
             if (_imgNameArea != null) 
@@ -144,17 +150,26 @@ namespace Joycollab.v2
     #endregion  // Unity functions
 
 
-    #region mirror functions
+    #region override functions
+
+        public override void OnStartServer() 
+        {
+            netIdGuid = netId.ToString().ToGuid();
+            networkMatch.matchId = netIdGuid;
+
+            playerName = (string) connectionToClient.authenticationData;
+        }
 
         public override void OnStartClient() 
         {
             if (isLocalPlayer) 
             {
                 localPlayer = this;
+                UpdateAvatarInfo(localPlayerInfo);
             }
             else 
             {
-                Debug.Log($"{TAG} | spawning other player.");
+                Debug.Log($"{TAG} | spawning other player... {localPlayerInfo.seq}, {localPlayerInfo.nickNm}");
             }
         }
 
@@ -170,13 +185,15 @@ namespace Joycollab.v2
             ServerDisconnect();
         }
 
-    #endregion  // mirror functions
+    #endregion  // override functions
 
 
     #region update avatar 
 
         public void UpdateAvatarInfo(WorldAvatarInfo info) 
         {
+            Debug.Log($"{TAG} | UpdateAvatarInfo() call.");
+            /**
             avatarInfo = info;
 
             avatarSeq = info.seq;
@@ -184,6 +201,9 @@ namespace Joycollab.v2
             avatarPhoto = info.photo;
             avatarMemberType = info.memberType;
             avatarState = info.stateId;
+             */
+
+            CmdUpdateAvatarInfo(info);
         }
 
         public void UpdateAvatarChat(string chat) 
@@ -327,6 +347,19 @@ namespace Joycollab.v2
     #region command functions
 
         [Command(requiresAuthority = false)]
+        public void CmdUpdateAvatarInfo(WorldAvatarInfo info) 
+        {
+            Debug.Log($"{TAG} | cmdUpdateAvatarInfo(), new name : {name}");
+            avatarInfo = info;
+
+            avatarSeq = info.seq;
+            avatarName = info.nickNm;
+            avatarPhoto = info.photo;
+            avatarMemberType = info.memberType;
+            avatarState = info.stateId;
+        }
+
+        [Command(requiresAuthority = false)]
         public void CmdSetAvatarName(string name) 
         {
             Debug.Log($"{TAG} | cmdSetAvatarName(), new name : {name}");
@@ -360,17 +393,75 @@ namespace Joycollab.v2
     
         public void CreateRoom(int seq, bool isPublic) 
         {
-            string matchID = $"room_{seq}";
-            CmdCreateRoom(matchID, isPublic);
+            string roomID = $"room_{seq}";
+            CmdCreateRoom(roomID, isPublic);
         }
 
         [Command]
-        private void CmdCreateRoom(string matchID, bool isPublic)
+        private void CmdCreateRoom(string _roomID, bool isPublic)
         {
-            this.matchID = matchID;
+            roomID = _roomID;
+
+            if (RoomMaker.singleton.CreateRoom(_roomID, this, isPublic))
+            {
+                Debug.Log($"{TAG} | <color=green>Game hosted successfully</color>");
+                networkMatch.matchId = _roomID.ToGuid();
+                RpcCreateRoom(true, _roomID, avatarSeq);
+            }
+            else 
+            {
+                Debug.Log($"{TAG} | <color=red>Game hosted failed</color>");
+                RpcCreateRoom(false, _roomID, avatarSeq);
+            }
+        }
+
+        [TargetRpc]
+        private void RpcCreateRoom(bool success, string _roomID, int _playerIndex) 
+        {
+            roomID = _roomID;
+            Debug.Log($"{TAG} | room id : {roomID} == {_roomID}");
+
+            // TODO. 방 생성 완료 이벤트 호출.
         }
 
     #endregion  // create room functions
+
+
+    #region join room functions
+
+        public void JoinRoom(string _roomID) 
+        {
+            CmdJoinRoom(_roomID);
+        }
+
+        [Command]
+        private void CmdJoinRoom(string _roomID) 
+        {
+            roomID = _roomID;
+
+            if (RoomMaker.singleton.JoinRoom(_roomID, this)) 
+            {
+                Debug.Log($"{TAG} | <color=green>room joined successfully</color>");
+                networkMatch.matchId = _roomID.ToGuid();
+                RpcJoinRoom(true, _roomID, avatarSeq);
+            }
+            else 
+            {
+                Debug.Log($"{TAG} | <color=red>Game joined failed</color>");
+                RpcJoinRoom(false, _roomID, avatarSeq);
+            }    
+        }
+
+        [TargetRpc]
+        private void RpcJoinRoom(bool success, string _roomID, int seq) 
+        {
+            roomID = _roomID;
+            Debug.Log($"{TAG} | RpcJoinRoom(), match id : {_roomID}");
+
+            // TODO. 방 가입 완료 이벤트 호출.
+        }
+
+    #endregion  // join room functions
 
 
     #region disconnect functions 
@@ -388,9 +479,10 @@ namespace Joycollab.v2
 
         private void ServerDisconnect()
         {
-            // TODO. match maker code
-            networkMatch.matchId = System.Guid.Empty;
+            if (!string.IsNullOrEmpty(roomID))
+                RoomMaker.singleton.PlayerDisconnected(this, roomID);
             RpcDisconnectGame();
+            networkMatch.matchId = netIdGuid;
         }
 
         [TargetRpc]
@@ -407,6 +499,23 @@ namespace Joycollab.v2
     #endregion  // disconnect functions 
 
 
+    #region match player functions
+
+        [Server]
+        public void PlayerCountUpdated(int count) 
+        {
+            RpcPlayerCountUpdated(count);
+        }
+
+        [TargetRpc]
+        private void RpcPlayerCountUpdated(int count) 
+        {
+            Debug.Log($"{TAG} | current room {roomID}, user count : {count}");
+        }
+
+    #endregion  // match player functions
+
+
     #region event handling
 
         private void OnTriggerEnter2D(Collider2D other) 
@@ -414,7 +523,7 @@ namespace Joycollab.v2
             if (other.tag.Equals("Room pointer"))
             {
                 Debug.Log($"{TAG} | room pointer 도달. 일단 멈춤.");
-                isMovable = isFly = false;
+                isFly = false;
             } 
         }
 
@@ -437,6 +546,7 @@ namespace Joycollab.v2
 
                     WorldAvatar.localPlayerInfo.nickNm = R.singleton.myName;
                     WorldChatView.localPlayerInfo.nickNm = R.singleton.myName;
+                    WorldPlayer.localPlayerInfo.nickNm = R.singleton.myName;
                 }   
                 if (! avatarMemberType.Equals(R.singleton.myMemberType))
                 {

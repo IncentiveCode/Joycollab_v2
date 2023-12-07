@@ -45,6 +45,7 @@ namespace Joycollab.v2
 
         [Header("type : WorldAvatar")]
         private WorldAvatar _worldAvatarInfo;
+        private WorldPlayer _worldPlayerInfo;
 
         [Header("type : Link")]
         [SerializeField] private eClickableLinkType _linkType;
@@ -407,6 +408,7 @@ namespace Joycollab.v2
             );
             WorldAvatar.localPlayerInfo = info;
             WorldChatView.localPlayerInfo = info;
+            WorldPlayer.localPlayerInfo = info;
 
             // 센터 접속
             var manager = NetworkManager.singleton;
@@ -421,7 +423,9 @@ namespace Joycollab.v2
 
         private void SetWorldAvatarInfo() 
         {
-            _worldAvatarInfo = GetComponent<WorldAvatar>();
+            // _worldAvatarInfo = GetComponent<WorldAvatar>();
+            TryGetComponent<WorldAvatar>(out _worldAvatarInfo);
+            TryGetComponent<WorldPlayer>(out _worldPlayerInfo);
         }
 
         private void WorldAvatarRightClick(PointerEventData data) 
@@ -439,9 +443,11 @@ namespace Joycollab.v2
                 return;
             }
 
-            bool isMyMenu = (R.singleton.memberSeq == _worldAvatarInfo.avatarSeq);
+            int avatarSeq = _worldAvatarInfo == null ? _worldPlayerInfo.avatarSeq : _worldAvatarInfo.avatarSeq;
+            string avatarName = _worldAvatarInfo == null ? _worldPlayerInfo.avatarName : _worldAvatarInfo.avatarName;
 
-            ctrl.Init(_worldAvatarInfo.avatarName);
+            bool isMyMenu = (R.singleton.memberSeq == avatarSeq);
+            ctrl.Init(avatarName);
             foreach (var item in _menuItems) 
             {
                 if (string.IsNullOrEmpty(item)) continue;
@@ -453,24 +459,24 @@ namespace Joycollab.v2
                     switch (item) 
                     {
                         case S.MENU_DETAILS :
-                            WindowManager.singleton.Push(S.WorldScene_MemberProfile, _worldAvatarInfo.avatarSeq, data.position.x, data.position.y);
+                            WindowManager.singleton.Push(S.WorldScene_MemberProfile, avatarSeq, data.position.x, data.position.y);
                             break;
 
                         case S.MENU_CHAT :
-                            string chatLink = string.Format(URL.CHATVIEW_LINK, R.singleton.memberSeq, _worldAvatarInfo.avatarSeq, R.singleton.Region);
-                            JsLib.OpenChat(chatLink, _worldAvatarInfo.avatarSeq);
+                            string chatLink = string.Format(URL.CHATVIEW_LINK, R.singleton.memberSeq, avatarSeq, R.singleton.Region);
+                            JsLib.OpenChat(chatLink, avatarSeq);
                             break;
 
                         case S.MENU_CALL :
                             List<int> callTarget = new List<int> {
                                 R.singleton.memberSeq,
-                                _worldAvatarInfo.avatarSeq
+                                avatarSeq
                             };
                             SystemManager.singleton.CallOnTheSpot(callTarget).Forget();
                             break;
 
                         case S.MENU_MEETING :
-                            List<int> meetingTarget = new List<int> { _worldAvatarInfo.avatarSeq };
+                            List<int> meetingTarget = new List<int> { avatarSeq };
                             SystemManager.singleton.MeetingOnTheSpot(meetingTarget).Forget();
                             break;
                         

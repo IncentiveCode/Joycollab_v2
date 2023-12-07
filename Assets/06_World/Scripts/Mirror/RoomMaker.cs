@@ -1,3 +1,13 @@
+/// <summary>
+/// World 에서 사용할 RoomMaker 클래스 
+/// @author         : HJ Lee
+/// @last update    : 2023. 12. 06 
+/// @version        : 0.1
+/// @update
+///     v0.1 (2023. 12. 06) : 최초 생성, Lobby_Room 에서 참고해서 작성.
+/// </summary>
+
+using System;
 using System.Text;
 using System.Security.Cryptography;
 using System.Collections.Generic;
@@ -13,156 +23,110 @@ namespace Joycollab.v2
         public bool isPublic;
         public bool inRoom;
         public bool isRoomFull;
-        public List<GameObject> players = new List<GameObject>();
+        public List<WorldPlayer> players = new List<WorldPlayer>();
 
-        public Room(string roomID, GameObject player) 
+        public Room(string _roomID, WorldPlayer player, bool _isPublic) 
         {
-            this.roomID = roomID;
-            this.players.Add(player);
+            roomID = _roomID;
+            isPublic = _isPublic;
+            inRoom = isRoomFull = false;
+            players.Add(player);
         }
 
         public Room() { }
     }
 
-    [System.Serializable]
-    public class ListPlayer : List<GameObject> { }
 
     public class RoomMaker : NetworkBehaviour
     {
-        private const string TAG = "MatchMaker";
+        private const string TAG = "RoomMaker";
         public static RoomMaker singleton;
 
         public readonly SyncList<Room> rooms = new SyncList<Room>(); 
-        public readonly SyncList<string> roomIDs = new SyncList<string>();
-
-        [SerializeField] GameObject goTurnManager;
+        public readonly SyncList<String> roomIDs = new SyncList<String>();
+        [SerializeField] int maxRoomPlayers = 100;
 
         private void Start() 
         {
             singleton = this;
         }
 
-        public bool HostGame(string _matchID, GameObject player, bool isPublic, out int playerIndex) 
+        // public bool CreateRoom(string _roomID, GameObject player, bool isPublic, out int playerIndex) 
+        public bool CreateRoom(string _roomID, WorldPlayer player, bool isPublic) 
         {
-            playerIndex = -1;
-
-            if (! roomIDs.Contains(_matchID))
+            if (! roomIDs.Contains(_roomID))
             {
-                roomIDs.Add(_matchID);
-                Room room = new Room(_matchID, player);
-                room.isPublic = isPublic;
+                roomIDs.Add(_roomID);
+                Room room = new Room(_roomID, player, isPublic);
                 rooms.Add(room);
-                Debug.Log($"{TAG} | Match generated");
 
-                playerIndex = 1;
+                Debug.Log($"{TAG} | room generated");
+                player.currentRoom = room;
                 return true;
             }
             else 
             {
-                Debug.Log($"{TAG} | Match ID already exists");
+                Debug.Log($"{TAG} | room ID already exists");
                 return false;
             }
         }
 
-        public bool JoinGame(string roomID, GameObject player, out int playerIndex) 
+        // public bool JoinRoom(string _roomID, GameObject player, out int playerIndex) 
+        public bool JoinRoom(string _roomID, WorldPlayer player) 
         {
-            playerIndex = -1;
-
-            if (roomIDs.Contains(roomID))
+            if (roomIDs.Contains(_roomID))
             {
                 for (int i = 0; i < rooms.Count; i++) 
                 {
-                    if (rooms[i].roomID == roomID) 
+                    if (rooms[i].roomID == _roomID) 
                     {
-                        rooms[i].players.Add(player);
-                        playerIndex = rooms[i].players.Count;
-                        break;
+                        if (!rooms[i].inRoom && !rooms[i].isRoomFull)
+                        {
+                            rooms[i].players.Add(player);
+                            player.currentRoom = rooms[i];
+
+                            rooms[i].players[0].PlayerCountUpdated(rooms[i].players.Count);
+                            if (rooms[i].players.Count == maxRoomPlayers)
+                                rooms[i].isRoomFull = true;
+
+                            break;
+                        }
+                        else 
+                        {
+                            return false;
+                        }
                     }
                 }
 
-                Debug.Log($"{TAG} | Match joined");
+                Debug.Log($"{TAG} | room joined");
                 return true;
             }
             else 
             {
-                Debug.Log($"{TAG} | Match ID does not exists");
+                Debug.Log($"{TAG} | room ID does not exists");
                 return false;
             }
         }
 
-        public void BeginGame(string roomID) 
-        {
-            GameObject newTurnManager = Instantiate(goTurnManager);
-            NetworkServer.Spawn(newTurnManager);
-
-            newTurnManager.GetComponent<NetworkMatch>().matchId = roomID.ToGuid();
-            TurnManager turnManager = newTurnManager.GetComponent<TurnManager>(); 
-            for (int i = 0; i< rooms.Count; i++) 
-            {
-                if (rooms[i].roomID == roomID) 
-                {
-                    foreach (var player in rooms[i].players) 
-                    {
-                        WorldPlayer p = player.GetComponent<WorldPlayer>();
-                        turnManager.AddPlayer(p);
-                        // p.StartGame();
-                    }
-                    break;
-                }
-            }
-        }
-
-        public bool SearchGame(GameObject player, out int playerIndex, out string matchID) 
-        {
-            playerIndex = -1;
-            matchID = string.Empty;
-
-            for (int i = 0; i < rooms.Count; i++) 
-            {
-                if (rooms[i].isPublic && !rooms[i].isRoomFull && !rooms[i].inRoom) 
-                {
-                    matchID = rooms[i].roomID;
-                    if (JoinGame(matchID, player, out playerIndex))
-                    {
-                        return true;
-                    }
-                }
-            }
-
-            return false;
-        }
-
-        public static string GetRandomMatchID() 
-        {
-            string _id = string.Empty;
-            int _no = 0;
-            for (int i = 0; i < 5; i++) 
-            {
-                _no = Random.Range(0, 36); 
-                if (_no < 26)
-                    _id += (char)(_no + 65);
-                else 
-                    _id += (_no - 26).ToString();
-            }
-            Debug.Log($"{TAG} | Random match id : {_id}");
-            return _id;
-        } 
-
-        public void PlayerDisconnected(WorldPlayer player, string roomID) 
+        public void PlayerDisconnected(WorldPlayer player, string _roomID) 
         {
             for (int i = 0; i < rooms.Count; i++) 
             {
-                if (rooms[i].roomID.Equals(roomID)) 
+                if (rooms[i].roomID.Equals(_roomID)) 
                 {
-                    int playerIndex = rooms[i].players.IndexOf(player.gameObject);
+                    int playerIndex = rooms[i].players.IndexOf(player);
                     rooms[i].players.RemoveAt(playerIndex);
-                    Debug.Log($"{TAG} | Player disconnected from match {roomID} | {rooms[i].players.Count} players remaining");
+                    Debug.Log($"{TAG} | Player disconnected from match {_roomID} | {rooms[i].players.Count} players remaining");
 
                     if (rooms[i].players.Count == 0) 
                     {
-                        Debug.Log($"{TAG} | No more players in match. terminating {roomID}, (방 없애지 않고 그대로 둠...)"); 
-                        // rooms.RemoveAt(i);
-                        // matchIDs.Remove(_matchID);
+                        Debug.Log($"{TAG} | No more players in match. terminating {_roomID}, (테스트 이후에는 방 없애지 않고 그대로 둠...)"); 
+                        rooms.RemoveAt(i);
+                        roomIDs.Remove(_roomID);
+                    }
+                    else 
+                    {
+                        rooms[i].players[0].PlayerCountUpdated(rooms[i].players.Count);
                     }
                     break;
                 }
