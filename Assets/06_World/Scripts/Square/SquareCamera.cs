@@ -1,13 +1,14 @@
 /// <summary>
 /// Square 에서 사용할 카메라 제어 클래스 
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 01 
-/// @version        : 0.4
+/// @last update    : 2023. 12. 08 
+/// @version        : 0.5
 /// @update
 ///     v0.1 (2023. 03. 07) : 최초 생성, mirror-test 에서 작업한 항목 migration.
 ///     v0.2 (2023. 10. 24) : Teleport 시 fade out / fade in 추가.
 ///     v0.3 (2023. 10. 26) : WebGLSupport 의 ResizeEvent 추가.
 ///     v0.4 (2023. 11. 01) : fade out / fade in 수치 조정.
+///     v0.5 (2023. 12. 08) : 마우스 휠 이벤트 추가.
 /// </summary>
 
 using UnityEngine;
@@ -19,14 +20,17 @@ namespace Joycollab.v2
 {
     public class SquareCamera : MonoBehaviour
     {
+        // const value
         private const string TAG = "SquareCamera";
+        private const float fMinSize = 3f;
+        private const float fMaxSize = 8f;
 
         public static SquareCamera singleton { get; private set; }
 
         // 카메라, 크기 관련 변수
-        private Camera mainCam;
+        private Camera mainCamera;
         private Vector3 v3CameraPos;
-        private float fSize, fZ;
+        private float fSize, fLastSize, fZ;
         private float cameraMoveSpeed;
         private float fWidth;
 
@@ -60,7 +64,7 @@ namespace Joycollab.v2
         {
             singleton = this;
 
-            mainCam = Camera.main;
+            mainCamera = GetComponent<Camera>();
             cameraMoveSpeed = 4f;
             isSet = isMove = false;
 
@@ -88,7 +92,7 @@ namespace Joycollab.v2
         {
             isSet = false;
             floorNo = roomNo = 0;
-            mainCam = null;
+            mainCamera = null;
 
             WebGLWindow.OnResizeEvent -= OnResize;
         }
@@ -103,7 +107,10 @@ namespace Joycollab.v2
             distance = new Vector3(0f, padding, -10f);
             playerTransform = player;
 
-            mainCam.orthographicSize = fSize = size;
+            float prefSize = PlayerPrefs.GetFloat(Key.ORTHOGRAPHIC_SIZE_IN_SQUARE, size);
+            prefSize = Mathf.Clamp(prefSize, fMinSize, fMaxSize);
+            mainCamera.orthographicSize = fLastSize = fSize = prefSize;
+
             v3CameraPos = new Vector3(0f, 0f, -10f);
             fZ = v3CameraPos.z;
 
@@ -182,10 +189,10 @@ namespace Joycollab.v2
 
         private void HandleCameraPosition() 
         {
-            if (mainCam == null) return;
-            if (mainCam.transform == null) return;
+            if (mainCamera == null) return;
+            if (mainCamera.transform == null) return;
 
-            mainCam.transform.position = Vector3.Lerp(mainCam.transform.position,
+            mainCamera.transform.position = Vector3.Lerp(mainCamera.transform.position,
                 playerTransform.position + distance,
                 Time.deltaTime * cameraMoveSpeed);
 
@@ -196,7 +203,7 @@ namespace Joycollab.v2
                 lx = v2SquareSize.x - fWidth; 
                 ly = v2SquareSize.y - fSize;
 
-                clampY = Mathf.Clamp(mainCam.transform.position.y, 
+                clampY = Mathf.Clamp(mainCamera.transform.position.y, 
                     -ly + ((floorNo == 1) ? 0 : 45), 
                     ly + ((floorNo == 1) ? 0 : 45)); 
                 v3CameraPos.y = clampY;
@@ -207,20 +214,40 @@ namespace Joycollab.v2
                 ly = v2RoomSize.y - fSize;
 
                 float ty = ((roomNo - 1) * 30) + 80;
-                clampY = Mathf.Clamp(mainCam.transform.position.y, 
+                clampY = Mathf.Clamp(mainCamera.transform.position.y, 
                     -ly + ty, 
                     ly + ty); 
                 v3CameraPos.y = clampY;
             }
 
-            clampX = Mathf.Clamp(mainCam.transform.position.x, -lx, lx);
+            clampX = Mathf.Clamp(mainCamera.transform.position.x, -lx, lx);
             v3CameraPos.x = clampX;
             v3CameraPos.z = fZ;
 
-            mainCam.transform.position = v3CameraPos;
+            mainCamera.transform.position = v3CameraPos;
         }
 
     #endregion  // private functions
+
+
+    #region call by WorldPlayer
+
+        public void HandleWheelEvent(float value) 
+        {
+            if (value == 0f) return; 
+
+            fSize += (value > 0) ? -0.2f : 0.2f;
+            fSize = Mathf.Clamp(fSize, fMinSize, fMaxSize);
+
+            if (fSize != fLastSize) 
+            {
+                mainCamera.orthographicSize = fLastSize = fSize; 
+                fWidth = fSize * Screen.width / Screen.height;
+
+            }
+        }
+
+    #endregion  // call by WorldPlayer
 
 
     #region webgl support callback

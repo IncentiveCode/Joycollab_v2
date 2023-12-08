@@ -74,7 +74,8 @@ namespace Joycollab.v2
 	#region position, zoom value 
 
 		public const string ORTHOGRAPHIC_SIZE = "_os";
-		public const string ORTHOGRAPHIC_SIZE_W = "_osw";
+		public const string ORTHOGRAPHIC_SIZE_IN_MAP = "_os_in_map";
+		public const string ORTHOGRAPHIC_SIZE_IN_SQUARE = "_os_in_square";
 
 	#endregion	// position, zoom value 
 	}

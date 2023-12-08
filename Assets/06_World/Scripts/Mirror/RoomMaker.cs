@@ -30,7 +30,7 @@ namespace Joycollab.v2
             roomID = _roomID;
             isPublic = _isPublic;
             inRoom = isRoomFull = false;
-            players.Add(player);
+            // players.Add(player);
         }
 
         public Room() { }
@@ -61,7 +61,7 @@ namespace Joycollab.v2
                 rooms.Add(room);
 
                 Debug.Log($"{TAG} | room generated");
-                player.currentRoom = room;
+                // player.currentRoom = room;
                 return true;
             }
             else 
@@ -115,7 +115,7 @@ namespace Joycollab.v2
                 if (rooms[i].roomID.Equals(_roomID)) 
                 {
                     int playerIndex = rooms[i].players.IndexOf(player);
-                    rooms[i].players.RemoveAt(playerIndex);
+                    if (rooms[i].players.Count > playerIndex) rooms[i].players.RemoveAt(playerIndex);
                     Debug.Log($"{TAG} | Player disconnected from match {_roomID} | {rooms[i].players.Count} players remaining");
 
                     if (rooms[i].players.Count == 0) 

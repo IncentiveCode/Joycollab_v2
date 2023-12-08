@@ -1,10 +1,11 @@
 /// <summary>
 /// World 에서 사용할 player 클래스 
 /// @author         : HJ Lee
-/// @last update    : 2023. 12. 06 
-/// @version        : 0.1
+/// @last update    : 2023. 12. 08 
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 12. 06) : 최초 생성, Lobby_Room 에서 참고해서 작성.
+///     v0.2 (2023. 12. 08) : mouse wheel event 추가.
 /// </summary>
 
 using UnityEngine;
@@ -40,6 +41,7 @@ namespace Joycollab.v2
         [Header("room info")]
         [SyncVar] public string roomID;
         [SyncVar] public Room currentRoom;
+        [SerializeField] private GameObject goRoomPlayer;
 
         [Header("diagnostics")]
         private float horizontal;
@@ -62,6 +64,7 @@ namespace Joycollab.v2
         [SerializeField] private Transform _transformBubble;
 
         private Camera cam; 
+        private SquareCamera squareCamera;
         private NetworkMatch networkMatch;
         private System.Guid netIdGuid;
 
@@ -101,7 +104,11 @@ namespace Joycollab.v2
 
             cam = Camera.main;
             cam.transform.position = transform.position;
-            cam.GetComponent<SquareCamera>().UpdateCameraInfo(transform, 5f);
+
+            if (cam.TryGetComponent<SquareCamera>(out squareCamera))
+            {
+                squareCamera.UpdateCameraInfo(transform, 5f);
+            }
 
             isMovable = true;
         }
@@ -112,16 +119,17 @@ namespace Joycollab.v2
 
             if (Input.GetMouseButtonUp(0)) 
             {
+                if (EventSystem.current.IsPointerOverGameObject()) 
+                {
+                    // Debug.Log($"{TAG} | UI click. no move");
+                    return;
+                }
+
                 v3Target = cam.ScreenToWorldPoint(Input.mousePosition);
                 RaycastHit2D hit = Physics2D.Raycast(v3Target, Vector2.zero, 1, LayerMask.GetMask("ClickableObject"));
                 if (hit.collider != null) 
                 {
                     // Debug.Log($"{TAG} | clickable object click. no move");
-                    return;
-                }
-                else if (EventSystem.current.IsPointerOverGameObject()) 
-                {
-                    // Debug.Log($"{TAG} | UI click. no move");
                     return;
                 }
                 else 
@@ -130,6 +138,10 @@ namespace Joycollab.v2
                     v3Target.z = 0f;
                     Fly(v3Target);
                 }
+            }
+            else if (Input.mouseScrollDelta.y != 0f) 
+            {
+                squareCamera.HandleWheelEvent(Input.mouseScrollDelta.y);
             }
             else 
             {
@@ -170,6 +182,7 @@ namespace Joycollab.v2
             else 
             {
                 Debug.Log($"{TAG} | spawning other player... {localPlayerInfo.seq}, {localPlayerInfo.nickNm}");
+                goRoomPlayer = LobbyTest.singleton.SpawnPlayerPrefab(this);
             }
         }
 
@@ -444,6 +457,12 @@ namespace Joycollab.v2
                 Debug.Log($"{TAG} | <color=green>room joined successfully</color>");
                 networkMatch.matchId = _roomID.ToGuid();
                 RpcJoinRoom(true, _roomID, avatarSeq);
+
+                // host
+                if (isServer && goRoomPlayer != null)
+                {
+                    goRoomPlayer.SetActive(true);
+                }
             }
             else 
             {
@@ -458,7 +477,7 @@ namespace Joycollab.v2
             roomID = _roomID;
             Debug.Log($"{TAG} | RpcJoinRoom(), match id : {_roomID}");
 
-            // TODO. 방 가입 완료 이벤트 호출.
+            LobbyTest.singleton.JoinSuccess(success, _roomID);
         }
 
     #endregion  // join room functions
@@ -479,8 +498,7 @@ namespace Joycollab.v2
 
         private void ServerDisconnect()
         {
-            if (!string.IsNullOrEmpty(roomID))
-                RoomMaker.singleton.PlayerDisconnected(this, roomID);
+            RoomMaker.singleton.PlayerDisconnected(this, roomID);
             RpcDisconnectGame();
             networkMatch.matchId = netIdGuid;
         }
@@ -494,6 +512,13 @@ namespace Joycollab.v2
         private void ClientDisconnect()
         {
             Debug.Log($"{TAG} | ClientDisconnect() call.");
+            if (goRoomPlayer != null) 
+            {
+                if (! isServer)
+                    Destroy(goRoomPlayer);
+                else
+                    goRoomPlayer.SetActive(false);
+            }
         }
 
     #endregion  // disconnect functions 
@@ -522,7 +547,7 @@ namespace Joycollab.v2
         {
             if (other.tag.Equals("Room pointer"))
             {
-                Debug.Log($"{TAG} | room pointer 도달. 일단 멈춤.");
+                // Debug.Log($"{TAG} | room pointer 도달. 일단 멈춤.");
                 isFly = false;
             } 
         }

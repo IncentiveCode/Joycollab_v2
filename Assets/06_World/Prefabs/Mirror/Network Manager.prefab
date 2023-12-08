@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2329231565794846111}
   - component: {fileID: 7405691016836246133}
   - component: {fileID: 2329231565794846081}
+  - component: {fileID: 1453005751782544335}
   - component: {fileID: 5791150745712664597}
   m_Layer: 0
   m_Name: Network Manager
@@ -50,12 +51,12 @@ MonoBehaviour:
   runInBackground: 1
   autoStartServerBuild: 0
   autoConnectClientBuild: 0
-  sendRate: 60
+  sendRate: 30
   offlineScene: Assets/Scenes/Map.unity
   onlineScene: Assets/Scenes/Square.unity
   transport: {fileID: 2329231565794846081}
   networkAddress: localhost
-  maxConnections: 1000
+  maxConnections: 10000
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
@@ -104,6 +105,18 @@ MonoBehaviour:
   sslCertJson: ./cert.json
   sslProtocols: 3072
   _logLevels: 2
+--- !u!114 &1453005751782544335
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2329231565794846083}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d09f5c8bf2f4747b7a9284ef5d9ce2a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &5791150745712664597
 MonoBehaviour:
   m_ObjectHideFlags: 0
