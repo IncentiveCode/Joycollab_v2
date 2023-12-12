@@ -33,6 +33,10 @@ namespace Joycollab.v2
         World, Map, Square, Room,
         Sample,
         Mobile,
+
+        MapV2, SquareV2, 
+        Cozy, Life, BnB, Debate, Support,
+        RoomV2
     }
 
 
