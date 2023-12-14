@@ -1,8 +1,8 @@
 /// <summary>
 /// Network 통신 - 사용자, 워크스페이스 멤버 관련 응답 
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 28
-/// @version        : 0.16
+/// @last update    : 2023. 12. 14
+/// @version        : 0.17
 /// @update
 ///     v0.1 (2023. 02. 23) : Joycollab 에서 사용하던 클래스 정리 및 통합.
 ///     v0.2 (2023. 06. 14) : MemberSeq 클래스 추가.
@@ -21,6 +21,7 @@
 ///     v0.14 (2023. 11. 09) : ResMemberInfo 에 몇 가지 항목 추가. (hiddenTel, tag 및 활동지수 등)
 ///     v0.15 (2023. 11. 15) : ReqMemberInfo 와 WorkspaceMemberInfo 에 몇 가지 항목 추가 (hiddenTel, tag 및 활동 지수 관련)
 ///     v0.16 (2023. 11. 28) : WorldAvatarInfo 에 회사, 직급 정보 추가.
+///     v0.17 (2023. 12. 14) : WorldAvatarInfo 생성자 추가 및 Guid 대신 workspaceSeq, roomTypeId 추가.
 /// </summary>
 
 using System;
@@ -43,13 +44,13 @@ namespace Joycollab.v2
         public string jobGrade;
 
         // 현재 접속한 모임방 정보
-        public Guid roomId;
+        public int workspaceSeq;
+        public string roomTypeId;
 
         public WorldAvatarInfo() 
         {
-            seq = -1;
-            nickNm = photo = memberType = stateId = compName = jobGrade = string.Empty;
-            roomId = Guid.Empty;
+            seq = workspaceSeq = -1;
+            nickNm = photo = memberType = stateId = compName = jobGrade = roomTypeId = string.Empty;
         }
 
         public WorldAvatarInfo(int seq, string nickNm, string photo, string memberType, string stateId, string compName="", string jobGrade="")
@@ -59,11 +60,33 @@ namespace Joycollab.v2
             this.photo = photo;
             this.memberType = memberType;
             this.stateId = stateId;
-
             this.compName = compName;
             this.jobGrade = jobGrade;
+            this.workspaceSeq = R.singleton.workspaceSeq;
+        }
 
-            roomId = Guid.Empty;
+        public WorldAvatarInfo(ResMemberInfo info) 
+        {
+            this.seq = info.seq;
+            this.nickNm = info.nickNm;
+            this.photo = info.photo;
+            this.memberType = info.memberType;
+            this.stateId = S.ONLINE;
+            this.compName = info.compName;
+            this.jobGrade = info.jobGrade;
+            this.workspaceSeq = R.singleton.workspaceSeq;
+        }
+
+        public WorldAvatarInfo(WorkspaceInfo info) 
+        {
+            this.seq = info.seq;
+            this.nickNm = info.nickNm;
+            this.photo = info.photo;
+            this.memberType = info.memberType;
+            this.stateId = S.ONLINE;
+            this.compName = R.singleton.ourCompanyName;
+            this.jobGrade = R.singleton.myGrade;
+            this.workspaceSeq = info.workspace.seq;
         }
     }
 

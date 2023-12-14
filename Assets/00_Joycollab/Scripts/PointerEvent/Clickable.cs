@@ -396,24 +396,17 @@ namespace Joycollab.v2
             }
 
             // world avatar 정보 설정.
+            Debug.Log($"{TAG} | current workspace seq : {R.singleton.workspaceSeq}");
             R.singleton.MemberInfo = res.data;
-            WorldAvatarInfo info = new WorldAvatarInfo(
-                res.data.seq, 
-                res.data.nickNm,
-                res.data.photo,
-                res.data.memberType,
-                S.ONLINE,
-                res.data.compName,
-                res.data.jobGrade
-            );
+            WorldAvatarInfo info = new WorldAvatarInfo(res.data);
             WorldAvatar.localPlayerInfo = info;
             WorldChatView.localPlayerInfo = info;
             WorldPlayer.localPlayerInfo = info;
 
             // 센터 접속
-            var manager = NetworkManager.singleton;
-            manager.networkAddress = "dev.jcollab.com";
-            manager.StartClient();
+            // var manager = NetworkManager.singleton;
+            // manager.networkAddress = "dev.jcollab.com";
+            SceneLoader.Load(eScenes.Square);
         }
         
     #endregion  // about 'Building' 

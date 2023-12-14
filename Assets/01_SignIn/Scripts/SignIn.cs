@@ -1,8 +1,8 @@
 /// <summary>
 /// 사용자 Sign In 화면
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 02.
-/// @version        : 1.5
+/// @last update    : 2023. 11. 20.
+/// @version        : 0.16
 /// @update
 ///     v0.1 : UI Canvas 최적화 (static canvas, active canvas 분리)
 ///     v0.2 : Tab key 로 input field 이동할 수 있게 수정.
@@ -357,15 +357,7 @@ namespace Joycollab.v2
             }
 
             // world avatar 정보 설정.
-            WorldAvatarInfo info = new WorldAvatarInfo(
-                res.data.seq, 
-                res.data.nickNm,
-                res.data.photo,
-                res.data.memberType,
-                S.ONLINE,
-                R.singleton.ourCompanyName,
-                R.singleton.myGrade
-            );
+            WorldAvatarInfo info = new WorldAvatarInfo(res.data);
             WorldAvatar.localPlayerInfo = info;
             WorldChatView.localPlayerInfo = info;
             WorldPlayer.localPlayerInfo = info;

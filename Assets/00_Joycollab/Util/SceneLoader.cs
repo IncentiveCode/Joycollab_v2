@@ -1,12 +1,13 @@
 /// <summary>
 /// Scene 전환 관리자
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 13
-/// @version        : 0.3
+/// @last update    : 2023. 12. 14
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 02. 22) : v1 에서 사용하던 클래스 정리.
 ///     v0.2 (2023. 10. 31) : world, square scene 을 사용하고 있는지 확인하는 함수 추가.
 ///     v0.3 (2023. 11. 13) : Map, Square, room scene 확인 함수 추가.
+///     v0.4 (2023. 12. 14) : square 와 room 을 multiscene 구성으로 변경. 사용하지 않게 된 함수 삭제. (isRoom())
 /// </summary>
 
 using UnityEngine;
@@ -27,8 +28,7 @@ namespace Joycollab.v2
         }
         public static bool isWorld()
         {
-            int currentIndex = SceneManager.GetActiveScene().buildIndex;
-            return (currentIndex == (int)eScenes.Map || currentIndex == (int)eScenes.Square || currentIndex == (int)eScenes.Room);
+            return isMap() || isSquare();
         }
         public static bool isMap() 
         {
@@ -39,11 +39,6 @@ namespace Joycollab.v2
         {
             int currentIndex = SceneManager.GetActiveScene().buildIndex;
             return currentIndex == (int)eScenes.Square;
-        }
-        public static bool isRoom() 
-        {
-            int currentIndex = SceneManager.GetActiveScene().buildIndex;
-            return currentIndex == (int)eScenes.Room;
         }
         public static bool isGraphicUI() 
         {

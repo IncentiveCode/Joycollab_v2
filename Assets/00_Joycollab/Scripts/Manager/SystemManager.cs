@@ -351,7 +351,7 @@ namespace Joycollab.v2
                 SceneLoader.Load(next.Contains(S.WORLD) ? eScenes.World : eScenes.SignIn);
                 return;
             }
-            Debug.Log($"{TAG} | token : {res.extra}");
+            // Debug.Log($"{TAG} | token : {res.extra}");
 
             // check token info
             R.singleton.TokenInfo = new ResToken();

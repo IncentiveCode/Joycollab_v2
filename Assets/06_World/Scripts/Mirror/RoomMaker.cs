@@ -83,7 +83,7 @@ namespace Joycollab.v2
                         if (!rooms[i].inRoom && !rooms[i].isRoomFull)
                         {
                             rooms[i].players.Add(player);
-                            player.currentRoom = rooms[i];
+                            // player.currentRoom = rooms[i];
 
                             rooms[i].players[0].PlayerCountUpdated(rooms[i].players.Count);
                             if (rooms[i].players.Count == maxRoomPlayers)

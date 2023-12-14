@@ -1,8 +1,8 @@
 /// <summary>
 /// 열거형 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 20
-/// @version        : 0.10
+/// @last update    : 2023. 12. 14
+/// @version        : 0.11
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리.
 ///     v0.2 (2023. 07. 18) : Xmpp type, Webview type 추가.
@@ -14,6 +14,7 @@
 ///     v0.8 (2023. 11. 16) : clickable object type 변경 및 일부 항목 통폐합. clickableLinkType 추가.
 ///     v0.9 (2023. 11. 17) : Tutorial popup type 추가
 ///     v0.10 (2023. 11. 20) : Sign-in type 추가
+///     v0.11 (2023. 12. 14) : eScenes 에 room 대신 room type 추가. (Room -> RoomCozy ~ RoomSupport)
 /// </summary>
 
 namespace Joycollab.v2
@@ -23,20 +24,26 @@ namespace Joycollab.v2
     /// </summary>
     public enum eScenes
     {
-        Init = 0,
-        SceneLoader, 
-        SignIn,
-        LoadInfo,
-        GraphicUI, TextUI,
-        Arrange, 
-        Management,
-        World, Map, Square, Room,
-        Sample,
-        Mobile,
+        // 초기화 및 씬 전환용도
+        Init = 0, SceneLoader, 
 
-        MapV2, SquareV2, 
-        Cozy, Life, BnB, Debate, Support,
-        RoomV2
+        // Joycollab office
+        SignIn, LoadInfo, GraphicUI, TextUI, Arrange, Management,
+        
+        // Joycollab world
+        World, Map, 
+        
+        // Joycollab world - community center
+        Square, 
+
+        // Joycollab world - room type
+        CommunityCenter, RoomCozy, RoomLife, RoomBnB, RoomDebate, RoomSupport,
+
+        // Joycollab function test page
+        Sample,
+
+        // Joycollab office - for mobile
+        Mobile,
     }
 
 

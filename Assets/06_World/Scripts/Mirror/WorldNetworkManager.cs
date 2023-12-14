@@ -365,6 +365,7 @@ namespace Joycollab.v2
             foreach (KeyValuePair<Guid, HashSet<NetworkConnectionToClient>> kvp in connectionsInRoom)
                 kvp.Value.Remove(conn);
 
+            /**
             WorldAvatarInfo avatarInfo = avatarInfos[conn];
             if (avatarInfo != null)
             {
@@ -401,6 +402,7 @@ namespace Joycollab.v2
                         avatarsInCenter.Remove(avatarInfo.seq);
                 }
             }
+             */
 
             SendRoomList();
             SendUserList();
@@ -499,7 +501,7 @@ namespace Joycollab.v2
             }
 
             WorldAvatarInfo info = avatarInfos[conn];
-            info.roomId = id;
+            // info.roomId = id;
             avatarInfos[conn] = info;
 
             WorldAvatarInfo[] infos = connectionsInRoom[id].Select(playerConn => avatarInfos[playerConn]).ToArray();

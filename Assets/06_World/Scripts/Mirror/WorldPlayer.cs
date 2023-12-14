@@ -1,11 +1,12 @@
 /// <summary>
 /// World 에서 사용할 player 클래스 
 /// @author         : HJ Lee
-/// @last update    : 2023. 12. 08 
-/// @version        : 0.2
+/// @last update    : 2023. 12. 14 
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 12. 06) : 최초 생성, Lobby_Room 에서 참고해서 작성.
 ///     v0.2 (2023. 12. 08) : mouse wheel event 추가.
+///     v0.3 (2023. 12. 14) : 진입할 센터 또는 모임방의 seq 와 id 를 추가.
 /// </summary>
 
 using UnityEngine;
@@ -39,9 +40,11 @@ namespace Joycollab.v2
         [SyncVar] public string playerName;
 
         [Header("room info")]
-        [SyncVar] public string roomID;
-        [SyncVar] public Room currentRoom;
-        [SerializeField] private GameObject goRoomPlayer;
+        [SyncVar] public int workspaceSeq;
+        [SyncVar] public string roomTypeId;
+        // [SyncVar] public string roomID;
+        // [SyncVar] public Room currentRoom;
+        // [SerializeField] private GameObject goRoomPlayer;
 
         [Header("diagnostics")]
         private float horizontal;
@@ -77,7 +80,8 @@ namespace Joycollab.v2
 
             // set local variables
             isMovable = isFly = false;
-            roomID = string.Empty;
+            workspaceSeq = -1;
+            roomTypeId = string.Empty;
 
             // get components
             if (_imgNameArea != null) 
@@ -182,7 +186,7 @@ namespace Joycollab.v2
             else 
             {
                 Debug.Log($"{TAG} | spawning other player... {localPlayerInfo.seq}, {localPlayerInfo.nickNm}");
-                goRoomPlayer = LobbyTest.singleton.SpawnPlayerPrefab(this);
+                // goRoomPlayer = LobbyTest.singleton.SpawnPlayerPrefab(this);
             }
         }
 
@@ -370,6 +374,9 @@ namespace Joycollab.v2
             avatarPhoto = info.photo;
             avatarMemberType = info.memberType;
             avatarState = info.stateId;
+
+            workspaceSeq = info.workspaceSeq;
+            roomTypeId = info.roomTypeId;
         }
 
         [Command(requiresAuthority = false)]
@@ -413,7 +420,7 @@ namespace Joycollab.v2
         [Command]
         private void CmdCreateRoom(string _roomID, bool isPublic)
         {
-            roomID = _roomID;
+            // roomID = _roomID;
 
             if (RoomMaker.singleton.CreateRoom(_roomID, this, isPublic))
             {
@@ -431,8 +438,8 @@ namespace Joycollab.v2
         [TargetRpc]
         private void RpcCreateRoom(bool success, string _roomID, int _playerIndex) 
         {
-            roomID = _roomID;
-            Debug.Log($"{TAG} | room id : {roomID} == {_roomID}");
+            // roomID = _roomID;
+            // Debug.Log($"{TAG} | room id : {roomID} == {_roomID}");
 
             // TODO. 방 생성 완료 이벤트 호출.
         }
@@ -450,7 +457,7 @@ namespace Joycollab.v2
         [Command]
         private void CmdJoinRoom(string _roomID) 
         {
-            roomID = _roomID;
+            // roomID = _roomID;
 
             if (RoomMaker.singleton.JoinRoom(_roomID, this)) 
             {
@@ -459,10 +466,12 @@ namespace Joycollab.v2
                 RpcJoinRoom(true, _roomID, avatarSeq);
 
                 // host
+                /**
                 if (isServer && goRoomPlayer != null)
                 {
                     goRoomPlayer.SetActive(true);
                 }
+                 */
             }
             else 
             {
@@ -474,7 +483,7 @@ namespace Joycollab.v2
         [TargetRpc]
         private void RpcJoinRoom(bool success, string _roomID, int seq) 
         {
-            roomID = _roomID;
+            // roomID = _roomID;
             Debug.Log($"{TAG} | RpcJoinRoom(), match id : {_roomID}");
 
             LobbyTest.singleton.JoinSuccess(success, _roomID);
@@ -498,7 +507,7 @@ namespace Joycollab.v2
 
         private void ServerDisconnect()
         {
-            RoomMaker.singleton.PlayerDisconnected(this, roomID);
+            // RoomMaker.singleton.PlayerDisconnected(this, roomID);
             RpcDisconnectGame();
             networkMatch.matchId = netIdGuid;
         }
@@ -512,6 +521,7 @@ namespace Joycollab.v2
         private void ClientDisconnect()
         {
             Debug.Log($"{TAG} | ClientDisconnect() call.");
+            /**
             if (goRoomPlayer != null) 
             {
                 if (! isServer)
@@ -519,6 +529,7 @@ namespace Joycollab.v2
                 else
                     goRoomPlayer.SetActive(false);
             }
+             */
         }
 
     #endregion  // disconnect functions 
@@ -535,7 +546,7 @@ namespace Joycollab.v2
         [TargetRpc]
         private void RpcPlayerCountUpdated(int count) 
         {
-            Debug.Log($"{TAG} | current room {roomID}, user count : {count}");
+            Debug.Log($"{TAG} | user count : {count}");
         }
 
     #endregion  // match player functions
