@@ -54,7 +54,6 @@ namespace Joycollab.v2
 
         public override void OnServerAddPlayer(NetworkConnectionToClient conn)
         {
-            base.OnServerAddPlayer(conn);
             StartCoroutine(OnServerAddPlayerDelayed(conn));
         }
 
@@ -65,12 +64,25 @@ namespace Joycollab.v2
 
             // Wait for end of frame before adding the player to ensure Scene Message goes first
             // yield return new WaitForEndOfFrame();
-            // base.OnServerAddPlayer(conn);
-            yield return new WaitForSeconds(1);
+
+            base.OnServerAddPlayer(conn);
 
             // 사용자가 가려고 하는 곳 확인
             if (conn.identity.TryGetComponent<WorldPlayer>(out var player)) 
             {
+                float limit = 10f;
+                while (player.workspaceSeq == -1)
+                {
+                    limit -= Time.deltaTime;
+                    if (limit < 0) 
+                    {
+                        Debug.Log($"{TAG} | break !"); 
+                        break;
+                    }
+
+                    Debug.Log($"{TAG} | OnServerAddPlayerDelayed(), seq : {player.avatarSeq}, workspace : {player.workspaceSeq}, room type : {player.roomTypeId}");
+                    yield return null; 
+                }
                 Debug.Log($"{TAG} | OnServerAddPlayerDelayed(), seq : {player.avatarSeq}, workspace : {player.workspaceSeq}, room type : {player.roomTypeId}");
 
                 // Send Scene message to client to additively load the game scene
@@ -106,19 +118,26 @@ namespace Joycollab.v2
                 conn.Send(new SceneMessage { sceneName = communityCenter, sceneOperation = SceneOperation.LoadAdditive });
             }
 
+            Debug.Log($"{TAG} | client request workspace seq : {player.workspaceSeq}");
+
             Debug.Log($"{TAG} | dictionary count : {dictRooms.Count}");
-            Debug.Log($"{TAG} | is scene exist ? : {dictRooms.ContainsKey(player.workspaceSeq)}");
-
-
             foreach (var info in dictRooms)
             {
-                Debug.Log($"{TAG} | key : {info.Key} = value : {info.Value}");
+                Debug.Log($"{TAG} | key : {info.Key}, value : {info.Value}");
             }
 
-
-            if (dictRooms.Count > 0 && dictRooms.ContainsKey(player.workspaceSeq))
+            Debug.Log($"{TAG} | is scene exist ? : {dictRooms.ContainsKey(player.workspaceSeq)}");
+            if (dictRooms.ContainsKey(player.workspaceSeq))
             {
                 SceneManager.MoveGameObjectToScene(conn.identity.gameObject, dictRooms[player.workspaceSeq]);
+                Transform pos = GetStartPosition();
+                Debug.Log($"{TAG} | start position : {pos.position}");
+                conn.identity.gameObject.transform.position = pos.position;
+            }
+            else 
+            {
+                // TODO.
+                Debug.Log($"{TAG} | error handling 추가 예정");
             }
         }
 
@@ -134,6 +153,7 @@ namespace Joycollab.v2
 
         private async UniTaskVoid ServerLoadSubRoomsAsync() 
         {
+            /**
             int index = 1;
             await SceneManager.LoadSceneAsync(communityCenter, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
             dictRooms.Add(178, SceneManager.GetSceneAt(index));
@@ -141,55 +161,47 @@ namespace Joycollab.v2
             index = 2;
             await SceneManager.LoadSceneAsync(roomCozy, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
             dictRooms.Add(1213, SceneManager.GetSceneAt(index));
+             */
 
-            /**
-            int page = 1;
             int index = 1;
 
-            PsResponse<ClasList> resClas = null;
-            do {
-                string url = string.Format(URL.CLAS_LIST, page, 20);
-                Debug.Log($"{TAG} | ServerLoadSubRooms(), url : {url}");
-                resClas = await NetworkTask.RequestAsync<ClasList>(url, eMethodType.GET, string.Empty, R.singleton.token);
-
-                foreach (var info in resClas.data.content) 
+            string url = URL.SIMPLE_CLAS_LIST;
+            PsResponse<SimpleClasList> resClas = await NetworkTask.RequestAsync<SimpleClasList>(url, eMethodType.GET);
+            Debug.Log($"{TAG} | simple clas list, count : {resClas.data.list.Count}");
+            foreach (var info in resClas.data.list) 
+            {
+                switch (info.clas.themes.id) 
                 {
-                    switch (info.clas.themes.id) 
-                    {
-                        case S.ROOM_TYPE_COZY :
-                            await SceneManager.LoadSceneAsync(roomCozy, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
-                            break;
+                    case S.ROOM_TYPE_COZY :
+                        await SceneManager.LoadSceneAsync(roomCozy, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
+                        break;
 
-                        case S.ROOM_TYPE_LIFE :
-                            await SceneManager.LoadSceneAsync(roomLife, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
-                            break;
+                    case S.ROOM_TYPE_LIFE :
+                        await SceneManager.LoadSceneAsync(roomLife, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
+                        break;
 
-                        case S.ROOM_TYPE_BnB :
-                            await SceneManager.LoadSceneAsync(roomBnB, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
-                            break;
+                    case S.ROOM_TYPE_BnB :
+                        await SceneManager.LoadSceneAsync(roomBnB, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
+                        break;
 
-                        case S.ROOM_TYPE_DEBATE :
-                            await SceneManager.LoadSceneAsync(roomDebate, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
-                            break;
+                    case S.ROOM_TYPE_DEBATE :
+                        await SceneManager.LoadSceneAsync(roomDebate, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
+                        break;
 
-                        case S.ROOM_TYPE_SUPPORT :
-                            await SceneManager.LoadSceneAsync(roomSupport, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
-                            break;
+                    case S.ROOM_TYPE_SUPPORT :
+                        await SceneManager.LoadSceneAsync(roomSupport, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
+                        break;
 
-                        default :
-                            await SceneManager.LoadSceneAsync(communityCenter, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
-                            break;
-                    }
-
-                    Scene newScene = SceneManager.GetSceneAt(index); 
-                    dictRooms.Add(info.seq, newScene);
-
-                    Debug.Log($"{TAG} | ServerLoadSubScenes(), index : {index}, scene theme : {info.clas.themes.id}");
-                    index ++;
+                    default :
+                        await SceneManager.LoadSceneAsync(communityCenter, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
+                        break;
                 }
+
+                Scene newScene = SceneManager.GetSceneAt(index); 
+                dictRooms.Add(info.seq, newScene);
+                Debug.Log($"{TAG} | ServerLoadSubScenes(), index : {index}, scene theme : {info.clas.themes.id}");
+                index ++;
             }
-            while(! resClas.data.last);
-             */
 
             subscenesLoaded = true;
             addSceneLoaded = true;
@@ -242,15 +254,19 @@ namespace Joycollab.v2
 
     #region Add sub room
 
-        public void AddSubRoom(int workspaceSeq, string themeId) 
+        public async UniTaskVoid AddSubRoom(GameObject player, int workspaceSeq, string themeId) 
         {
-            addSceneLoaded = false;
-            AddSubRoomAsync(workspaceSeq, themeId).Forget();
+            addSceneLoaded = await AddSubRoomAsync(workspaceSeq, themeId);
+
+            if (addSceneLoaded)
+                SceneManager.MoveGameObjectToScene(player, dictRooms[workspaceSeq]);
         }
 
         [ServerCallback]
-        private async UniTaskVoid AddSubRoomAsync(int workspaceSeq, string themeId)
+        private async UniTask<bool> AddSubRoomAsync(int workspaceSeq, string themeId)
         {
+            addSceneLoaded = false;
+
             switch (themeId) 
             {
                 case S.ROOM_TYPE_COZY :
@@ -282,7 +298,7 @@ namespace Joycollab.v2
             Scene newScene = SceneManager.GetSceneAt(index);
             dictRooms.Add(workspaceSeq, newScene);
 
-            addSceneLoaded = true;
+            return true;
         }
 
     #endregion  // Add sub room

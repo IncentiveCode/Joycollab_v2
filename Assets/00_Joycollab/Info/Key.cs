@@ -78,5 +78,12 @@ namespace Joycollab.v2
 		public const string ORTHOGRAPHIC_SIZE_IN_SQUARE = "_os_in_square";
 
 	#endregion	// position, zoom value 
+
+
+	#region for World
+
+		public const string CENTER_SEQ = "_cseq";
+
+	#endregion	// for World
 	}
 }

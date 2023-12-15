@@ -99,7 +99,7 @@ namespace Joycollab.v2
                     break;
 
                 default :
-                    Debug.Log($"{TAG} | Start(), 현재 Clickable object 의 타입 : {_objectType.ToString()}, 준비 중...");
+                    // Debug.Log($"{TAG} | Start(), 현재 Clickable object 의 타입 : {_objectType.ToString()}, 준비 중...");
                     break;
             }
         }
@@ -127,7 +127,7 @@ namespace Joycollab.v2
                     break;
 
                 default :
-                    Debug.Log($"{TAG} | OnPointerEnter(), 현재 Clickable object 의 타입 : {_objectType.ToString()}, 준비 중...");
+                    // Debug.Log($"{TAG} | OnPointerEnter(), 현재 Clickable object 의 타입 : {_objectType.ToString()}, 준비 중...");
                     break;
             }
         }
@@ -150,7 +150,7 @@ namespace Joycollab.v2
                     break;
 
                 default :
-                    Debug.Log($"{TAG} | OnPointerEixt, 현재 Clickable object 의 타입 : {_objectType.ToString()}, 준비 중...");
+                    // Debug.Log($"{TAG} | OnPointerEixt, 현재 Clickable object 의 타입 : {_objectType.ToString()}, 준비 중...");
                     break;
             }
         }
@@ -186,7 +186,7 @@ namespace Joycollab.v2
                     break;
 
                 default :
-                    Debug.Log($"{TAG} | OnPointerClick(), 현재 Clickable object 의 타입 : {_objectType.ToString()}, 클릭 처리 준비 중...");
+                    // Debug.Log($"{TAG} | OnPointerClick(), 현재 Clickable object 의 타입 : {_objectType.ToString()}, 클릭 처리 준비 중...");
                     break;
             }
         }
@@ -214,7 +214,7 @@ namespace Joycollab.v2
                     break;
 
                 default :
-                    Debug.Log($"{TAG} | OnMouseEnter(), 현재 Clickable object 의 타입 : {_objectType.ToString()}, SpriteRenderer mouse enter");
+                    // Debug.Log($"{TAG} | OnMouseEnter(), 현재 Clickable object 의 타입 : {_objectType.ToString()}, SpriteRenderer mouse enter");
                     break;
             }
         }
@@ -237,7 +237,7 @@ namespace Joycollab.v2
                     break;
 
                 default :
-                    Debug.Log($"{TAG} | OnMouseExit(), 현재 Clickable object 의 타입 : {_objectType.ToString()}, SpriteRenderer mouse exit");
+                    // Debug.Log($"{TAG} | OnMouseExit(), 현재 Clickable object 의 타입 : {_objectType.ToString()}, SpriteRenderer mouse exit");
                     break;
             }
         }
@@ -280,7 +280,7 @@ namespace Joycollab.v2
                     break;
                 
                 default :
-                    Debug.Log($"{TAG} | OnMouseUp(), 현재 Clickable object 의 타입 : {_objectType.ToString()}, SpriteRenderer clicked.");
+                    // Debug.Log($"{TAG} | OnMouseUp(), 현재 Clickable object 의 타입 : {_objectType.ToString()}, SpriteRenderer clicked.");
                     break;
             }
         }

@@ -80,7 +80,7 @@ namespace Joycollab.v2
                 Debug.Log($"{TAG} | mic option change.");
 
                 MultiSceneNetworkManager.singleton.StopClient();
-                WorldPlayer.localPlayerInfo.workspaceSeq = 1213;
+                WorldPlayer.localPlayerInfo.workspaceSeq = 260;
                 WorldPlayer.localPlayerInfo.roomTypeId = S.ROOM_TYPE_COZY;
                 SceneLoader.Load(eScenes.Square);
             });

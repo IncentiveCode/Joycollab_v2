@@ -1,19 +1,23 @@
 /// <summary>
 /// Square, 모임방 예시를 위해 사용할 포인터 표시 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 12. 07 
-/// @version        : 0.2
+/// @last update    : 2023. 12. 15 
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 10. 24) : 신규 생성
 ///     v0.2 (2023. 12. 07) : OnTriggerEnter2D() 에 WorldPlayer 관련 코드 추가.
+///     v0.3 (2023. 12. 15) : data 가 없는 경우, 특정 모임방에서 커뮤니티 센터로 이동시킴.
 /// </summary>
 
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Joycollab.v2
 {
     public class RoomPointer : MonoBehaviour
     {
+        private const string TAG = "RoomPointer";
+
         [Header("Default")]
         [SerializeField] private eRendererType _rendererType;
         [SerializeField] private bool _isMovable;
@@ -48,8 +52,16 @@ namespace Joycollab.v2
             }
 
             currentY = pos.y;
-            minY = currentY - data.MoveLimit;
-            maxY = currentY + data.MoveLimit;
+
+            if (data == null)
+            {
+                minY = maxY = currentY;
+            }
+            else 
+            {
+                minY = currentY - data.MoveLimit;
+                maxY = currentY + data.MoveLimit;
+            }
         }
 
         private void Update() 
@@ -66,6 +78,8 @@ namespace Joycollab.v2
                 transform.position = pos;
                 transform.eulerAngles = rotate;
             }
+
+            if (data == null) return;
 
             if (data.Speed == 0) return;
             rotate.y += Time.deltaTime * 90f;
@@ -91,18 +105,25 @@ namespace Joycollab.v2
         {
             if (!other.tag.Equals("Player")) return;
 
-            if (other.TryGetComponent<WorldAvatar>(out var mover))
+            if (other.TryGetComponent<WorldPlayer>(out var player))
             {
-                if (mover.isOwned)
+                if (data == null) 
                 {
-                    SquareCamera.singleton.TeleportForRoom(data.RoomNo, data.Target).Forget();
+                    Debug.Log($"{TAG} | 특정 모임방에서 커뮤니티 센터로 이동.");
+
+                    MultiSceneNetworkManager.singleton.StopClient();
+
+                    int.TryParse(JsLib.GetCookie(Key.CENTER_SEQ), out int seq);
+                    WorldPlayer.localPlayerInfo.workspaceSeq = seq;
+                    WorldPlayer.localPlayerInfo.roomTypeId = string.Empty;
+                    SceneLoader.Load(eScenes.Square);
                 }
-            }
-            else if (other.TryGetComponent<WorldPlayer>(out var player))
-            {
-                if (player.isOwned)
+                else
                 {
-                    SquareCamera.singleton.TeleportForRoom(data.RoomNo, data.Target).Forget();
+                    if (player.isOwned)
+                    {
+                        SquareCamera.singleton.TeleportForRoom(data.RoomNo, data.Target).Forget();
+                    }
                 }
             }
         }

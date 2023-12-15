@@ -64,13 +64,8 @@ namespace Joycollab.v2
 
         [Header("thumbnail option")]
         [SerializeField] private List<Toggle> _listThumbnailOption;
-        /**
-        [SerializeField] private Toggle _toggleThumbnail_0;
-        [SerializeField] private Toggle _toggleThumbnail_1;
-        [SerializeField] private Toggle _toggleThumbnail_2;
-        [SerializeField] private Toggle _toggleThumbnail_3;
-        [SerializeField] private Toggle _toggleThumbnail_4;
-         */
+        [SerializeField] private List<Sprite> _listDefaultThumbnails;
+
         
         // local variables
         private ImageUploader uploader;
@@ -105,14 +100,11 @@ namespace Joycollab.v2
             });
             _btnCreate.onClick.AddListener(() => {
                 Debug.Log($"{TAG} | Create call.");
-                // CreateAsync().Forget();
-                WorldPlayer.localPlayer.CreateRoom(1, true);
+                CreateAsync().Forget();
             });
             _btnCancel.onClick.AddListener(() => {
-                // Debug.Log($"{TAG} | Cancel call.");
-                // Hide();
-                string id = "room_1";
-                WorldPlayer.localPlayer.JoinRoom(id);
+                Debug.Log($"{TAG} | Cancel call.");
+                Hide();
             });
 
             
@@ -206,6 +198,14 @@ namespace Joycollab.v2
 
         private async UniTaskVoid CreateAsync() 
         {
+            if (string.IsNullOrEmpty(_inputTitle.text)) 
+            {
+                Debug.Log($"{TAG} | 모임방 이름을 입력하세요.");
+                return;
+            }
+
+            RequestClas req = new RequestClas();
+
             await UniTask.Yield();
             return;
         }

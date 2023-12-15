@@ -1,16 +1,16 @@
 /// <summary>
 /// floor item controller class 
 /// @author         : HJ Lee
-/// @last update    : 2023. 10. 04
-/// @version        : 0.1
+/// @last update    : 2023. 12. 15
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 10. 04) : v1 과 tp 에서 사용하던 항목들 정리 후 적용. 
+///     v0.2 (2023. 12. 15) : square 밖으로 나가는 기능 수정.
 /// </summary>
 
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Localization.Components;
-using Mirror;
 
 namespace Joycollab.v2
 {
@@ -46,9 +46,9 @@ namespace Joycollab.v2
             btn.onClick.AddListener(() => {
                 if (floorNo == 0) 
                 {
-                    var manager = NetworkManager.singleton;
+                    var manager = MultiSceneNetworkManager.singleton;
                     manager.StopClient();
-                    manager.StopServer();
+                    SceneLoader.Load(eScenes.Map);
                 }
                 else 
                 {

@@ -1,8 +1,8 @@
 /// <summary>
 /// NetworkTask 를 위한 API URL 정리 문서 
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 16
-/// @version        : 0.14
+/// @last update    : 2023. 12. 15
+/// @version        : 0.15
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리
 ///     v0.2 (2023. 03. 20) : Tray app 관련 URL 추가
@@ -18,6 +18,7 @@
 ///     v0.12 (2023. 09. 01) : File API V2 정리
 ///     v0.13 (2023. 09. 06) : google token 조회 및 연동 해제 부분의 parameter 삭제.
 ///     v0.14 (2023. 11. 16) : 방명록 링크 추가.
+///     v0.15 (2023. 12. 15) : 전체 모임방 조회 api 추가
 /// </summary>
 
 #define DEV // Dev Server
@@ -686,6 +687,12 @@ namespace Joycollab.v2
         // 007. Workspace API
 
         /// <summary>
+        /// desc : 전체 모임방 간단 조회
+        /// method : get
+        /// </summary>
+        public const string SIMPLE_CLAS_LIST = SERVER_PATH +"/npr/workspace/clas/all";
+
+        /// <summary>
         /// desc : domain 확인
         /// method : get
         /// param
@@ -709,7 +716,7 @@ namespace Joycollab.v2
         /// desc : plan list 조회
         /// method : get
         /// </summary>
-        public const string PLAN_LIST = SERVER_PATH + "/npr/plan";
+        public const string PLAN_LIST = SERVER_PATH +"/npr/plan";
 
 
         // ---------- ---------- ----------

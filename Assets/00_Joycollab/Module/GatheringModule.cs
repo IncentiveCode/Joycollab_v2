@@ -82,5 +82,21 @@ namespace Joycollab.v2
 		}
 
 	#endregion	// for List
+
+
+	#region room control
+
+		public async UniTask<PsResponse<string>> CreateRoom(string body) 
+		{
+			string token = R.singleton.token;
+			int memberSeq = R.singleton.memberSeq;
+
+			string url = string.Format(URL.REGIST_CLAS, memberSeq);
+			PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.POST, body, token);
+
+			return res;
+		}	
+
+	#endregion	// room control
 	}
 }

@@ -280,6 +280,8 @@ namespace Joycollab.v2
 
         public const string TC_MEMBER_STATUS = "멤버 상태";
         public const string TC_ALARM_SOUND = "알림음 구분"; 
+        public const string TC_ROOM_TYPE = "모임방 테마";
+        public const string TC_ROOM_CATEGORY = "모임방 카테고리";
 
     #endregion  // Top code
 

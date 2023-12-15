@@ -46,7 +46,7 @@ namespace Joycollab.v2
         {
             // Instance = this;
             delay = new WaitForSeconds(1f);
-            networkManager = WorldNetworkManager.singleton;
+            networkManager = MultiSceneNetworkManager.singleton;
 
             _inputMessage.onSubmit.AddListener((input) => {
                 Send(input.Trim());

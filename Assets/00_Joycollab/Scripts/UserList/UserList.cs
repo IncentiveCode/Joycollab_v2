@@ -115,8 +115,8 @@ namespace Joycollab.v2
 
         private async UniTask<int> Refresh() 
         {
+            /**
             WorldAvatarData t;
-
             _scrollView.Clear();
             foreach (var info in WorldNetworkManager.singleton.GetAvatarListInCneter())
             {
@@ -127,6 +127,7 @@ namespace Joycollab.v2
 
             Debug.Log($"{TAG} | connection list count : {_scrollView.GetDataCount()}, dictionary count : {WorldNetworkManager.singleton.avatarCountInCenter}");
             _txtCount.text = _scrollView.GetDataCount().ToString(); 
+             */
 
             await UniTask.Yield(); 
             _btnClear.gameObject.SetActive(! string.IsNullOrEmpty(_inputSearch.text));

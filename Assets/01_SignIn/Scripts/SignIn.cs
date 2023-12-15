@@ -342,6 +342,7 @@ namespace Joycollab.v2
             Debug.Log($"{TAG} | member seq : {res.data.seq}, workspace seq : {res.data.workspace.seq}");
             JsLib.SetCookie(Key.WORKSPACE_SEQ, res.data.workspace.seq.ToString());
             JsLib.SetCookie(Key.MEMBER_SEQ, res.data.seq.ToString());
+            JsLib.SetCookie(Key.CENTER_SEQ, res.data.workspace.seq.ToString());
 
             R.singleton.workspaceSeq = res.data.workspace.seq;
             R.singleton.memberSeq = res.data.seq;

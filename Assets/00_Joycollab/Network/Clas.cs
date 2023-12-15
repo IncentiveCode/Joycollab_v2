@@ -1,8 +1,8 @@
 /// <summary>
 /// Network 통신 - 모임방 관련 요청과 응답
 /// @author         : HJ Lee
-/// @last update    : 2023. 12. 14 
-/// @version        : 0.6
+/// @last update    : 2023. 12. 15 
+/// @version        : 0.7
 /// @update
 ///     v0.1 (2023. 08. 31) : 최초 생성
 ///     v0.2 (2023. 09. 14) : InfiniteScrollData class 수정. Request class 추가.
@@ -10,6 +10,7 @@
 ///     v0.4 (2023. 10. 04) : 모임방 카테고리 관련 InfiniteScrollData class 추가.
 ///     v0.5 (2023. 11. 21) : 모임방 생성, 참여 등을 위한 match message struct 추가. -> WorldMessage.cs 로 이동
 ///     v0.6 (2023. 12. 14) : 모임방 생성/수정에 사용하는 RequestCreateClasDetail class 에 category 추가.
+///     v0.7 (2023. 12. 15) : 모임방 전체 목록 받아올 수 있도록 SimpelClasInfo 와 SimpleClasList, SimpleClasDetail 추가.
 /// </summary>
  
 using System;
@@ -18,6 +19,10 @@ using Gpm.Ui;
 
 namespace Joycollab.v2
 {
+    /**
+     *  client 에서 필요한 모임방 목록 조회 
+     */
+
     [Serializable]
     public class ClasList
     {
@@ -55,9 +60,6 @@ namespace Joycollab.v2
         public string addr;
         public string addrDtl;
         public ClasDetail clas;
-
-        // 추가가 필요할 수 있는 항목
-        public Guid roomId;
     }
 
     [Serializable]
@@ -71,6 +73,39 @@ namespace Joycollab.v2
         // "inviteClas": [],
         public List<SimpleMemberInfo> blockMembers;
     }
+
+
+    /**
+     *  mirror server 에서 필요한 모임방 전체 목록 조회 
+     */
+
+    [Serializable]
+    public class SimpleClasList
+    {
+        public List<SimpleClasInfo> list;
+    }
+
+    [Serializable]
+    public class SimpleClasInfo
+    {
+        public int seq;
+        public string workspaceType;
+        public string nm;
+        public SimpleClasDetail clas;
+    }
+
+    [Serializable]
+    public class SimpleClasDetail
+    {
+        public int seq;
+        public TpsInfo themes; 
+        public string openType;
+    }
+
+
+    /**
+     *  Server 에 필요한 정보를 요청하기 위해 전달하는 request class
+     */
 
     [Serializable]
     public class RequestForClas 
@@ -103,28 +138,28 @@ namespace Joycollab.v2
     }
 
     [Serializable] 
-    public class RequestCreateClas
+    public class RequestClas
     {
+        public RequestClasDetail clas;
         public string nm;
         public string logo;
-        public RequestCreateClasDetail clas;
 
-        public RequestCreateClas() 
+        public RequestClas() 
         {
+            clas = new RequestClasDetail();
             nm = logo = string.Empty;
-            clas = new RequestCreateClasDetail();
         }
     }
 
     [Serializable]
-    public class RequestCreateClasDetail 
+    public class RequestClasDetail 
     {
         public Cd themes; 
         public Cd category;
         public string bigo;
         public string openType;
 
-        public RequestCreateClasDetail() 
+        public RequestClasDetail() 
         {
             themes.cd = 0;
             category.cd = 0;
@@ -132,6 +167,10 @@ namespace Joycollab.v2
         }
     }
 
+
+    /**
+     *  infinite scroll 을 출력하기 위한 data class 
+     */
 
     public class ClasData : InfiniteScrollData 
     {
