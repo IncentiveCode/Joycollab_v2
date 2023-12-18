@@ -1,10 +1,11 @@
 /// <summary>
 /// 모임방 리스트 class
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 14
-/// @version        : 0.1
+/// @last update    : 2023. 12. 18
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 09. 14) : 최초 생성
+///     v0.2 (2023. 12. 18) : 수신 event 변경 (WindowRefresh -> RoomList)
 /// </summary>
 
 using UnityEngine;
@@ -106,7 +107,7 @@ namespace Joycollab.v2
 
             if (R.singleton != null) 
             {
-                R.singleton.RegisterObserver(this, eStorageKey.WindowRefresh);
+                R.singleton.RegisterObserver(this, eStorageKey.RoomList);
             }
 
             firstRequest = true;
@@ -121,7 +122,7 @@ namespace Joycollab.v2
 
             if (R.singleton != null) 
             {
-                R.singleton.UnregisterObserver(this, eStorageKey.WindowRefresh);
+                R.singleton.UnregisterObserver(this, eStorageKey.RoomList);
             }
         }
 
@@ -167,10 +168,9 @@ namespace Joycollab.v2
 
         public void UpdateInfo(eStorageKey key) 
         {
-            if (key == eStorageKey.WindowRefresh)
+            if (key == eStorageKey.RoomList)
             {
-                // TODO. refresh event 를 어떻게 처리할지 연구.
-                // Refresh().Forget();
+                Refresh().Forget();
                 Debug.Log($"{TAG} | UpdateInfo() call.");
             }
         }

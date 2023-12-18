@@ -3,7 +3,7 @@
 /// Network manager 클래스
 /// @author         : HJ Lee
 /// @last update    : 2023. 12. 14 
-/// @version        : 0.1
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 12. 14) : Mirror - MultiSceneNetManager 참고해서 새로 제작
 /// </summary>
@@ -21,7 +21,6 @@ namespace Joycollab.v2
     {
         private const string TAG = "MultiSceneNetworkManager";
         public static new MultiSceneNetworkManager singleton { get; private set; }
-
 
         [Header("room info")]
         public readonly Dictionary<int, Scene> dictRooms = new Dictionary<int, Scene>();
@@ -120,11 +119,13 @@ namespace Joycollab.v2
 
             Debug.Log($"{TAG} | client request workspace seq : {player.workspaceSeq}");
 
+            /**
             Debug.Log($"{TAG} | dictionary count : {dictRooms.Count}");
             foreach (var info in dictRooms)
             {
                 Debug.Log($"{TAG} | key : {info.Key}, value : {info.Value}");
             }
+             */
 
             Debug.Log($"{TAG} | is scene exist ? : {dictRooms.ContainsKey(player.workspaceSeq)}");
             if (dictRooms.ContainsKey(player.workspaceSeq))
@@ -153,16 +154,6 @@ namespace Joycollab.v2
 
         private async UniTaskVoid ServerLoadSubRoomsAsync() 
         {
-            /**
-            int index = 1;
-            await SceneManager.LoadSceneAsync(communityCenter, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
-            dictRooms.Add(178, SceneManager.GetSceneAt(index));
-
-            index = 2;
-            await SceneManager.LoadSceneAsync(roomCozy, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics2D });
-            dictRooms.Add(1213, SceneManager.GetSceneAt(index));
-             */
-
             int index = 1;
 
             string url = URL.SIMPLE_CLAS_LIST;
@@ -207,11 +198,16 @@ namespace Joycollab.v2
             addSceneLoaded = true;
         }
 
-
         public override void OnStopServer()
         {
             NetworkServer.SendToAll(new SceneMessage { sceneOperation = SceneOperation.UnloadAdditive });
             ServerUnloadSubRoomsAsync().Forget();
+        }
+
+        public override void OnServerDisconnect(NetworkConnectionToClient conn)
+        {
+            WorldChatView.playerNames.Remove(conn);
+            base.OnServerDisconnect(conn);
         }
 
         private async UniTaskVoid ServerUnloadSubRoomsAsync() 

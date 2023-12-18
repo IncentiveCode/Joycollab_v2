@@ -355,8 +355,8 @@ namespace Joycollab.v2
                     CmdSetAvatarName(R.singleton.myName);
 
                     WorldAvatar.localPlayerInfo.nickNm = R.singleton.myName;
-                    WorldChatView.localPlayerInfo.nickNm = R.singleton.myName;
-                    WorldPlayer.localPlayerInfo.nickNm = R.singleton.myName;
+                    // WorldChatView.localPlayerInfo.nickNm = R.singleton.myName;
+                    // WorldPlayer.localPlayerInfo.nickNm = R.singleton.myName;
                 }   
                 if (! avatarMemberType.Equals(R.singleton.myMemberType))
                 {

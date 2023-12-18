@@ -359,8 +359,8 @@ namespace Joycollab.v2
 
             // world avatar 정보 설정.
             WorldAvatarInfo info = new WorldAvatarInfo(res.data);
-            WorldAvatar.localPlayerInfo = info;
-            WorldChatView.localPlayerInfo = info;
+            // WorldAvatar.localPlayerInfo = info;
+            // WorldChatView.localPlayerInfo = info;
             WorldPlayer.localPlayerInfo = info;
 
             // system manager init 

@@ -42,10 +42,11 @@ namespace Joycollab.v2
 
         [Header("guide popup")]
         [SerializeField] private Transform _transform;
-        [SerializeField] private GameObject _goUpdateGuide;
+        [SerializeField] private GameObject _pfUpdateGuide;
         [SerializeField] private GameObject pfTutorialPopup;
 
         [Header("world assets")]
+        [SerializeField] public GameObject pfLoadingProgress;
         [SerializeField] public Transform pfChatBubble;
         [SerializeField] public GameObject pfWorldAlarmSoundItem;
         [SerializeField] public GameObject pfBuildingInfo;
@@ -268,7 +269,7 @@ namespace Joycollab.v2
 
         private void ShowSystemUpdate(string title, string content) 
         {
-            var popup = Instantiate(_goUpdateGuide, Vector3.zero, Quaternion.identity);
+            var popup = Instantiate(_pfUpdateGuide, Vector3.zero, Quaternion.identity);
             SystemUpdateGuide script = popup.GetComponent<SystemUpdateGuide>();
             script.Init(title, content); 
             popup.transform.SetParent(_transform, false);            

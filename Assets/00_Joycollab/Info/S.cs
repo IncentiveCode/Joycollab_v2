@@ -491,6 +491,10 @@ namespace Joycollab.v2
         public const string ROOM_TYPE_DEBATE = "Debate";
         public const string ROOM_TYPE_SUPPORT = "Support"; 
 
+        private const string TYPE_OPEN = "오픈";
+        private const string TYPE_PUBLIC = "공개";
+        private const string TYPE_PRIVATE = "비공개";
+
     #endregion  // room type
     }
 }

@@ -92,5 +92,10 @@ namespace Joycollab.v2
     public class Cd 
     {
         public int cd;
+
+        public Cd(int cd) 
+        {
+            this.cd = cd;
+        }
     }
 }

@@ -1,8 +1,8 @@
 /// <summary>
 /// 열거형 정리 문서
 /// @author         : HJ Lee
-/// @last update    : 2023. 12. 14
-/// @version        : 0.11
+/// @last update    : 2023. 12. 18
+/// @version        : 0.12
 /// @update
 ///     v0.1 (2023. 03. 17) : Joycollab 에서 사용하던 열거형 정리.
 ///     v0.2 (2023. 07. 18) : Xmpp type, Webview type 추가.
@@ -15,6 +15,7 @@
 ///     v0.9 (2023. 11. 17) : Tutorial popup type 추가
 ///     v0.10 (2023. 11. 20) : Sign-in type 추가
 ///     v0.11 (2023. 12. 14) : eScenes 에 room 대신 room type 추가. (Room -> RoomCozy ~ RoomSupport)
+///     v0.12 (2023. 12. 18) : eRoomOpenType 추가.
 /// </summary>
 
 namespace Joycollab.v2
@@ -221,6 +222,8 @@ namespace Joycollab.v2
         
         WindowRefresh, UserCount,  
 
+        RoomList, 
+
         Test
     }
 
@@ -315,5 +318,14 @@ namespace Joycollab.v2
     public enum eSignInType 
     {
         Member, Guest, Invite
+    }
+
+
+    /// <summary>
+    /// 모임방 공개 여부
+    /// </summary>
+    public enum eRoomOpenType 
+    {
+        오픈, 공개, 비공개
     }
 }

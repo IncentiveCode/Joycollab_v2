@@ -2,15 +2,17 @@
 /// [world]
 /// 모임방 생성 class
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 22
-/// @version        : 0.1
+/// @last update    : 2023. 12. 18
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 09. 22) : 최초 생성
+///     v0.2 (2023. 12. 18) : 생성 api 수정, view data 추가.
 /// </summary>
 
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
 using TMPro;
 
@@ -89,21 +91,21 @@ namespace Joycollab.v2
         {
             base.Init();
             viewID = ID.ROOM_CREATE_W;
+            viewData = new WindowViewData();
+            viewDataKey = $"view_data_{viewID}_{R.singleton.memberSeq}";
 
 
             // set button listener
             _btnClose.onClick.AddListener(() => Hide());
             _btnThumbnail.onClick.AddListener(() => {
                 lastThumbnail = _inputThumbnail.text;
-
                 _goThumbnailPopup.SetActive(true);
             });
             _btnCreate.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | Create call.");
                 CreateAsync().Forget();
             });
             _btnCancel.onClick.AddListener(() => {
-                Debug.Log($"{TAG} | Cancel call.");
+                base.SaveViewData(viewData); 
                 Hide();
             });
 
@@ -130,7 +132,26 @@ namespace Joycollab.v2
         public override async UniTaskVoid Show() 
         {
             base.Show().Forget();
+
+            // load view data
+            base.LoadViewData();
+
             await Refresh();
+            base.Appearing();
+        }
+
+        public override async UniTaskVoid Show(int seq) 
+        {
+            base.Show(seq).Forget();
+
+            // load view data
+            base.LoadViewData();
+
+            var (refreshRes, roomInfoRes) = await UniTask.WhenAll( 
+                Refresh(),
+                GetRoomInfo(seq)
+            );
+
             base.Appearing();
         }
 
@@ -149,6 +170,11 @@ namespace Joycollab.v2
         private async UniTask<int> Refresh() 
         {
             ClearView();
+
+            var (categoryRes, themesRes) = await UniTask.WhenAll(
+                _module.GetCategories(),
+                _module.GetRoomThemes()
+            );
 
             PsResponse<TpsList> res = await _module.GetCategories();
             if (! string.IsNullOrEmpty(res.message)) 
@@ -205,9 +231,37 @@ namespace Joycollab.v2
             }
 
             RequestClas req = new RequestClas();
+            req.nm = _inputTitle.text;
+            req.logo = string.Empty;
+            req.clas.category = new Cd(10);
+            req.clas.themes = new Cd(10);
+            req.clas.bigo = _inputDetail.text;
+            string openType = string.Empty;
+            for (int i = 0; i < _listPublicOption.Count; i++) 
+            {
+                if (_listPublicOption[i].isOn) 
+                {
+                    openType = Util.EnumToString<eRoomOpenType>((eRoomOpenType)i);
+                    break;
+                }
+            }
+            req.clas.openType = openType;
+            string body = JsonUtility.ToJson(req);
 
-            await UniTask.Yield();
-            return;
+            PsResponse<string> res = await _module.CreateRoom(body);
+            if (! string.IsNullOrEmpty(res.message)) 
+            {
+                PopupBuilder.singleton.OpenAlert(res.message);
+                return;
+            }
+
+            PopupBuilder.singleton.OpenAlert(
+                LocalizationSettings.StringDatabase.GetLocalizedString("Alert", "모임방 생성 안내", R.singleton.CurrentLocale),
+                () => { 
+                    R.singleton.RequestNotify(eStorageKey.RoomList);
+                    Hide();
+                }
+            );
         }
 
     #endregion  // Event Handling

@@ -9,7 +9,6 @@
 ///     v0.3 (2023. 12. 07) : SSL 을 사용할 때는 chat view 가 사라지는 문제 수정 (중)
 /// </summary>
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -19,11 +18,10 @@ using Mirror;
 
 namespace Joycollab.v2
 {
+    // public class WorldChatView : NetworkBehaviour
     public class WorldChatView : NetworkBehaviour
     {
         private const string TAG = "WorldChatView";
-        // public static WorldChatView Instance;
-        // public bool OnChat { get; private set; }
 
         [Header("Chat UI")]
         [SerializeField] private TMP_Text _txtChatHistory;
@@ -35,18 +33,13 @@ namespace Joycollab.v2
         internal static WorldAvatarInfo localPlayerInfo;
         internal static readonly Dictionary<NetworkConnectionToClient, string> playerNames = new Dictionary<NetworkConnectionToClient, string>();
 
-        // local variables
-        private WaitForSeconds delay;
-        private NetworkManager networkManager;
 
 
     #region Unity functions
 
         private void Awake() 
         {
-            // Instance = this;
-            delay = new WaitForSeconds(1f);
-            networkManager = MultiSceneNetworkManager.singleton;
+            Debug.Log($"{TAG} | Awake()");
 
             _inputMessage.onSubmit.AddListener((input) => {
                 Send(input.Trim());
@@ -54,9 +47,12 @@ namespace Joycollab.v2
             _inputMessage.onValueChanged.AddListener((input) => {
                 _btnSend.interactable = !string.IsNullOrWhiteSpace(input);
             });
-            // _inputMessage.onSelect.AddListener((input) => OnChat = true);
-            // _inputMessage.onDeselect.AddListener((input) => OnChat = false);
             _btnSend.onClick.AddListener(() => Send(_inputMessage.text.Trim()));
+        }
+
+        private void OnDisable() 
+        {
+            Debug.Log($"{TAG} | OnDisable()");
         }
 
     #endregion  // Unity functions
@@ -64,19 +60,17 @@ namespace Joycollab.v2
 
     #region override functions
 
-        public override void OnStartAuthority()
-        {
-            gameObject.SetActive(true);
-        }
-
         public override void OnStartServer() 
         {
-            _txtChatHistory.text = string.Empty;
+            Debug.Log($"{TAG} | OnStartServer()");
+
             playerNames.Clear();
         } 
 
         public override void OnStartClient() 
         {
+            Debug.Log($"{TAG} | OnStartClient()");
+
             _txtChatHistory.text = string.Empty;
             _inputMessage.text = string.Empty;
         }
@@ -95,7 +89,8 @@ namespace Joycollab.v2
         {
             _txtChatHistory.text += msg + "\n";
 
-            yield return delay;
+            yield return null;
+            yield return null;
 
             _scrollbar.value = 0;
         }
@@ -104,6 +99,8 @@ namespace Joycollab.v2
         {
             if (! string.IsNullOrWhiteSpace(msg)) 
             {
+                Debug.Log($"{TAG} | Send()");
+
                 CmdSend(msg);
                 _inputMessage.text = string.Empty;
                 _inputMessage.ActivateInputField();
@@ -118,26 +115,14 @@ namespace Joycollab.v2
         [Command(requiresAuthority = false)]
         private void CmdSend(string message, NetworkConnectionToClient sender = null) 
         {
-            if (sender.identity.TryGetComponent(out WorldAvatar avatar)) 
-            {
-                if (!playerNames.ContainsKey(sender)) 
-                    playerNames.Add(sender, avatar.avatarName);
-                else
-                {
-                    if (! playerNames[sender].Equals(avatar.avatarName))
-                        playerNames[sender] = avatar.avatarName;
-                }
+            Debug.Log($"{TAG} | CmdSend()");
 
-                if (!string.IsNullOrWhiteSpace(message)) 
-                {
-                    RpcReceive(playerNames[sender], message.Trim());
-                    avatar.UpdateAvatarChat(message.Trim());
-                }
-            }
-            else if (sender.identity.TryGetComponent(out WorldPlayer player)) 
+            if (sender.identity.TryGetComponent(out WorldPlayer player)) 
             {
                 if (!playerNames.ContainsKey(sender)) 
+                {
                     playerNames.Add(sender, player.avatarName);
+                }
                 else
                 {
                     if (! playerNames[sender].Equals(player.avatarName))
@@ -161,6 +146,7 @@ namespace Joycollab.v2
         private void RpcReceive(string playerName, string message) 
         {
             Debug.Log($"{TAG} | RpcReceive(), palyer name : {playerName}, localPlayerInfo name : {localPlayerInfo.nickNm}");
+
             string msg = (playerName.Equals(localPlayerInfo.nickNm)) ? 
                 $"<color=red>{playerName}</color> : {message}" :
                 $"<color=blue>{playerName}</color> : {message}";

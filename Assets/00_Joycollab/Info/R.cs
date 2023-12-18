@@ -1,8 +1,8 @@
 /// <summary>
 /// 시스템 상 저장 공간 (Repository) 
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 16
-/// @version        : 0.17
+/// @last update    : 2023. 12. 18
+/// @version        : 0.18
 /// @update
 ///     v0.1 (2023. 03. 17) : 파일 생성, Joycollab 에서 사용하는 것들 정리 시작.
 ///     v0.2 (2023. 03. 31) : SimpleWorkspace, Alarm 관련 항목 정리 시작, Notify 에서 generic <T> 제거.
@@ -21,6 +21,7 @@
 ///     v0.15 (2023. 11. 08) : time format 확인 함수와 culture info list 추가.
 ///     v0.16 (2023. 11. 14) : photo dict 형태 변경. Dictionary<int, texture2d> 에서 Dictionary <int, Tuple<string, texture2d>> 로 변경.
 ///     v0.17 (2023. 11. 16) : AddPhoto() 에서 있었던 오류 수정. 
+///     v0.18 (2023. 12. 18) : iRepositoryController 함수 수정. (Notify(); -> RequestNotify();)
 /// </summary>
 
 using System;
@@ -136,10 +137,10 @@ namespace Joycollab.v2
             if (exist) Send(observer, key);
         }
 
-        public void Notify(iRepositoryObserver observer, eStorageKey key) 
+        public void RequestNotify(eStorageKey key) 
         {
-            bool exist = isExist(observer, key);
-            if (exist) Send(observer, key);
+            Debug.Log($"{TAG} | Request notify. key : {key}");
+            NotifyAll(key); 
         }
 
         public void NotifyAll(eStorageKey key) 

@@ -15,7 +15,7 @@ namespace Joycollab.v2
         void RegisterObserver(iRepositoryObserver observer, eStorageKey key);
         void UnregisterObserver(iRepositoryObserver observer, eStorageKey key);
         void RequestInfo(iRepositoryObserver observer, eStorageKey key);
-        void Notify(iRepositoryObserver observer, eStorageKey key);
+        void RequestNotify(eStorageKey key);
         void NotifyAll(eStorageKey key);
     }
 

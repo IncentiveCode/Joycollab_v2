@@ -399,8 +399,8 @@ namespace Joycollab.v2
             Debug.Log($"{TAG} | current workspace seq : {R.singleton.workspaceSeq}");
             R.singleton.MemberInfo = res.data;
             WorldAvatarInfo info = new WorldAvatarInfo(res.data);
-            WorldAvatar.localPlayerInfo = info;
-            WorldChatView.localPlayerInfo = info;
+            // WorldAvatar.localPlayerInfo = info;
+            // WorldChatView.localPlayerInfo = info;
             WorldPlayer.localPlayerInfo = info;
 
             // 센터 접속

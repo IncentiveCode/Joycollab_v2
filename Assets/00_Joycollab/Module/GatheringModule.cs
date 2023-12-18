@@ -97,6 +97,16 @@ namespace Joycollab.v2
 			return res;
 		}	
 
+		public async UniTask<PsResponse<ClasInfo>> GetRoomInfo(int seq) 
+		{
+			string token = R.singleton.token;
+
+			string url = string.Format(URL.CLAS_INFO, seq);
+			PsResponse<ClasInfo> res = await NetworkTask.RequestAsync<ClasInfo>(url, eMethodType.GET, string.Empty, token);
+
+			return res;
+		}
+
 	#endregion	// room control
 	}
 }

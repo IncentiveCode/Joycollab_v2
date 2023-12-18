@@ -161,8 +161,8 @@ namespace Joycollab.v2
 
         public RequestClasDetail() 
         {
-            themes.cd = 0;
-            category.cd = 0;
+            themes = new Cd(0);
+            category = new Cd(0);
             bigo = openType = string.Empty;
         }
     }

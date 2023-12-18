@@ -23,11 +23,17 @@ namespace Joycollab.v2
             if (Application.isBatchMode) 
             {
                 Debug.Log($"{TAG} | === Server Build ===");
+                networkManager.StartServer();
             } 
             else 
             {
                 Debug.Log($"{TAG} | === Client Build ===");
                 networkManager.StartClient();
+
+                // 약간의 로딩 시간을 추가
+                var pop = Instantiate(SystemManager.singleton.pfLoadingProgress, Vector3.zero, Quaternion.identity);
+                var transform = GameObject.Find(S.Canvas_Popup).GetComponent<Transform>();
+                pop.transform.SetParent(transform, false);
             }
         }
     }

@@ -68,7 +68,6 @@ namespace Joycollab.v2
 
         private Camera cam; 
         private SquareCamera squareCamera;
-        private NetworkMatch networkMatch;
         private System.Guid netIdGuid;
 
 
@@ -76,8 +75,6 @@ namespace Joycollab.v2
 
         private void Awake() 
         {
-            networkMatch = GetComponent<NetworkMatch>();
-
             // set local variables
             isMovable = isFly = false;
             workspaceSeq = -1;
@@ -121,13 +118,10 @@ namespace Joycollab.v2
         {
             if (! isOwned) return;
 
+
             if (Input.GetMouseButtonUp(0)) 
             {
-                if (EventSystem.current.IsPointerOverGameObject()) 
-                {
-                    // Debug.Log($"{TAG} | UI click. no move");
-                    return;
-                }
+                if (EventSystem.current.IsPointerOverGameObject()) return;
 
                 v3Target = cam.ScreenToWorldPoint(Input.mousePosition);
                 RaycastHit2D hit = Physics2D.Raycast(v3Target, Vector2.zero, 1, LayerMask.GetMask("ClickableObject"));
@@ -145,6 +139,8 @@ namespace Joycollab.v2
             }
             else if (Input.mouseScrollDelta.y != 0f) 
             {
+                if (EventSystem.current.IsPointerOverGameObject()) return;
+
                 squareCamera.HandleWheelEvent(Input.mouseScrollDelta.y);
             }
             else 
@@ -170,9 +166,6 @@ namespace Joycollab.v2
 
         public override void OnStartServer() 
         {
-            netIdGuid = netId.ToString().ToGuid();
-            networkMatch.matchId = netIdGuid;
-
             playerName = (string) connectionToClient.authenticationData;
         }
 
@@ -188,6 +181,11 @@ namespace Joycollab.v2
                 Debug.Log($"{TAG} | spawning other player... {localPlayerInfo.seq}, {localPlayerInfo.nickNm}");
                 // goRoomPlayer = LobbyTest.singleton.SpawnPlayerPrefab(this);
             }
+        }
+
+        public override void OnStartLocalPlayer()
+        {
+            WorldChatView.localPlayerInfo = localPlayerInfo;
         }
 
         public override void OnStopClient()
@@ -425,7 +423,6 @@ namespace Joycollab.v2
             if (RoomMaker.singleton.CreateRoom(_roomID, this, isPublic))
             {
                 Debug.Log($"{TAG} | <color=green>Game hosted successfully</color>");
-                networkMatch.matchId = _roomID.ToGuid();
                 RpcCreateRoom(true, _roomID, avatarSeq);
             }
             else 
@@ -462,7 +459,6 @@ namespace Joycollab.v2
             if (RoomMaker.singleton.JoinRoom(_roomID, this)) 
             {
                 Debug.Log($"{TAG} | <color=green>room joined successfully</color>");
-                networkMatch.matchId = _roomID.ToGuid();
                 RpcJoinRoom(true, _roomID, avatarSeq);
 
                 // host
@@ -509,7 +505,6 @@ namespace Joycollab.v2
         {
             // RoomMaker.singleton.PlayerDisconnected(this, roomID);
             RpcDisconnectGame();
-            networkMatch.matchId = netIdGuid;
         }
 
         [TargetRpc]
@@ -521,15 +516,6 @@ namespace Joycollab.v2
         private void ClientDisconnect()
         {
             Debug.Log($"{TAG} | ClientDisconnect() call.");
-            /**
-            if (goRoomPlayer != null) 
-            {
-                if (! isServer)
-                    Destroy(goRoomPlayer);
-                else
-                    goRoomPlayer.SetActive(false);
-            }
-             */
         }
 
     #endregion  // disconnect functions 
@@ -580,7 +566,7 @@ namespace Joycollab.v2
                     Debug.Log($"{TAG} | UpdateInfo(), name : {avatarName}, name in R : {R.singleton.myName}");
                     CmdSetAvatarName(R.singleton.myName);
 
-                    WorldAvatar.localPlayerInfo.nickNm = R.singleton.myName;
+                    // WorldAvatar.localPlayerInfo.nickNm = R.singleton.myName;
                     WorldChatView.localPlayerInfo.nickNm = R.singleton.myName;
                     WorldPlayer.localPlayerInfo.nickNm = R.singleton.myName;
                 }   
