@@ -140,21 +140,6 @@ namespace Joycollab.v2
             base.Appearing();
         }
 
-        public override async UniTaskVoid Show(int seq) 
-        {
-            base.Show(seq).Forget();
-
-            // load view data
-            base.LoadViewData();
-
-            var (refreshRes, roomInfoRes) = await UniTask.WhenAll( 
-                Refresh(),
-                GetRoomInfo(seq)
-            );
-
-            base.Appearing();
-        }
-
         public override void Hide() 
         {
             base.Hide();

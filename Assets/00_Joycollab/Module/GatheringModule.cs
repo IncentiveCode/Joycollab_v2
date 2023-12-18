@@ -56,7 +56,7 @@ namespace Joycollab.v2
 
         public async UniTask<PsResponse<TpsList>> GetCategories() 
         {
-            string url = string.Format(URL.GET_CODE, "모임방 카테고리");
+            string url = string.Format(URL.GET_CODE, S.TC_ROOM_CATEGORY);
             PsResponse<TpsList> res = await NetworkTask.RequestAsync<TpsList>(url, eMethodType.GET, string.Empty, R.singleton.token);
 
             return res; 
@@ -64,7 +64,7 @@ namespace Joycollab.v2
 
 		public async UniTask<string> GetCategoryList(InfiniteScroll view) 
 		{
-            string url = string.Format(URL.GET_CODE, "모임방 카테고리");
+            string url = string.Format(URL.GET_CODE, S.TC_ROOM_CATEGORY);
             PsResponse<TpsList> res = await NetworkTask.RequestAsync<TpsList>(url, eMethodType.GET, string.Empty, R.singleton.token);
 
 			view.Clear();
@@ -88,23 +88,18 @@ namespace Joycollab.v2
 
 		public async UniTask<PsResponse<string>> CreateRoom(string body) 
 		{
-			string token = R.singleton.token;
-			int memberSeq = R.singleton.memberSeq;
-
-			string url = string.Format(URL.REGIST_CLAS, memberSeq);
-			PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.POST, body, token);
+			string url = string.Format(URL.REGIST_CLAS, R.singleton.memberSeq);
+			PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.POST, body, R.singleton.token);
 
 			return res;
 		}	
 
-		public async UniTask<PsResponse<ClasInfo>> GetRoomInfo(int seq) 
+		public async UniTask<PsResponse<TpsList>> GetRoomThemes() 
 		{
-			string token = R.singleton.token;
+			string url = string.Format(URL.GET_CODE, S.TC_ROOM_THEME);
+            PsResponse<TpsList> res = await NetworkTask.RequestAsync<TpsList>(url, eMethodType.GET, string.Empty, R.singleton.token);
 
-			string url = string.Format(URL.CLAS_INFO, seq);
-			PsResponse<ClasInfo> res = await NetworkTask.RequestAsync<ClasInfo>(url, eMethodType.GET, string.Empty, token);
-
-			return res;
+            return res; 
 		}
 
 	#endregion	// room control
