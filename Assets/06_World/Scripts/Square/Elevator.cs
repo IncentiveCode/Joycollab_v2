@@ -99,6 +99,15 @@ namespace Joycollab.v2
             R.singleton.RegisterObserver(this, eStorageKey.Elevator);
         }
 
+        private void Start() 
+        {
+            int workspaceSeq = R.singleton.workspaceSeq;
+            int.TryParse(JsLib.GetCookie(Key.CENTER_SEQ), out int centerSeq);
+
+            Debug.Log($"{TAG} | square 인가? {workspaceSeq == centerSeq}");
+            gameObject.SetActive(workspaceSeq == centerSeq);
+        }
+
         private void OnDestroy() 
         {
             if (R.singleton != null) 

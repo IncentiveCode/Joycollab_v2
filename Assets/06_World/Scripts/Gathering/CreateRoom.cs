@@ -2,11 +2,12 @@
 /// [world]
 /// 모임방 생성 class
 /// @author         : HJ Lee
-/// @last update    : 2023. 12. 18
-/// @version        : 0.2
+/// @last update    : 2023. 12. 22
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 09. 22) : 최초 생성
 ///     v0.2 (2023. 12. 18) : 생성 api 수정, view data 추가.
+///     v0.3 (2023. 12. 22) : 카테고리, 테마 정보 누락되는 부분 수정.
 /// </summary>
 
 using System.Collections.Generic;
@@ -32,16 +33,17 @@ namespace Joycollab.v2
 
         [Header("dropdown")]
         [SerializeField] private Dropdown _dropdownCategory;
+        private List<TpsInfo> listCategoryInfo;
 
         [Header("theme option")]
-        [SerializeField] private List<Toggle> _listThemeOption;
-        /**
+        // [SerializeField] private List<Toggle> _listThemeOption;
         [SerializeField] private Toggle _toggleCozy;
         [SerializeField] private Toggle _toggleLife;
         [SerializeField] private Toggle _toggleBnB;
         [SerializeField] private Toggle _toggleDebate;
-        [SerializeField] private Toggle _toggleKstyle;
-         */
+        [SerializeField] private Toggle _toggleSupport;
+        private List<TpsInfo> listThemeInfo;
+        private int themeNo;
 
         [Header("public option")]
         [SerializeField] private List<Toggle> _listPublicOption;
@@ -109,6 +111,24 @@ namespace Joycollab.v2
                 Hide();
             });
 
+
+            // set toggle listener
+            _toggleCozy.onValueChanged.AddListener((isOn) => {
+                if (isOn) themeNo = 0;
+            });
+            _toggleLife.onValueChanged.AddListener((isOn) => {
+                if (isOn) themeNo = 1;
+            });
+            _toggleBnB.onValueChanged.AddListener((isOn) => {
+                if (isOn) themeNo = 2;
+            });
+            _toggleDebate.onValueChanged.AddListener((isOn) => {
+                if (isOn) themeNo = 3;
+            });
+            _toggleSupport.onValueChanged.AddListener((isOn) => {
+                if (isOn) themeNo = 4;
+            });
+
             
             // set popup button listener
             _btnPopupConfirm.onClick.AddListener(() => {
@@ -127,6 +147,10 @@ namespace Joycollab.v2
             // set local variables
             uploader = _btnThumbnailUpload.GetComponent<ImageUploader>();
             uploader.Init();
+
+            listCategoryInfo = new List<TpsInfo>();
+            listThemeInfo = new List<TpsInfo>();
+            themeNo = 0;
         }
 
         public override async UniTaskVoid Show() 
@@ -161,13 +185,19 @@ namespace Joycollab.v2
                 _module.GetRoomThemes()
             );
 
-            PsResponse<TpsList> res = await _module.GetCategories();
-            if (! string.IsNullOrEmpty(res.message)) 
+            if (! string.IsNullOrEmpty(categoryRes.message)) 
             {
-                PopupBuilder.singleton.OpenAlert(res.message);
+                PopupBuilder.singleton.OpenAlert(categoryRes.message);
                 return -1;
             }
-            SetCategory(res.data);
+            SetCategory(categoryRes.data);
+
+            if (! string.IsNullOrEmpty(themesRes.message))
+            {
+                PopupBuilder.singleton.OpenAlert(themesRes.message);
+                return -2;
+            }
+            SetThemes(themesRes.data);
 
             return 0;
         }
@@ -178,7 +208,8 @@ namespace Joycollab.v2
             _inputTitle.text = _inputDetail.text = _inputThumbnail.text = string.Empty;
             
             // toggle setting
-            if (_listThemeOption.Count > 0)     _listThemeOption[0].isOn = true;
+            // if (_listThemeOption.Count > 0)     _listThemeOption[0].isOn = true;
+            _toggleCozy.isOn = true;
             if (_listPublicOption.Count > 0)    _listPublicOption[0].isOn = true;
             if (_listThumbnailOption.Count > 0) _listThumbnailOption[0].isOn = true;
 
@@ -193,9 +224,11 @@ namespace Joycollab.v2
 
             if (data.list.Count > 0)
             {
+                listCategoryInfo.Clear();
                 foreach (var item in data.list) 
                 {
                     _dropdownCategory.options.Add(new Dropdown.OptionData() { text = item.id });
+                    listCategoryInfo.Add(item);
                 }
             }
             else 
@@ -205,6 +238,22 @@ namespace Joycollab.v2
 
             _dropdownCategory.value = 0;
             _dropdownCategory.RefreshShownValue();
+        }
+
+        private void SetThemes(TpsList data) 
+        {
+            if (data.list.Count > 0)
+            {
+                listThemeInfo.Clear();
+                foreach (var item in data.list) 
+                {
+                    listThemeInfo.Add(item);
+                }
+            }
+            else 
+            {
+                Debug.Log($"{TAG} | SetThemes(), theme 정보가 비어있음.");
+            }
         }
 
         private async UniTaskVoid CreateAsync() 
@@ -218,8 +267,8 @@ namespace Joycollab.v2
             RequestClas req = new RequestClas();
             req.nm = _inputTitle.text;
             req.logo = string.Empty;
-            req.clas.category = new Cd(10);
-            req.clas.themes = new Cd(10);
+            req.clas.category = new Cd(listCategoryInfo[_dropdownCategory.value].cd);
+            req.clas.themes = new Cd(listThemeInfo[themeNo].cd);
             req.clas.bigo = _inputDetail.text;
             string openType = string.Empty;
             for (int i = 0; i < _listPublicOption.Count; i++) 

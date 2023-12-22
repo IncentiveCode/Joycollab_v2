@@ -2,10 +2,11 @@
 /// [world - Map]
 /// Floating bar 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 12. 14 
-/// @version        : 0.1
+/// @last update    : 2023. 12. 21 
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 12. 14) : FloatingBarW class 에서 분리 (지금은 FloatingBarInSquare)
+///     v0.2 (2023. 12. 21) : user list 는 map 에서 볼 수 없도록 조치, repository event 도 수신하지 않게끔 수정.
 /// </summary>
 
 using UnityEngine;
@@ -33,15 +34,10 @@ namespace Joycollab.v2
         [SerializeField] private Image _imgChatPanel;
         [SerializeField] private Text _txtChatCount;
 
-        [Header("user list")]
-        [SerializeField] private Image _imgUserPanel;
-        [SerializeField] private Text _txtUserCount;
-
         [Header("button")]
         [SerializeField] private Button _btnProfile;
         [SerializeField] private Button _btnAlarm;
         [SerializeField] private Button _btnChat;
-        [SerializeField] private Button _btnUserList;
         [SerializeField] private Button _btnSettings;
         [SerializeField] private Button _btnSignOut;
 
@@ -67,10 +63,6 @@ namespace Joycollab.v2
                 OnPointerDown();
                 string url = string.Format(URL.CHAT_LINK, R.singleton.memberSeq, R.singleton.Region);
                 JsLib.OpenChat(url);
-            });
-            _btnUserList.onClick.AddListener(() => {
-                OnPointerDown();
-                WindowManager.singleton.Push(S.WorldScene_UserList);
             });
             _btnSettings.onClick.AddListener(() => {
                 OnPointerDown();
@@ -98,7 +90,7 @@ namespace Joycollab.v2
                 R.singleton.RegisterObserver(this, eStorageKey.Alarm);
                 R.singleton.RegisterObserver(this, eStorageKey.Chat);
                 R.singleton.RegisterObserver(this, eStorageKey.WindowRefresh);
-                R.singleton.RegisterObserver(this, eStorageKey.UserCount);
+                // R.singleton.RegisterObserver(this, eStorageKey.UserCount);
             }
         }
         
@@ -110,7 +102,7 @@ namespace Joycollab.v2
                 R.singleton.RequestInfo(this, eStorageKey.Alarm);
                 R.singleton.RequestInfo(this, eStorageKey.Chat);
                 R.singleton.RequestInfo(this, eStorageKey.WindowRefresh);
-                R.singleton.RequestInfo(this, eStorageKey.UserCount);
+                // R.singleton.RequestInfo(this, eStorageKey.UserCount);
             }
         } 
 
@@ -126,7 +118,7 @@ namespace Joycollab.v2
                 R.singleton.UnregisterObserver(this, eStorageKey.Alarm);
                 R.singleton.UnregisterObserver(this, eStorageKey.Chat);
                 R.singleton.UnregisterObserver(this, eStorageKey.WindowRefresh);
-                R.singleton.UnregisterObserver(this, eStorageKey.UserCount);
+                // R.singleton.UnregisterObserver(this, eStorageKey.UserCount);
             }
         }
 
@@ -175,14 +167,6 @@ namespace Joycollab.v2
                     RefreshPanel();
                     break;
 
-                case eStorageKey.UserCount :
-                    if (userCount != R.singleton.CurrentUserCount) 
-                    {
-                        _txtUserCount.text = userCount > 99 ? "99+" : $"{userCount}";
-                        _imgUserPanel.gameObject.SetActive(userCount > 0);
-                    }
-                    break;
-
                 default :
                     Debug.Log($"{TAG} | 여기에서 사용하지 않는 항목. key : {key}");
                     break;
@@ -198,7 +182,6 @@ namespace Joycollab.v2
             _btnProfile.interactable = !isGuest;
             _btnAlarm.gameObject.SetActive(! isGuest);
             _btnChat.gameObject.SetActive(! isGuest);
-            _btnUserList.gameObject.SetActive(true);
             _btnSettings.gameObject.SetActive(! isGuest);
             _btnSignOut.gameObject.SetActive(true);
         }

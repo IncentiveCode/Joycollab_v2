@@ -416,7 +416,6 @@ namespace Joycollab.v2
 
         private void SetWorldAvatarInfo() 
         {
-            // _worldAvatarInfo = GetComponent<WorldAvatar>();
             TryGetComponent<WorldAvatar>(out _worldAvatarInfo);
             TryGetComponent<WorldPlayer>(out _worldPlayerInfo);
         }
@@ -489,7 +488,8 @@ namespace Joycollab.v2
 
         private void BoardLeftClick(PointerEventData data) 
         {
-            Debug.Log($"{TAG} | BoardLeftClick(), Board 가 클릭되었습니다. 게시판 정보를 출력합시다.");
+            // MainViewManager.Instance.OpenBoardListForWorld(0);
+            PopupBuilder.singleton.OpenAlert("게시판 | 잠시 막아두었습니다.");
         }
 
     #endregion  // 'Board' Click event
@@ -499,7 +499,8 @@ namespace Joycollab.v2
 
         private void NoticeLeftClick(PointerEventData data) 
         {
-            Debug.Log($"{TAG} | NoticeLeftClick(), Notice 가 클릭되었습니다. 공지사항 정보를 출력합시다.");
+            // MainViewManager.Instance.OpenNoticeListForWorld();
+            PopupBuilder.singleton.OpenAlert("공지사항 | 잠시 막아두었습니다.");
         }
 
     #endregion  // 'Notice' Click event
@@ -509,7 +510,8 @@ namespace Joycollab.v2
 
         private void SeminarLeftClick(PointerEventData data) 
         {
-            Debug.Log($"{TAG} | SeminarLeftClick(), seminar kiosk 가 클릭되었습니다. 세미나 정보를 출력합시다.");
+            // MainViewManager.Instance.OpenSeminarListForWorld();
+            PopupBuilder.singleton.OpenAlert("세미나 목록 | 잠시 막아두었습니다.");
         }
 
     #endregion  // 'Seminar' Click event
@@ -519,7 +521,8 @@ namespace Joycollab.v2
 
         private void MeetingLeftClick(PointerEventData data) 
         {
-            Debug.Log($"{TAG} | MeetingLeftClick(), Meeting board 가 클릭되었습니다. 회의 정보를 출력합시다.");
+            // MainViewManager.Instance.OpenMeetingListForWorld();
+            PopupBuilder.singleton.OpenAlert("회의 목록 | 잠시 막아두었습니다.");
         }
 
     #endregion  // 'Meeting' Click event
@@ -529,7 +532,8 @@ namespace Joycollab.v2
 
         private void FileBoxLeftClick(PointerEventData data) 
         {
-            Debug.Log($"{TAG} | FileBoxLeftClick(), File Box 가 클릭되었습니다. 파일함 정보를 출력합시다.");
+            // MainViewManager.Instance.OpenFileBrowserForWorld(0, string.Empty, true);
+            PopupBuilder.singleton.OpenAlert("파일함 | 잠시 막아두었습니다.");
         }
 
     #endregion  // 'Meeting' Click event

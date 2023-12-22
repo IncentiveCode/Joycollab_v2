@@ -22,6 +22,7 @@
 ///     v0.16 (2023. 11. 14) : photo dict 형태 변경. Dictionary<int, texture2d> 에서 Dictionary <int, Tuple<string, texture2d>> 로 변경.
 ///     v0.17 (2023. 11. 16) : AddPhoto() 에서 있었던 오류 수정. 
 ///     v0.18 (2023. 12. 18) : iRepositoryController 함수 수정. (Notify(); -> RequestNotify();)
+///                            v1 과 통합하며 GetOnlineStateCode() 등 일부 항목 남겨둠.
 /// </summary>
 
 using System;
@@ -465,6 +466,14 @@ namespace Joycollab.v2
         {
             get { return _memberInfo.alarmOpt; }
         }
+        public string myDateFormat 
+        {
+            get { return _memberInfo.dateFormatStr; }
+        }
+        public string myTimeFormat 
+        {
+            get { return _memberInfo.hourFormatStr; }
+        } 
         public float myLat {
             get { return _memberInfo.lat; }
         }

@@ -32,7 +32,7 @@ namespace Joycollab.v2
         public const string SceneName_Text = "TextUIScene";
         public const string SceneName_Arrange = "ArrangeSpaceScene";
         public const string SceneName_Management = "ManagementScene";
-        public const string SceneName_World = "WorldScene";
+        public const string SceneName_World = "World";
         public const string SceneName_Square = "SquareScene";
         public const string SceneName_Mobile = "MobileScene";
         public const string SceneName_Loading = "LoadingScene";
@@ -257,6 +257,7 @@ namespace Joycollab.v2
         public const string ID = "id";
         public const string PW = "pw";
         public const string WORLD = "world";
+        public const string GROUP = "clas";
         public const string EDITOR = "editor";
         public const string SYSTEM_UPDATE_CODE = "gansini88";
         public const string WORKSPACE = "workspace";

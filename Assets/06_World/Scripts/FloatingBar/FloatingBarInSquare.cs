@@ -78,11 +78,6 @@ namespace Joycollab.v2
             _btnMicControl.onClick.AddListener(() => {
                 OnPointerDown();
                 Debug.Log($"{TAG} | mic option change.");
-
-                MultiSceneNetworkManager.singleton.StopClient();
-                WorldPlayer.localPlayerInfo.workspaceSeq = 260;
-                WorldPlayer.localPlayerInfo.roomTypeId = S.ROOM_TYPE_COZY;
-                SceneLoader.Load(eScenes.Square);
             });
             _btnAlarm.onClick.AddListener(() => {
                 OnPointerDown();
@@ -99,11 +94,13 @@ namespace Joycollab.v2
             });
             _btnMeeting.onClick.AddListener(() => {
                 OnPointerDown();
-                Debug.Log($"{TAG} | meeting panel open.");
+                // MainViewManager.Instance.OpenMeetingListForWorld();
+                PopupBuilder.singleton.OpenAlert("회의 목록 | 잠시 막아두었습니다.");
             });
             _btnSeminar.onClick.AddListener(() => {
                 OnPointerDown();
-                Debug.Log($"{TAG} | seminar panel open.");
+                // MainViewManager.Instance.OpenSeminarListForWorld();
+                PopupBuilder.singleton.OpenAlert("세미나 목록 | 잠시 막아두었습니다.");
             });
             _btnGathering.onClick.AddListener(() => {
                 OnPointerDown();

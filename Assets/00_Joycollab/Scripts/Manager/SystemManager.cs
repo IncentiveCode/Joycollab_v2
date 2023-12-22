@@ -9,7 +9,7 @@
 ///     v0.2 (2023. 04. 19) : singleton pattern 수정
 ///     v0.3 (2023. 08. 01) : language, text 관련 초기화 추가
 ///     v0.4 (2023. 08. 10) : 공지사항 확인, URL parsing 기능 추가. (v1 에서 사용하던 항목들)
-///     v0.5 (2023. 08. 16) : 일본어 적용 (진행 중)
+///     v0.5 (2023. 08. 16) : 일본어 적용.
 ///     v0.6 (2023. 08. 23) : Window - OnFocus, OnBlur, OnResize 처리 함수 추가
 ///     v0.7 (2023. 08. 28) : Localization 사용 방식 변경.
 ///     v0.8 (2023. 09. 21) : AudioSource 추가. AudioClip 관련 함수 추가.
@@ -226,6 +226,32 @@ namespace Joycollab.v2
             return 0;
         }
 
+        public void BeforeMoveGroup() 
+        {
+            // xmpp logout
+        #if UNITY_WEBGL && !UNITY_EDITOR
+            xmpp.XmppLogoutForWebGL();
+        #else
+            xmpp.XmppLogout();
+        #endif
+
+            // ping sender : stop
+            StopPingSender(); 
+        } 
+
+        public void AfterMoveGroup() 
+        {
+            // xmpp login
+        #if UNITY_WEBGL && !UNITY_EDITOR
+            xmpp.XmppLoginForWebGL(R.singleton.memberSeq, R.singleton.myXmppPw);
+        #else
+            xmpp.XmppLogin(R.singleton.myXmppId, R.singleton.myXmppPw);
+        #endif
+
+            // ping sender : start
+            StartPingSender(); 
+        }
+
     #endregion  // Initialize
 
 
@@ -255,6 +281,8 @@ namespace Joycollab.v2
 
                 await UniTask.Delay(PING_DELAY);
             }
+
+            Debug.Log($"{TAG} | stop ping send");
         }
 
         public void StopPingSender() 

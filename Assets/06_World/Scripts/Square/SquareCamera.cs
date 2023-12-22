@@ -243,7 +243,6 @@ namespace Joycollab.v2
             {
                 mainCamera.orthographicSize = fLastSize = fSize; 
                 fWidth = fSize * Screen.width / Screen.height;
-
             }
         }
 

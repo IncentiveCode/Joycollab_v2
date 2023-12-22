@@ -359,8 +359,6 @@ namespace Joycollab.v2
 
             // world avatar 정보 설정.
             WorldAvatarInfo info = new WorldAvatarInfo(res.data);
-            // WorldAvatar.localPlayerInfo = info;
-            // WorldChatView.localPlayerInfo = info;
             WorldPlayer.localPlayerInfo = info;
 
             // system manager init 
@@ -373,9 +371,7 @@ namespace Joycollab.v2
 
             if (_toggleGoToCenter.isOn)
             {
-                var manager = NetworkManager.singleton;
-                manager.networkAddress = "dev.jcollab.com";
-                manager.StartClient();
+                SceneLoader.Load(eScenes.Square);
             }
             else
             {
