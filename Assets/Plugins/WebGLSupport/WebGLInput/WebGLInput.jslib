@@ -53,16 +53,17 @@ var WebGLInput = {
 		// input.style.outlineWidth = 1 + 'px';
 		input.style.opacity = isHidden ? 0 : 1;
 		input.style.resize = 'none'; // for textarea
-		// input.style.padding = '0px 1px';
 		input.style.cursor = "default";
 		input.style.touchAction = 'manipulation'; // for mobile
 
 		// HJ Lee. option added.
-		input.style.outlineWidth = 0 + 'px';
+		input.style.outlineWidth = '0px';
+		// input.style.padding = '0px 1px';
 		input.style.padding = '5px 8px 4px 8px';
-		input.style.fontFamily = 'Pretendard';
+		// input.style.fontFamily = 'Pretendard-Regular';
 		input.style.fontWeight = '400';
-		input.style.border = 0 + 'px';
+		input.style.fontStyle = 'normal';
+		input.style.border = '0px';
 		input.style.background = '#F5F5F5';
 		// -----
 
@@ -78,6 +79,11 @@ var WebGLInput = {
 			document.body.appendChild(input);
 		} else {
 	        container.appendChild(input);
+
+			// HJ Lee. 2023. 12. 28. add mouse wheel event
+			container.onmousewheel = function() {
+				console.log('WebGLInput.jslib, wheel event check.');
+			}
 		}
         return instances.push(input) - 1;
     },
@@ -186,6 +192,45 @@ var WebGLInput = {
 	WebGLInputForceBlur:function(id) {
         var input = instances[id];
 		input.blur();
+	},
+
+	// HJ Lee. 2023. 12. 28.
+	WebGLInputResize:function(canvasId, id, x, y, width, height, fontSize) 
+	{
+		if (instances[id] == null) return;
+
+        var container = document.getElementById(UTF8ToString(canvasId));
+        var canvas = container.getElementsByTagName('canvas')[0];
+
+		// if container is null and have canvas
+		if (!container && canvas)
+		{
+			// set the container to canvas.parentNode
+			container = canvas.parentNode;
+		}
+
+		if(canvas)
+		{
+			var scaleX = container.offsetWidth / canvas.width;
+			var scaleY = container.offsetHeight / canvas.height;
+
+			if(scaleX && scaleY)
+			{
+				width *= scaleX;
+				x *= scaleX;
+				y *= scaleY;
+				height *= scaleY;
+				fontSize *= scaleX;
+			}
+		}
+
+        var input = instances[id];
+		console.log('WebGLInput.jslib, top : '+ y +'px, left : '+ x +'px, width : '+ width +'px, height : '+ height +'px, fontSize : '+ fontSize);
+		input.style.top = y + "px";
+		input.style.left = x + "px";
+		input.style.width = width + "px";
+		input.style.height = height + "px";
+		input.style.fontSize = fontSize + "px";
 	},
 }
 

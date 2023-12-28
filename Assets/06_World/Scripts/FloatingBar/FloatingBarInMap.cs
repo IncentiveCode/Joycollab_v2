@@ -43,7 +43,7 @@ namespace Joycollab.v2
 
         // local variables
         private string myPhoto;
-        private int alarmCount, chatCount, userCount;
+        private int alarmCount, chatCount;
 
 
     #region Unity functions
@@ -80,7 +80,7 @@ namespace Joycollab.v2
             // set local variables
             loader = _imgProfile.GetComponent<ImageLoader>();
             myPhoto = string.Empty;
-            alarmCount = chatCount = userCount = -1;
+            alarmCount = chatCount = -1;
 
 
             // register event 
@@ -90,7 +90,6 @@ namespace Joycollab.v2
                 R.singleton.RegisterObserver(this, eStorageKey.Alarm);
                 R.singleton.RegisterObserver(this, eStorageKey.Chat);
                 R.singleton.RegisterObserver(this, eStorageKey.WindowRefresh);
-                // R.singleton.RegisterObserver(this, eStorageKey.UserCount);
             }
         }
         
@@ -102,14 +101,13 @@ namespace Joycollab.v2
                 R.singleton.RequestInfo(this, eStorageKey.Alarm);
                 R.singleton.RequestInfo(this, eStorageKey.Chat);
                 R.singleton.RequestInfo(this, eStorageKey.WindowRefresh);
-                // R.singleton.RequestInfo(this, eStorageKey.UserCount);
             }
         } 
 
         private void OnDestroy() 
         {
             myPhoto = string.Empty;
-            alarmCount = chatCount = userCount = -1;
+            alarmCount = chatCount = -1;
 
             // unregister event
             if (R.singleton != null)
@@ -118,7 +116,6 @@ namespace Joycollab.v2
                 R.singleton.UnregisterObserver(this, eStorageKey.Alarm);
                 R.singleton.UnregisterObserver(this, eStorageKey.Chat);
                 R.singleton.UnregisterObserver(this, eStorageKey.WindowRefresh);
-                // R.singleton.UnregisterObserver(this, eStorageKey.UserCount);
             }
         }
 

@@ -2,8 +2,8 @@
 /// Joycollab 통합 매니저 클래스 
 /// - singleton 남용을 막고, 기존 manager 클래스들에서 중복되어 있는 내용들을 수정/정리/최적화 하기 위해 작성.
 /// @author         : HJ Lee
-/// @last update    : 2023. 11. 16
-/// @version        : 0.12
+/// @last update    : 2023. 12. 28
+/// @version        : 0.13
 /// @update
 ///     v0.1 (2023. 04. 07) : 최초 작성.
 ///     v0.2 (2023. 04. 19) : singleton pattern 수정
@@ -17,6 +17,7 @@
 ///     v0.10 (2023. 11. 03) : avatar state 관련 정보 정리. (R class 에 만들어 두었던 것과 통합)
 ///     v0.11 (2023. 11. 15) : 로그아웃 기능 추가.
 ///     v0.12 (2023. 11. 16) : checkToken 기능 추가.
+///     v0.13 (2023. 12. 28) : sample scene 으로 바로 가게끔 flag 추가.
 /// </summary>
 
 using System;
@@ -38,6 +39,7 @@ namespace Joycollab.v2
         [SerializeField] private SignInModule module;
 
         [Header("test url")]
+        [SerializeField] private bool isSampleTest;
         [SerializeField] private string testURL;
 
         [Header("guide popup")]
@@ -109,7 +111,10 @@ namespace Joycollab.v2
                 return;
             }
 
-            GetSystemNoticeAsync().Forget();
+            if (isSampleTest)
+                SceneLoader.Load(eScenes.Sample); 
+            else
+                GetSystemNoticeAsync().Forget();
         }
 
         private void OnEnable() 

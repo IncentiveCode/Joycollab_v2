@@ -73,6 +73,11 @@ namespace WebGLSupport
         [DllImport("__Internal")]
         public static extern void WebGLInputEnableTabText(int id, bool enable);
 #endif
+
+        // HJ Lee. 2023. 12. 28.
+        [DllImport("__Internal")]
+        public static extern void WebGLInputResize(string canvasId, int id, int x, int y, int width, int height, int fontSize);
+
 #else
         public static void WebGLInputInit() {}
         public static int WebGLInputCreate(string canvasId, int x, int y, int width, int height, int fontsize, string text, string placeholder, bool isMultiLine, bool isPassword, bool isHidden, bool isMobile) { return 0; }
@@ -97,6 +102,8 @@ namespace WebGLSupport
         public static void WebGLInputEnableTabText(int id, bool enable) { }
 #endif
 
+        // HJ Lee. 2023. 12. 28.
+        public static void WebGLInputResize(string canvasId, int id, int x, int y, int width, int height, int fontSize) { }
 #endif
     }
 
@@ -178,8 +185,7 @@ namespace WebGLSupport
             bool isPassword = input.contentType == ContentType.Password;
 
             var fontSize = Mathf.Max(14, input.fontSize); // limit font size : 14 !!
-            // var fontSize = input.fontSize; 
-            // Debug.Log($"WebGLInput | OnSelect(), origin font size : {fontSize}");
+            Debug.Log($"WebGLInput | OnSelect(), origin font size : {input.fontSize} / resize font size : {fontSize}");
 
             // font size test
             /**
@@ -222,13 +228,38 @@ namespace WebGLSupport
             WebGLWindow.OnBlurEvent += OnWindowBlur;
 
             // test
-            WebGLWindow.OnResizeEvent += OnWindowBlur;
+            WebGLWindow.OnResizeEvent += OnWindowResize;
         }
 
         void OnWindowBlur()
         {
             blurBlock = true;
         }
+
+        // HJ Lee. 2023. 12. 28. add 'resize event'
+        private bool isResize = false;
+        void OnWindowResize() 
+        {
+            Debug.Log($"WebGLInput.cs | OnWindowResize() call");
+            if (! isResize)
+                StartCoroutine(ResizeInput());
+        }
+
+        private IEnumerator ResizeInput() 
+        {
+            isResize = true;
+
+            yield return new WaitForEndOfFrame();
+
+            var rect = GetElemetRect();
+            var fontSize = Mathf.Max(14, input.fontSize); // limit font size : 14 !!
+            Debug.Log($"WebGLInput | ResizeInput(), origin font size : {input.fontSize} / resize font size : {fontSize}");
+            WebGLInputPlugin.WebGLInputResize(WebGLInput.CanvasId, id, (int)rect.x, (int)rect.y, (int)rect.width, (int)rect.height, (int)fontSize);
+
+            isResize = false;
+        }
+        // -----
+
 
         /// <summary>
         /// 画面内の描画範囲を取得する

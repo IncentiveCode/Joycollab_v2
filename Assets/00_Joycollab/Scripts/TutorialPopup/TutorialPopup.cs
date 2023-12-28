@@ -115,7 +115,7 @@ namespace Joycollab.v2
             if (type == eTutorialType.QuickLearning)
                 sCurrentKey = string.Format("{0}_{1:00}", R.singleton.Region, page);
             else
-                sCurrentKey = string.Format("MiniMap_{0}f", (page+1));
+                sCurrentKey = string.Format("miniMap_{0}f", (page+1));
 
             Debug.Log($"{TAG} | load({page}), key : {sCurrentKey}");
             LoadSprite(sCurrentKey);
