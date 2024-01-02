@@ -2,10 +2,11 @@
 /// [world]
 /// 환경설정 Script
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 15
-/// @version        : 0.1
+/// @last update    : 2024. 01. 02
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 09. 15) : 최초 생성
+///     v0.2 (2024. 01. 02) : 관리자 설정 페이지 추가
 /// </summary>
 
 using UnityEngine;
@@ -22,10 +23,12 @@ namespace Joycollab.v2
         [Header("toggle")]
         [SerializeField] private Toggle _toggleIndividual;
         [SerializeField] private Toggle _toggleConfiguration;
+        [SerializeField] private Toggle _toggleAdmin;
 
         [Header("page")]
         [SerializeField] private IndividualSettings _pageIndividual;
         [SerializeField] private Configuration _pageConfiguration;
+        [SerializeField] private AdminSettings _pageAdmin;
 
         [Header("button")]
         [SerializeField] private Button _btnClose;
@@ -62,14 +65,23 @@ namespace Joycollab.v2
                 {
                     _pageIndividual.Show().Forget();
                     _pageConfiguration.Hide();
+                    _pageAdmin.Hide();
                 }
             });
-
             _toggleConfiguration.onValueChanged.AddListener((isOn) => {
                 if (isOn)
                 {
-                    _pageConfiguration.Show().Forget();
                     _pageIndividual.Hide();
+                    _pageConfiguration.Show().Forget();
+                    _pageAdmin.Hide();
+                }
+            });
+            _toggleAdmin.onValueChanged.AddListener((isOn) => {
+                if (isOn) 
+                {
+                    _pageIndividual.Hide();
+                    _pageConfiguration.Hide();
+                    _pageAdmin.Show().Forget();
                 }
             });
 
@@ -164,6 +176,9 @@ namespace Joycollab.v2
             _toggleIndividual.isOn = true;
             _pageIndividual.Show().Forget();
             _pageConfiguration.Hide();
+            _pageAdmin.Hide();
+
+            _toggleAdmin.gameObject.SetActive(R.singleton.myMemberType.Equals(S.ADMIN));
 
             await UniTask.Yield();
             return 0;
