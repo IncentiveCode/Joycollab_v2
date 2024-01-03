@@ -92,6 +92,7 @@ namespace Joycollab.v2
         [SerializeField] private TMP_InputField _inputMascotGreeting;
 
         // local variables
+        private WorldOption worldOpt;
 
 
     #region Unity functions
@@ -212,12 +213,41 @@ namespace Joycollab.v2
 
         private async UniTask<int> Refresh() 
         {
-            PsResponse<ResWorldOpt> res = await _module.GetWorldInfo();
+            PsResponse<WorldOption> res = await _module.GetWorldInfo();
             if (! string.IsNullOrEmpty(res.message)) 
             {
                 PopupBuilder.singleton.OpenAlert(res.message);
                 return -1;
             }
+
+            R.singleton.WorldOpt = res.data;
+
+            SetInputFieldActive(true);
+
+            return 0;
+        }
+
+        private void SetInputFieldActive(bool isOn) 
+        {
+            _inputDisplayScreenLeft1.gameObject.SetActive(isOn);
+            _inputDisplayLinkLeft1.gameObject.SetActive(isOn);
+            _inputDisplayScreenLeft2.gameObject.SetActive(isOn);
+            _inputDisplayLinkLeft2.gameObject.SetActive(isOn);
+            _inputDisplayScreenCenter.gameObject.SetActive(isOn);
+            _inputDisplayLinkCenter.gameObject.SetActive(isOn);
+            _inputDisplayScreenRight2.gameObject.SetActive(isOn);
+            _inputDisplayLinkRight2.gameObject.SetActive(isOn);
+            _inputDisplayScreenRight1.gameObject.SetActive(isOn);
+            _inputDisplayLinkRight1.gameObject.SetActive(isOn);
+            _inputMonitorScreenLeft.gameObject.SetActive(isOn);
+            _inputMonitorVideoLeft.gameObject.SetActive(isOn);
+            _inputMonitorScreenRight.gameObject.SetActive(isOn);
+            _inputMonitorVideoRight.gameObject.SetActive(isOn);
+            _inputYouTube.gameObject.SetActive(isOn);
+            _inputInstagram.gameObject.SetActive(isOn);
+            _inputBlog.gameObject.SetActive(isOn);
+            _inputHomepage.gameObject.SetActive(isOn);
+            _inputMascotGreeting.gameObject.SetActive(isOn);
         }
 
     #endregion  // Event handling
