@@ -566,7 +566,6 @@ namespace Joycollab.v2
                     Debug.Log($"{TAG} | UpdateInfo(), name : {avatarName}, name in R : {R.singleton.myName}");
                     CmdSetAvatarName(R.singleton.myName);
 
-                    // WorldAvatar.localPlayerInfo.nickNm = R.singleton.myName;
                     WorldChatView.localPlayerInfo.nickNm = R.singleton.myName;
                     WorldPlayer.localPlayerInfo.nickNm = R.singleton.myName;
                 }   

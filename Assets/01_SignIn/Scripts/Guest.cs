@@ -283,8 +283,6 @@ namespace Joycollab.v2
                     S.GUEST,
                     S.ONLINE
                 );
-                // WorldAvatar.localPlayerInfo = info;
-                // WorldChatView.localPlayerInfo = info;  
                 WorldPlayer.localPlayerInfo = info;
 
                 // 사용자 정보 로드

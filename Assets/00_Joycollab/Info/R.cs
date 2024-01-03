@@ -809,5 +809,83 @@ namespace Joycollab.v2
         private void ClearPartDict() => dictPart.Clear();
 
     #endregion  // for temp dectionary
+
+
+    #region for world option
+
+        private WorldOption _worldOpt = null;        
+        public WorldOption WorldOpt {
+            set { _worldOpt = value; }
+        }
+
+        // 전광판
+        public string DisplayScreenLeft1 {
+            get { return _worldOpt.billboardL1; }
+        }
+        public string DisplayLinkLeft1 {
+            get { return _worldOpt.billboardL1Url; }
+        }
+        public string DisplayScreenLeft2 {
+            get { return _worldOpt.billboardL2; }
+        }
+        public string DisplayLinkLeft2 {
+            get { return _worldOpt.billboardL2Url; }
+        }
+        public string DisplayScreenCenter {
+            get { return _worldOpt.billboard; }
+        }
+        public string DisplayLinkCenter {
+            get { return _worldOpt.billboardUrl; }
+        }
+        public string DisplayScreenRight2 {
+            get { return _worldOpt.billboardR2; }
+        }
+        public string DisplayLinkRight2 {
+            get { return _worldOpt.billboardR2Url; }
+        }
+        public string DisplayScreenRight1 {
+            get { return _worldOpt.billboardR1; }
+        }
+        public string DisplayLinkRight1 {
+            get { return _worldOpt.billboardR1Url; }
+        }
+
+        // 홍보관
+        public string MonitorScreenLeft {
+            get { return _worldOpt.monitL; }
+        }
+        public string MonitorLinkLeft {
+            get { return _worldOpt.monitLUrl; }
+        }
+        public string MonitorScreenRight {
+            get { return _worldOpt.monitR; }
+        }
+        public string MonitorLinkRight {
+            get { return _worldOpt.monitRUrl; }
+        }
+
+        // SNS
+        public string YoutubeLink {
+            get { return _worldOpt.youtubeUrl; }
+        }
+        public string InstagramLink {
+            get { return _worldOpt.instagramUrl; }
+        }
+        public string BlogLink {
+            get { return _worldOpt.blogUrl; }
+        }
+        public string HomepageLink {
+            get { return _worldOpt.homepUrl; }
+        }
+
+        // 마스코트
+        public bool MascotUsage {
+            get { return _worldOpt.seminarMascotIsUse; }
+        }
+        public string MascotGreeting {
+            get { return _worldOpt.seminarMascot; }
+        }
+
+    #endregion  // for world option
     }
 }

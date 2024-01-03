@@ -1,10 +1,11 @@
 /// <summary>
 /// 설정 기능만 독립적으로 분리한 모듈
 /// @author         : HJ Lee
-/// @last update    : 2023. 09. 20
-/// @version        : 0.1
+/// @last update    : 2024. 01. 03
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 09. 20) : 최초 생성
+///     v0.2 (2024. 01. 03) : world 에서 사용할 기능 추가
 /// </summary>
 
 using UnityEngine;
@@ -75,5 +76,18 @@ namespace Joycollab.v2
         }
 
     #endregion  // 환경 설정
+
+
+    #region 관리자 설정
+
+        public async UniTask<PsResponse<WorldOption>> GetWorldInfo() 
+        {
+            string url = string.Format(URL.WORLD_INFO, R.singleton.workspaceSeq);
+            PsResponse<WorldOption> res = await NetworkTask.RequestAsync<WorldOption>(url, eMethodType.GET, string.Empty, R.singleton.token);
+
+            return res;
+        } 
+
+    #endregion  // 관리자 설정
     }
 }
