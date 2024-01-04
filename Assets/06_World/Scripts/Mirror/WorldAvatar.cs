@@ -183,7 +183,6 @@ namespace Joycollab.v2
         private void Fly(Vector3 position) 
         {
             if (! isOwned) return;
-            // if (WorldChatView.Instance.OnChat) return;
 
             isFly = true;
             v3Dir = position;
@@ -192,7 +191,6 @@ namespace Joycollab.v2
         private void Move() 
         {
             if (! isOwned || ! isMovable) return;
-            // if (WorldChatView.Instance.OnChat) return;
 
             // TODO. animation 을 사용하는 경우에 적용 예정.
             // bool isMove = false;
@@ -355,7 +353,6 @@ namespace Joycollab.v2
                     CmdSetAvatarName(R.singleton.myName);
 
                     WorldAvatar.localPlayerInfo.nickNm = R.singleton.myName;
-                    // WorldChatView.localPlayerInfo.nickNm = R.singleton.myName;
                     // WorldPlayer.localPlayerInfo.nickNm = R.singleton.myName;
                 }   
                 if (! avatarMemberType.Equals(R.singleton.myMemberType))

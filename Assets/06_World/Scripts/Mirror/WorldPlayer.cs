@@ -1,14 +1,16 @@
 /// <summary>
 /// World 에서 사용할 player 클래스 
 /// @author         : HJ Lee
-/// @last update    : 2023. 12. 14 
-/// @version        : 0.3
+/// @last update    : 2024. 01. 04 
+/// @version        : 0.4
 /// @update
 ///     v0.1 (2023. 12. 06) : 최초 생성, Lobby_Room 에서 참고해서 작성.
 ///     v0.2 (2023. 12. 08) : mouse wheel event 추가.
 ///     v0.3 (2023. 12. 14) : 진입할 센터 또는 모임방의 seq 와 id 를 추가.
+///     v0.4 (2024. 01. 04) : WorldChatView 내용 중 Command 와 ClientRpc 항목을 이전.
 /// </summary>
 
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Localization.Components;
@@ -65,6 +67,7 @@ namespace Joycollab.v2
 
         [Header("chat")]
         [SerializeField] private Transform _transformBubble;
+        internal static readonly Dictionary<NetworkConnectionToClient, string> playerNames = new Dictionary<NetworkConnectionToClient, string>();
 
         private Camera cam; 
         private SquareCamera squareCamera;
@@ -166,26 +169,31 @@ namespace Joycollab.v2
 
         public override void OnStartServer() 
         {
+            playerNames.Clear();
+
             playerName = (string) connectionToClient.authenticationData;
+            Debug.Log($"{TAG} | OnStartServer(), player name : {playerName}");
         }
 
         public override void OnStartClient() 
         {
+            Debug.Log($"{TAG} | OnStartClient()");
+
             if (isLocalPlayer) 
             {
                 localPlayer = this;
                 UpdateAvatarInfo(localPlayerInfo);
+
+                // chat view control
+                WorldChatView.singleton.Clear();
+
+                // chat bubble clear
+                WorldChatBubble.Init(_transformBubble);
             }
             else 
             {
                 Debug.Log($"{TAG} | spawning other player... {localPlayerInfo.seq}, {localPlayerInfo.nickNm}");
-                // goRoomPlayer = LobbyTest.singleton.SpawnPlayerPrefab(this);
             }
-        }
-
-        public override void OnStartLocalPlayer()
-        {
-            WorldChatView.localPlayerInfo = localPlayerInfo;
         }
 
         public override void OnStopClient()
@@ -208,16 +216,6 @@ namespace Joycollab.v2
         public void UpdateAvatarInfo(WorldAvatarInfo info) 
         {
             Debug.Log($"{TAG} | UpdateAvatarInfo() call.");
-            /**
-            avatarInfo = info;
-
-            avatarSeq = info.seq;
-            avatarName = info.nickNm;
-            avatarPhoto = info.photo;
-            avatarMemberType = info.memberType;
-            avatarState = info.stateId;
-             */
-
             CmdUpdateAvatarInfo(info);
         }
 
@@ -404,6 +402,28 @@ namespace Joycollab.v2
             Debug.Log($"{TAG} | cmdSetAvatarState(), state : {stateId}");
         }
 
+        [Command(requiresAuthority = false)]
+        public void CmdSend(string message, NetworkConnectionToClient sender=null) 
+        {
+            Debug.Log($"{TAG} | CmdSend()");
+
+            if (!playerNames.ContainsKey(sender)) 
+            {
+                playerNames.Add(sender, avatarName);
+            }
+            else
+            {
+                if (! playerNames[sender].Equals(avatarName))
+                    playerNames[sender] = avatarName;
+            }
+
+            if (!string.IsNullOrWhiteSpace(message)) 
+            {
+                RpcReceive(playerNames[sender], message.Trim());
+                UpdateAvatarChat(message.Trim());
+            }
+        }
+
     #endregion  // command functions 
 
 
@@ -538,6 +558,23 @@ namespace Joycollab.v2
     #endregion  // match player functions
 
 
+    #region chat function
+
+        [ClientRpc]
+        private void RpcReceive(string playerName, string message) 
+        {
+            Debug.Log($"{TAG} | RpcReceive(), palyer name : {playerName}, localPlayerInfo name : {localPlayerInfo.nickNm}");
+
+            string msg = (playerName.Equals(localPlayerInfo.nickNm)) ? 
+                $"<color=red>{playerName}</color> : {message}" :
+                $"<color=blue>{playerName}</color> : {message}";
+
+            WorldChatView.singleton.AppendMessage(msg);
+        } 
+
+    #endregion  // chat function
+
+
     #region event handling
 
         private void OnTriggerEnter2D(Collider2D other) 
@@ -565,8 +602,6 @@ namespace Joycollab.v2
                 {
                     Debug.Log($"{TAG} | UpdateInfo(), name : {avatarName}, name in R : {R.singleton.myName}");
                     CmdSetAvatarName(R.singleton.myName);
-
-                    WorldChatView.localPlayerInfo.nickNm = R.singleton.myName;
                     WorldPlayer.localPlayerInfo.nickNm = R.singleton.myName;
                 }   
                 if (! avatarMemberType.Equals(R.singleton.myMemberType))

@@ -191,6 +191,7 @@ namespace Joycollab.v2
             R.singleton.ID = res2.data.user.id;
 
             WorldAvatarInfo info = new WorldAvatarInfo(res2.data);
+            info.workspaceSeq = nextSpaceSeq;
             info.roomTypeId = nextRoomType;
             WorldPlayer.localPlayerInfo = info;
 

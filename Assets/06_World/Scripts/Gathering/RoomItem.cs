@@ -161,6 +161,7 @@ namespace Joycollab.v2
             R.singleton.ID = res2.data.user.id;
 
             WorldAvatarInfo info = new WorldAvatarInfo(res2.data);
+            info.workspaceSeq = nextSpaceSeq;
             info.roomTypeId = nextRoomType;
             WorldPlayer.localPlayerInfo = info;
 
@@ -173,9 +174,6 @@ namespace Joycollab.v2
             // TODO. 정보 저장
             JsLib.SetCookie(Key.WORKSPACE_SEQ, nextSpaceSeq.ToString());
             JsLib.SetCookie(Key.MEMBER_SEQ, nextMemberSeq.ToString());
-
-            // Repo.Instance.workspaceSeq = nextSpaceSeq; 
-            // Repo.Instance.memberSeq = nextMemberSeq; 
             R.singleton.workspaceSeq = nextSpaceSeq;
             R.singleton.memberSeq = nextMemberSeq;
 

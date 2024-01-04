@@ -48,6 +48,18 @@ namespace Joycollab.v2
             bubble.Setup(chat);
         }
 
+        public static void Init(Transform parent) 
+        {
+            foreach (Transform child in parent.GetComponentInChildren<Transform>()) 
+            {
+                if (child.name.Equals(parent.name)) continue;
+                if (child.TryGetComponent(out WorldChatBubble oldBubble))
+                {
+                    oldBubble.Stop();
+                }
+            }
+        }
+
         public void Stop() 
         {
             if (sequence != null) 

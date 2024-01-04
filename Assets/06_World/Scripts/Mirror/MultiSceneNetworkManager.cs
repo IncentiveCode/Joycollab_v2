@@ -2,10 +2,11 @@
 /// [world - Square]
 /// Network manager 클래스
 /// @author         : HJ Lee
-/// @last update    : 2023. 12. 14 
-/// @version        : 0.4
+/// @last update    : 2024. 01. 04 
+/// @version        : 0.2
 /// @update
 ///     v0.1 (2023. 12. 14) : Mirror - MultiSceneNetManager 참고해서 새로 제작
+///     v0.2 (2024. 01. 04) : client 시작시 chat window 생성 (테스트)
 /// </summary>
 
 using System.Collections;
@@ -62,9 +63,12 @@ namespace Joycollab.v2
                 yield return null;
 
             // Wait for end of frame before adding the player to ensure Scene Message goes first
-            // yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
 
             base.OnServerAddPlayer(conn);
+
+            // 사용자 위치 지정. 기존 start position 은 사용 안할 예정.
+            Vector3 position = Vector3.zero;
 
             // 사용자가 가려고 하는 곳 확인
             if (conn.identity.TryGetComponent<WorldPlayer>(out var player)) 
@@ -78,8 +82,6 @@ namespace Joycollab.v2
                         Debug.Log($"{TAG} | break !"); 
                         break;
                     }
-
-                    Debug.Log($"{TAG} | OnServerAddPlayerDelayed(), seq : {player.avatarSeq}, workspace : {player.workspaceSeq}, room type : {player.roomTypeId}");
                     yield return null; 
                 }
                 Debug.Log($"{TAG} | OnServerAddPlayerDelayed(), seq : {player.avatarSeq}, workspace : {player.workspaceSeq}, room type : {player.roomTypeId}");
@@ -88,52 +90,50 @@ namespace Joycollab.v2
                 switch (player.roomTypeId) 
                 {
                     case S.ROOM_TYPE_COZY :
+                        position = new Vector3(-9.837f, 0f, 0f);
                         conn.Send(new SceneMessage { sceneName = roomCozy, sceneOperation = SceneOperation.LoadAdditive });
                         break;
 
                     case S.ROOM_TYPE_LIFE :
+                        position = new Vector3(-9.66f, -1.28f, 0f);
                         conn.Send(new SceneMessage { sceneName = roomLife, sceneOperation = SceneOperation.LoadAdditive });
                         break;
 
                     case S.ROOM_TYPE_BnB :
+                        position = new Vector3(-9.44f, -0.27f, 0f);
                         conn.Send(new SceneMessage { sceneName = roomBnB, sceneOperation = SceneOperation.LoadAdditive });
                         break;
 
                     case S.ROOM_TYPE_DEBATE :
+                        position = new Vector3(-10.36f, -0.79f, 0f);
                         conn.Send(new SceneMessage { sceneName = roomDebate, sceneOperation = SceneOperation.LoadAdditive });
                         break;
 
                     case S.ROOM_TYPE_SUPPORT :
+                        position = new Vector3(-10.49f, -1.21f, 0f);
                         conn.Send(new SceneMessage { sceneName = roomSupport, sceneOperation = SceneOperation.LoadAdditive });
                         break;
 
                     default :
+                        Debug.Log($"{TAG} | OnServerAddPlayerDelayed(), 알 수 없는 공간명 : {player.roomTypeId}");
+                        position = new Vector3(-24f, -16f, 0f);
                         conn.Send(new SceneMessage { sceneName = communityCenter, sceneOperation = SceneOperation.LoadAdditive });
                         break;
                 }
             }
             else 
             {
+                position = new Vector3(-24f, -16f, 0f);
                 conn.Send(new SceneMessage { sceneName = communityCenter, sceneOperation = SceneOperation.LoadAdditive });
             }
 
             Debug.Log($"{TAG} | client request workspace seq : {player.workspaceSeq}");
-
-            /**
-            Debug.Log($"{TAG} | dictionary count : {dictRooms.Count}");
-            foreach (var info in dictRooms)
-            {
-                Debug.Log($"{TAG} | key : {info.Key}, value : {info.Value}");
-            }
-             */
-
             Debug.Log($"{TAG} | is scene exist ? : {dictRooms.ContainsKey(player.workspaceSeq)}");
+            Debug.Log($"{TAG} | player position : {position}");
             if (dictRooms.ContainsKey(player.workspaceSeq))
             {
                 SceneManager.MoveGameObjectToScene(conn.identity.gameObject, dictRooms[player.workspaceSeq]);
-                Transform pos = GetStartPosition();
-                Debug.Log($"{TAG} | start position : {pos.position}");
-                conn.identity.gameObject.transform.position = pos.position;
+                conn.identity.gameObject.transform.position = position;
             }
             else 
             {
@@ -206,7 +206,7 @@ namespace Joycollab.v2
 
         public override void OnServerDisconnect(NetworkConnectionToClient conn)
         {
-            WorldChatView.playerNames.Remove(conn);
+            WorldPlayer.playerNames.Remove(conn);
             base.OnServerDisconnect(conn);
         }
 
@@ -226,7 +226,6 @@ namespace Joycollab.v2
 
             await Resources.UnloadUnusedAssets();
         }
-
 
         public override void OnStopClient()
         {

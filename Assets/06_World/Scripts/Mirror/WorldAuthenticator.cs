@@ -1,11 +1,12 @@
 /// <summary>
 /// [Mirror] WorldScene - SquareScene 에서 사용할 사용자 인증 툴
 /// @author         : HJ Lee
-/// @last update    : 2023. 12. 05 
-/// @version        : 0.2
+/// @last update    : 2024. 01. 04 
+/// @version        : 0.3
 /// @update
 ///     v0.1 (2023. 03. 07) : 최초 생성, mirror-test 에서 작업한 항목 migration.
 ///     v0.2 (2023. 12. 05) : SSL 을 사용할 때는 chat view 가 사라지는 문제 수정 (중)
+///     v0.3 (2024. 01. 04) : 문제 수정 (중)
 /// </summary>
 
 using System.Collections;
@@ -20,17 +21,17 @@ namespace Joycollab.v2
         private const string TAG = "WorldAuthenticator";
 
         readonly HashSet<NetworkConnection> connectionsPendingDisconnect = new HashSet<NetworkConnection>(); 
-        internal static readonly HashSet<string> playerNames = new HashSet<string>();
+        internal static readonly HashSet<int> userSeqs = new HashSet<int>();
 
-        [Header("client user name")]
-        public string playerName;
+        [Header("client seq")]
+        public int userSeq;
 
 
 	#region Messages 
 
 		public struct AuthRequestMessage : NetworkMessage 
 		{
-			public string authUserName;
+            public int authUserSeq;
 		}
 
 		public struct AuthResponseMessage : NetworkMessage 
@@ -47,7 +48,7 @@ namespace Joycollab.v2
         [UnityEngine.RuntimeInitializeOnLoadMethod]
         static void ResetStatics() 
         {
-            playerNames.Clear();
+            userSeqs.Clear();
         }
 
         public override void OnStartServer() 
@@ -68,14 +69,15 @@ namespace Joycollab.v2
 
 		private void OnAuthRequestMessage(NetworkConnectionToClient conn, AuthRequestMessage message) 
         { 
-            Debug.Log($"Authentication Request: {message.authUserName}");
+            int seq = message.authUserSeq;
+            Debug.Log($"Authentication Request: {seq}");
 
             if (connectionsPendingDisconnect.Contains(conn)) return;
 
-            if (! playerNames.Contains(message.authUserName)) 
+            if (! userSeqs.Contains(seq)) 
             {
-                playerNames.Add(message.authUserName);
-                conn.authenticationData = message.authUserName;
+                userSeqs.Add(seq);
+                conn.authenticationData = seq;
 
                 AuthResponseMessage res = new AuthResponseMessage
                 {
@@ -117,9 +119,10 @@ namespace Joycollab.v2
 
 		public override void OnStartClient() 
         {
+            Debug.Log($"{TAG} | OnStartClient()");
             NetworkClient.RegisterHandler<AuthResponseMessage>(OnAuthResponseMessage, false);
 
-            SetPlayerName(R.singleton.myName);
+            // SetUserSeq(WorldPlayer.localPlayerInfo.seq);
         }
 
         public override void OnStopClient() 
@@ -129,7 +132,7 @@ namespace Joycollab.v2
 
         public override void OnClientAuthenticate()
         {
-            NetworkClient.Send(new AuthRequestMessage { authUserName = playerName });
+            NetworkClient.Send(new AuthRequestMessage { authUserSeq = userSeq });
         }
 
         private void OnAuthResponseMessage(AuthResponseMessage message) 
@@ -142,7 +145,6 @@ namespace Joycollab.v2
             else 
             {
                 Debug.LogError($"Authentication Response: {message.message}");
-                NetworkManager.singleton.StopHost();
             }
         }
 
@@ -151,9 +153,9 @@ namespace Joycollab.v2
 
 	#region other functions
 
-        public void SetPlayerName(string userName) 
+        public void SetUserSeq(int seq) 
         {
-            playerName = userName;
+            userSeq = seq;
         }
 
 	#endregion	// other functions
