@@ -2,8 +2,8 @@
 /// Joycollab 통합 매니저 클래스 
 /// - singleton 남용을 막고, 기존 manager 클래스들에서 중복되어 있는 내용들을 수정/정리/최적화 하기 위해 작성.
 /// @author         : HJ Lee
-/// @last update    : 2023. 12. 28
-/// @version        : 0.13
+/// @last update    : 2024. 01. 05
+/// @version        : 0.14
 /// @update
 ///     v0.1 (2023. 04. 07) : 최초 작성.
 ///     v0.2 (2023. 04. 19) : singleton pattern 수정
@@ -18,10 +18,12 @@
 ///     v0.11 (2023. 11. 15) : 로그아웃 기능 추가.
 ///     v0.12 (2023. 11. 16) : checkToken 기능 추가.
 ///     v0.13 (2023. 12. 28) : sample scene 으로 바로 가게끔 flag 추가.
+///     v0.14 (2024. 01. 05) : ping 이 종료되지 않는 문제 수정.
 /// </summary>
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 using UnityEngine.Localization.Settings;
 using Cysharp.Threading.Tasks;
@@ -70,6 +72,7 @@ namespace Joycollab.v2
 
         // ping sender
         private bool isPingRun;
+        private CancellationTokenSource cts;
         private const int PING_DELAY = 60000;
 
 
@@ -233,6 +236,8 @@ namespace Joycollab.v2
 
         public void BeforeMoveGroup() 
         {
+            Debug.Log($"{TAG} | BeforeMoveGroup()");
+
             // xmpp logout
         #if UNITY_WEBGL && !UNITY_EDITOR
             xmpp.XmppLogoutForWebGL();
@@ -246,6 +251,8 @@ namespace Joycollab.v2
 
         public void AfterMoveGroup() 
         {
+            Debug.Log($"{TAG} | AfterMoveGroup()");
+
             // xmpp login
         #if UNITY_WEBGL && !UNITY_EDITOR
             xmpp.XmppLoginForWebGL(R.singleton.memberSeq, R.singleton.myXmppPw);
@@ -267,24 +274,33 @@ namespace Joycollab.v2
             if (isPingRun) return;
             isPingRun = true;
 
+            if (cts != null) cts.Cancel();
+            cts = new CancellationTokenSource();
+
             Debug.Log($"{TAG} | start ping send");
-            SendPing().Forget();
+            SendPing(cts.Token).Forget();
         } 
 
-        private async UniTaskVoid SendPing() 
+        private async UniTaskVoid SendPing(CancellationToken token) 
         {
             string url = string.Format(URL.SEND_PING, R.singleton.memberSeq);
             PsResponse<string> res = null;
 
-            while (isPingRun) 
+            await UniTask.Yield();
+            while (isPingRun)
             {
+                if (token.IsCancellationRequested) 
+                {
+                    break;
+                }
+
                 res = await NetworkTask.RequestAsync<string>(url, eMethodType.PATCH, string.Empty, R.singleton.token); 
                 if (! string.IsNullOrEmpty(res.message)) 
                 {
                     Debug.LogError(DateTime.Now.ToString("HH:mm:ss") +" - "+ res.message);
                 }
 
-                await UniTask.Delay(PING_DELAY);
+                await UniTask.Delay(PING_DELAY, ignoreTimeScale: false, cancellationToken: token);
             }
 
             Debug.Log($"{TAG} | stop ping send");
@@ -293,6 +309,12 @@ namespace Joycollab.v2
         public void StopPingSender() 
         {
             isPingRun = false;
+            if (cts != null) 
+            {
+                Debug.Log($"{TAG} | token cancellation request.");
+                cts.Cancel();
+            }
+            cts = null;
         } 
 
     #endregion  // ping sender
@@ -822,7 +844,7 @@ namespace Joycollab.v2
             // for world 
             if (SceneLoader.isWorld()) 
             {
-                Debug.Log("${TAG} | World SignOut(), here?");
+                Debug.Log($"{TAG} | World SignOut(), here?");
                 string message = await SignOutProcess();
                 if (string.IsNullOrEmpty(message)) 
                 {

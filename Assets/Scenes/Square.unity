@@ -1208,7 +1208,7 @@ MonoBehaviour:
   onlineScene: 
   transport: {fileID: 1130158506}
   networkAddress: localhost
-  maxConnections: 100
+  maxConnections: 1024
   disconnectInactiveConnections: 0
   disconnectInactiveTimeout: 60
   authenticator: {fileID: 0}
@@ -1969,6 +1969,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   networkManager: {fileID: 1130158504}
   transport: {fileID: 1130158506}
+  networkManagerHud: {fileID: 1130158508}
   releaseMode: 0
 --- !u!1 &2129027583
 GameObject:
