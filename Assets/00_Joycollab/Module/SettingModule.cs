@@ -88,6 +88,14 @@ namespace Joycollab.v2
             return res;
         } 
 
+        public async UniTask<string> UpdateCenterOptions(string body) 
+        {
+            string url = string.Format(URL.WORLD_INFO, R.singleton.workspaceSeq);
+            PsResponse<string> res = await NetworkTask.RequestAsync<string>(url, eMethodType.POST, body, R.singleton.token);
+
+            return res.message;
+        }
+
     #endregion  // 관리자 설정
     }
 }

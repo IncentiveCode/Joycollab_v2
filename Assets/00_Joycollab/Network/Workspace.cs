@@ -77,8 +77,6 @@ namespace Joycollab.v2
     [Serializable]
     public class WorldOption 
     {
-        public string useYn;
-        public int seq;
         public string miniMap;
         public string infoDesk;
         public string board;
@@ -109,6 +107,40 @@ namespace Joycollab.v2
         public string seminarMascot;
         public string seminarList;
         public string experienceOffice;
+
+        public WorldOption(WorldOption opt) 
+        {
+            miniMap = opt.miniMap;
+            infoDesk = opt.infoDesk;
+            board = opt.board;
+            guestBoot = opt.guestBoot;
+            billboardL1 = opt.billboardL1;
+            billboardL1Url = opt.billboardL1Url;
+            billboardL2 = opt.billboardL2;
+            billboardL2Url = opt.billboardL2Url;
+            billboard = opt.billboard;
+            billboardUrl = opt.billboardUrl;
+            billboardR1 = opt.billboardR1;
+            billboardR1Url = opt.billboardR1Url;
+            billboardR2 = opt.billboardR2;
+            billboardR2Url = opt.billboardR2Url;
+            monitL = opt.monitL;
+            monitLUrl = opt.monitLUrl;
+            monitR = opt.monitR;
+            monitRUrl = opt.monitRUrl;
+            youtube = opt.youtube;
+            youtubeUrl = opt.youtubeUrl;
+            instagram = opt.instagram;
+            instagramUrl = opt.instagramUrl;
+            blog = opt.blog;
+            blogUrl = opt.blogUrl;
+            homep = opt.homep;
+            homepUrl = opt.homepUrl;
+            seminarMascotIsUse = opt.seminarMascotIsUse;
+            seminarMascot = opt.seminarMascot;
+            seminarList = opt.seminarList;
+            experienceOffice = opt.experienceOffice;
+        }
     }
 
     [Serializable]

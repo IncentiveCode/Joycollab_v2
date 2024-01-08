@@ -40,6 +40,8 @@ var StandaloneFileBrowserWebGLPlugin = {
             for (var i = 0; i < event.target.files.length; i++) {
                 urls.push(URL.createObjectURL(event.target.files[i]));
 			    urls.push(event.target.files[i].name);
+                // add size 
+                urls.push(event.target.files[i].size);
             }
             // File selected
             SendMessage(gameObjectName, methodName, urls.join('|'));

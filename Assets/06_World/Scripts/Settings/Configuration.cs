@@ -234,10 +234,11 @@ namespace Joycollab.v2
 
         public override async UniTaskVoid Show() 
         {
-            Debug.Log($"{TAG} | Show() call.");
             base.Show().Forget();
 
-            await Refresh();
+            // await Refresh();
+            await UniTask.Yield();
+
             base.Appearing();
         }
 
@@ -246,7 +247,7 @@ namespace Joycollab.v2
 
     #region event handling
 
-        private async UniTask<int> Refresh() 
+        public async UniTask<int> Refresh() 
         {
             flagParentToggle = flagChildToggle = false;
 
@@ -258,7 +259,7 @@ namespace Joycollab.v2
             if (! string.IsNullOrEmpty(memberInfoRes.message))
             {
                 PopupBuilder.singleton.OpenAlert(memberInfoRes.message);
-                return -1;
+                return -2;
             }
             
             if (! string.IsNullOrEmpty(alarmSoundRes.message))

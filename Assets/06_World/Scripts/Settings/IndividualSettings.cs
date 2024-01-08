@@ -93,7 +93,9 @@ namespace Joycollab.v2
         {
             base.Show().Forget();
 
-            await Refresh();
+            SetInputFieldActive(true);
+            await UniTask.Yield();
+
             base.Appearing();
         }
 
@@ -109,7 +111,7 @@ namespace Joycollab.v2
 
     #region Event handling
 
-        private async UniTask<int> Refresh() 
+        public async UniTask<int> Refresh() 
         {
             PsResponse<ResMemberInfo> res = await _module.GetMyInfo();
             if (! string.IsNullOrEmpty(res.message)) 

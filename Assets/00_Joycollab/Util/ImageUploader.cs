@@ -89,6 +89,12 @@ namespace Joycollab.v2
 
         public void OnImageUpload(string data) 
         {
+            if (string.IsNullOrEmpty(data)) 
+            {
+                Debug.Log($"{TAG} | OnImageUpload(), data is null");
+                return;
+            }
+
             Debug.Log($"{TAG} | OnImageUpload(), data : {data}");
             string[] arr = data.Split('|');
             string url = arr[0];
