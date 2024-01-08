@@ -1969,7 +1969,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   networkManager: {fileID: 1130158504}
   transport: {fileID: 1130158506}
-  networkManagerHud: {fileID: 1130158508}
+  networkManagerHud: {fileID: 0}
   releaseMode: 0
 --- !u!1 &2129027583
 GameObject:
@@ -2009,18 +2009,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 1731144886}
     m_Modifications:
-    - target: {fileID: 1099363271081446075, guid: 6209e00aa2700304abe40006f754baf9, type: 3}
-      propertyPath: m_AnchorMax.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1099363271081446075, guid: 6209e00aa2700304abe40006f754baf9, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 1099363271382826354, guid: 6209e00aa2700304abe40006f754baf9, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
     - target: {fileID: 1099363271739863096, guid: 6209e00aa2700304abe40006f754baf9, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -2108,30 +2096,6 @@ PrefabInstance:
     - target: {fileID: 1099363271739863100, guid: 6209e00aa2700304abe40006f754baf9, type: 3}
       propertyPath: m_Name
       value: world chat
-      objectReference: {fileID: 0}
-    - target: {fileID: 7242028331014734997, guid: 6209e00aa2700304abe40006f754baf9, type: 3}
-      propertyPath: m_AnchorMax.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7242028331014734997, guid: 6209e00aa2700304abe40006f754baf9, type: 3}
-      propertyPath: m_AnchorMin.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7242028331014734997, guid: 6209e00aa2700304abe40006f754baf9, type: 3}
-      propertyPath: m_SizeDelta.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7242028331014734997, guid: 6209e00aa2700304abe40006f754baf9, type: 3}
-      propertyPath: m_SizeDelta.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7242028331014734997, guid: 6209e00aa2700304abe40006f754baf9, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7242028331014734997, guid: 6209e00aa2700304abe40006f754baf9, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6209e00aa2700304abe40006f754baf9, type: 3}
